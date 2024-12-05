@@ -14,7 +14,7 @@ export default function CreateBoostPage({ onBack }: CreateBoostPageProps) {
   return (
     <div className="min-h-screen bg-[#fafafa] pb-24">
       <div className="max-w-[800px] mx-auto">
-        <button 
+        <button
           onClick={onBack}
           className="flex items-center gap-2 px-6 py-4 text-gray-600 hover:text-gray-900"
         >
@@ -22,10 +22,7 @@ export default function CreateBoostPage({ onBack }: CreateBoostPageProps) {
           <span>Back to Widgets</span>
         </button>
         <Heading />
-        <Sections 
-          initialConfig={currentBoost?.config}
-          onCreateBoost={onBack}
-        />
+        <Sections initialConfig={currentBoost?.config} onCreateBoost={onBack} />
       </div>
     </div>
   );

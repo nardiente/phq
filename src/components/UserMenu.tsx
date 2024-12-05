@@ -46,8 +46,8 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
             {user.firstName} {user.lastName}
           </span>
         </div>
-        <ChevronDown 
-          size={20} 
+        <ChevronDown
+          size={20}
           className={`text-gray-400 transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
@@ -73,15 +73,15 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
               </div>
             </div>
           </div>
-          
+
           <div className="py-1">
-            <button 
+            <button
               onClick={() => handleNavigation('settings')}
               className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
             >
               Account Settings
             </button>
-            <a 
+            <a
               href="https://app.producthq.io/pricing"
               target="_blank"
               rel="noopener noreferrer"

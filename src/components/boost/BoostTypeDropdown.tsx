@@ -1,5 +1,11 @@
 import React from 'react';
-import { ChevronDown, Sidebar, Maximize2, Square, ExternalLink } from 'lucide-react';
+import {
+  ChevronDown,
+  Sidebar,
+  Maximize2,
+  Square,
+  ExternalLink,
+} from 'lucide-react';
 import { useDropdown } from '../../contexts/DropdownContext';
 
 interface BoostTypeDropdownProps {
@@ -11,15 +17,18 @@ const boostTypes = [
   { id: 'Sidebar', icon: Sidebar, label: 'Sidebar' },
   { id: 'Modal', icon: Maximize2, label: 'Modal' },
   { id: 'Popover', icon: Square, label: 'Popover' },
-  { id: 'Embed', icon: ExternalLink, label: 'Embed' }
+  { id: 'Embed', icon: ExternalLink, label: 'Embed' },
 ];
 
-export function BoostTypeDropdown({ selectedType, onSelect }: BoostTypeDropdownProps) {
+export function BoostTypeDropdown({
+  selectedType,
+  onSelect,
+}: BoostTypeDropdownProps) {
   const { openDropdown, setOpenDropdown } = useDropdown();
   const dropdownId = 'boost-type-dropdown';
   const isOpen = openDropdown === dropdownId;
 
-  const selectedOption = boostTypes.find(type => type.id === selectedType);
+  const selectedOption = boostTypes.find((type) => type.id === selectedType);
   const Icon = selectedOption?.icon || Sidebar;
 
   const handleToggle = () => {
@@ -33,7 +42,7 @@ export function BoostTypeDropdown({ selectedType, onSelect }: BoostTypeDropdownP
 
   return (
     <div className="relative">
-      <button 
+      <button
         onClick={handleToggle}
         className="w-full px-4 py-2.5 text-left border border-purple-300 rounded-lg bg-white flex items-center justify-between hover:border-purple-400 transition-colors"
       >
@@ -41,7 +50,10 @@ export function BoostTypeDropdown({ selectedType, onSelect }: BoostTypeDropdownP
           <Icon size={18} className="text-gray-500" />
           <span className="text-gray-900">{selectedType}</span>
         </div>
-        <ChevronDown size={20} className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          size={20}
+          className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
       </button>
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10">

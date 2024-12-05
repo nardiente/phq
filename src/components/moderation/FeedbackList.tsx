@@ -8,7 +8,11 @@ interface FeedbackListProps {
   onApprove: (item: FeedbackItem) => void;
 }
 
-export const FeedbackList = memo(function FeedbackList({ items, onReject, onApprove }: FeedbackListProps) {
+export const FeedbackList = memo(function FeedbackList({
+  items,
+  onReject,
+  onApprove,
+}: FeedbackListProps) {
   return (
     <div className="space-y-4">
       {items.map((item) => (

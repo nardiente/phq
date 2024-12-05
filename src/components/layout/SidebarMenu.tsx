@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { 
+import {
   LayoutDashboard,
   MessageSquare,
   Map,
@@ -19,7 +19,7 @@ import {
   ChevronRight,
   Paintbrush,
   Heart,
-  LayoutTemplate
+  LayoutTemplate,
 } from 'lucide-react';
 
 interface SidebarMenuProps {
@@ -32,11 +32,23 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
   const [showSettings, setShowSettings] = useState(false);
 
   const mainMenuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', id: 'dashboard', badge: 'COMING\nSOON', disabled: false },
+    {
+      icon: LayoutDashboard,
+      label: 'Dashboard',
+      id: 'dashboard',
+      badge: 'COMING\nSOON',
+      disabled: false,
+    },
     { icon: ThumbsUp, label: 'Upvotes', id: 'upvotes' },
     { icon: Map, label: 'Roadmap', id: 'roadmap' },
     { icon: Zap, label: "What's New", id: 'boost' },
-    { icon: LayoutTemplate, label: 'Widgets', id: 'widgets', badge: 'COMING\nSOON', disabled: false }
+    {
+      icon: LayoutTemplate,
+      label: 'Widgets',
+      id: 'widgets',
+      badge: 'COMING\nSOON',
+      disabled: false,
+    },
   ];
 
   const settingsMenuItems = [
@@ -47,15 +59,32 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
     { icon: Users2, label: 'Team Members', id: 'team' },
     { icon: CreditCard, label: 'Billing and Invoicing', id: 'billing' },
     { icon: Tag, label: 'Tags', id: 'tags' },
-    { icon: Mail, label: 'Emails', id: 'emails', badge: 'COMING\nSOON', disabled: false },
-    { icon: Upload, label: 'Import Ideas', id: 'import', badge: 'COMING\nSOON', disabled: false }
+    {
+      icon: Mail,
+      label: 'Emails',
+      id: 'emails',
+      badge: 'COMING\nSOON',
+      disabled: false,
+    },
+    {
+      icon: Upload,
+      label: 'Import Ideas',
+      id: 'import',
+      badge: 'COMING\nSOON',
+      disabled: false,
+    },
   ];
 
   const bottomMenuItems = [
-    { icon: BookOpen, label: 'Documentation', id: 'docs', externalLink: 'https://support.producthq.io/' },
+    {
+      icon: BookOpen,
+      label: 'Documentation',
+      id: 'docs',
+      externalLink: 'https://support.producthq.io/',
+    },
     { icon: Heart, label: 'Leave Testimonial', id: 'testimonials' },
     { icon: ThumbsUp, label: 'Submit Feature Request', id: 'submit-feature' },
-    { icon: Map, label: 'Our Roadmap', id: 'our-roadmap' }
+    { icon: Map, label: 'Our Roadmap', id: 'our-roadmap' },
   ];
 
   const handleNavigation = (item: any) => {
@@ -84,9 +113,11 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
   };
 
   return (
-    <div className={`bg-white border-r border-gray-200 transition-all duration-300 ${
-      isExpanded ? 'w-64' : 'w-16'
-    }`}>
+    <div
+      className={`bg-white border-r border-gray-200 transition-all duration-300 ${
+        isExpanded ? 'w-64' : 'w-16'
+      }`}
+    >
       <div className="sticky top-0 flex flex-col h-screen">
         <div className="flex items-center justify-between h-[60px] px-4 border-b border-gray-200">
           <div className="flex items-center">
@@ -116,7 +147,9 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
               className="w-full flex items-center gap-3 px-3 py-2 mb-3 rounded-lg text-sm text-gray-600 hover:bg-gray-50"
             >
               <ArrowLeft size={18} />
-              {isExpanded && <span className="flex-1 text-left">Back to main menu</span>}
+              {isExpanded && (
+                <span className="flex-1 text-left">Back to main menu</span>
+              )}
             </button>
           )}
           <div className="space-y-1">
@@ -128,8 +161,8 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
                   activeItem === item.id
                     ? 'bg-purple-50 text-purple-700'
                     : item.disabled
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'text-gray-600 hover:bg-gray-50'
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'text-gray-600 hover:bg-gray-50'
                 }`}
                 disabled={item.disabled && item.id !== 'widgets'}
               >
@@ -149,7 +182,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
           </div>
 
           {isExpanded && (
-            <a 
+            <a
               href="https://app.producthq.io/pricing"
               target="_blank"
               rel="noopener noreferrer"
@@ -169,7 +202,9 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
                   className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50"
                 >
                   <Settings size={18} />
-                  {isExpanded && <span className="flex-1 text-left">Settings</span>}
+                  {isExpanded && (
+                    <span className="flex-1 text-left">Settings</span>
+                  )}
                 </button>
                 {bottomMenuItems.map((item) => (
                   <button
@@ -182,7 +217,9 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
                     }`}
                   >
                     <item.icon size={18} />
-                    {isExpanded && <span className="flex-1 text-left">{item.label}</span>}
+                    {isExpanded && (
+                      <span className="flex-1 text-left">{item.label}</span>
+                    )}
                   </button>
                 ))}
               </>

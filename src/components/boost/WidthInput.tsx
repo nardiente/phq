@@ -8,7 +8,12 @@ interface WidthInputProps {
   label?: string;
 }
 
-export function WidthInput({ width, onChange, error, label = 'Width' }: WidthInputProps) {
+export function WidthInput({
+  width,
+  onChange,
+  error,
+  label = 'Width',
+}: WidthInputProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, '');
     const numericValue = value ? parseInt(value, 10) : 300;
@@ -17,9 +22,7 @@ export function WidthInput({ width, onChange, error, label = 'Width' }: WidthInp
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm text-gray-700 font-medium">
-        {label}
-      </label>
+      <label className="block text-sm text-gray-700 font-medium">{label}</label>
       <div className="relative">
         <input
           type="text"

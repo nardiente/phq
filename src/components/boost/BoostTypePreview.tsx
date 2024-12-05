@@ -9,7 +9,13 @@ interface BoostTypePreviewProps {
   offset?: number;
 }
 
-export function BoostTypePreview({ type, position = 'Right', width, height, offset = 20 }: BoostTypePreviewProps) {
+export function BoostTypePreview({
+  type,
+  position = 'Right',
+  width,
+  height,
+  offset = 20,
+}: BoostTypePreviewProps) {
   const previewWidth = Math.min(180, Math.max(120, width * 0.4));
   const previewHeight = Math.min(180, Math.max(120, height * 0.4));
 
@@ -23,9 +29,7 @@ export function BoostTypePreview({ type, position = 'Right', width, height, offs
             <div className="w-3 h-3 rounded-full bg-green-400"></div>
           </div>
         </div>
-        <div className="p-4 relative h-[calc(100%-2.5rem)]">
-          {content}
-        </div>
+        <div className="p-4 relative h-[calc(100%-2.5rem)]">{content}</div>
       </div>
     </div>
   );
@@ -59,7 +63,7 @@ export function BoostTypePreview({ type, position = 'Right', width, height, offs
       case 'Sidebar':
         return browserFrame(
           <div className="flex items-center h-full">
-            <div 
+            <div
               className={`absolute top-1/2 -translate-y-1/2 ${position === 'Left' ? 'left-0' : 'right-0'} bg-white border-${position === 'Left' ? 'r' : 'l'} border-gray-200 shadow-lg h-4/5`}
               style={{ width: `${previewWidth}px` }}
             >
@@ -70,28 +74,38 @@ export function BoostTypePreview({ type, position = 'Right', width, height, offs
       case 'Modal':
         return browserFrame(
           <div className="flex items-center justify-center h-full">
-            <div 
+            <div
               className="bg-white rounded-lg shadow-lg"
-              style={{ width: `${previewWidth}px`, height: `${previewHeight}px` }}
+              style={{
+                width: `${previewWidth}px`,
+                height: `${previewHeight}px`,
+              }}
             >
               {previewContent}
             </div>
           </div>
         );
       case 'Popover':
-        const offsetStyle = position === 'Left' ? { left: `${offset}px` } : { right: `${offset}px` };
+        const offsetStyle =
+          position === 'Left'
+            ? { left: `${offset}px` }
+            : { right: `${offset}px` };
         return browserFrame(
           <div className="flex items-center h-full">
-            <div 
+            <div
               className={`absolute top-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg`}
-              style={{ 
+              style={{
                 ...offsetStyle,
-                width: `${previewWidth}px`, 
-                height: `${previewHeight}px` 
+                width: `${previewWidth}px`,
+                height: `${previewHeight}px`,
               }}
             >
-              <div className={`absolute top-1/2 ${position === 'Left' ? 'right-full' : 'left-full'} -translate-y-1/2`}>
-                <div className={`border-8 border-transparent ${position === 'Left' ? 'border-r-white' : 'border-l-white'}`} />
+              <div
+                className={`absolute top-1/2 ${position === 'Left' ? 'right-full' : 'left-full'} -translate-y-1/2`}
+              >
+                <div
+                  className={`border-8 border-transparent ${position === 'Left' ? 'border-r-white' : 'border-l-white'}`}
+                />
               </div>
               {previewContent}
             </div>
@@ -109,11 +123,11 @@ export function BoostTypePreview({ type, position = 'Right', width, height, offs
                 </div>
               </div>
               <div className="col-span-9 space-y-4">
-                <div 
+                <div
                   className="bg-white rounded-lg border border-gray-200 overflow-hidden"
-                  style={{ 
+                  style={{
                     width: `${previewWidth}px`,
-                    height: `${previewHeight}px`
+                    height: `${previewHeight}px`,
                   }}
                 >
                   {previewContent}
@@ -133,9 +147,7 @@ export function BoostTypePreview({ type, position = 'Right', width, height, offs
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm text-gray-700 font-medium">
-        Preview
-      </label>
+      <label className="block text-sm text-gray-700 font-medium">Preview</label>
       <div className="relative">
         <div className="bg-[#f8fafc] rounded-lg h-[280px] overflow-hidden">
           {renderPreview()}

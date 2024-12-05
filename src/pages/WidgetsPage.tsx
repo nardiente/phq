@@ -7,9 +7,9 @@ export default function WidgetsPage() {
   const [expandedSections, setExpandedSections] = useState<number[]>([1]);
 
   const toggleSection = (sectionNumber: number) => {
-    setExpandedSections(prev => 
+    setExpandedSections((prev) =>
       prev.includes(sectionNumber)
-        ? prev.filter(num => num !== sectionNumber)
+        ? prev.filter((num) => num !== sectionNumber)
         : [sectionNumber]
     );
   };
@@ -20,20 +20,22 @@ export default function WidgetsPage() {
         <div className="max-w-[800px] mx-auto">
           <div className="flex items-center justify-between px-6 py-8">
             <div>
-              <h1 className="text-[28px] font-semibold text-[#1A1942] mb-2">Create new widget</h1>
-              <p className="text-[14px] text-gray-600">All changes will be auto-saved.</p>
+              <h1 className="text-[28px] font-semibold text-[#1A1942] mb-2">
+                Create new widget
+              </h1>
+              <p className="text-[14px] text-gray-600">
+                All changes will be auto-saved.
+              </p>
             </div>
-            <button 
-              className="flex items-center gap-2 h-[35px] w-[122px] justify-center bg-[#FF5C35] hover:bg-[#ff4a1a] text-white rounded-lg"
-            >
+            <button className="flex items-center gap-2 h-[35px] w-[122px] justify-center bg-[#FF5C35] hover:bg-[#ff4a1a] text-white rounded-lg">
               <Plus size={16} />
               <span className="text-[14px]">Create New</span>
             </button>
           </div>
 
           <div className="px-6 space-y-3">
-            <Section 
-              number={1} 
+            <Section
+              number={1}
               title="Widget Type"
               subtitle="Configure the type and appearance of your widget"
               isExpanded={expandedSections.includes(1)}
@@ -55,8 +57,8 @@ export default function WidgetsPage() {
               }
             />
 
-            <Section 
-              number={2} 
+            <Section
+              number={2}
               title="Appearance"
               subtitle="Customize how your widget looks"
               isExpanded={expandedSections.includes(2)}
@@ -77,8 +79,8 @@ export default function WidgetsPage() {
               }
             />
 
-            <Section 
-              number={3} 
+            <Section
+              number={3}
               title="Placement"
               subtitle="Choose where your widget appears"
               isExpanded={expandedSections.includes(3)}

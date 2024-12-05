@@ -7,7 +7,10 @@ interface ModeratePublicIdeasProps {
   onChange: (enabled: boolean) => void;
 }
 
-export function ModeratePublicIdeas({ enabled, onChange }: ModeratePublicIdeasProps) {
+export function ModeratePublicIdeas({
+  enabled,
+  onChange,
+}: ModeratePublicIdeasProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between py-4">

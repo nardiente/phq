@@ -20,9 +20,9 @@ export function BoardBanner() {
         <h2 className="text-xl font-semibold text-gray-900">
           Add your board to your website.
         </h2>
-        
+
         <div className="space-y-2">
-          <a 
+          <a
             href="https://support.producthq.io/articles/how-to-add-a-board-to-your-site-145e70-32dd7"
             target="_blank"
             rel="noopener noreferrer"
@@ -35,7 +35,7 @@ export function BoardBanner() {
             <span className="text-[14px] text-gray-600">
               testadmin01.producthq.io
             </span>
-            <button 
+            <button
               onClick={copyUrl}
               className="p-1 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100 transition-colors"
               aria-label="Copy URL to clipboard"
@@ -46,13 +46,13 @@ export function BoardBanner() {
         </div>
 
         <div className="flex items-center justify-center gap-4 pt-2">
-          <button 
+          <button
             onClick={hideTemporarily}
             className="text-[13px] text-gray-600 hover:text-gray-700"
           >
             Remind me in 3 days
           </button>
-          <button 
+          <button
             onClick={hidePermanently}
             className="text-[13px] text-gray-600 hover:text-gray-700"
           >
@@ -62,9 +62,9 @@ export function BoardBanner() {
       </div>
 
       {showCopyToast && (
-        <Toast 
-          message="URL copied to clipboard" 
-          onClose={() => setShowCopyToast(false)} 
+        <Toast
+          message="URL copied to clipboard"
+          onClose={() => setShowCopyToast(false)}
         />
       )}
     </div>

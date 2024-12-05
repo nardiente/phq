@@ -17,10 +17,10 @@ interface SectionProps {
   cursor?: string;
 }
 
-function Section({ 
-  number, 
-  title, 
-  subtitle, 
+function Section({
+  number,
+  title,
+  subtitle,
   details,
   settings,
   isExpanded,
@@ -28,7 +28,7 @@ function Section({
   onSave,
   onCancel,
   hasInternalButtons = false,
-  cursor = 'cursor-pointer' 
+  cursor = 'cursor-pointer',
 }: SectionProps) {
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
   const { hasUnsavedChanges, setHasUnsavedChanges } = useUnsavedChanges();
@@ -49,10 +49,7 @@ function Section({
 
   return (
     <div className={`bg-white rounded-lg border border-gray-200 ${cursor}`}>
-      <div 
-        className="px-6 py-4"
-        onClick={handleToggle}
-      >
+      <div className="px-6 py-4" onClick={handleToggle}>
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-4">
@@ -60,7 +57,9 @@ function Section({
                 {number}
               </div>
               <div className="flex items-center gap-2">
-                <h2 className="text-[15px] font-medium text-[#1A1942]">{title}</h2>
+                <h2 className="text-[15px] font-medium text-[#1A1942]">
+                  {title}
+                </h2>
                 {subtitle && (
                   <>
                     <div className="w-1 h-1 bg-gray-300 rounded-full" />
@@ -69,17 +68,13 @@ function Section({
                 )}
               </div>
             </div>
-            {settings && (
-              <div className="mt-2 ml-10">
-                {settings}
-              </div>
-            )}
+            {settings && <div className="mt-2 ml-10">{settings}</div>}
           </div>
-          <ChevronDown 
+          <ChevronDown
             className={`text-gray-400 transition-transform duration-200 flex-shrink-0 ${
               isExpanded ? 'transform rotate-180' : ''
-            }`} 
-            size={20} 
+            }`}
+            size={20}
           />
         </div>
       </div>
@@ -91,7 +86,7 @@ function Section({
           {!hasInternalButtons && (onSave || onCancel) && (
             <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
               {onCancel && (
-                <button 
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
                     onCancel();
@@ -102,7 +97,7 @@ function Section({
                 </button>
               )}
               {onSave && (
-                <button 
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
                     onSave();

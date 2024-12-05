@@ -18,7 +18,7 @@ function BoostPage({ onNavigate }: BoostPageProps) {
   const [editingValue, setEditingValue] = useState('');
 
   const handleEdit = (boostId: string) => {
-    const boostToEdit = boosts.find(b => b.id === boostId);
+    const boostToEdit = boosts.find((b) => b.id === boostId);
     if (boostToEdit) {
       setCurrentBoost(boostToEdit);
       onNavigate?.();
@@ -60,10 +60,14 @@ function BoostPage({ onNavigate }: BoostPageProps) {
     <div className="flex-1 px-8 py-6">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-[28px] font-semibold text-gray-900 mb-1">What's New Widgets</h1>
-          <p className="text-[14px] text-gray-600">Create a What's New widget to get more eyeballs on your posts.</p>
+          <h1 className="text-[28px] font-semibold text-gray-900 mb-1">
+            What's New Widgets
+          </h1>
+          <p className="text-[14px] text-gray-600">
+            Create a What's New widget to get more eyeballs on your posts.
+          </p>
         </div>
-        <button 
+        <button
           onClick={handleCreateNew}
           className="flex items-center gap-2 h-[35px] w-[122px] justify-center bg-[#FF5C35] hover:bg-[#ff4a1a] text-white rounded-lg"
         >
@@ -73,7 +77,10 @@ function BoostPage({ onNavigate }: BoostPageProps) {
       </div>
 
       {boosts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center text-center" style={{ marginTop: '200px' }}>
+        <div
+          className="flex flex-col items-center justify-center text-center"
+          style={{ marginTop: '200px' }}
+        >
           <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-6">
             <span className="text-gray-400 text-2xl">😕</span>
           </div>
@@ -91,8 +98,8 @@ function BoostPage({ onNavigate }: BoostPageProps) {
               <div>Name</div>
               <div>Last Updated</div>
             </div>
-            {boosts.map(boost => (
-              <div 
+            {boosts.map((boost) => (
+              <div
                 key={boost.id}
                 className="grid grid-cols-2 gap-4 py-3 px-4 bg-white rounded-lg border border-gray-200 items-center"
               >
@@ -112,7 +119,7 @@ function BoostPage({ onNavigate }: BoostPageProps) {
                       autoFocus
                     />
                   ) : (
-                    <span 
+                    <span
                       onClick={() => startEditing(boost.id, boost.name)}
                       className="cursor-pointer hover:text-gray-600"
                     >
@@ -121,7 +128,9 @@ function BoostPage({ onNavigate }: BoostPageProps) {
                   )}
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[14px] text-gray-600">{boost.lastUpdated}</span>
+                  <span className="text-[14px] text-gray-600">
+                    {boost.lastUpdated}
+                  </span>
                   <GetCodeButton
                     onEdit={() => handleEdit(boost.id)}
                     onDelete={() => handleDelete(boost.id)}
@@ -132,7 +141,7 @@ function BoostPage({ onNavigate }: BoostPageProps) {
           </div>
 
           <div className="flex justify-end mt-6">
-            <button 
+            <button
               onClick={() => setShowGetCodeModal(true)}
               className="h-[35px] px-4 bg-[#6D28D9] text-white text-[14px] rounded-lg hover:bg-[#5B21B6]"
             >

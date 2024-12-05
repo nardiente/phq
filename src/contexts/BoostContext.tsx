@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 
 interface BoostConfig {
   type: string;
@@ -62,8 +68,8 @@ export const defaultConfig: BoostConfig = {
     showCompanyLogo: true,
     theme: 'inherit',
     headerBackgroundColor: '#f0eff2',
-    headerTextColor: 'dark'
-  }
+    headerTextColor: 'dark',
+  },
 };
 
 const BoostContext = createContext<BoostContextType | undefined>(undefined);
@@ -75,7 +81,7 @@ export function BoostProvider({ children }: { children: ReactNode }) {
     const savedBoosts = localStorage.getItem(STORAGE_KEY);
     return savedBoosts ? JSON.parse(savedBoosts) : [];
   });
-  
+
   const [currentBoost, setCurrentBoost] = useState<Boost | null>(null);
 
   useEffect(() => {
@@ -90,29 +96,31 @@ export function BoostProvider({ children }: { children: ReactNode }) {
       lastUpdated: new Date().toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
-        year: 'numeric'
+        year: 'numeric',
       }),
-      config: { ...config }
+      config: { ...config },
     };
-    
-    setBoosts(prev => [...prev, newBoost]);
+
+    setBoosts((prev) => [...prev, newBoost]);
     return newBoost;
   };
 
   const updateBoost = (id: string, updates: Partial<Boost>) => {
-    setBoosts(prev => prev.map(boost => 
-      boost.id === id 
-        ? { 
-            ...boost, 
-            ...updates,
-            lastUpdated: new Date().toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric'
-            })
-          }
-        : boost
-    ));
+    setBoosts((prev) =>
+      prev.map((boost) =>
+        boost.id === id
+          ? {
+              ...boost,
+              ...updates,
+              lastUpdated: new Date().toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              }),
+            }
+          : boost
+      )
+    );
   };
 
   const updateCurrentBoostConfig = (config: Partial<BoostConfig>) => {
@@ -121,13 +129,13 @@ export function BoostProvider({ children }: { children: ReactNode }) {
         ...currentBoost,
         config: {
           ...currentBoost.config,
-          ...config
+          ...config,
         },
         lastUpdated: new Date().toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',
-          year: 'numeric'
-        })
+          year: 'numeric',
+        }),
       };
       setCurrentBoost(updatedBoost);
       updateBoost(currentBoost.id, updatedBoost);
@@ -135,22 +143,24 @@ export function BoostProvider({ children }: { children: ReactNode }) {
   };
 
   const deleteBoost = (id: string) => {
-    setBoosts(prev => prev.filter(boost => boost.id !== id));
+    setBoosts((prev) => prev.filter((boost) => boost.id !== id));
     if (currentBoost?.id === id) {
       setCurrentBoost(null);
     }
   };
 
   return (
-    <BoostContext.Provider value={{
-      boosts,
-      currentBoost,
-      addBoost,
-      updateBoost,
-      deleteBoost,
-      setCurrentBoost,
-      updateCurrentBoostConfig
-    }}>
+    <BoostContext.Provider
+      value={{
+        boosts,
+        currentBoost,
+        addBoost,
+        updateBoost,
+        deleteBoost,
+        setCurrentBoost,
+        updateCurrentBoostConfig,
+      }}
+    >
       {children}
     </BoostContext.Provider>
   );

@@ -9,7 +9,7 @@ interface ToggleProps {
 export function Toggle({ checked, onChange, disabled = false }: ToggleProps) {
   return (
     <label className="relative inline-flex items-center cursor-pointer">
-      <input 
+      <input
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}

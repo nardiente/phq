@@ -5,17 +5,23 @@ interface UnsavedChangesContextType {
   setHasUnsavedChanges: (value: boolean) => void;
 }
 
-const UnsavedChangesContext = createContext<UnsavedChangesContextType | undefined>(undefined);
+const UnsavedChangesContext = createContext<
+  UnsavedChangesContextType | undefined
+>(undefined);
 
 interface UnsavedChangesProviderProps {
   children: ReactNode;
 }
 
-export function UnsavedChangesProvider({ children }: UnsavedChangesProviderProps) {
+export function UnsavedChangesProvider({
+  children,
+}: UnsavedChangesProviderProps) {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   return (
-    <UnsavedChangesContext.Provider value={{ hasUnsavedChanges, setHasUnsavedChanges }}>
+    <UnsavedChangesContext.Provider
+      value={{ hasUnsavedChanges, setHasUnsavedChanges }}
+    >
       {children}
     </UnsavedChangesContext.Provider>
   );
@@ -24,7 +30,9 @@ export function UnsavedChangesProvider({ children }: UnsavedChangesProviderProps
 export function useUnsavedChanges() {
   const context = useContext(UnsavedChangesContext);
   if (context === undefined) {
-    throw new Error('useUnsavedChanges must be used within a UnsavedChangesProvider');
+    throw new Error(
+      'useUnsavedChanges must be used within a UnsavedChangesProvider'
+    );
   }
   return context;
 }

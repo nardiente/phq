@@ -33,7 +33,9 @@ export function GetCodeModal({ onClose }: GetCodeModalProps) {
       <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl mx-4">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <div className="flex items-center gap-3">
-            <h2 className="text-lg font-semibold text-gray-900">Install ProductHQ script</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Install ProductHQ script
+            </h2>
             <div className="px-3 py-1 bg-red-50 text-red-600 text-xs rounded-lg">
               ProductHQ script not installed
             </div>
@@ -45,7 +47,7 @@ export function GetCodeModal({ onClose }: GetCodeModalProps) {
             <X size={20} />
           </button>
         </div>
-        
+
         <div className="p-6">
           <div className="space-y-8">
             <div className="space-y-4">
@@ -53,7 +55,9 @@ export function GetCodeModal({ onClose }: GetCodeModalProps) {
                 <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-sm font-medium">
                   1
                 </div>
-                <h3 className="text-base font-medium text-gray-900">Copy the code below</h3>
+                <h3 className="text-base font-medium text-gray-900">
+                  Copy the code below
+                </h3>
               </div>
               <div className="relative">
                 <pre className="bg-gray-900 p-4 rounded-lg text-gray-100 text-sm font-mono overflow-x-auto">
@@ -73,15 +77,22 @@ export function GetCodeModal({ onClose }: GetCodeModalProps) {
                 <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-sm font-medium">
                   2
                 </div>
-                <h3 className="text-base font-medium text-gray-900">Paste the code into your website or app</h3>
+                <h3 className="text-base font-medium text-gray-900">
+                  Paste the code into your website or app
+                </h3>
               </div>
               <p className="text-gray-600">
-                The code needs to be placed before the <code className="bg-gray-100 px-1.5 py-0.5 rounded">&lt;/body&gt;</code> tag.
+                The code needs to be placed before the{' '}
+                <code className="bg-gray-100 px-1.5 py-0.5 rounded">
+                  &lt;/body&gt;
+                </code>{' '}
+                tag.
               </p>
               <div className="flex items-start gap-2">
                 <p className="text-gray-600">
                   <a href="#" className="text-blue-600 hover:underline">
-                    Click here for instructions on how to set up a default domain name.
+                    Click here for instructions on how to set up a default
+                    domain name.
                   </a>
                 </p>
               </div>
@@ -92,7 +103,9 @@ export function GetCodeModal({ onClose }: GetCodeModalProps) {
                 <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-sm font-medium">
                   3
                 </div>
-                <h3 className="text-base font-medium text-gray-900">Test the script</h3>
+                <h3 className="text-base font-medium text-gray-900">
+                  Test the script
+                </h3>
               </div>
               <button className="px-4 py-2 border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 flex items-center gap-2">
                 <AlertTriangle size={16} className="text-gray-400" />
@@ -113,7 +126,10 @@ export function GetCodeModal({ onClose }: GetCodeModalProps) {
       </div>
 
       {copied && (
-        <Toast message="Copied to clipboard!" onClose={() => setCopied(false)} />
+        <Toast
+          message="Copied to clipboard!"
+          onClose={() => setCopied(false)}
+        />
       )}
     </div>
   );

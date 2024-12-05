@@ -8,12 +8,8 @@ import { RejectFeedbackModal } from '../RejectFeedbackModal';
 export function FeedbackContent() {
   const { state, updateItemStatus } = useFeedback();
   const { items, loading, error, activeTab } = state;
-  const { 
-    itemToReject,
-    handleReject,
-    handleConfirmReject,
-    cancelReject
-  } = useRejectFeedback();
+  const { itemToReject, handleReject, handleConfirmReject, cancelReject } =
+    useRejectFeedback();
 
   const handleApprove = async (item: any) => {
     await updateItemStatus(item.id, 'approved');
@@ -46,7 +42,7 @@ export function FeedbackContent() {
 
   return (
     <>
-      <FeedbackList 
+      <FeedbackList
         items={items}
         onReject={handleReject}
         onApprove={handleApprove}

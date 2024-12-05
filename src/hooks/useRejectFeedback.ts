@@ -8,17 +8,20 @@ export function useRejectFeedback() {
     setItemToReject(item);
   }, []);
 
-  const handleConfirmReject = useCallback((reason: string) => {
-    if (!itemToReject) return;
+  const handleConfirmReject = useCallback(
+    (reason: string) => {
+      if (!itemToReject) return;
 
-    // Here you would typically make an API call to reject the feedback
-    console.log('Rejecting feedback:', {
-      item: itemToReject,
-      reason
-    });
+      // Here you would typically make an API call to reject the feedback
+      console.log('Rejecting feedback:', {
+        item: itemToReject,
+        reason,
+      });
 
-    setItemToReject(null);
-  }, [itemToReject]);
+      setItemToReject(null);
+    },
+    [itemToReject]
+  );
 
   const cancelReject = useCallback(() => {
     setItemToReject(null);
@@ -28,6 +31,6 @@ export function useRejectFeedback() {
     itemToReject,
     handleReject,
     handleConfirmReject,
-    cancelReject
+    cancelReject,
   };
 }

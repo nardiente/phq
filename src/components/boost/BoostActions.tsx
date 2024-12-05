@@ -23,7 +23,7 @@ export function BoostActions({ onEdit, onDelete }: BoostActionsProps) {
 
   return (
     <div className="relative">
-      <button 
+      <button
         onClick={() => setShowDropdown(!showDropdown)}
         className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
       >

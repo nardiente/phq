@@ -9,11 +9,9 @@ interface EmbedPreviewProps {
 export function EmbedPreview({ width, height }: EmbedPreviewProps) {
   return (
     <div className="space-y-3">
-      <label className="block text-sm text-gray-700 font-medium">
-        Preview
-      </label>
+      <label className="block text-sm text-gray-700 font-medium">Preview</label>
       <div className="relative">
-        <div 
+        <div
           className="bg-[#f8fafc] rounded-lg overflow-hidden"
           style={{ height: '280px' }}
         >
@@ -26,13 +24,13 @@ export function EmbedPreview({ width, height }: EmbedPreviewProps) {
                   <div className="w-3 h-3 rounded-full bg-green-400"></div>
                 </div>
               </div>
-              
+
               <div className="p-4">
-                <div 
+                <div
                   className="mx-auto bg-white rounded-lg border border-gray-200"
-                  style={{ 
+                  style={{
                     width: Math.min(width * 0.4, 300),
-                    height: Math.min(height * 0.4, 200)
+                    height: Math.min(height * 0.4, 200),
                   }}
                 >
                   <div className="p-6 space-y-6">

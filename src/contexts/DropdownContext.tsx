@@ -20,7 +20,9 @@ export function DropdownProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <DropdownContext.Provider value={{ openDropdown, setOpenDropdown, closeAllDropdowns }}>
+    <DropdownContext.Provider
+      value={{ openDropdown, setOpenDropdown, closeAllDropdowns }}
+    >
       {children}
     </DropdownContext.Provider>
   );

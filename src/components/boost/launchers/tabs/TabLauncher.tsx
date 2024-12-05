@@ -8,15 +8,19 @@ interface TabLauncherProps {
   onChange?: (settings: any) => void;
 }
 
-export function TabLauncher({ preview = false, settings, onChange }: TabLauncherProps) {
+export function TabLauncher({
+  preview = false,
+  settings,
+  onChange,
+}: TabLauncherProps) {
   if (preview) {
     return (
       <div className="absolute inset-0">
         {settings.location === 'right' ? (
           <div className="absolute top-1/2 right-0 -translate-y-1/2">
-            <div 
+            <div
               className="relative flex flex-col items-center gap-2 px-4 py-2.5 shadow-lg"
-              style={{ 
+              style={{
                 backgroundColor: settings.backgroundColor,
                 writingMode: 'vertical-lr',
                 transform: 'rotate(180deg)',
@@ -24,11 +28,11 @@ export function TabLauncher({ preview = false, settings, onChange }: TabLauncher
                 borderBottomLeftRadius: '0.5rem',
                 borderTopRightRadius: '0',
                 borderBottomRightRadius: '0',
-                borderLeft: '1px solid rgba(229, 231, 235, 1)'
+                borderLeft: '1px solid rgba(229, 231, 235, 1)',
               }}
             >
-              <NotificationBadge 
-                type={settings.badgeType} 
+              <NotificationBadge
+                type={settings.badgeType}
                 count={settings.notificationCount}
                 className="!top-2 !left-2 !-right-auto transform -rotate-180"
               />
@@ -44,20 +48,20 @@ export function TabLauncher({ preview = false, settings, onChange }: TabLauncher
           </div>
         ) : (
           <div className="absolute top-1/2 left-0 -translate-y-1/2">
-            <div 
+            <div
               className="relative flex items-center gap-2 px-4 py-2.5 shadow-lg"
-              style={{ 
+              style={{
                 backgroundColor: settings.backgroundColor,
                 writingMode: 'vertical-lr',
                 borderTopRightRadius: '0.5rem',
                 borderBottomRightRadius: '0.5rem',
                 borderTopLeftRadius: '0',
                 borderBottomLeftRadius: '0',
-                borderRight: '1px solid rgba(229, 231, 235, 1)'
+                borderRight: '1px solid rgba(229, 231, 235, 1)',
               }}
             >
-              <NotificationBadge 
-                type={settings.badgeType} 
+              <NotificationBadge
+                type={settings.badgeType}
                 count={settings.notificationCount}
                 className="!-top-2 !-right-2"
               />
@@ -79,9 +83,7 @@ export function TabLauncher({ preview = false, settings, onChange }: TabLauncher
   return (
     <div className="space-y-6">
       <div className="space-y-3">
-        <label className="block text-sm text-gray-700 font-medium">
-          Text
-        </label>
+        <label className="block text-sm text-gray-700 font-medium">Text</label>
         <input
           type="text"
           value={settings.text}
@@ -92,9 +94,7 @@ export function TabLauncher({ preview = false, settings, onChange }: TabLauncher
       </div>
 
       <div className="space-y-3">
-        <label className="block text-sm text-gray-700 font-medium">
-          Icon
-        </label>
+        <label className="block text-sm text-gray-700 font-medium">Icon</label>
         <select
           value={settings.icon}
           onChange={(e) => onChange?.({ icon: e.target.value })}
@@ -125,7 +125,7 @@ export function TabLauncher({ preview = false, settings, onChange }: TabLauncher
         </label>
         <div className="relative">
           <div className="absolute left-4 top-1/2 -translate-y-1/2">
-            <div 
+            <div
               className="w-4 h-4 rounded-full"
               style={{ backgroundColor: settings.backgroundColor }}
             />

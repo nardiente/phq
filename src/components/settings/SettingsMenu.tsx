@@ -1,5 +1,14 @@
 import React from 'react';
-import { User, Settings2, Zap, MessageSquare, Mail, Tag, Users2, CreditCard } from 'lucide-react';
+import {
+  User,
+  Settings2,
+  Zap,
+  MessageSquare,
+  Mail,
+  Tag,
+  Users2,
+  CreditCard,
+} from 'lucide-react';
 
 interface SettingsMenuProps {
   activeItem: string;
@@ -8,19 +17,27 @@ interface SettingsMenuProps {
 
 export function SettingsMenu({ activeItem, onSelect }: SettingsMenuProps) {
   const menuItems = [
-    { icon: User, label: 'Account Details', isActive: activeItem === 'account' },
-    { icon: Settings2, label: 'Project Details', isActive: activeItem === 'project' },
-    { 
-      icon: Zap, 
+    {
+      icon: User,
+      label: 'Account Details',
+      isActive: activeItem === 'account',
+    },
+    {
+      icon: Settings2,
+      label: 'Project Details',
+      isActive: activeItem === 'project',
+    },
+    {
+      icon: Zap,
       label: 'Boost',
       isActive: activeItem === 'boost',
-      onClick: () => onSelect('home')
+      onClick: () => onSelect('home'),
     },
     { icon: MessageSquare, label: 'Moderation', badge: 'COMING SOON' },
     { icon: Mail, label: 'Emails', badge: 'COMING SOON' },
     { icon: Tag, label: 'Tags' },
     { icon: Users2, label: 'Team Members' },
-    { icon: CreditCard, label: 'Billing and Invoicing' }
+    { icon: CreditCard, label: 'Billing and Invoicing' },
   ];
 
   return (
@@ -32,13 +49,15 @@ export function SettingsMenu({ activeItem, onSelect }: SettingsMenuProps) {
         {menuItems.map((item) => (
           <button
             key={item.label}
-            onClick={() => item.onClick ? item.onClick() : onSelect(item.label.toLowerCase())}
+            onClick={() =>
+              item.onClick ? item.onClick() : onSelect(item.label.toLowerCase())
+            }
             className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
               item.isActive
                 ? 'bg-purple-50 text-purple-700'
                 : item.badge
-                ? 'opacity-50 cursor-not-allowed'
-                : 'text-gray-600 hover:bg-gray-50'
+                  ? 'opacity-50 cursor-not-allowed'
+                  : 'text-gray-600 hover:bg-gray-50'
             }`}
             disabled={!!item.badge}
           >

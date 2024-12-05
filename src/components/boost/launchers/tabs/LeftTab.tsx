@@ -9,16 +9,16 @@ interface LeftTabProps {
 export function LeftTab({ settings }: LeftTabProps) {
   return (
     <div className="absolute top-1/2 left-0 -translate-y-1/2">
-      <div 
+      <div
         className="flex items-center gap-2 px-4 py-2.5 shadow-lg"
-        style={{ 
+        style={{
           backgroundColor: settings.backgroundColor,
           writingMode: 'vertical-lr',
           borderTopRightRadius: '0.5rem',
           borderBottomRightRadius: '0.5rem',
           borderTopLeftRadius: '0',
           borderBottomLeftRadius: '0',
-          borderRight: '1px solid rgba(229, 231, 235, 1)'
+          borderRight: '1px solid rgba(229, 231, 235, 1)',
         }}
       >
         {settings.icon === 'Bell' ? (
@@ -29,9 +29,9 @@ export function LeftTab({ settings }: LeftTabProps) {
         <span className="text-white text-sm font-medium whitespace-nowrap">
           {settings.text || "What's new"}
         </span>
-        <NotificationBadge 
-          type={settings.badgeType} 
-          count={settings.notificationCount} 
+        <NotificationBadge
+          type={settings.badgeType}
+          count={settings.notificationCount}
         />
       </div>
     </div>

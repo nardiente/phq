@@ -26,7 +26,7 @@ export function LauncherTypeForm({ onSave }: LauncherTypeFormProps) {
     text: "What's new",
     backgroundColor: '#5a00cd',
     badgeType: 'Count',
-    notificationCount: 3
+    notificationCount: 3,
   });
 
   // Auto-save whenever settings change
@@ -35,12 +35,12 @@ export function LauncherTypeForm({ onSave }: LauncherTypeFormProps) {
   }, [settings, onSave]);
 
   const handleSettingsChange = (newSettings: Partial<LauncherSettings>) => {
-    setSettings(prev => ({ ...prev, ...newSettings }));
+    setSettings((prev) => ({ ...prev, ...newSettings }));
   };
 
   const handleTypeChange = (type: LauncherType) => {
     const location = type === 'Tab' ? 'right' : 'bottom-right';
-    setSettings(prev => ({ ...prev, type, location }));
+    setSettings((prev) => ({ ...prev, type, location }));
   };
 
   return (
@@ -61,12 +61,9 @@ export function LauncherTypeForm({ onSave }: LauncherTypeFormProps) {
         </div>
 
         {settings.type === 'Tab' ? (
-          <TabLauncher 
-            settings={settings}
-            onChange={handleSettingsChange}
-          />
+          <TabLauncher settings={settings} onChange={handleSettingsChange} />
         ) : (
-          <FloatingLauncher 
+          <FloatingLauncher
             settings={settings}
             onChange={handleSettingsChange}
           />
@@ -77,7 +74,10 @@ export function LauncherTypeForm({ onSave }: LauncherTypeFormProps) {
         <label className="block text-sm text-gray-700 font-medium">
           Preview
         </label>
-        <div className="relative bg-[#f8fafc] rounded-lg overflow-hidden" style={{ height: '280px' }}>
+        <div
+          className="relative bg-[#f8fafc] rounded-lg overflow-hidden"
+          style={{ height: '280px' }}
+        >
           <div className="absolute inset-4">
             <div className="w-full h-full bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
               <div className="h-10 bg-gray-50 border-b border-gray-200 flex items-center px-4">
@@ -89,15 +89,9 @@ export function LauncherTypeForm({ onSave }: LauncherTypeFormProps) {
               </div>
               <div className="relative h-[calc(100%-2.5rem)]">
                 {settings.type === 'Tab' ? (
-                  <TabLauncher 
-                    settings={settings}
-                    preview 
-                  />
+                  <TabLauncher settings={settings} preview />
                 ) : (
-                  <FloatingLauncher 
-                    settings={settings}
-                    preview 
-                  />
+                  <FloatingLauncher settings={settings} preview />
                 )}
               </div>
             </div>

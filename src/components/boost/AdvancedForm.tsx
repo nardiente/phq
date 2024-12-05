@@ -8,7 +8,11 @@ interface AdvancedFormProps {
   isCreated?: boolean;
 }
 
-export function AdvancedForm({ config, onCreateBoost, isCreated = false }: AdvancedFormProps) {
+export function AdvancedForm({
+  config,
+  onCreateBoost,
+  isCreated = false,
+}: AdvancedFormProps) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const { addBoost } = useBoost();
 
@@ -30,12 +34,15 @@ export function AdvancedForm({ config, onCreateBoost, isCreated = false }: Advan
       appearance: {
         ...config.appearance,
         title: config.appearance?.title || 'Company Name',
-        description: config.appearance?.description || 'Find out about the latest features, and product updates.',
+        description:
+          config.appearance?.description ||
+          'Find out about the latest features, and product updates.',
         showCompanyLogo: config.appearance?.showCompanyLogo ?? true,
         theme: config.appearance?.theme || 'inherit',
-        headerBackgroundColor: config.appearance?.headerBackgroundColor || '#f0eff2',
-        headerTextColor: config.appearance?.headerTextColor || 'dark'
-      }
+        headerBackgroundColor:
+          config.appearance?.headerBackgroundColor || '#f0eff2',
+        headerTextColor: config.appearance?.headerTextColor || 'dark',
+      },
     });
     setShowCreateModal(false);
     if (onCreateBoost) {
@@ -46,7 +53,7 @@ export function AdvancedForm({ config, onCreateBoost, isCreated = false }: Advan
   return (
     <div>
       <div className="flex justify-end gap-3 pt-4">
-        <button 
+        <button
           onClick={() => setShowCreateModal(true)}
           className={`px-4 py-2 bg-[#FF5C35] text-white rounded-lg ${
             isCreated ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#ff4a1a]'

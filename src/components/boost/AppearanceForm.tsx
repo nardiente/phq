@@ -15,8 +15,8 @@ export function AppearanceForm({ config, onSave }: AppearanceFormProps) {
       ...config,
       appearance: {
         ...config.appearance,
-        [field]: value
-      }
+        [field]: value,
+      },
     };
     onSave(newConfig);
     updateCurrentBoostConfig(newConfig);
@@ -69,15 +69,19 @@ export function AppearanceForm({ config, onSave }: AppearanceFormProps) {
           </label>
           <div className="relative">
             <div className="absolute left-4 top-1/2 -translate-y-1/2">
-              <div 
+              <div
                 className="w-4 h-4 rounded-full"
-                style={{ backgroundColor: config.appearance.headerBackgroundColor }}
+                style={{
+                  backgroundColor: config.appearance.headerBackgroundColor,
+                }}
               />
             </div>
             <input
               type="text"
               value={config.appearance.headerBackgroundColor}
-              onChange={(e) => handleChange('headerBackgroundColor', e.target.value)}
+              onChange={(e) =>
+                handleChange('headerBackgroundColor', e.target.value)
+              }
               className="w-full pl-12 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-100"
             />
           </div>
@@ -102,7 +106,10 @@ export function AppearanceForm({ config, onSave }: AppearanceFormProps) {
         <label className="block text-sm text-gray-700 font-medium">
           Preview
         </label>
-        <div className="relative bg-[#f8fafc] rounded-lg overflow-hidden" style={{ height: '480px' }}>
+        <div
+          className="relative bg-[#f8fafc] rounded-lg overflow-hidden"
+          style={{ height: '480px' }}
+        >
           <div className="absolute inset-4">
             <div className="w-full h-full bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
               {/* Browser Chrome */}
@@ -115,12 +122,17 @@ export function AppearanceForm({ config, onSave }: AppearanceFormProps) {
               </div>
 
               {/* Content Area */}
-              <div className="p-4 overflow-auto" style={{ height: 'calc(100% - 2.5rem)' }}>
+              <div
+                className="p-4 overflow-auto"
+                style={{ height: 'calc(100% - 2.5rem)' }}
+              >
                 <div className="w-full rounded-lg border border-gray-200 overflow-hidden">
                   {/* Header */}
-                  <div 
+                  <div
                     className="p-4"
-                    style={{ backgroundColor: config.appearance.headerBackgroundColor }}
+                    style={{
+                      backgroundColor: config.appearance.headerBackgroundColor,
+                    }}
                   >
                     <div className="flex items-start gap-4">
                       {config.appearance.showCompanyLogo && (
@@ -131,14 +143,22 @@ export function AppearanceForm({ config, onSave }: AppearanceFormProps) {
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <h2 className={`text-lg font-semibold ${
-                          config.appearance.headerTextColor === 'dark' ? 'text-gray-900' : 'text-white'
-                        }`}>
+                        <h2
+                          className={`text-lg font-semibold ${
+                            config.appearance.headerTextColor === 'dark'
+                              ? 'text-gray-900'
+                              : 'text-white'
+                          }`}
+                        >
                           {config.appearance.title}
                         </h2>
-                        <p className={`text-sm mt-1 ${
-                          config.appearance.headerTextColor === 'dark' ? 'text-gray-600' : 'text-white/80'
-                        }`}>
+                        <p
+                          className={`text-sm mt-1 ${
+                            config.appearance.headerTextColor === 'dark'
+                              ? 'text-gray-600'
+                              : 'text-white/80'
+                          }`}
+                        >
                           {config.appearance.description}
                         </p>
                       </div>

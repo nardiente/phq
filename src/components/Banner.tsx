@@ -10,7 +10,7 @@ function Banner({ onNavigate }: BannerProps) {
   const user = {
     firstName: 'Tres',
     lastName: 'West',
-    role: 'Admin'
+    role: 'Admin',
   };
 
   return (

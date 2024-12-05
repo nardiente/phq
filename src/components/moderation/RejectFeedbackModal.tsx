@@ -13,7 +13,12 @@ interface RejectFeedbackModalProps {
   onCancel: () => void;
 }
 
-export function RejectFeedbackModal({ type, item, onConfirm, onCancel }: RejectFeedbackModalProps) {
+export function RejectFeedbackModal({
+  type,
+  item,
+  onConfirm,
+  onCancel,
+}: RejectFeedbackModalProps) {
   const [reason, setReason] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
@@ -83,14 +88,17 @@ The ProductHQ team.
               />
               {showHelp && (
                 <div className="mt-2 p-3 bg-blue-50 rounded-lg text-[13px] text-blue-700">
-                  This message will be sent to {item.author} explaining why their {type} was rejected.
-                  Be clear and constructive in your feedback.
+                  This message will be sent to {item.author} explaining why
+                  their {type} was rejected. Be clear and constructive in your
+                  feedback.
                 </div>
               )}
             </div>
 
             <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-              <h3 className="text-sm font-medium text-gray-700">Email Preview</h3>
+              <h3 className="text-sm font-medium text-gray-700">
+                Email Preview
+              </h3>
               <div className="bg-white border border-gray-200 rounded-lg p-4 font-mono text-[13px] text-gray-600">
                 <pre className="whitespace-pre-wrap">{emailTemplate}</pre>
               </div>
@@ -118,9 +126,9 @@ The ProductHQ team.
       </div>
 
       {showToast && (
-        <Toast 
-          message={`${type.charAt(0).toUpperCase() + type.slice(1)} rejected successfully`} 
-          onClose={() => setShowToast(false)} 
+        <Toast
+          message={`${type.charAt(0).toUpperCase() + type.slice(1)} rejected successfully`}
+          onClose={() => setShowToast(false)}
         />
       )}
     </div>

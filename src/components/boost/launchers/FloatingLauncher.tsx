@@ -8,12 +8,18 @@ interface FloatingLauncherProps {
   onChange?: (settings: any) => void;
 }
 
-export function FloatingLauncher({ preview = false, settings, onChange }: FloatingLauncherProps) {
+export function FloatingLauncher({
+  preview = false,
+  settings,
+  onChange,
+}: FloatingLauncherProps) {
   if (preview) {
     return (
       <div className="absolute inset-0">
-        <div className={`absolute ${settings.launcherPosition === 'bottom-right' ? 'right-4' : 'left-4'} bottom-4`}>
-          <div 
+        <div
+          className={`absolute ${settings.launcherPosition === 'bottom-right' ? 'right-4' : 'left-4'} bottom-4`}
+        >
+          <div
             className="w-10 h-10 rounded-lg flex items-center justify-center relative shadow-lg"
             style={{ backgroundColor: settings.backgroundColor }}
           >
@@ -22,8 +28,8 @@ export function FloatingLauncher({ preview = false, settings, onChange }: Floati
             ) : (
               <Megaphone className="w-5 h-5 text-white" />
             )}
-            <NotificationBadge 
-              type={settings.badgeType} 
+            <NotificationBadge
+              type={settings.badgeType}
               count={settings.notificationCount}
             />
           </div>
@@ -35,9 +41,7 @@ export function FloatingLauncher({ preview = false, settings, onChange }: Floati
   return (
     <div className="space-y-6">
       <div className="space-y-3">
-        <label className="block text-sm text-gray-700 font-medium">
-          Icon
-        </label>
+        <label className="block text-sm text-gray-700 font-medium">Icon</label>
         <select
           value={settings.icon}
           onChange={(e) => onChange?.({ icon: e.target.value })}
@@ -68,7 +72,7 @@ export function FloatingLauncher({ preview = false, settings, onChange }: Floati
         </label>
         <div className="relative">
           <div className="absolute left-4 top-1/2 -translate-y-1/2">
-            <div 
+            <div
               className="w-4 h-4 rounded-full"
               style={{ backgroundColor: settings.backgroundColor }}
             />

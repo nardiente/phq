@@ -19,16 +19,34 @@ import { UnsavedChangesProvider } from './contexts/UnsavedChangesContext';
 import { BoostProvider } from './contexts/BoostContext';
 import { SidebarMenu } from './components/layout/SidebarMenu';
 
-type PageType = 'home' | 'settings' | 'create-boost' | 'project' | 'appearance' | 
-                'moderation' | 'emails' | 'tags' | 'team' | 'billing' | 'import' |
-                'dashboard' | 'activity' | 'mentions' | 'matrix' | 'widgets' | 'surveys' |
-                'testimonials';
+type PageType =
+  | 'home'
+  | 'settings'
+  | 'create-boost'
+  | 'project'
+  | 'appearance'
+  | 'moderation'
+  | 'emails'
+  | 'tags'
+  | 'team'
+  | 'billing'
+  | 'import'
+  | 'dashboard'
+  | 'activity'
+  | 'mentions'
+  | 'matrix'
+  | 'widgets'
+  | 'surveys'
+  | 'testimonials'
+  | 'sign-in';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
 
   const getCurrentPage = () => {
     switch (currentPage) {
+      case 'sign-in':
+        return <></>;
       case 'dashboard':
         return <DashboardPage />;
       case 'settings':
@@ -93,7 +111,7 @@ function App() {
       <UnsavedChangesProvider>
         <BoostProvider>
           <div className="min-h-screen bg-[#fafafa] flex">
-            <SidebarMenu 
+            <SidebarMenu
               activeItem={currentPage === 'settings' ? 'account' : currentPage}
               onNavigate={handleNavigation}
             />

@@ -9,7 +9,13 @@ interface BoostTypeSettingsProps {
   offset?: number;
 }
 
-export function BoostTypeSettings({ type, position, width, height, offset }: BoostTypeSettingsProps) {
+export function BoostTypeSettings({
+  type,
+  position,
+  width,
+  height,
+  offset,
+}: BoostTypeSettingsProps) {
   return (
     <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
       <span>{type}</span>

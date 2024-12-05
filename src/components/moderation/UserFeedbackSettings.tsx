@@ -11,7 +11,10 @@ interface UserFeedbackSettingsProps {
   onChange: (key: string, value: boolean) => void;
 }
 
-export function UserFeedbackSettings({ settings, onChange }: UserFeedbackSettingsProps) {
+export function UserFeedbackSettings({
+  settings,
+  onChange,
+}: UserFeedbackSettingsProps) {
   return (
     <div className="space-y-4">
       <SectionHeader
@@ -27,7 +30,7 @@ export function UserFeedbackSettings({ settings, onChange }: UserFeedbackSetting
               Users will not be able to submit new ideas
             </p>
           </div>
-          <Toggle 
+          <Toggle
             checked={settings.disableIdeas}
             onChange={(checked) => onChange('disableIdeas', checked)}
           />
@@ -40,7 +43,7 @@ export function UserFeedbackSettings({ settings, onChange }: UserFeedbackSetting
               Users will not be able to vote on ideas
             </p>
           </div>
-          <Toggle 
+          <Toggle
             checked={settings.disableVotes}
             onChange={(checked) => onChange('disableVotes', checked)}
           />
@@ -53,7 +56,7 @@ export function UserFeedbackSettings({ settings, onChange }: UserFeedbackSetting
               Users will not be able to comment on ideas
             </p>
           </div>
-          <Toggle 
+          <Toggle
             checked={settings.disableComments}
             onChange={(checked) => onChange('disableComments', checked)}
           />

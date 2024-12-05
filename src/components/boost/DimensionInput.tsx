@@ -10,13 +10,13 @@ interface DimensionInputProps {
   max?: number;
 }
 
-export function DimensionInput({ 
-  value, 
-  onChange, 
-  error, 
+export function DimensionInput({
+  value,
+  onChange,
+  error,
   label,
   min,
-  max 
+  max,
 }: DimensionInputProps) {
   const [inputValue, setInputValue] = React.useState(value.toString());
 
@@ -27,7 +27,7 @@ export function DimensionInput({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value.replace(/[^0-9]/g, '');
     setInputValue(newValue);
-    
+
     if (newValue === '') {
       onChange(0);
     } else {
@@ -38,9 +38,7 @@ export function DimensionInput({
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm text-gray-700 font-medium">
-        {label}
-      </label>
+      <label className="block text-sm text-gray-700 font-medium">{label}</label>
       <div className="relative">
         <input
           type="text"

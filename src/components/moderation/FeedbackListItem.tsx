@@ -7,10 +7,10 @@ interface FeedbackListItemProps {
   onApprove: (item: FeedbackItem) => void;
 }
 
-export const FeedbackListItem = memo(function FeedbackListItem({ 
-  item, 
-  onReject, 
-  onApprove 
+export const FeedbackListItem = memo(function FeedbackListItem({
+  item,
+  onReject,
+  onApprove,
 }: FeedbackListItemProps) {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4 hover:border-gray-300 transition-colors">
@@ -36,13 +36,13 @@ export const FeedbackListItem = memo(function FeedbackListItem({
           )}
         </div>
         <div className="flex gap-2">
-          <button 
+          <button
             onClick={() => onReject(item)}
             className="px-3 py-1.5 text-[13px] text-red-600 hover:bg-red-50 rounded-lg transition-colors"
           >
             Reject
           </button>
-          <button 
+          <button
             onClick={() => onApprove(item)}
             className="px-3 py-1.5 text-[13px] text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
           >

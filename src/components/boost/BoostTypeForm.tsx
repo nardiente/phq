@@ -18,9 +18,9 @@ export function BoostTypeForm({ config, onSave }: BoostTypeFormProps) {
   const handleConfigChange = (field: string, value: any) => {
     const newConfig = {
       ...config,
-      [field]: value
+      [field]: value,
     };
-    
+
     const { errors } = validateBoostForm(newConfig);
     setErrors(errors);
 
@@ -36,7 +36,9 @@ export function BoostTypeForm({ config, onSave }: BoostTypeFormProps) {
         <div className="space-y-4">
           <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg">
             <p className="text-sm text-blue-700">
-              Note: Launchers are not available with this widget type. You will need to place the embed code in the location you want the widget to appear.
+              Note: Launchers are not available with this widget type. You will
+              need to place the embed code in the location you want the widget
+              to appear.
             </p>
           </div>
           <div className="bg-gray-900 rounded-lg p-4">
@@ -99,18 +101,30 @@ export function BoostTypeForm({ config, onSave }: BoostTypeFormProps) {
 
         {config.type !== 'Embed' && (
           <div className="flex items-center">
-            <div className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
-              config.preventScroll ? 'bg-purple-50' : 'bg-gray-50'
-            }`}>
+            <div
+              className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
+                config.preventScroll ? 'bg-purple-50' : 'bg-gray-50'
+              }`}
+            >
               <input
                 type="checkbox"
                 id="prevent-scroll"
                 checked={config.preventScroll}
-                onChange={(e) => handleConfigChange('preventScroll', e.target.checked)}
+                onChange={(e) =>
+                  handleConfigChange('preventScroll', e.target.checked)
+                }
                 className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
               />
-              <label htmlFor="prevent-scroll" className="text-sm text-gray-700 flex items-center gap-2">
-                <Lock size={14} className={config.preventScroll ? 'text-purple-500' : 'text-gray-400'} />
+              <label
+                htmlFor="prevent-scroll"
+                className="text-sm text-gray-700 flex items-center gap-2"
+              >
+                <Lock
+                  size={14}
+                  className={
+                    config.preventScroll ? 'text-purple-500' : 'text-gray-400'
+                  }
+                />
                 Prevent window scroll
               </label>
             </div>
@@ -139,7 +153,7 @@ export function BoostTypeForm({ config, onSave }: BoostTypeFormProps) {
 
           {renderTypeSpecificFields()}
         </div>
-        
+
         {config.type !== 'Embed' && <BoostTypePreview {...config} />}
       </div>
     </div>

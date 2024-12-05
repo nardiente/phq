@@ -27,7 +27,7 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
     city: '',
     state: '',
     zipCode: '',
-    country: ''
+    country: '',
   });
 
   const [deleteConfirmation, setDeleteConfirmation] = useState('');
@@ -36,9 +36,11 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
     <div className="min-h-screen bg-[#fafafa] pb-12">
       <div className="max-w-[1200px] mx-auto pt-8 px-6">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-[28px] font-semibold text-gray-900">Account Settings</h1>
+          <h1 className="text-[28px] font-semibold text-gray-900">
+            Account Settings
+          </h1>
           <div className="flex gap-3">
-            <button 
+            <button
               onClick={onCancel}
               className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200"
             >
@@ -54,8 +56,10 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
           <div className="max-w-[600px] space-y-8">
             {/* User Details Section */}
             <div className="space-y-6">
-              <h2 className="text-[16px] font-semibold text-gray-900">User details</h2>
-              
+              <h2 className="text-[16px] font-semibold text-gray-900">
+                User details
+              </h2>
+
               {/* Profile Photo */}
               <div className="flex items-start gap-4">
                 <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center">
@@ -75,7 +79,12 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
                   <input
                     type="text"
                     value={userDetails.firstName}
-                    onChange={(e) => setUserDetails(prev => ({ ...prev, firstName: e.target.value }))}
+                    onChange={(e) =>
+                      setUserDetails((prev) => ({
+                        ...prev,
+                        firstName: e.target.value,
+                      }))
+                    }
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
                   />
                 </div>
@@ -86,7 +95,12 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
                   <input
                     type="text"
                     value={userDetails.lastName}
-                    onChange={(e) => setUserDetails(prev => ({ ...prev, lastName: e.target.value }))}
+                    onChange={(e) =>
+                      setUserDetails((prev) => ({
+                        ...prev,
+                        lastName: e.target.value,
+                      }))
+                    }
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
                   />
                 </div>
@@ -101,7 +115,12 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
                   <input
                     type="email"
                     value={userDetails.email}
-                    onChange={(e) => setUserDetails(prev => ({ ...prev, email: e.target.value }))}
+                    onChange={(e) =>
+                      setUserDetails((prev) => ({
+                        ...prev,
+                        email: e.target.value,
+                      }))
+                    }
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
                   />
                 </div>
@@ -112,7 +131,12 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
                   <input
                     type="text"
                     value={userDetails.jobTitle}
-                    onChange={(e) => setUserDetails(prev => ({ ...prev, jobTitle: e.target.value }))}
+                    onChange={(e) =>
+                      setUserDetails((prev) => ({
+                        ...prev,
+                        jobTitle: e.target.value,
+                      }))
+                    }
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
                   />
                 </div>
@@ -121,7 +145,9 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
 
             {/* Password Section */}
             <div className="space-y-6">
-              <h2 className="text-[16px] font-semibold text-gray-900">Password</h2>
+              <h2 className="text-[16px] font-semibold text-gray-900">
+                Password
+              </h2>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="block text-[13px] font-medium text-gray-700">
@@ -151,9 +177,12 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
 
             {/* Company Section */}
             <div className="space-y-6">
-              <h2 className="text-[16px] font-semibold text-gray-900">Company</h2>
+              <h2 className="text-[16px] font-semibold text-gray-900">
+                Company
+              </h2>
               <p className="text-[13px] text-gray-600">
-                Share your company details with us so that we can customise ProductHQ just for you.
+                Share your company details with us so that we can customise
+                ProductHQ just for you.
               </p>
 
               {/* Company Logo */}
@@ -175,7 +204,12 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
                   <input
                     type="text"
                     value={companyDetails.name}
-                    onChange={(e) => setCompanyDetails(prev => ({ ...prev, name: e.target.value }))}
+                    onChange={(e) =>
+                      setCompanyDetails((prev) => ({
+                        ...prev,
+                        name: e.target.value,
+                      }))
+                    }
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
                   />
                 </div>
@@ -186,7 +220,12 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
                   <input
                     type="url"
                     value={companyDetails.websiteUrl}
-                    onChange={(e) => setCompanyDetails(prev => ({ ...prev, websiteUrl: e.target.value }))}
+                    onChange={(e) =>
+                      setCompanyDetails((prev) => ({
+                        ...prev,
+                        websiteUrl: e.target.value,
+                      }))
+                    }
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
                   />
                 </div>
@@ -219,8 +258,10 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
 
             {/* Invoice Information */}
             <div className="space-y-6">
-              <h2 className="text-[16px] font-semibold text-gray-900">Invoice Information</h2>
-              
+              <h2 className="text-[16px] font-semibold text-gray-900">
+                Invoice Information
+              </h2>
+
               {/* Address Lines */}
               <div className="space-y-4">
                 <div className="space-y-1.5">
@@ -296,9 +337,14 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
 
             {/* Delete Account Section */}
             <div className="space-y-6">
-              <h2 className="text-[16px] font-semibold text-gray-900">Delete Account</h2>
+              <h2 className="text-[16px] font-semibold text-gray-900">
+                Delete Account
+              </h2>
               <p className="text-[13px] text-gray-600">
-                This will delete <span className="font-medium">ALL</span> your account information including your board URL, ideas, roadmap, posts, comments, etc. This is <span className="font-medium">NOT</span> reversable.
+                This will delete <span className="font-medium">ALL</span> your
+                account information including your board URL, ideas, roadmap,
+                posts, comments, etc. This is{' '}
+                <span className="font-medium">NOT</span> reversable.
               </p>
               <div className="space-y-1.5">
                 <label className="block text-[13px] font-medium text-gray-700">
@@ -312,7 +358,7 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
                   className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
                 />
               </div>
-              <button 
+              <button
                 className="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 disabled:opacity-50 disabled:cursor-not-allowed text-[13px]"
                 disabled={deleteConfirmation !== 'DELETE'}
               >

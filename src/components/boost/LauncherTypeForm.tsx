@@ -14,7 +14,7 @@ export function LauncherTypeForm({ config, onSave }: LauncherTypeFormProps) {
   const handleConfigChange = (updates: any) => {
     const newConfig = {
       ...config,
-      ...updates
+      ...updates,
     };
     onSave(newConfig);
     updateCurrentBoostConfig(newConfig);
@@ -22,9 +22,9 @@ export function LauncherTypeForm({ config, onSave }: LauncherTypeFormProps) {
 
   const handleTypeChange = (type: string) => {
     const position = type === 'Tab' ? 'right' : 'bottom-right';
-    handleConfigChange({ 
+    handleConfigChange({
       launcherType: type,
-      launcherPosition: position 
+      launcherPosition: position,
     });
   };
 
@@ -46,7 +46,7 @@ export function LauncherTypeForm({ config, onSave }: LauncherTypeFormProps) {
         </div>
 
         {config.launcherType === 'Tab' ? (
-          <TabLauncher 
+          <TabLauncher
             settings={{
               ...config,
               launcherPosition: config.launcherPosition,
@@ -54,19 +54,19 @@ export function LauncherTypeForm({ config, onSave }: LauncherTypeFormProps) {
               icon: config.icon || 'Bell',
               backgroundColor: config.backgroundColor || '#5a00cd',
               badgeType: config.badgeType || 'Count',
-              notificationCount: config.notificationCount || 3
+              notificationCount: config.notificationCount || 3,
             }}
             onChange={handleConfigChange}
           />
         ) : (
-          <FloatingLauncher 
+          <FloatingLauncher
             settings={{
               ...config,
               launcherPosition: config.launcherPosition,
               icon: config.icon || 'Bell',
               backgroundColor: config.backgroundColor || '#5a00cd',
               badgeType: config.badgeType || 'Count',
-              notificationCount: config.notificationCount || 3
+              notificationCount: config.notificationCount || 3,
             }}
             onChange={handleConfigChange}
           />
@@ -77,7 +77,10 @@ export function LauncherTypeForm({ config, onSave }: LauncherTypeFormProps) {
         <label className="block text-sm text-gray-700 font-medium">
           Preview
         </label>
-        <div className="relative bg-[#f8fafc] rounded-lg overflow-hidden" style={{ height: '280px' }}>
+        <div
+          className="relative bg-[#f8fafc] rounded-lg overflow-hidden"
+          style={{ height: '280px' }}
+        >
           <div className="absolute inset-4">
             <div className="w-full h-full bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
               <div className="h-10 bg-gray-50 border-b border-gray-200 flex items-center px-4">
@@ -89,7 +92,7 @@ export function LauncherTypeForm({ config, onSave }: LauncherTypeFormProps) {
               </div>
               <div className="relative h-[calc(100%-2.5rem)]">
                 {config.launcherType === 'Tab' ? (
-                  <TabLauncher 
+                  <TabLauncher
                     settings={{
                       ...config,
                       launcherPosition: config.launcherPosition,
@@ -97,21 +100,21 @@ export function LauncherTypeForm({ config, onSave }: LauncherTypeFormProps) {
                       icon: config.icon || 'Bell',
                       backgroundColor: config.backgroundColor || '#5a00cd',
                       badgeType: config.badgeType || 'Count',
-                      notificationCount: config.notificationCount || 3
+                      notificationCount: config.notificationCount || 3,
                     }}
-                    preview 
+                    preview
                   />
                 ) : (
-                  <FloatingLauncher 
+                  <FloatingLauncher
                     settings={{
                       ...config,
                       launcherPosition: config.launcherPosition,
                       icon: config.icon || 'Bell',
                       backgroundColor: config.backgroundColor || '#5a00cd',
                       badgeType: config.badgeType || 'Count',
-                      notificationCount: config.notificationCount || 3
+                      notificationCount: config.notificationCount || 3,
                     }}
-                    preview 
+                    preview
                   />
                 )}
               </div>

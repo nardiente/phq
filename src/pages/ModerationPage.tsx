@@ -10,27 +10,33 @@ export default function ModerationPage() {
     turnoffUserLogin: false,
     disableIdeas: false,
     disableVotes: false,
-    disableComments: false
+    disableComments: false,
   });
 
   return (
     <FeedbackProvider>
       <div className="flex-1 px-8 py-6">
         <div className="max-w-[800px]">
-          <h1 className="text-[28px] font-semibold text-gray-900 mb-6">Moderation</h1>
+          <h1 className="text-[28px] font-semibold text-gray-900 mb-6">
+            Moderation
+          </h1>
           <div className="space-y-8">
             <TurnoffUserLogin
               enabled={settings.turnoffUserLogin}
-              onChange={(enabled) => setSettings(prev => ({ ...prev, turnoffUserLogin: enabled }))}
+              onChange={(enabled) =>
+                setSettings((prev) => ({ ...prev, turnoffUserLogin: enabled }))
+              }
             />
 
             <UserFeedbackSettings
               settings={{
                 disableIdeas: settings.disableIdeas,
                 disableVotes: settings.disableVotes,
-                disableComments: settings.disableComments
+                disableComments: settings.disableComments,
               }}
-              onChange={(key, value) => setSettings(prev => ({ ...prev, [key]: value }))}
+              onChange={(key, value) =>
+                setSettings((prev) => ({ ...prev, [key]: value }))
+              }
             />
 
             <FeedbackApprovalSection />

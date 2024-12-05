@@ -9,13 +9,13 @@ interface AppearanceSettingsProps {
   headerTextColor: string;
 }
 
-export function AppearanceSettings({ 
+export function AppearanceSettings({
   title,
   showCompanyLogo,
   description,
   theme,
   headerBackgroundColor,
-  headerTextColor 
+  headerTextColor,
 }: AppearanceSettingsProps) {
   return (
     <div className="flex items-center gap-2 text-xs font-medium text-gray-500">

@@ -7,7 +7,7 @@ interface EmbedCodeGeneratorProps {
 
 export function EmbedCodeGenerator({ widgetId }: EmbedCodeGeneratorProps) {
   const [copied, setCopied] = useState(false);
-  
+
   const embedCode = `<!-- ProductHQ Widget -->
 <div data-producthq-widget="${widgetId}"></div>
 <script async src="https://cdn.producthq.io/widget.js"></script>
@@ -44,7 +44,7 @@ export function EmbedCodeGenerator({ widgetId }: EmbedCodeGeneratorProps) {
           )}
         </button>
       </div>
-      
+
       <div className="relative">
         <div className="absolute top-3 right-3">
           <Code2 size={16} className="text-gray-400" />
@@ -61,7 +61,8 @@ export function EmbedCodeGenerator({ widgetId }: EmbedCodeGeneratorProps) {
             Add this code to your website where you want the widget to appear.
           </p>
           <p className="text-sm text-blue-600">
-            The widget will automatically adapt to its container's width and maintain the configured aspect ratio.
+            The widget will automatically adapt to its container's width and
+            maintain the configured aspect ratio.
           </p>
         </div>
       </div>

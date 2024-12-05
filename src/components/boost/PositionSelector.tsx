@@ -7,17 +7,20 @@ interface PositionSelectorProps {
   onChange: (position: string) => void;
 }
 
-export function PositionSelector({ position, onChange }: PositionSelectorProps) {
+export function PositionSelector({
+  position,
+  onChange,
+}: PositionSelectorProps) {
   const { openDropdown, setOpenDropdown } = useDropdown();
   const dropdownId = 'position-selector-dropdown';
   const isOpen = openDropdown === dropdownId;
 
   const positions = [
     { id: 'Left', icon: ArrowLeft },
-    { id: 'Right', icon: ArrowRight }
+    { id: 'Right', icon: ArrowRight },
   ];
 
-  const selectedOption = positions.find(pos => pos.id === position);
+  const selectedOption = positions.find((pos) => pos.id === position);
   const Icon = selectedOption?.icon || ArrowRight;
 
   const handleToggle = () => {
@@ -31,7 +34,7 @@ export function PositionSelector({ position, onChange }: PositionSelectorProps) 
 
   return (
     <div className="relative">
-      <button 
+      <button
         onClick={handleToggle}
         className="w-full px-4 py-2.5 text-left border border-gray-200 rounded-lg bg-white flex items-center justify-between hover:border-gray-300 transition-colors"
       >
@@ -39,9 +42,12 @@ export function PositionSelector({ position, onChange }: PositionSelectorProps) 
           <Icon size={18} className="text-gray-500" />
           <span className="text-gray-900">{position}</span>
         </div>
-        <ChevronDown size={20} className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          size={20}
+          className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
       </button>
-      
+
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
           {positions.map(({ id, icon: PosIcon }) => (

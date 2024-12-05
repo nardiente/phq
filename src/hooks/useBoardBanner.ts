@@ -12,11 +12,13 @@ interface BannerState {
 export function useBoardBanner() {
   const [state, setState] = useState<BannerState>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : {
-      permanentlyHidden: false,
-      temporarilyHidden: false,
-      hideUntil: null
-    };
+    return saved
+      ? JSON.parse(saved)
+      : {
+          permanentlyHidden: false,
+          temporarilyHidden: false,
+          hideUntil: null,
+        };
   });
 
   useEffect(() => {
@@ -25,20 +27,24 @@ export function useBoardBanner() {
 
   useEffect(() => {
     if (state.hideUntil && Date.now() > state.hideUntil) {
-      setState(prev => ({ ...prev, temporarilyHidden: false, hideUntil: null }));
+      setState((prev) => ({
+        ...prev,
+        temporarilyHidden: false,
+        hideUntil: null,
+      }));
     }
   }, [state.hideUntil]);
 
   const hidePermanently = () => {
-    setState(prev => ({ ...prev, permanentlyHidden: true }));
+    setState((prev) => ({ ...prev, permanentlyHidden: true }));
   };
 
   const hideTemporarily = () => {
-    const hideUntil = Date.now() + (3 * 24 * 60 * 60 * 1000); // 3 days in milliseconds
-    setState(prev => ({ 
-      ...prev, 
+    const hideUntil = Date.now() + 3 * 24 * 60 * 60 * 1000; // 3 days in milliseconds
+    setState((prev) => ({
+      ...prev,
       temporarilyHidden: true,
-      hideUntil
+      hideUntil,
     }));
   };
 
@@ -47,6 +53,6 @@ export function useBoardBanner() {
   return {
     isVisible,
     hideTemporarily,
-    hidePermanently
+    hidePermanently,
   };
 }

@@ -7,7 +7,12 @@ interface LauncherTypeSettingsProps {
   backgroundColor: string;
 }
 
-export function LauncherTypeSettings({ type, location, text, backgroundColor }: LauncherTypeSettingsProps) {
+export function LauncherTypeSettings({
+  type,
+  location,
+  text,
+  backgroundColor,
+}: LauncherTypeSettingsProps) {
   return (
     <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
       <span>{type}</span>
