@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import DashboardPage from './pages/DashboardPage';
-import AdminLogin from './pages/AdminLogin';
 import { AccountSettings } from './pages/AccountSettings';
 import CreateBoostPage from './pages/CreateBoostPage';
 import ProjectDetailsPage from './pages/ProjectDetailsPage';
@@ -18,6 +17,7 @@ import WidgetsPage from './pages/WidgetsPage';
 import BoostPage from './pages/BoostPage';
 import { SignupPage } from './pages/SignupPage';
 import { UserProvider } from './contexts/UserContext';
+import { LoginPage } from './pages/Login';
 
 const App: React.FC = () => {
   return (
@@ -28,7 +28,7 @@ const App: React.FC = () => {
           path="/sign-in"
           element={
             <UserProvider>
-              <AdminLogin />
+              <LoginPage />
             </UserProvider>
           }
         />

@@ -4,6 +4,7 @@ import {
   useState,
   ReactNode,
   Dispatch,
+  SetStateAction,
 } from 'react';
 import { User } from '../types/user';
 import { getApi } from '../utils/api/api';
@@ -25,11 +26,23 @@ interface UserContextConfig {
 }
 
 interface UserContextType {
-  fetching?: boolean;
+  fetching: boolean;
   user?: UserContextConfig;
-  setFetching: (value: boolean) => void;
+  setFetching: Dispatch<SetStateAction<boolean>>;
   setUser: Dispatch<React.SetStateAction<UserContextConfig>>;
   handleGetUser: () => Promise<void>;
+  first_name: string;
+  setFirstName: Dispatch<React.SetStateAction<string>>;
+  githubCode: string;
+  setGithubCode: Dispatch<React.SetStateAction<string>>;
+  last_name: string;
+  setLastName: Dispatch<React.SetStateAction<string>>;
+  email: string;
+  setEmail: Dispatch<React.SetStateAction<string>>;
+  loading_social: boolean;
+  setLoadingSocial: Dispatch<React.SetStateAction<boolean>>;
+  showBanner: boolean;
+  setShowBanner: Dispatch<React.SetStateAction<boolean>>;
 }
 
 const initialUser: UserContextConfig = {
@@ -42,7 +55,24 @@ const initialUser: UserContextConfig = {
   rbac_permissions: [],
 };
 
-const UserContext = createContext<UserContextType | undefined>(undefined);
+const UserContext = createContext<UserContextType>({
+  email: '',
+  fetching: false,
+  first_name: '',
+  githubCode: '',
+  handleGetUser: async () => Promise.resolve(),
+  last_name: '',
+  loading_social: false,
+  setEmail: () => {},
+  setFetching: () => {},
+  setFirstName: () => {},
+  setGithubCode: () => {},
+  setLastName: () => {},
+  setLoadingSocial: () => {},
+  setShowBanner: () => {},
+  setUser: () => {},
+  showBanner: false,
+});
 
 interface UserProviderProps {
   children: ReactNode;
@@ -52,6 +82,11 @@ export function UserProvider({ children }: UserProviderProps) {
   const [fetching, setFetching] = useState<boolean>(false);
   const [user, setUser] = useState<UserContextConfig>(initialUser);
   const [showBanner, setShowBanner] = useState<boolean>(false);
+  const [first_name, setFirstName] = useState<string>('');
+  const [githubCode, setGithubCode] = useState<string>('');
+  const [last_name, setLastName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [loading_social, setLoadingSocial] = useState<boolean>(false);
 
   const is_admin = import.meta.env.SYSTEM_TYPE === 'admin';
 
@@ -99,7 +134,25 @@ export function UserProvider({ children }: UserProviderProps) {
 
   return (
     <UserContext.Provider
-      value={{ fetching, user, setFetching, setUser, handleGetUser }}
+      value={{
+        fetching,
+        setFetching,
+        user,
+        setUser,
+        handleGetUser,
+        first_name,
+        setFirstName,
+        githubCode,
+        setGithubCode,
+        last_name,
+        setLastName,
+        email,
+        setEmail,
+        loading_social,
+        setLoadingSocial,
+        showBanner,
+        setShowBanner,
+      }}
     >
       {showBanner && (
         <div className="restrict-banner">

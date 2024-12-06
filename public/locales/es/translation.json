@@ -1,0 +1,19 @@
+{
+  "company": "la compañia",
+  "Company": "La compañia",
+  "English": "Inglés",
+  "Japanese": "Japonés",
+  "Korean": "Koreano",
+  "Let's team up": "Vamos a trabajar juntos",
+  "name": "nombre",
+  "Name": "Nombre",
+  "phone": "número de teléfono",
+  "Phone": "Número de teléfono",
+  "Spanish": "Español",
+  "StartAProject.confirmation": "¡Gracias! Nuestro equipo está investigando su consulta y volverá pronto.",
+  "StartAProject.email.string.email": "No se preocupe, solo necesitamos esto para responder a su consulta.",
+  "StartAProject.message.string.min": "Háblanos de tu proyecto",
+  "StartAProject.name.string.min": "Por favor indíquenos su nombre",
+  "Submit": "Enviar",
+  "Tell us about your project.": "Háblanos de tu proyecto"
+}
