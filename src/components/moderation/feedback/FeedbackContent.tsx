@@ -1,4 +1,3 @@
-import React from 'react';
 import { FeedbackList } from '../FeedbackList';
 import { AlertCircle } from 'lucide-react';
 import { useFeedback } from '../../../contexts/FeedbackContext';

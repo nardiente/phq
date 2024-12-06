@@ -1,5 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { eraseKaslKey } from '../utils/cookie';
 
 interface UserMenuProps {
   user: {
@@ -11,6 +13,8 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ user, onNavigate }: UserMenuProps) {
+  const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -28,6 +32,12 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
   const handleNavigation = (page: 'home' | 'settings') => {
     onNavigate(page);
     setIsOpen(false);
+  };
+
+  const handleLogout = () => {
+    // localStorage.removeItem('authToken');
+    eraseKaslKey();
+    navigate('/sign-in');
   };
 
   return (
@@ -85,11 +95,14 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
               href="https://app.producthq.io/pricing"
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-[calc(100%-16px)] mx-2 px-4 py-2 text-sm text-[#22C55E] hover:bg-gray-50 border border-[#22C55E] rounded-lg text-center"
+              className="block w-[calc(100%-16px)] mx-2 px-4 py-2 text-sm text-[#22C55E] hover:bg-gray-50 border border-[#22C55E] rounded-lg text-center cursor-pointer"
             >
               CHOOSE PLAN
             </a>
-            <button className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50">
+            <button
+              onClick={handleLogout}
+              className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+            >
               Logout
             </button>
           </div>

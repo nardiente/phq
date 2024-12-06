@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
-import { Upload } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-interface AccountSettingsProps {
-  onCancel: () => void;
-}
+export function AccountSettings() {
+  const navigate = useNavigate();
 
-export function AccountSettings({ onCancel }: AccountSettingsProps) {
   const [userDetails, setUserDetails] = useState({
     firstName: 'Tres',
     lastName: 'West',
@@ -41,7 +39,7 @@ export function AccountSettings({ onCancel }: AccountSettingsProps) {
           </h1>
           <div className="flex gap-3">
             <button
-              onClick={onCancel}
+              onClick={() => navigate('/dashboard')}
               className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200"
             >
               Cancel

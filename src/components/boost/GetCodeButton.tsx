@@ -1,5 +1,3 @@
-import React from 'react';
-import { MoreHorizontal } from 'lucide-react';
 import { BoostActions } from './BoostActions';
 
 interface GetCodeButtonProps {

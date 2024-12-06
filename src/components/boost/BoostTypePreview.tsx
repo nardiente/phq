@@ -1,5 +1,4 @@
 import React from 'react';
-import { Sidebar, Maximize2, Square, ExternalLink } from 'lucide-react';
 
 interface BoostTypePreviewProps {
   type: string;
@@ -85,7 +84,7 @@ export function BoostTypePreview({
             </div>
           </div>
         );
-      case 'Popover':
+      case 'Popover': {
         const offsetStyle =
           position === 'Left'
             ? { left: `${offset}px` }
@@ -111,6 +110,7 @@ export function BoostTypePreview({
             </div>
           </div>
         );
+      }
       case 'Embed':
         return browserFrame(
           <div className="h-full bg-gray-50 p-4">

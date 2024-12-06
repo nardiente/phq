@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   LayoutDashboard,
   MessageSquare,
@@ -21,10 +21,11 @@ import {
   Heart,
   LayoutTemplate,
 } from 'lucide-react';
+import { PageType } from '../../ProtectedRoute';
 
 interface SidebarMenuProps {
   activeItem: string;
-  onNavigate: (page: string) => void;
+  onNavigate: (page: PageType) => void;
 }
 
 export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {

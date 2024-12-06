@@ -15,8 +15,6 @@ export function DimensionInput({
   onChange,
   error,
   label,
-  min,
-  max,
 }: DimensionInputProps) {
   const [inputValue, setInputValue] = React.useState(value.toString());
 

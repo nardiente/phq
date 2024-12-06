@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Lock, Info } from 'lucide-react';
+import { useState } from 'react';
+import { Lock } from 'lucide-react';
 import { BoostTypeDropdown } from './BoostTypeDropdown';
 import { BoostTypePreview } from './BoostTypePreview';
 import { DimensionInput } from './DimensionInput';

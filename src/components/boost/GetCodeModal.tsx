@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { X, Copy, AlertTriangle } from 'lucide-react';
 import { Toast } from '../Toast';
 
@@ -90,7 +90,10 @@ export function GetCodeModal({ onClose }: GetCodeModalProps) {
               </p>
               <div className="flex items-start gap-2">
                 <p className="text-gray-600">
-                  <a href="#" className="text-blue-600 hover:underline">
+                  <a
+                    href="#"
+                    className="text-blue-600 hover:underline cursor-pointer"
+                  >
                     Click here for instructions on how to set up a default
                     domain name.
                   </a>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const STORAGE_KEY = 'board_banner_state';
-const HIDE_UNTIL_KEY = 'board_banner_hide_until';
+// const HIDE_UNTIL_KEY = 'board_banner_hide_until';
 
 interface BannerState {
   permanentlyHidden: boolean;

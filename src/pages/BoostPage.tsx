@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { DeleteBoostModal } from '../components/boost/DeleteBoostModal';
 import { GetCodeModal } from '../components/boost/GetCodeModal';
 import { GetCodeButton } from '../components/boost/GetCodeButton';
 import { useBoost } from '../contexts/BoostContext';
+import { useNavigate } from 'react-router-dom';
 
-interface BoostPageProps {
-  onNavigate?: () => void;
-}
-
-function BoostPage({ onNavigate }: BoostPageProps) {
+function BoostPage() {
+  const navigate = useNavigate();
   const { boosts, deleteBoost, setCurrentBoost, updateBoost } = useBoost();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showGetCodeModal, setShowGetCodeModal] = useState(false);
@@ -21,7 +19,7 @@ function BoostPage({ onNavigate }: BoostPageProps) {
     const boostToEdit = boosts.find((b) => b.id === boostId);
     if (boostToEdit) {
       setCurrentBoost(boostToEdit);
-      onNavigate?.();
+      navigate('/create-boost');
     }
   };
 
@@ -40,7 +38,7 @@ function BoostPage({ onNavigate }: BoostPageProps) {
 
   const handleCreateNew = () => {
     setCurrentBoost(null);
-    onNavigate?.();
+    navigate('/create-boost');
   };
 
   const startEditing = (boostId: string, currentName: string) => {

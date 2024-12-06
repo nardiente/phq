@@ -1,6 +1,3 @@
-import React from 'react';
-import { Sidebar, Maximize2, Square, ExternalLink } from 'lucide-react';
-
 interface BoostTypeSettingsProps {
   type: string;
   position?: string;

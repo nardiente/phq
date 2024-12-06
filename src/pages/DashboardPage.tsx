@@ -1,4 +1,3 @@
-import React from 'react';
 import { LineChart, RefreshCw } from 'lucide-react';
 import { BoardBanner } from '../components/dashboard/BoardBanner';
 import { ComingSoonLayout } from '../components/ComingSoonLayout';

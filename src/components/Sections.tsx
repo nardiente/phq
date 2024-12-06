@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Section from './Section';
 import { BoostTypeForm } from './boost/BoostTypeForm';
 import { LauncherTypeForm } from './boost/LauncherTypeForm';

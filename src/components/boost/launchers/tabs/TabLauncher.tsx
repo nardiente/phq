@@ -1,4 +1,3 @@
-import React from 'react';
 import { Bell, Megaphone } from 'lucide-react';
 import { NotificationBadge } from '../NotificationBadge';
 

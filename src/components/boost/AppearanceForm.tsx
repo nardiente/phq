@@ -1,5 +1,4 @@
-import React from 'react';
-import { Upload, Info } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import { useBoost } from '../../contexts/BoostContext';
 
 interface AppearanceFormProps {

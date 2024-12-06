@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { TurnoffUserLogin } from '../components/moderation/TurnoffUserLogin';
 import { UserFeedbackSettings } from '../components/moderation/UserFeedbackSettings';
 import { FeedbackApprovalSection } from '../components/moderation/FeedbackApprovalSection';
-import { RejectFeedbackModal } from '../components/moderation/RejectFeedbackModal';
 import { FeedbackProvider } from '../contexts/FeedbackContext';
 
 export default function ModerationPage() {

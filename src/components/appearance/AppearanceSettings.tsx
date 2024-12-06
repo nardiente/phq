@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface AppearanceSettingsProps {
   title: string;
   showCompanyLogo: boolean;
@@ -11,8 +9,6 @@ interface AppearanceSettingsProps {
 
 export function AppearanceSettings({
   title,
-  showCompanyLogo,
-  description,
   theme,
   headerBackgroundColor,
   headerTextColor,

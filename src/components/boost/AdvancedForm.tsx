@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { CreateBoostModal } from './CreateBoostModal';
 import { useBoost } from '../../contexts/BoostContext';
 

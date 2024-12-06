@@ -1,4 +1,4 @@
-import React, {
+import {
   createContext,
   useContext,
   useReducer,
@@ -138,6 +138,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       const items = mockItems[tab];
       dispatch({ type: 'SET_ITEMS', payload: items });
     } catch (error) {
+      console.error({ error });
       dispatch({
         type: 'SET_ERROR',
         payload: 'Failed to load feedback items. Please try again.',
@@ -165,6 +166,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
         payload: { id, status },
       });
     } catch (error) {
+      console.error({ error });
       dispatch({
         type: 'SET_ERROR',
         payload: `Failed to ${status} item. Please try again.`,
