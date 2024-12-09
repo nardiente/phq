@@ -4,19 +4,17 @@ import {
   getSessionToken,
   setKaslKey,
   setSessionToken,
-} from '../../utils/cookie';
+} from '../../utils/localStorage';
 import * as React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { LoginFormProps, UserTypes } from './types';
 import { UIButton } from '../../components/UIButton';
 import { UIField } from '../../components/UIField';
-import { validateEmail, validatePassword } from './utils';
 import { toast } from 'react-toastify';
 // import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import GitHubLogin from '../../components/Login/GithubLogin';
 import { ChevronRightIcon } from '../../components/icons/chevron-right.icon';
-import { User } from '../../types/user';
+import { User, UserTypes } from '../../types/user';
 import { Subscription } from '../../types/billing';
 import { OnboardingPages, OnboardingUrls } from '../../types/onboarding';
 import { generateToken } from '../../utils/token';
@@ -24,6 +22,7 @@ import { Project } from '../../types/project';
 import { useUser } from '../../contexts/UserContext';
 import queryString from 'query-string';
 import { useTranslation } from 'react-i18next';
+import { validateEmail, validatePassword } from '../../utils/custom-validation';
 
 const Form = styled.form`
   display: flex;
@@ -49,9 +48,13 @@ const FormHeader = styled.div`
 
 // const appId = process.env.FB_APP_ID || ''
 
+interface LoginFormProps {
+  is_mobile?: boolean;
+  type?: UserTypes;
+}
+
 export const LoginForm = (props: LoginFormProps) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { t } = useTranslation();
 
   const {
@@ -122,7 +125,7 @@ export const LoginForm = (props: LoginFormProps) => {
                 );
                 setKaslKey(res.headers['kasl-key'].toString());
                 await handleGetUser();
-                navigate('/upvote-admin');
+                navigate('/upvotes');
                 return;
               } else {
                 localStorage.setItem('onboarding_page', 'welcome');
@@ -139,7 +142,7 @@ export const LoginForm = (props: LoginFormProps) => {
             } else {
               setKaslKey(res.headers['kasl-key'].toString());
               await handleGetUser();
-              navigate('/');
+              navigate('/dashboard');
             }
             return;
           }
@@ -197,7 +200,7 @@ export const LoginForm = (props: LoginFormProps) => {
         ? '100%'
         : is_public
           ? '63%'
-          : '24%';
+          : '500px';
     }
   }, [props.is_mobile]);
 
@@ -279,7 +282,7 @@ export const LoginForm = (props: LoginFormProps) => {
         if (is_public) {
           setKaslKey(res.headers['kasl-key'].toString());
           await handleGetUser();
-          navigate('/');
+          navigate('/dashboard');
         } else {
           localStorage.removeItem('onboarding_page');
           localStorage.removeItem('onboarding_token');
@@ -299,7 +302,7 @@ export const LoginForm = (props: LoginFormProps) => {
               navigate('/billing-and-invoicing');
               return;
             }
-            navigate('/upvote-admin');
+            navigate('/upvotes');
             return;
           }
           localStorage.setItem('onboarding_page', result.onboarding_page ?? '');
@@ -320,7 +323,8 @@ export const LoginForm = (props: LoginFormProps) => {
   const loginGoogle = async () => {
     setLoadingSocial(true);
     getApi(
-      `auth/google-auth-url${is_public ? `?d=${window.location.host}` : ''}`
+      `auth/google-auth-url${is_public ? `?d=${window.location.host}` : ''}`,
+      is_public ? { d: window.location.host } : undefined
     )
       .then((res) => {
         if (res.results.data) {
@@ -341,7 +345,7 @@ export const LoginForm = (props: LoginFormProps) => {
       Object.assign(login_params, {
         domain: window.location.host,
       });
-      if (getSessionToken() === undefined) {
+      if (getSessionToken() === null) {
         setSessionToken(await generateToken());
       }
     }
@@ -405,7 +409,7 @@ export const LoginForm = (props: LoginFormProps) => {
                 error: (
                   <>
                     {errorSplit[0]}
-                    <a href={process.env.ADMIN_HOST}>THIS</a>
+                    <a href={import.meta.env.VITE_ADMIN_HOST}>THIS</a>
                     {errorSplit[1]}
                   </>
                 ),
@@ -437,7 +441,7 @@ export const LoginForm = (props: LoginFormProps) => {
           setKaslKey(res.headers['kasl-key'].toString());
           await handleGetUser();
           if (props.type === UserTypes.USER) {
-            navigate('/');
+            navigate('/dashboard');
             return;
           }
           const subscription = result.subscription;
@@ -449,7 +453,7 @@ export const LoginForm = (props: LoginFormProps) => {
             navigate('/billing-and-invoicing');
             return;
           }
-          navigate('/upvote-admin');
+          navigate('/upvotes');
           return;
         }
         localStorage.setItem('onboarding_page', result.onboarding_page ?? '');

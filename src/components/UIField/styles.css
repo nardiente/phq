@@ -1,0 +1,84 @@
+/*
+  Based on TailwindCSS recommendations,
+  consider using classes instead of the `@apply` directive
+  @see https://tailwindcss.com/docs/reusing-styles#avoiding-premature-abstraction
+*/
+#UIField {
+  @apply flex flex-col items-start grow-0 w-full mb-4 p-0;
+}
+#UIField label {
+  @apply not-italic font-semibold text-sm leading-[17px] tracking-[0.005em] text-[#110733] grow;
+  font-family: 'Inter', sans-serif;
+}
+#UIField div {
+  @apply w-full text-[6px] text-[15px] after:absolute after:transition-all after:duration-[0.05s] after:ease-[ease-in-out] after:not-italic after:font-medium after:text-[15px] after:leading-5 after:text-center after:tracking-[0.005em] after:text-[#4d4566] after:right-4 after:top-[24.5px];
+}
+#UIField div input,
+#UIField div textarea {
+  @apply border border not-italic font-medium text-[15px] leading-5 tracking-[0.005em] text-[#110733] w-full h-12 mt-2.5 px-4 py-3.5 rounded-md border-solid outline-none;
+  font-family: 'Satoshi-Variable', sans-serif;
+  background: #f9fafb;
+}
+#UIField div input.no-background,
+#UIField div textarea.no-background {
+  background: none;
+}
+#UIField div input.error-state,
+#UIField div textarea.error-state {
+  @apply border border-red-500 shadow-[0px_0px_0px_4px_rgba(239,68,68,0.25)] rounded-md border-solid;
+  background: #f9fafb;
+}
+#UIField div input:focus,
+#UIField div textarea:focus {
+  @apply border shadow-[0px_0px_0px_4px_rgba(168,85,247,0.25)] rounded-md border-solid border-[#8340d9];
+  background: #f9fafb;
+}
+#UIField div input.success-state,
+#UIField div textarea.success-state {
+  @apply border border-teal-500 rounded-md border-solid;
+  background: #f9fafb;
+}
+#UIField div input::placeholder,
+#UIField div textarea::placeholder {
+  @apply text-[#888399] font-[lighter];
+  font-family: 'Satoshi-Variable';
+}
+#UIField div input:read-only,
+#UIField div textarea:read-only {
+  background: #f0f0f0 !important;
+}
+#UIField div {
+}
+#UIField div textarea {
+  @apply h-[142px] resize-none mt-0;
+}
+#UIField div span {
+  @apply top-3.5;
+}
+#UIField div::after {
+  font-family: 'Satoshi-Variable', sans-serif;
+}
+#UIField div.domain-suffix::after {
+  @apply content-['.producthq.io'];
+}
+#UIField div.domain-suffix input {
+  @apply pr-[115px];
+}
+#UIField .margin-right-25px {
+  @apply mr-[25px];
+}
+#UIField .msg-label {
+  @apply mt-2.5;
+}
+#UIField .msg-label.error {
+  @apply not-italic font-medium text-sm leading-[17px] tracking-[0.005em] text-red-400;
+  font-family: 'Inter', sans-serif !important;
+}
+#UIField .msg-label.success {
+  @apply not-italic font-medium text-sm leading-[17px] tracking-[0.005em] text-teal-600;
+  font-family: 'Inter', sans-serif;
+}
+#UIField .custom-message {
+  @apply not-italic font-medium text-sm leading-[19px] tracking-[0.005em] text-[#888399] mt-2.5;
+  font-family: 'Satoshi-Variable';
+}

@@ -1,12 +1,7 @@
-import './styles.scss';
+import './styles.css';
 import * as React from 'react';
-import styled from 'styled-components';
 import { UIFieldProps } from './types';
 import { useTranslation } from 'react-i18next';
-
-const InputFieldIcon = styled.figure`
-  margin: 13px auto;
-`;
 
 export const UIField: React.FC<UIFieldProps> = (props) => {
   const { t } = useTranslation();
@@ -27,8 +22,7 @@ export const UIField: React.FC<UIFieldProps> = (props) => {
       <div
         className={`control${
           props.has_icon || props.has_eye_icon ? ' has-icons-right' : ''
-        }
-          ${props.class_name ? ` ${props.class_name}` : ''}`}
+        } ${props.class_name ? `${props.class_name}` : ''} relative`}
       >
         {props.type === 'textarea' ? (
           <textarea
@@ -38,7 +32,7 @@ export const UIField: React.FC<UIFieldProps> = (props) => {
             required={props.required}
             placeholder={props.placeholder}
             value={props.value}
-            className={['input textarea', props.class_name].join(' ').trim()}
+            className={`textarea ${props.class_name} border rounded-md p-2`}
             tabIndex={props.tab_index}
             aria-label={props.label}
             onChange={props.onChangeArea}
@@ -51,11 +45,7 @@ export const UIField: React.FC<UIFieldProps> = (props) => {
                 props.is_error_state ? 'Error' : ''
               }${props.is_success_state ? 'Success' : ''}`}
               aria-invalid={props.is_error_state}
-              className={`input${
-                props.input_class ? ` ${props.input_class}` : ''
-              }${props.is_error_state ? ' error-state' : ''}${
-                props.is_success_state ? ' success-state' : ''
-              }`}
+              className={`form-input${props.input_class ? `${props.input_class}` : ''}${props.is_error_state ? ' border-red-500' : ''}${props.is_success_state ? ' border-green-500' : ''} outline-none`}
               id={props.id}
               maxLength={props.max_length}
               onBlur={props.onBlur}
@@ -70,49 +60,47 @@ export const UIField: React.FC<UIFieldProps> = (props) => {
               value={props.value}
             />
             <span
-              className={`icon is-right${props.has_icon ? '' : ' is-hidden'}${
-                props.has_eye_icon ? ' margin-right-25px' : ''
-              }`}
+              className={`absolute right-0 flex items-center${props.has_icon ? '' : ' hidden'}${props.has_eye_icon ? ' mr-6' : ''}`}
             >
               {props.icon_svg ? (
                 props.icon_svg
               ) : (
-                <InputFieldIcon className="image is-16x16">
+                <div className="w-4 h-4 my-3">
                   {props.icon ? (
-                    <img src={props.icon} />
+                    <img src={props.icon} alt="" />
                   ) : (
-                    <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/green_check.svg" />
+                    <img src="../../../static/icons/green_check.svg" alt="" />
                   )}
-                </InputFieldIcon>
+                </div>
               )}
             </span>
             <span
               aria-checked={props.type !== 'password'}
-              className={`icon is-right${
-                props.has_eye_icon ? '' : ' is-hidden'
-              }`}
+              className={`w-10 h-10 absolute right-0 cursor-pointer${props.has_eye_icon ? '' : ' hidden'}`}
               onClick={onViewPassword}
               role="switch"
             >
-              <InputFieldIcon className="image is-16x16">
+              <div className="w-4 h-4 m-3">
                 {inpuType === 'password' ? (
                   <img
                     src={
                       props.eye_icon
                         ? props.eye_icon
-                        : 'https://s3.amazonaws.com/uat-app.productfeedback.co/icon/eye-slash-fill.svg'
+                        : '../../../static/icons/eye-slash-fill.svg'
                     }
+                    alt=""
                   />
                 ) : (
                   <img
                     src={
                       props.eye_icon
                         ? props.eye_icon
-                        : 'https://s3.amazonaws.com/uat-app.productfeedback.co/icon/eye-fill.svg'
+                        : '../../../static/icons/eye-fill.svg'
                     }
+                    alt=""
                   />
                 )}
-              </InputFieldIcon>
+              </div>
             </span>
           </>
         )}

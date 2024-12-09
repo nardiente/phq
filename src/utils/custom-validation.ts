@@ -1,5 +1,12 @@
-import { emailPattern, urlPattern } from './constants';
 import { isGoodPassword } from '@g-six/swiss-knife-lite';
+import { emailPattern, urlPattern } from './constants';
+
+export const validateCompanyName = (company_name: string) => {
+  return (
+    company_name.length === 0 ||
+    (company_name.length >= 2 && company_name.length <= 100)
+  );
+};
 
 export const validateEmail = (email: string) => {
   if ((email.length > 256 || !emailPattern.test(email)) && email.length > 0) {
@@ -7,6 +14,16 @@ export const validateEmail = (email: string) => {
   } else {
     return true;
   }
+};
+
+export const validateFullName = (fullName: string) => {
+  if (fullName.length == 0) {
+    return 'This is a required field.';
+  }
+  if (fullName.length < 2 || fullName.length > 100) {
+    return 'Please enter a name between 2 and 100 characters.';
+  }
+  return null;
 };
 
 export const validatePassword = (p: string) => {

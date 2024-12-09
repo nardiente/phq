@@ -6,3 +6,8 @@ export interface FeedbackItem {
   date: string;
   tag?: string;
 }
+
+export interface Tag {
+  tag: string;
+  id: number;
+}

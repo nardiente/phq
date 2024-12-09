@@ -1,5 +1,15 @@
 import { OnboardingPages } from './onboarding';
 
+export interface ForgotPasswordFormProps {
+  is_mobile?: boolean;
+  type?: UserTypes;
+}
+
+export enum InvitationType {
+  PRIVATE_USER = 'private_user',
+  TEAM_MEMBER = 'team_member',
+}
+
 export interface User {
   id?: number;
   address_line1?: string;

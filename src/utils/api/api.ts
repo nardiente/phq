@@ -57,13 +57,6 @@ export const postApi = async <Data = any>({
   useCustomerKey?: boolean;
   useSessionToken?: boolean;
 }) => {
-  console.log('postApi:', {
-    url,
-    payload,
-    useCustomerKey,
-    useSessionToken,
-  });
-
   let results: ApiResponseBody<Data> = {};
   let headers: ApiResponseHeaders;
 
@@ -83,7 +76,6 @@ export const postApi = async <Data = any>({
     results = res.results;
     headers = res.headers;
   } catch (api_error) {
-    console.error('postApi:', { api_error });
     const res = processErrors(api_error);
     results = res.results;
     headers = res.headers;

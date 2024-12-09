@@ -2,9 +2,8 @@
 export const emailPattern = /^\w+([\\.+-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
 
 export const login_image_mobile =
-  'https://s3.amazonaws.com/uat-app.productfeedback.co/assets/login_image_mobile.svg';
-export const login_image_web =
-  'https://s3.amazonaws.com/uat-app.productfeedback.co/assets/login_image_web.svg';
+  '../../../static/assets/login_image_mobile.svg';
+export const login_image_web = '../../../static/assets/login_image_web.svg';
 
 export const min_web_width = 769;
 

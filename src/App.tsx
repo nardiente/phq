@@ -1,164 +1,106 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import ProtectedRoute from './ProtectedRoute';
-import DashboardPage from './pages/DashboardPage';
-import { AccountSettings } from './pages/AccountSettings';
-import CreateBoostPage from './pages/CreateBoostPage';
-import ProjectDetailsPage from './pages/ProjectDetailsPage';
-import AppearancePage from './pages/AppearancePage';
-import ModerationPage from './pages/ModerationPage';
-import EmailsPage from './pages/EmailsPage';
-import TagsPage from './pages/TagsPage';
-import TeamMembersPage from './pages/TeamMembersPage';
-import BillingPage from './pages/BillingPage';
-import ImportIdeasPage from './pages/ImportIdeasPage';
-import TestimonialsPage from './pages/TestimonialsPage';
-import WidgetsPage from './pages/WidgetsPage';
-import BoostPage from './pages/BoostPage';
-import { SignupPage } from './pages/SignupPage';
-import { UserProvider } from './contexts/UserContext';
-import { LoginPage } from './pages/Login';
+import { UserProvider, useUser } from './contexts/UserContext';
+import { UserNotificationProvider } from './contexts/UserNotificationContext';
+import { SocketProvider } from './contexts/SocketContext';
+import { BoostProvider } from './contexts/BoostContext';
+import { UnsavedChangesProvider } from './contexts/UnsavedChangesContext';
+import { DropdownProvider } from './contexts/DropdownContext';
+import { FeedbackProvider } from './contexts/FeedbackContext';
+import { FC, useEffect } from 'react';
+import AppRoutes from './routes/routes';
 
-const App: React.FC = () => {
+const App: FC = () => {
+  const { user } = useUser();
+
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+
+  useEffect(() => {
+    let linkIconTag: any, metaTag: any;
+
+    if (
+      !is_public ||
+      (is_public && user?.admin_profile?.email?.endsWith('@producthq.io'))
+    ) {
+      // clickConnect = document.createElement('script')
+      // clickConnect.src =
+      //   'https://s3.amazonaws.com/app.productfeedback.co/scripts/clickConnect.js'
+      // clickConnect.async = true
+      // document.body.appendChild(clickConnect)
+
+      // Remove clarity script
+      // clarity = document.createElement('script')
+      // clarity.src =
+      //     'https://s3.amazonaws.com/app.productfeedback.co/scripts/clarity.min.js'
+      // clarity.async = true
+      // document.body.appendChild(clarity)
+
+      linkIconTag = document.createElement('link');
+      linkIconTag.rel = 'icon';
+      linkIconTag.type = 'image/x-icon';
+      linkIconTag.href = '/static/icons/favicon.ico';
+      document.head.appendChild(linkIconTag);
+    }
+
+    if (is_public && !user?.admin_profile?.email?.endsWith('@producthq.io')) {
+      document.title = '';
+      const link = document.querySelector(
+        'link[rel~="icon"]'
+      ) as HTMLLinkElement;
+      if (link) {
+        link.href = '';
+      }
+    }
+
+    if (is_public && !user?.project?.is_index_search_engine) {
+      metaTag = document.createElement('meta');
+      metaTag.name = 'robots';
+      metaTag.content = 'noindex';
+
+      document.head.appendChild(metaTag);
+    }
+
+    return () => {
+      if (
+        !is_public ||
+        (is_public && user?.admin_profile?.email?.endsWith('@producthq.io'))
+      ) {
+        // document.body.removeChild(clickConnect)
+        // Remove clarity cleanup
+        // document.body.removeChild(clarity)
+        document.head.removeChild(linkIconTag);
+      }
+
+      if (is_public && !user?.admin_profile?.email?.endsWith('@producthq.io')) {
+        document.title = '';
+        const link = document.querySelector(
+          'link[rel~="icon"]'
+        ) as HTMLLinkElement;
+        if (link) {
+          link.href = '';
+        }
+      }
+
+      if (is_public && !user?.project?.is_index_search_engine) {
+        document.head.removeChild(metaTag);
+      }
+    };
+  }, [user]);
+
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route
-          path="/sign-in"
-          element={
-            <UserProvider>
-              <LoginPage />
-            </UserProvider>
-          }
-        />
-        <Route path="/sign-up" element={<SignupPage />} />
-
-        {/* Protected Route */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/account"
-          element={
-            <ProtectedRoute>
-              <AccountSettings />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/boost"
-          element={
-            <ProtectedRoute>
-              <BoostPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/create-boost"
-          element={
-            <ProtectedRoute>
-              <CreateBoostPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/project"
-          element={
-            <ProtectedRoute>
-              <ProjectDetailsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/appearance"
-          element={
-            <ProtectedRoute>
-              <AppearancePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/moderation"
-          element={
-            <ProtectedRoute>
-              <ModerationPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/emails"
-          element={
-            <ProtectedRoute>
-              <EmailsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/tags"
-          element={
-            <ProtectedRoute>
-              <TagsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/team"
-          element={
-            <ProtectedRoute>
-              <TeamMembersPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/billing"
-          element={
-            <ProtectedRoute>
-              <BillingPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/import"
-          element={
-            <ProtectedRoute>
-              <ImportIdeasPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/testimonials"
-          element={
-            <ProtectedRoute>
-              <TestimonialsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/widgets"
-          element={
-            <ProtectedRoute>
-              <WidgetsPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Redirect unknown routes */}
-        <Route
-          path="*"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </Router>
+    <SocketProvider>
+      <FeedbackProvider>
+        <UserNotificationProvider>
+          <UserProvider>
+            <DropdownProvider>
+              <UnsavedChangesProvider>
+                <BoostProvider>
+                  <AppRoutes />
+                </BoostProvider>
+              </UnsavedChangesProvider>
+            </DropdownProvider>
+          </UserProvider>
+        </UserNotificationProvider>
+      </FeedbackProvider>
+    </SocketProvider>
   );
 };
 

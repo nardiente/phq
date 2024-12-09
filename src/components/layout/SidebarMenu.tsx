@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   LayoutDashboard,
   MessageSquare,
@@ -21,7 +21,8 @@ import {
   Heart,
   LayoutTemplate,
 } from 'lucide-react';
-import { PageType } from '../../ProtectedRoute';
+import { PageType } from '../../routes/ProtectedRoute';
+import { useUser } from '../../contexts/UserContext';
 
 interface SidebarMenuProps {
   activeItem: string;
@@ -29,8 +30,13 @@ interface SidebarMenuProps {
 }
 
 export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
+  const { user } = useUser();
+
   const [isExpanded, setIsExpanded] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
+
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+  const company_info = is_public ? user?.admin_profile : user?.user;
 
   const mainMenuItems = [
     {
@@ -88,6 +94,15 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
     { icon: Map, label: 'Our Roadmap', id: 'our-roadmap' },
   ];
 
+  useEffect(() => {
+    if (activeItem === 'account') {
+      setShowSettings(true);
+    }
+    if (activeItem === 'dashboard') {
+      setShowSettings(false);
+    }
+  }, [activeItem]);
+
   const handleNavigation = (item: any) => {
     if (item.id === 'submit-feature') {
       window.open('https://feedback.producthq.io/upvotes', '_blank');
@@ -120,13 +135,56 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       }`}
     >
       <div className="sticky top-0 flex flex-col h-screen">
-        <div className="flex items-center justify-between h-[60px] px-4 border-b border-gray-200">
+        <div className="flex items-center justify-between h-[60px] px-4 border-b border-gray-200 min-h-[60px]">
           <div className="flex items-center">
-            <div className="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center">
-              <span className="text-purple-600 font-medium text-lg">C</span>
-            </div>
-            {isExpanded && (
-              <span className="ml-3 font-medium text-gray-900">Company</span>
+            {company_info?.company_name && (
+              <>
+                <div className="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center">
+                  <span className="text-purple-600 font-medium text-lg">
+                    <>
+                      <figure
+                        className={`is-clickable ${
+                          company_info?.company_logo?.length &&
+                          company_info?.company_logo?.length > 0
+                            ? ' '
+                            : ' '
+                        }`}
+                        onClick={() => {
+                          if (is_public) {
+                            if (
+                              !company_info.website_url ||
+                              company_info.website_url.length === 0
+                            ) {
+                              return;
+                            }
+                            window.location.href =
+                              company_info.website_url.startsWith('http')
+                                ? company_info.website_url
+                                : 'http://' + company_info.website_url;
+                            return;
+                          }
+                          onNavigate('dashboard');
+                        }}
+                      >
+                        {company_info?.company_logo &&
+                        company_info?.company_logo.length > 0 ? (
+                          <img className="" src={company_info?.company_logo} />
+                        ) : (
+                          company_info?.company_name?.toUpperCase().charAt(0)
+                        )}
+                      </figure>
+                    </>
+                  </span>
+                </div>
+                {isExpanded && (
+                  <span className="ml-3 font-medium text-gray-900">
+                    {company_info?.company_name?.substring(0, 30)}
+                    {company_info?.company_name &&
+                      company_info?.company_name?.length > 30 &&
+                      '...'}
+                  </span>
+                )}
+              </>
             )}
           </div>
           <button

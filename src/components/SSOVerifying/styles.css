@@ -1,0 +1,25 @@
+#verifying-container {
+  display: flex;
+  justify-content: center;
+
+  #verifying-div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    width: 100%;
+    height: 100vh;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: 'Satoshi-Variable', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.005em;
+    color: #888399;
+  }
+}

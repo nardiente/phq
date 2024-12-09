@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { setKaslKey, setSessionToken } from '../utils/cookie';
-import { getSessionToken } from '../utils/cookie';
+import { setKaslKey, setSessionToken } from '../utils/localStorage';
+import { getSessionToken } from '../utils/localStorage';
 import { postApi } from '../utils/api/api';
 import { User, UserTypes } from '../types/user';
 import { generateToken } from '../utils/token';
@@ -52,7 +52,7 @@ export default function AdminLogin() {
       Object.assign(login_params, {
         domain: window.location.host,
       });
-      if (getSessionToken() === undefined) {
+      if (getSessionToken() === null) {
         setSessionToken(await generateToken());
       }
     }
@@ -66,7 +66,6 @@ export default function AdminLogin() {
       payload: login_params,
       useSessionToken: is_public,
     }).then(async (res) => {
-      console.log({ res });
       setLoading(false);
       if (res.results.errors) {
         setApiFieldErrors(res.results.errors);
@@ -121,7 +120,7 @@ export default function AdminLogin() {
                 error: (
                   <>
                     {errorSplit[0]}
-                    <a href={import.meta.env.ADMIN_HOST}>THIS</a>
+                    <a href={import.meta.env.VITE_ADMIN_HOST}>THIS</a>
                     {errorSplit[1]}
                   </>
                 ),

@@ -1,0 +1,71 @@
+#testimonials {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#testimonial {
+  width: 58%;
+  border-radius: 8px;
+  padding: 45px;
+
+  .containter {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    .details {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+
+      .author {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        p {
+          font-family: 'Satoshi-Variable';
+          font-size: 22px;
+          font-weight: 700;
+          line-height: 32px;
+          text-align: left;
+          color: #110733;
+        }
+
+        span {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          p {
+            font-family: 'Satoshi-Variable';
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 24px;
+            text-align: left;
+            color: #110733;
+          }
+        }
+      }
+
+      .testimony {
+        font-family: 'Satoshi-Variable';
+        font-size: 18px;
+        font-weight: 400;
+        line-height: 30px;
+        text-align: left;
+        color: #110733;
+      }
+    }
+
+    .ratings {
+      display: flex;
+      gap: 7px;
+    }
+  }
+
+  .color-yellow {
+    color: #ffd231;
+  }
+}

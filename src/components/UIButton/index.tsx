@@ -1,4 +1,4 @@
-import './styles.scss';
+import './styles.css';
 import * as React from 'react';
 import { UIButtonProps } from './types';
 
@@ -15,7 +15,7 @@ export const UIButton: React.FC<UIButtonProps> = (props) => {
       {props.text}
       <img
         className={`${!props.show_arrow ? 'is-hidden' : ''}`}
-        src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/arrow-right.svg"
+        src="../../../static/icons/arrow-right.svg"
       />
     </button>
   );

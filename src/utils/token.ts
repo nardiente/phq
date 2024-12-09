@@ -1,6 +1,6 @@
 import CryptoJS from 'crypto-js';
 
-const secretKey = import.meta.env.CRYPTO_KEY ?? '';
+const secretKey = import.meta.env.VITE_CRYPTO_KEY ?? '';
 
 const getIPAddress = async () => {
   // Fetch the IP address from an external service

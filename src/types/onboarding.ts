@@ -13,3 +13,10 @@ export const OnboardingUrls = {
   [OnboardingPages.SURVEY]: '/ob-survey',
   [OnboardingPages.SUCCESS]: '/ob-success',
 };
+
+export interface TestimonialType {
+  name: string;
+  profession: string;
+  testimony: string;
+  rating: number;
+}

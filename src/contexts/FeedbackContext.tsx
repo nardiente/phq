@@ -5,18 +5,20 @@ import {
   useMemo,
   ReactNode,
 } from 'react';
-import { FeedbackItem } from '../types/feedback';
+import { FeedbackItem, Tag } from '../types/feedback';
 
 interface FeedbackState {
   items: FeedbackItem[];
   activeTab: 'ideas' | 'comments';
   loading: boolean;
   error: string | null;
+  tags: any[];
 }
 
 type FeedbackAction =
   | { type: 'SET_ITEMS'; payload: FeedbackItem[] }
   | { type: 'SET_TAB'; payload: 'ideas' | 'comments' }
+  | { type: 'SET_TAGS'; payload: Tag[] }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string | null }
   | {
@@ -27,6 +29,7 @@ type FeedbackAction =
 interface FeedbackContextType {
   state: FeedbackState;
   setActiveTab: (tab: 'ideas' | 'comments') => Promise<void>;
+  setTags: (tags: Tag[]) => Promise<void>;
   updateItemStatus: (
     id: string,
     status: 'approved' | 'rejected'
@@ -38,6 +41,7 @@ const initialState: FeedbackState = {
   activeTab: 'ideas',
   loading: false,
   error: null,
+  tags: [],
 };
 
 const FeedbackContext = createContext<FeedbackContextType | undefined>(
@@ -111,6 +115,8 @@ function feedbackReducer(
       return { ...state, items: action.payload };
     case 'SET_TAB':
       return { ...state, activeTab: action.payload };
+    case 'SET_TAGS':
+      return { ...state, tags: action.payload };
     case 'SET_LOADING':
       return { ...state, loading: action.payload };
     case 'SET_ERROR':
@@ -153,6 +159,10 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     await fetchItems(tab);
   };
 
+  const setTags = async (tags: Tag[]) => {
+    dispatch({ type: 'SET_TAGS', payload: tags });
+  };
+
   const updateItemStatus = async (
     id: string,
     status: 'approved' | 'rejected'
@@ -178,6 +188,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     () => ({
       state,
       setActiveTab,
+      setTags,
       updateItemStatus,
     }),
     [state]

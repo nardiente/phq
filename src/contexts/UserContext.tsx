@@ -5,14 +5,30 @@ import {
   ReactNode,
   Dispatch,
   SetStateAction,
+  useEffect,
+  useRef,
 } from 'react';
 import { User } from '../types/user';
-import { getApi } from '../utils/api/api';
+import { getApi, postApi } from '../utils/api/api';
 import { Moderation } from '../types/moderation';
 import { Subscription } from '../types/billing';
 import { Project } from '../types/project';
 import { ProjectAppearance } from '../types/appearance';
 import { Permissions } from '../types/common';
+import {
+  getCustomerKaslKey,
+  getKaslKey,
+  getSessionToken,
+  setCustomerKaslKey,
+  setSessionToken,
+} from '../utils/localStorage';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useSocket } from './SocketContext';
+import { UserNotification } from '../types/notification';
+import { Tag } from '../types/feedback';
+import { useFeedback } from './FeedbackContext';
+import { useUserNotification } from './UserNotificationContext';
+import { generateToken } from '../utils/token';
 
 interface UserContextConfig {
   admin_profile?: User;
@@ -79,8 +95,18 @@ interface UserProviderProps {
 }
 
 export function UserProvider({ children }: UserProviderProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { pathname } = location;
+
+  const { setTags } = useFeedback();
+  const { setFetching: setFetchingNotification, setUserNotification } =
+    useUserNotification();
+  const { setSocketTags, setSocket } = useSocket();
+
   const [fetching, setFetching] = useState<boolean>(false);
   const [user, setUser] = useState<UserContextConfig>(initialUser);
+  const { admin_profile, user: user_profile, moderation } = user ?? {};
   const [showBanner, setShowBanner] = useState<boolean>(false);
   const [first_name, setFirstName] = useState<string>('');
   const [githubCode, setGithubCode] = useState<string>('');
@@ -88,13 +114,64 @@ export function UserProvider({ children }: UserProviderProps) {
   const [email, setEmail] = useState<string>('');
   const [loading_social, setLoadingSocial] = useState<boolean>(false);
 
-  const is_admin = import.meta.env.SYSTEM_TYPE === 'admin';
+  const is_admin = import.meta.env.VITE_SYSTEM_TYPE === 'admin';
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+  const socket = useRef<WebSocket | null>(null);
+
+  useEffect(() => {
+    if (
+      (getKaslKey() !== null || !is_admin) &&
+      pathname !== '/four-oh-four' &&
+      pathname !== '/sign-in/google'
+    ) {
+      handleGetUser().catch(() => {
+        if (!is_admin) {
+          navigate('/dashboard');
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (is_public && moderation?.user_login === true) {
+      checkSession();
+    }
+  }, [moderation]);
+
+  useEffect(() => {
+    if (
+      (admin_profile || user_profile) &&
+      socket.current?.readyState !== WebSocket.OPEN
+    ) {
+      startWebSocket();
+    }
+  }, [admin_profile, user_profile]);
+
+  const checkSession = async () => {
+    const token = getSessionToken() ?? (await generateToken());
+    setCustomerKaslKey(user?.admin_profile?.kasl_key ?? '');
+    setFetching(true);
+    postApi<User & { token?: string }>({
+      url: 'auth/check-session',
+      payload: { token },
+      useCustomerKey: true,
+    })
+      .then((res) => {
+        if (res.results.data) {
+          if (res.headers['kasl-key']) {
+            setSessionToken(res.headers['kasl-key'].toString());
+          }
+          setUser((prev) => ({ ...prev, user: res.results.data }));
+        }
+      })
+      .finally(() => setFetching(false));
+  };
 
   const handleGetUser = async () => {
     setFetching(true);
     getApi<UserContextConfig>(
       `users/me${
-        import.meta.env.SYSTEM_TYPE === 'public'
+        import.meta.env.VITE_SYSTEM_TYPE === 'public'
           ? `/public/${window.location.host}`
           : ''
       }`
@@ -130,6 +207,110 @@ export function UserProvider({ children }: UserProviderProps) {
         }
       })
       .finally(() => setFetching(false));
+  };
+
+  const startWebSocket = () => {
+    socket.current = new WebSocket(import.meta.env.VITE_SOCKET_URL);
+
+    socket.current.onerror = (error) => {
+      console.error('WebSocket on error error:', error);
+      socket.current?.close();
+    };
+
+    socket.current.onopen = () => {
+      const profile = is_public ? admin_profile : user_profile;
+      if (socket.current?.readyState === WebSocket.OPEN) {
+        console.log('WebSocket on open.');
+        socket.current?.send(
+          JSON.stringify({
+            action: 'setTagCreator',
+            id: profile?.id,
+            name: profile?.full_name.substring(0, 20),
+          })
+        );
+      }
+      setInterval(() => {
+        if (socket.current?.readyState === WebSocket.OPEN) {
+          socket.current?.send(
+            JSON.stringify({
+              action: 'ping',
+              id: profile?.id,
+              name: profile?.full_name.substring(0, 20),
+            })
+          );
+        }
+      }, 1000);
+    };
+    socket.current.onclose = () => {
+      console.error('WebSocket closed.');
+      socket.current?.close();
+      window.location.reload();
+    };
+    socket.current.onmessage = (event: any) => {
+      if (event.data) {
+        const profile = is_public ? admin_profile : user_profile;
+        const data = JSON.parse(event.data);
+        if (
+          data.message?.includes(' updated a tag.') &&
+          data.memberUpdatedTag?.id === profile?.id
+        ) {
+          console.log('WebSocket on message event data:', data);
+          handleListTag();
+          setSocketTags(true);
+        }
+        if (
+          data.message?.includes('sent a notifications') &&
+          data.memberNotified?.id === profile?.id
+        ) {
+          console.log({ data });
+          getNotifications();
+        }
+      }
+    };
+
+    setSocket(socket.current);
+  };
+
+  const handleListTag = () => {
+    getApi<Tag[]>(
+      'tags',
+      is_public
+        ? {
+            domain: window.location.host,
+          }
+        : undefined,
+      undefined,
+      is_public &&
+        moderation?.user_login === true &&
+        getKaslKey() === null &&
+        getCustomerKaslKey() !== null
+    ).then((res) => {
+      if (is_public && res.results.error === 'error-client.bad-request') {
+        navigate('/dashboard');
+      }
+      if (res.results.data) {
+        setTags(res.results.data);
+      }
+    });
+  };
+
+  const getNotifications = (seeMore?: boolean) => {
+    setFetchingNotification(true);
+    const params = {};
+    if (!seeMore) {
+      Object.assign(params, { limit: 3 });
+    }
+
+    getApi<UserNotification>(
+      'notifications',
+      params
+      // is_public && moderation?.user_login === true,
+    ).then((res) => {
+      setFetchingNotification(false);
+      if (res.results.data) {
+        setUserNotification(res.results.data);
+      }
+    });
   };
 
   return (

@@ -4,7 +4,7 @@ import { GithubIcon } from '../../../components/icons/github.icon';
 import * as React from 'react';
 import { useUser } from '../../../contexts/UserContext';
 
-const clientId = import.meta.env.GITHUB_CLIENT_ID;
+const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
 
 const GithubLogin = ({
   loading,
@@ -15,7 +15,7 @@ const GithubLogin = ({
 }) => {
   const { githubCode, setFirstName, setLastName, setLoadingSocial } = useUser();
 
-  const is_public = import.meta.env.SYSTEM_TYPE === 'public';
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   React.useEffect(() => {
     if (githubCode.length > 0) {

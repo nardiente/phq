@@ -1,4 +1,4 @@
-import { getKaslKey } from '../../utils/cookie';
+import { getKaslKey } from '../../utils/localStorage';
 import * as React from 'react';
 import { LoginForm } from './login-form';
 import {
@@ -7,12 +7,12 @@ import {
   min_web_width,
   mobile_image_height,
   mobile_image_width,
-} from './constants';
-import './styles.scss';
-import { UserTypes } from './types';
+} from '../../utils/constants';
+import './styles.css';
+import { UserTypes } from '../../types/user';
 
 export const LoginPage = () => {
-  const isPublicSite = import.meta.env.SYSTEM_TYPE === 'public';
+  const isPublicSite = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const [image_height, setImageHeight] = React.useState<number>(0);
   const [is_mobile, setIsMobile] = React.useState<boolean>(false);
@@ -24,12 +24,12 @@ export const LoginPage = () => {
   React.useEffect(() => {
     setType(isPublicSite ? UserTypes.USER : UserTypes.CUSTOMER);
 
-    const isLoggedIn = getKaslKey();
-    setIsLoggedIn(!!isLoggedIn);
+    const isLoggedIn = getKaslKey() !== null;
+    setIsLoggedIn(isLoggedIn);
 
     if (isLoggedIn) {
       // has logged in user
-      window.location.href = isPublicSite ? '/' : '/upvote-admin';
+      window.location.href = isPublicSite ? '/' : '/upvotes';
     } else {
       // no logged in user
       const containers = document.getElementsByClassName(
@@ -128,7 +128,7 @@ export const LoginPage = () => {
                   >
                     <img
                       className={`logo${is_mobile ? ' mobile' : ''}`}
-                      src="https://s3.amazonaws.com/uat-app.productfeedback.co/assets/login_logo.svg"
+                      src="../../../static/assets/login_logo.svg"
                     />
                   </div>
                 </div>

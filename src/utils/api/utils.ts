@@ -3,7 +3,7 @@ import {
   getCustomerKaslKey,
   getKaslKey,
   getSessionToken,
-} from '../cookie';
+} from '../localStorage';
 import { ApiResponseBody, ApiResponseHeaders, StatusCodes } from './types';
 
 export const prepHeaders = (params?: {
@@ -13,16 +13,16 @@ export const prepHeaders = (params?: {
   const { useCustomerKey, useSessionToken } = params ?? {};
   const headers: { Authorization: string | void; 'kasl-key'?: string | void } =
     {
-      Authorization: getKaslKey(),
+      Authorization: getKaslKey() ?? '',
     };
-  if (getKaslKey()) {
-    headers['kasl-key'] = getKaslKey();
+  if (getKaslKey() !== null) {
+    headers['kasl-key'] = getKaslKey() ?? '';
   }
-  if (useCustomerKey && getCustomerKaslKey()) {
-    headers['kasl-key'] = getCustomerKaslKey();
+  if (useCustomerKey && getCustomerKaslKey() !== null) {
+    headers['kasl-key'] = getCustomerKaslKey() ?? '';
   }
-  if (useSessionToken && getSessionToken()) {
-    headers['kasl-key'] = getSessionToken();
+  if (useSessionToken && getSessionToken() !== null) {
+    headers['kasl-key'] = getSessionToken() ?? '';
   }
   return headers;
 };
@@ -57,8 +57,8 @@ export const processErrors = (api_error: any) => {
     status,
   };
 
-  const is_admin = import.meta.env.SYSTEM_TYPE === 'admin';
-  const is_public = import.meta.env.SYSTEM_TYPE === 'public';
+  const is_admin = import.meta.env.VITE_SYSTEM_TYPE === 'admin';
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   if (
     status === StatusCodes.E_FORBIDDEN ||
     status === StatusCodes.E_UNAUTHORIZED
