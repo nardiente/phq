@@ -62,7 +62,7 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
                     user?.profile_photo.length > 0 &&
                     user?.profile_photo !=
                       '../../../static/assets/profile-placeholder.svg' ? (
-                      <img className="is-rounded" src={user?.profile_photo} />
+                      <img className="rounded-full" src={user?.profile_photo} />
                     ) : (
                       user?.full_name?.toUpperCase().charAt(0)
                     )}

@@ -1,8 +1,22 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  COMPANY_LOGO_PLACEHOLDER,
+  PROFILE_PLACEHOLDER,
+  UploadPhoto,
+} from '../components/UploadPhoto';
+import { ImageType } from '../types/user';
 
 export function AccountSettings() {
   const navigate = useNavigate();
+
+  const [company_logo, setCompanyLogo] = useState<string>(
+    COMPANY_LOGO_PLACEHOLDER
+  );
+  const [show_modal, setModal] = useState<boolean>(false);
+  const [profile_photo, setProfilePhoto] =
+    useState<string>(PROFILE_PLACEHOLDER);
+  const [image_type, setImageType] = useState<string>('');
 
   const [userDetails, setUserDetails] = useState({
     firstName: 'Tres',
@@ -61,9 +75,22 @@ export function AccountSettings() {
               {/* Profile Photo */}
               <div className="flex items-start gap-4">
                 <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center">
-                  <span className="text-purple-600 text-2xl">P</span>
+                  {profile_photo !== PROFILE_PLACEHOLDER ? (
+                    <img
+                      className="is-rounded responsiveImage rounded-full"
+                      src={profile_photo}
+                    />
+                  ) : (
+                    <span className="text-purple-600 text-2xl">P</span>
+                  )}
                 </div>
-                <button className="px-3 py-1.5 text-[13px] bg-gray-100 text-gray-700 rounded hover:bg-gray-200">
+                <button
+                  onClick={() => {
+                    setImageType(ImageType.PROFILE_PHOTOS);
+                    setModal((prev) => !prev);
+                  }}
+                  className="px-3 py-1.5 text-[13px] bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+                >
                   Upload
                 </button>
               </div>
@@ -186,9 +213,22 @@ export function AccountSettings() {
               {/* Company Logo */}
               <div className="flex items-start gap-4">
                 <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center">
-                  <span className="text-purple-600 text-2xl">P</span>
+                  {company_logo !== COMPANY_LOGO_PLACEHOLDER ? (
+                    <img
+                      className="is-rounded responsiveImage rounded-full"
+                      src={company_logo}
+                    />
+                  ) : (
+                    <span className="text-purple-600 text-2xl">P</span>
+                  )}
                 </div>
-                <button className="px-3 py-1.5 text-[13px] bg-gray-100 text-gray-700 rounded hover:bg-gray-200">
+                <button
+                  onClick={() => {
+                    setImageType(ImageType.COMPANY_LOGO);
+                    setModal((prev) => !prev);
+                  }}
+                  className="px-3 py-1.5 text-[13px] bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+                >
                   Upload
                 </button>
               </div>
@@ -366,6 +406,14 @@ export function AccountSettings() {
           </div>
         </div>
       </div>
+      <UploadPhoto
+        image_type={image_type}
+        maxFileSize={2097152}
+        setCompanyLogo={setCompanyLogo}
+        setModal={setModal}
+        setProfilePhoto={setProfilePhoto}
+        show_modal={show_modal}
+      />
     </div>
   );
 }

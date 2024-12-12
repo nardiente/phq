@@ -130,7 +130,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
 
   return (
     <div
-      className={`bg-white border-r border-gray-200 transition-all duration-300 ${
+      className={`bg-white border-r border-gray-200 transition-all duration-300 mr-[5px] ${
         isExpanded ? 'w-64' : 'w-16'
       }`}
     >
@@ -168,7 +168,10 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
                       >
                         {company_info?.company_logo &&
                         company_info?.company_logo.length > 0 ? (
-                          <img className="" src={company_info?.company_logo} />
+                          <img
+                            className="rounded-full"
+                            src={company_info?.company_logo}
+                          />
                         ) : (
                           company_info?.company_name?.toUpperCase().charAt(0)
                         )}

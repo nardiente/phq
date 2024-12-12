@@ -30,7 +30,7 @@ import { useFeedback } from './FeedbackContext';
 import { useUserNotification } from './UserNotificationContext';
 import { generateToken } from '../utils/token';
 
-interface UserContextConfig {
+export interface UserContextConfig {
   admin_profile?: User;
   user?: User;
   project?: Project;

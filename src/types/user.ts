@@ -5,6 +5,12 @@ export interface ForgotPasswordFormProps {
   type?: UserTypes;
 }
 
+export enum ImageType {
+  PROFILE_PHOTOS = 'profile-photos',
+  COMPANY_LOGO = 'company-logos',
+  WHATS_NEW_IMAGES = 'whats-new-images',
+}
+
 export enum InvitationType {
   PRIVATE_USER = 'private_user',
   TEAM_MEMBER = 'team_member',
