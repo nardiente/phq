@@ -26,9 +26,9 @@ export interface User {
   company_name?: string;
   country?: string;
   country_code?: string;
-  full_name: string;
-  first_name: string;
-  last_name: string;
+  full_name?: string;
+  first_name?: string;
+  last_name?: string;
   phone?: string;
   gender?: string;
   birthdate?: string;

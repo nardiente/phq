@@ -225,7 +225,7 @@ export function UserProvider({ children }: UserProviderProps) {
           JSON.stringify({
             action: 'setTagCreator',
             id: profile?.id,
-            name: profile?.full_name.substring(0, 20),
+            name: profile?.full_name?.substring(0, 20),
           })
         );
       }
@@ -235,7 +235,7 @@ export function UserProvider({ children }: UserProviderProps) {
             JSON.stringify({
               action: 'ping',
               id: profile?.id,
-              name: profile?.full_name.substring(0, 20),
+              name: profile?.full_name?.substring(0, 20),
             })
           );
         }

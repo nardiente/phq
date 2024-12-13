@@ -5,44 +5,49 @@ import {
   PROFILE_PLACEHOLDER,
   UploadPhoto,
 } from '../components/UploadPhoto';
-import { ImageType } from '../types/user';
+import { ImageType, User } from '../types/user';
+import { useUser } from '../contexts/UserContext';
+import { toast } from 'react-toastify';
+import { eraseKaslKey } from '../utils/localStorage';
+import { deleteApi } from '../utils/api/api';
 
 export function AccountSettings() {
   const navigate = useNavigate();
 
-  const [company_logo, setCompanyLogo] = useState<string>(
-    COMPANY_LOGO_PLACEHOLDER
-  );
+  const { user, setUser } = useUser();
+  const { user: userDetails } = user ?? {};
+
   const [show_modal, setModal] = useState<boolean>(false);
-  const [profile_photo, setProfilePhoto] =
-    useState<string>(PROFILE_PLACEHOLDER);
   const [image_type, setImageType] = useState<string>('');
 
-  const [userDetails, setUserDetails] = useState({
-    firstName: 'Tres',
-    lastName: 'West',
-    email: 'twest@producthq.io',
-    jobTitle: 'twest@producthq.io',
-    profilePhoto: null,
-    newPassword: '',
-    confirmPassword: '',
-  });
-
-  const [companyDetails, setCompanyDetails] = useState({
-    name: 'ProductHQ',
-    logo: null,
-    websiteUrl: 'https://producthq.io',
-    countryCode: '',
-    phoneNumber: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: '',
-  });
-
   const [deleteConfirmation, setDeleteConfirmation] = useState('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const setCompanyLogo = (company_logo: string) => {
+    setUser((prev) => ({ ...prev, user: { ...prev.user, company_logo } }));
+  };
+
+  const setProfilePhoto = (profile_photo: string) => {
+    setUser((prev) => ({ ...prev, user: { ...prev.user, profile_photo } }));
+  };
+
+  const handleDeleteAccount = () => {
+    setIsLoading(true);
+    deleteApi<User>({ url: `users/hard-delete/${userDetails?.id}` })
+      .then((res) => {
+        if (res.results.data) {
+          eraseKaslKey();
+          toast.success(res.results.message, {
+            closeOnClick: true,
+            position: 'bottom-center',
+          });
+          navigate('/sign-in');
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   return (
     <div className="min-h-screen bg-[#fafafa] pb-12">
@@ -65,7 +70,7 @@ export function AccountSettings() {
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="max-w-[600px] space-y-8">
+          <div className="max-w-[600px] space-y-8 text-gray-700">
             {/* User Details Section */}
             <div className="space-y-6">
               <h2 className="text-[16px] font-semibold text-gray-900">
@@ -75,10 +80,11 @@ export function AccountSettings() {
               {/* Profile Photo */}
               <div className="flex items-start gap-4">
                 <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center">
-                  {profile_photo !== PROFILE_PLACEHOLDER ? (
+                  {userDetails?.profile_photo !== undefined &&
+                  userDetails?.profile_photo !== PROFILE_PLACEHOLDER ? (
                     <img
                       className="is-rounded responsiveImage rounded-full"
-                      src={profile_photo}
+                      src={userDetails?.profile_photo}
                     />
                   ) : (
                     <span className="text-purple-600 text-2xl">P</span>
@@ -89,7 +95,7 @@ export function AccountSettings() {
                     setImageType(ImageType.PROFILE_PHOTOS);
                     setModal((prev) => !prev);
                   }}
-                  className="px-3 py-1.5 text-[13px] bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+                  className="px-3 py-1.5 text-[13px] bg-gray-100  rounded hover:bg-gray-200"
                 >
                   Upload
                 </button>
@@ -97,33 +103,33 @@ export function AccountSettings() {
 
               {/* Name Fields */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                <div className="space-y-1.5 ">
+                  <label className="block text-[13px] font-medium">
                     First Name
                   </label>
                   <input
                     type="text"
-                    value={userDetails.firstName}
+                    value={userDetails?.first_name}
                     onChange={(e) =>
-                      setUserDetails((prev) => ({
+                      setUser((prev) => ({
                         ...prev,
-                        firstName: e.target.value,
+                        user: { ...prev.user, first_name: e.target.value },
                       }))
                     }
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                  <label className="block text-[13px] font-medium ">
                     Last Name
                   </label>
                   <input
                     type="text"
-                    value={userDetails.lastName}
+                    value={userDetails?.last_name}
                     onChange={(e) =>
-                      setUserDetails((prev) => ({
+                      setUser((prev) => ({
                         ...prev,
-                        lastName: e.target.value,
+                        user: { ...prev.user, last_name: e.target.value },
                       }))
                     }
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
@@ -134,32 +140,33 @@ export function AccountSettings() {
               {/* Email and Job Title */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                  <label className="block text-[13px] font-medium ">
                     Email Address
                   </label>
                   <input
                     type="email"
-                    value={userDetails.email}
+                    value={userDetails?.email}
                     onChange={(e) =>
-                      setUserDetails((prev) => ({
+                      setUser((prev) => ({
                         ...prev,
-                        email: e.target.value,
+                        user: { ...prev.user, email: e.target.value },
                       }))
                     }
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                  <label className="block text-[13px] font-medium ">
                     Job Title
                   </label>
                   <input
                     type="text"
-                    value={userDetails.jobTitle}
+                    value={userDetails?.job_title}
+                    placeholder="job title"
                     onChange={(e) =>
-                      setUserDetails((prev) => ({
+                      setUser((prev) => ({
                         ...prev,
-                        jobTitle: e.target.value,
+                        user: { ...prev.user, job_title: e.target.value },
                       }))
                     }
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
@@ -175,7 +182,7 @@ export function AccountSettings() {
               </h2>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                  <label className="block text-[13px] font-medium ">
                     New Password
                   </label>
                   <input
@@ -185,7 +192,7 @@ export function AccountSettings() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                  <label className="block text-[13px] font-medium ">
                     Confirm Password
                   </label>
                   <input
@@ -213,10 +220,11 @@ export function AccountSettings() {
               {/* Company Logo */}
               <div className="flex items-start gap-4">
                 <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center">
-                  {company_logo !== COMPANY_LOGO_PLACEHOLDER ? (
+                  {userDetails?.company_logo !== undefined &&
+                  userDetails?.company_logo !== COMPANY_LOGO_PLACEHOLDER ? (
                     <img
                       className="is-rounded responsiveImage rounded-full"
-                      src={company_logo}
+                      src={userDetails?.company_logo}
                     />
                   ) : (
                     <span className="text-purple-600 text-2xl">P</span>
@@ -227,7 +235,7 @@ export function AccountSettings() {
                     setImageType(ImageType.COMPANY_LOGO);
                     setModal((prev) => !prev);
                   }}
-                  className="px-3 py-1.5 text-[13px] bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+                  className="px-3 py-1.5 text-[13px] bg-gray-100  rounded hover:bg-gray-200"
                 >
                   Upload
                 </button>
@@ -236,32 +244,33 @@ export function AccountSettings() {
               {/* Company Name and Website */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                  <label className="block text-[13px] font-medium ">
                     Company Name
                   </label>
                   <input
                     type="text"
-                    value={companyDetails.name}
+                    value={userDetails?.company_name}
                     onChange={(e) =>
-                      setCompanyDetails((prev) => ({
+                      setUser((prev) => ({
                         ...prev,
-                        name: e.target.value,
+                        user: { ...prev.user, company_name: e.target.value },
                       }))
                     }
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                  <label className="block text-[13px] font-medium ">
                     Website URL
                   </label>
                   <input
                     type="url"
-                    value={companyDetails.websiteUrl}
+                    value={userDetails?.website_url}
+                    placeholder="website url"
                     onChange={(e) =>
-                      setCompanyDetails((prev) => ({
+                      setUser((prev) => ({
                         ...prev,
-                        websiteUrl: e.target.value,
+                        user: { ...prev.user, website_url: e.target.value },
                       }))
                     }
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
@@ -272,23 +281,37 @@ export function AccountSettings() {
               {/* Country Code and Phone */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                  <label className="block text-[13px] font-medium ">
                     Country Code
                   </label>
                   <input
                     type="text"
                     placeholder="country code"
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
+                    value={userDetails?.country_code}
+                    onChange={(e) => {
+                      setUser((prev) => ({
+                        ...prev,
+                        user: { ...prev.user, country_code: e.target.value },
+                      }));
+                    }}
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                  <label className="block text-[13px] font-medium ">
                     Phone Number
                   </label>
                   <input
                     type="tel"
                     placeholder="phone number"
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
+                    value={userDetails?.phone}
+                    onChange={(e) => {
+                      setUser((prev) => ({
+                        ...prev,
+                        user: { ...prev.user, phone: e.target.value },
+                      }));
+                    }}
                   />
                 </div>
               </div>
@@ -303,23 +326,37 @@ export function AccountSettings() {
               {/* Address Lines */}
               <div className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                  <label className="block text-[13px] font-medium ">
                     Address Line 1
                   </label>
                   <input
                     type="text"
                     placeholder="address line 1"
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
+                    value={userDetails?.address_line1}
+                    onChange={(e) => {
+                      setUser((prev) => ({
+                        ...prev,
+                        user: { ...prev.user, address_line1: e.target.value },
+                      }));
+                    }}
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                  <label className="block text-[13px] font-medium ">
                     Address Line 2
                   </label>
                   <input
                     type="text"
                     placeholder="address line 2"
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
+                    value={userDetails?.address_line2}
+                    onChange={(e) => {
+                      setUser((prev) => ({
+                        ...prev,
+                        user: { ...prev.user, address_line2: e.target.value },
+                      }));
+                    }}
                   />
                 </div>
               </div>
@@ -327,23 +364,35 @@ export function AccountSettings() {
               {/* City and State */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
-                    City
-                  </label>
+                  <label className="block text-[13px] font-medium ">City</label>
                   <input
                     type="text"
                     placeholder="city"
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
+                    value={userDetails?.city}
+                    onChange={(e) => {
+                      setUser((prev) => ({
+                        ...prev,
+                        user: { ...prev.user, city: e.target.value },
+                      }));
+                    }}
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                  <label className="block text-[13px] font-medium ">
                     State
                   </label>
                   <input
                     type="text"
                     placeholder="state"
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
+                    value={userDetails?.state}
+                    onChange={(e) => {
+                      setUser((prev) => ({
+                        ...prev,
+                        user: { ...prev.user, state: e.target.value },
+                      }));
+                    }}
                   />
                 </div>
               </div>
@@ -351,23 +400,37 @@ export function AccountSettings() {
               {/* Zip Code and Country */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                  <label className="block text-[13px] font-medium ">
                     Zip Code
                   </label>
                   <input
                     type="text"
                     placeholder="zip code"
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
+                    value={userDetails?.zip_code}
+                    onChange={(e) => {
+                      setUser((prev) => ({
+                        ...prev,
+                        user: { ...prev.user, zip_code: e.target.value },
+                      }));
+                    }}
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-[13px] font-medium text-gray-700">
+                  <label className="block text-[13px] font-medium ">
                     Country
                   </label>
                   <input
                     type="text"
                     placeholder="country"
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[14px]"
+                    value={userDetails?.country}
+                    onChange={(e) => {
+                      setUser((prev) => ({
+                        ...prev,
+                        user: { ...prev.user, country: e.target.value },
+                      }));
+                    }}
                   />
                 </div>
               </div>
@@ -385,7 +448,7 @@ export function AccountSettings() {
                 <span className="font-medium">NOT</span> reversable.
               </p>
               <div className="space-y-1.5">
-                <label className="block text-[13px] font-medium text-gray-700">
+                <label className="block text-[13px] font-medium ">
                   Type DELETE in the field below
                 </label>
                 <input
@@ -398,9 +461,10 @@ export function AccountSettings() {
               </div>
               <button
                 className="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 disabled:opacity-50 disabled:cursor-not-allowed text-[13px]"
-                disabled={deleteConfirmation !== 'DELETE'}
+                disabled={deleteConfirmation !== 'DELETE' || isLoading}
+                onClick={handleDeleteAccount}
               >
-                DELETE ACCOUNT
+                {isLoading ? 'Loading...' : 'DELETE ACCOUNT'}
               </button>
             </div>
           </div>

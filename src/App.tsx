@@ -7,6 +7,8 @@ import { DropdownProvider } from './contexts/DropdownContext';
 import { FeedbackProvider } from './contexts/FeedbackContext';
 import { FC, useEffect } from 'react';
 import AppRoutes from './routes/routes';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App: FC = () => {
   const { user } = useUser();
@@ -86,21 +88,24 @@ const App: FC = () => {
   }, [user]);
 
   return (
-    <SocketProvider>
-      <FeedbackProvider>
-        <UserNotificationProvider>
-          <UserProvider>
-            <DropdownProvider>
-              <UnsavedChangesProvider>
-                <BoostProvider>
-                  <AppRoutes />
-                </BoostProvider>
-              </UnsavedChangesProvider>
-            </DropdownProvider>
-          </UserProvider>
-        </UserNotificationProvider>
-      </FeedbackProvider>
-    </SocketProvider>
+    <>
+      <SocketProvider>
+        <FeedbackProvider>
+          <UserNotificationProvider>
+            <UserProvider>
+              <DropdownProvider>
+                <UnsavedChangesProvider>
+                  <BoostProvider>
+                    <AppRoutes />
+                  </BoostProvider>
+                </UnsavedChangesProvider>
+              </DropdownProvider>
+            </UserProvider>
+          </UserNotificationProvider>
+        </FeedbackProvider>
+      </SocketProvider>
+      <ToastContainer />
+    </>
   );
 };
 

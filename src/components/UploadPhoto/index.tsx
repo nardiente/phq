@@ -21,9 +21,9 @@ export const COMPANY_LOGO_PLACEHOLDER =
 export const UploadPhoto: React.FC<{
   image_type: string;
   maxFileSize: number;
-  setCompanyLogo: React.Dispatch<React.SetStateAction<string>>;
+  setCompanyLogo: (value: string) => void;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setProfilePhoto: React.Dispatch<React.SetStateAction<string>>;
+  setProfilePhoto: (value: string) => void;
   show_modal: boolean;
 }> = (props) => {
   const { t } = useTranslation();
