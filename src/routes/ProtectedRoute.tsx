@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Banner from '../components/Banner';
 import { SidebarMenu } from '../components/layout/SidebarMenu';
 import { getKaslKey } from '../utils/localStorage';
@@ -43,8 +43,13 @@ export type PageType =
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
+
+  useEffect(() => {
+    setCurrentPage(location.pathname.slice(1) as PageType);
+  }, [location]);
 
   if (!isAuthenticated()) {
     return <Navigate to="/sign-in" replace />;

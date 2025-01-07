@@ -6,7 +6,7 @@ import DashboardPage from '../pages/DashboardPage';
 import { AccountSettings } from '../pages/AccountSettings';
 import BoostPage from '../pages/BoostPage';
 import CreateBoostPage from '../pages/CreateBoostPage';
-import ProjectDetailsPage from '../pages/ProjectDetailsPage';
+import ProjectDetailsPage from '../pages/ProjectDetails/ProjectDetailsPage';
 import AppearancePage from '../pages/AppearancePage';
 import ModerationPage from '../pages/ModerationPage';
 import EmailsPage from '../pages/EmailsPage';

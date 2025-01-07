@@ -199,7 +199,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props) => {
             'onboarding_token',
             res.headers['kasl-key'].toString()
           );
-          localStorage.setItem('first_name', result.first_name);
+          localStorage.setItem('first_name', result.first_name ?? '');
           navigate(
             OnboardingUrls[result.onboarding_page ?? OnboardingPages.WELCOME]
           );

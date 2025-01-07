@@ -1,0 +1,67 @@
+#Textarea {
+  .snippet-textarea {
+    background: #f9fafb;
+    color: #c3c1cc;
+    font-family: 'Satoshi-Variable';
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.005em;
+    line-height: 20px;
+    max-height: none;
+    resize: none;
+  }
+
+  .upvote-textarea-icon {
+    left: 0;
+    top: unset;
+    bottom: 0;
+  }
+}
+
+.icon-outside {
+  margin-top: 8px;
+  width: 9%;
+}
+
+.margin-bottom-075-rem {
+  margin-bottom: 0.75rem;
+}
+
+.margin-left-05-rem {
+  margin-left: 0.5rem;
+}
+
+.suffix-label {
+  padding: 8px 15px;
+  border: 1px solid #e2e2ec;
+  border-radius: 4px;
+  width: 23%;
+}
+
+.margin-right-05-rem {
+  margin-right: 0.5rem;
+}
+
+.width-18-rem {
+  width: 18rem;
+}
+
+.width-35-percent {
+  width: 35%;
+}
+
+.width-37-rem {
+  width: 37rem;
+}
+
+.width-65-percent {
+  width: 65%;
+}
+
+input::placeholder {
+  font-weight: lighter;
+}
+
+.field {
+  width: 100%;
+}
