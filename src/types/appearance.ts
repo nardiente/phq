@@ -36,3 +36,17 @@ export enum UserNameFormat {
   AF_FL = 'ABBRFIRST_FULLLAST',
   FF_AL = 'FULLFIRST_ABBRLAST',
 }
+
+export interface DisplayUserName {
+  text: string;
+  format: UserNameFormat;
+}
+
+export const userNameFormats = [
+  UserNameFormat.FF_FL,
+  UserNameFormat.FL_LF,
+  UserNameFormat.FN,
+  UserNameFormat.LN,
+  UserNameFormat.AF_FL,
+  UserNameFormat.FF_AL,
+];

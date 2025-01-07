@@ -147,7 +147,6 @@
 
 #ProjectDetails {
   background: #ffffff;
-  border: 1px solid #f9f9fa;
   border-radius: 8px;
 
   padding: 24px;
@@ -493,7 +492,6 @@
 
 #Appearance {
   background: #ffffff;
-  border: 1px solid #f9f9fa;
   border-radius: 8px;
 
   padding: 24px;
@@ -501,7 +499,6 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  width: 704px;
 
   .settings-section {
     display: flex;

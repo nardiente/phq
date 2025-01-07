@@ -4,12 +4,12 @@ import {
   COMPANY_LOGO_PLACEHOLDER,
   PROFILE_PLACEHOLDER,
   UploadPhoto,
-} from '../components/UploadPhoto';
-import { ImageType, User } from '../types/user';
-import { useUser } from '../contexts/UserContext';
+} from '../../components/UploadPhoto';
+import { ImageType, User } from '../../types/user';
+import { useUser } from '../../contexts/UserContext';
 import { toast } from 'react-toastify';
-import { eraseKaslKey } from '../utils/localStorage';
-import { deleteApi } from '../utils/api/api';
+import { eraseKaslKey } from '../../utils/localStorage';
+import { deleteApi } from '../../utils/api/api';
 
 export function AccountSettings() {
   const navigate = useNavigate();
