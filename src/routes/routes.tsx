@@ -8,7 +8,7 @@ import BoostPage from '../pages/BoostPage';
 import CreateBoostPage from '../pages/CreateBoostPage';
 import ProjectDetailsPage from '../pages/Settings/ProjectDetails/ProjectDetailsPage';
 import AppearancePage from '../pages/Settings/Appearance/AppearancePage';
-import ModerationPage from '../pages/ModerationPage';
+import ModerationPage from '../pages/Settings/ModerationPage';
 import EmailsPage from '../pages/EmailsPage';
 import TagsPage from '../pages/TagsPage';
 import TeamMembersPage from '../pages/TeamMembersPage';

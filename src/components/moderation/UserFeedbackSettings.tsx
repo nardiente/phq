@@ -1,13 +1,9 @@
-import React from 'react';
 import { Toggle } from '../ui/Toggle';
 import { SectionHeader } from '../ui/SectionHeader';
+import { ModerateSettings } from '../../types/moderation';
 
 interface UserFeedbackSettingsProps {
-  settings: {
-    disableIdeas: boolean;
-    disableVotes: boolean;
-    disableComments: boolean;
-  };
+  settings: ModerateSettings;
   onChange: (key: string, value: boolean) => void;
 }
 
@@ -31,8 +27,8 @@ export function UserFeedbackSettings({
             </p>
           </div>
           <Toggle
-            checked={settings.disableIdeas}
-            onChange={(checked) => onChange('disableIdeas', checked)}
+            checked={settings.feedback}
+            onChange={(checked) => onChange('feedback', checked)}
           />
         </div>
 
@@ -44,8 +40,8 @@ export function UserFeedbackSettings({
             </p>
           </div>
           <Toggle
-            checked={settings.disableVotes}
-            onChange={(checked) => onChange('disableVotes', checked)}
+            checked={settings.votes}
+            onChange={(checked) => onChange('votes', checked)}
           />
         </div>
 
@@ -57,8 +53,8 @@ export function UserFeedbackSettings({
             </p>
           </div>
           <Toggle
-            checked={settings.disableComments}
-            onChange={(checked) => onChange('disableComments', checked)}
+            checked={settings.comments}
+            onChange={(checked) => onChange('comments', checked)}
           />
         </div>
       </div>
