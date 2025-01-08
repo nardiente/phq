@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { ProjectAppearance, UserNameFormat } from '../../../types/appearance';
-import { useUnsavedChanges } from '../../../contexts/UnsavedChangesContext';
-import { getApi, postApi } from '../../../utils/api/api';
+import { ProjectAppearance, UserNameFormat } from '../../types/appearance';
+import { useUnsavedChanges } from '../../contexts/UnsavedChangesContext';
+import { getApi, postApi } from '../../utils/api/api';
 import { toast } from 'react-toastify';
-import { useUser } from '../../../contexts/UserContext';
+import { useUser } from '../../contexts/UserContext';
 import { Loader } from 'lucide-react';
-import { RbacPermissions, Permissions } from '../../../types/common';
+import { RbacPermissions, Permissions } from '../../types/common';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import { DisplayUserName } from '../../../components/DisplayUserName/display-user-name';
-import '../styles.css';
+import { DisplayUserName } from '../../components/DisplayUserName/display-user-name';
+import './styles.css';
 
 const SettingsArea = styled.div`
   grid-column-start: 2;

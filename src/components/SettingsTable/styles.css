@@ -1,0 +1,111 @@
+#rolePermission {
+  border-radius: 10px;
+
+  .center-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .role-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .table-title {
+    font-family: 'Satoshi-Variable';
+    font-weight: 500;
+    line-height: 18.9px;
+  }
+  .x-mark {
+    color: #913187;
+  }
+  .check-mark {
+    color: #5a00cd;
+    font-weight: 700;
+  }
+
+  .header-label {
+    color: #110733;
+    font-family: 'Satoshi-Variable';
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: 0.005em;
+  }
+
+  label {
+    color: #110733;
+    font-family: 'Satoshi-Variable';
+    font-size: 14px !important;
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0.005em;
+  }
+
+  table {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    margin-bottom: 10px;
+
+    thead {
+      width: 100%;
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+
+      tr {
+        display: flex;
+
+        th {
+          padding: 12px 20px;
+          font-family: 'Satoshi-Variable';
+          font-style: normal;
+          font-weight: 500;
+          font-size: 12px;
+          line-height: 16px;
+          letter-spacing: 0.005em;
+          color: #6b7280;
+        }
+      }
+    }
+
+    tbody {
+      width: 100%;
+
+      tr {
+        display: flex;
+
+        td {
+          padding: 12px 20px;
+          font-family: 'Satoshi-Variable';
+          font-style: normal;
+          font-weight: 500;
+          font-size: 15px;
+          line-height: 20px;
+          letter-spacing: 0.005em;
+          color: #4d4566;
+          border-bottom: 1px solid #e5e7eb;
+        }
+      }
+    }
+  }
+
+  .permissions-col {
+    width: 57%;
+  }
+
+  .status {
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

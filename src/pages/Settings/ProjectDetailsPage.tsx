@@ -1,24 +1,24 @@
 import { Fragment, useEffect, useState } from 'react';
-import { Textarea } from '../../../components/Field';
-import { Field } from '../../../components/Field';
+import { Textarea } from '../../components/Field';
+import { Field } from '../../components/Field';
 import styled from 'styled-components';
 import { Loader, TrashIcon } from 'lucide-react';
-import { useUser } from '../../../contexts/UserContext';
-import { Permissions, RbacPermissions } from '../../../types/common';
+import { useUser } from '../../contexts/UserContext';
+import { Permissions, RbacPermissions } from '../../types/common';
 import { toast } from 'react-toastify';
-import { Project } from '../../../types/project';
-import { deleteApi, getApi, patchApi, postApi } from '../../../utils/api/api';
-import { User } from '../../../types/user';
-import { ApiFieldError } from '../../../utils/api/types';
-import { UIField } from '../../../components/UIField';
-import { validateEmail } from '../../../utils/custom-validation';
+import { Project } from '../../types/project';
+import { deleteApi, getApi, patchApi, postApi } from '../../utils/api/api';
+import { User } from '../../types/user';
+import { ApiFieldError } from '../../utils/api/types';
+import { UIField } from '../../components/UIField';
+import { validateEmail } from '../../utils/custom-validation';
 import { ModalBody } from 'reactstrap';
 import { Modal } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
-import { useUnsavedChanges } from '../../../contexts/UnsavedChangesContext';
+import { useUnsavedChanges } from '../../contexts/UnsavedChangesContext';
 import { useNavigate } from 'react-router-dom';
-import '../styles.css';
-import { Toggle } from '../../../components/ui/Toggle';
+import './styles.css';
+import { Toggle } from '../../components/ui/Toggle';
 
 const SettingsArea = styled.div`
   background-color: white;

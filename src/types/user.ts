@@ -52,6 +52,7 @@ export interface User {
   remind_3_days?: boolean;
   remind_3_days_timestamp?: string;
   kasl_key?: string;
+  role_name?: string;
 }
 
 interface RoleBody {

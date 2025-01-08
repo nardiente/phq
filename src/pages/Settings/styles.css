@@ -642,3 +642,470 @@
   line-height: 19px !important;
   outline: none !important;
 }
+
+#TeamMembers {
+  .button-gap {
+    margin-top: 27px;
+  }
+
+  .content {
+    width: 50%;
+  }
+
+  .gap-7 {
+    margin-top: 7px;
+  }
+
+  .gap-9 {
+    margin-top: 9px;
+  }
+
+  .gap-10 {
+    gap: 25px;
+  }
+
+  .gap-14 {
+    margin-top: 14px;
+  }
+
+  .gap-17 {
+    margin-bottom: 7px;
+    margin-top: 17px;
+  }
+
+  hr.divider {
+    margin: 30px -20px 20px;
+    border: none;
+    height: 1px;
+  }
+
+  input::placeholder {
+    color: #6b7280;
+    font-family: 'Satoshi-Variable';
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0.005em;
+  }
+
+  .responsiveImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .address-label {
+    margin-top: 15px;
+  }
+
+  .company-photo-section {
+    background: #fdfbfe;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    padding: 24px;
+    width: 100%;
+  }
+
+  .company-sub {
+    color: #4d4566;
+    display: block;
+    font-family: 'Satoshi-Variable';
+    font-style: normal;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.005em;
+    line-height: 24px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+  }
+
+  .display-area {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .dropdown-trigger {
+    display: flex;
+  }
+
+  .drop-down-button {
+    background: transparent;
+    color: #110733;
+    display: flex;
+    flex-direction: row;
+    font-family: 'Satoshi-Variable';
+    font-weight: 500;
+    font-size: 15px;
+    justify-content: space-between;
+    line-height: 20px;
+    letter-spacing: 0.005em;
+    margin-top: 1.6rem;
+    max-height: 2.5rem;
+    width: 100%;
+    flex-shrink: 1;
+    min-width: 200px;
+    max-width: 180px;
+    border: 1px solid #e2e2ec;
+
+    .for-dropdown {
+      color: #09041a;
+      font-family: 'Satoshi-Variable';
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      letter-spacing: 0.005em;
+      line-height: 19px;
+      text-align: center;
+    }
+
+    &:focus {
+      background: #f9fafb;
+      border: 1px solid #8340d9 !important;
+      box-shadow: 0px 0px 0px 4px rgba(168, 85, 247, 0.25);
+      border-radius: 6px;
+      color: #110733;
+    }
+  }
+
+  .drop-down-button:hover {
+    background-color: #f3f4f6;
+  }
+
+  .field {
+    max-width: 20rem;
+  }
+
+  .for-input {
+    color: #110733;
+    font-family: 'Satoshi-Variable';
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0.005em;
+  }
+
+  .input:focus {
+    background: #f9fafb;
+    border: 1px solid #8340d9 !important;
+    box-shadow: 0px 0px 0px 4px rgba(168, 85, 247, 0.25);
+    border-radius: 6px;
+  }
+
+  .invite-label {
+    font-family: 'Satoshi-Variable', sans-serif;
+    display: block;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    letter-spacing: 0.005em;
+    color: #110733;
+    margin-bottom: 15px;
+    margin-top: 15px;
+  }
+
+  .photo-label-section {
+    margin-left: 20px;
+    margin-top: 4px;
+    width: 100px;
+  }
+
+  .photo-size {
+    height: 75px;
+    width: 75px;
+  }
+
+  .placeholder-avatar {
+    width: 75px;
+    height: 75px;
+    border-radius: 100%;
+    background: #ebdff9;
+    display: flex;
+    flex-direction: row;
+    font-family: 'Satoshi-Variable';
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    color: #5a00cd;
+    margin-right: 8px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 100%;
+    }
+  }
+
+  .placeholder-avatar-font {
+    align-items: center;
+    display: flex;
+    font-family: 'Satoshi-Variable';
+    font-size: 26px;
+    font-weight: 500;
+    justify-content: center;
+    letter-spacing: 0.005em;
+    line-height: 16px;
+  }
+
+  .header-label {
+    color: #110733;
+    font-family: 'Satoshi-Variable';
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: 0.005em;
+  }
+
+  .profile-photo-label {
+    color: #4d4566;
+    font-family: 'Satoshi-Variable';
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.005em;
+    line-height: 24px;
+  }
+
+  .profile-photo-section {
+    background: #fdfbfe;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    padding: 24px;
+    width: 100%;
+  }
+
+  label {
+    color: #110733;
+    font-family: 'Satoshi-Variable';
+    font-size: 14px !important;
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0.005em;
+  }
+
+  .add-admin-name-button {
+    background: #888399;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: #ffffff;
+    font-family: 'Satoshi-Variable';
+    font-size: 14px;
+    font-weight: 500;
+    height: 35px;
+    letter-spacing: 0.005em;
+    line-height: 19px;
+    left: 0%;
+    right: 0%;
+    top: 0%;
+    bottom: 0%;
+    margin-bottom: 2px;
+    margin-top: 1.55rem;
+    padding: 0px 12px;
+    width: 124px;
+    min-height: 2.5rem;
+  }
+
+  table {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+
+    thead {
+      width: 100%;
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+
+      tr {
+        display: flex;
+
+        th {
+          padding: 12px 20px;
+          font-family: 'Satoshi-Variable';
+          font-style: normal;
+          font-weight: 500;
+          font-size: 12px;
+          line-height: 16px;
+          letter-spacing: 0.005em;
+          color: #6b7280;
+        }
+      }
+    }
+
+    tbody {
+      width: 100%;
+
+      tr {
+        display: flex;
+        border-bottom: 1px solid #e5e7eb;
+
+        td {
+          padding: 12px 20px;
+          font-family: 'Satoshi-Variable';
+          font-style: normal;
+          font-weight: 500;
+          font-size: 15px;
+          line-height: 20px;
+          letter-spacing: 0.005em;
+          color: #4d4566;
+
+          &.delete-member {
+            color: #ba1f0d;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+          }
+        }
+      }
+    }
+
+    tr:last-child {
+      border-bottom: 0;
+    }
+
+    .plan-type-width {
+      width: 26.93%;
+    }
+
+    .billing-cycle-width {
+      width: 42.05%;
+    }
+
+    .total-width {
+      width: 23.15%;
+    }
+
+    .cancel-width {
+      width: 7.87%;
+    }
+  }
+
+  .team-member-name-width {
+    width: 48%;
+  }
+
+  .team-member-name {
+    max-width: calc(100% - 48px);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .team-member-email {
+    font-family: 'Satoshi-Variable';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.005em;
+    color: #6b7280;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .avatar-and-info {
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+  }
+
+  .placeholder-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background: #ebdff9;
+    display: flex;
+    flex-direction: row;
+    font-family: 'Satoshi-Variable';
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    color: #5a00cd;
+    margin-right: 8px;
+  }
+
+  .role-width {
+    width: 37%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    .status-badge {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 8px 12.5px;
+      gap: 10px;
+      border-radius: 999px;
+      justify-content: center;
+      height: 22px;
+      font-family: 'Satoshi-Variable';
+      font-style: normal;
+      font-weight: 700;
+      font-size: 10px;
+      line-height: 16px;
+      letter-spacing: 0.005em;
+      width: 59px;
+    }
+  }
+
+  .upload-button {
+    background: #888399;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: #ffffff;
+    font-family: 'Satoshi-Variable';
+    font-size: 12px;
+    font-weight: 500;
+    gap: 8px;
+    height: 32px;
+    letter-spacing: 0.005em;
+    line-height: 16px;
+    left: 0%;
+    right: 0%;
+    top: 0%;
+    bottom: 0%;
+    margin-bottom: 2px;
+    margin-top: 8px;
+    padding: 8px 10px;
+    width: 82px;
+  }
+}
+
+.custom-theme {
+  background: #110733;
+  font-family: 'Satoshi-Variable';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0.005em;
+  color: #ffffff;
+  padding: 25px;
+  word-break: break-all;
+  max-height: 140px;
+  max-width: 100%;
+}
+
+.Toastify__toast-body {
+  padding: 0px !important;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
