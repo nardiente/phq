@@ -6,7 +6,7 @@ import { RejectFeedbackModal } from '../RejectFeedbackModal';
 
 export function FeedbackContent() {
   const { state, updateItemStatus } = useFeedback();
-  const { ideas, loading, error, activeTab } = state;
+  const { items, loading, error, activeTab } = state;
   const { itemToReject, handleReject, handleConfirmReject, cancelReject } =
     useRejectFeedback();
 
@@ -31,7 +31,7 @@ export function FeedbackContent() {
     );
   }
 
-  if (ideas.length === 0) {
+  if (items.length === 0) {
     return (
       <div className="text-center py-8">
         <p className="text-gray-500">No items to review</p>
@@ -42,7 +42,7 @@ export function FeedbackContent() {
   return (
     <>
       <FeedbackList
-        items={ideas}
+        items={items}
         onReject={handleReject}
         onApprove={handleApprove}
       />
@@ -52,7 +52,7 @@ export function FeedbackContent() {
           type={activeTab === 'ideas' ? 'idea' : 'comment'}
           item={itemToReject}
           onConfirm={async (reason) => {
-            await updateItemStatus(itemToReject.id, 'rejected');
+            await updateItemStatus(itemToReject.id ?? 0, 'rejected');
             handleConfirmReject(reason);
           }}
           onCancel={cancelReject}

@@ -302,7 +302,7 @@ export const LoginForm = (props: LoginFormProps) => {
               navigate('/billing-and-invoicing');
               return;
             }
-            navigate('/upvotes');
+            navigate('/dashboard');
             return;
           }
           localStorage.setItem('onboarding_page', result.onboarding_page ?? '');
@@ -453,7 +453,7 @@ export const LoginForm = (props: LoginFormProps) => {
             navigate('/billing-and-invoicing');
             return;
           }
-          navigate('/upvotes');
+          navigate('/dashboard');
           return;
         }
         localStorage.setItem('onboarding_page', result.onboarding_page ?? '');

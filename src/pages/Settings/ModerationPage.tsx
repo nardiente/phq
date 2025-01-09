@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { TurnoffUserLogin } from '../../components/moderation/TurnoffUserLogin';
 import { UserFeedbackSettings } from '../../components/moderation/UserFeedbackSettings';
 import { FeedbackApprovalSection } from '../../components/moderation/FeedbackApprovalSection';
-import { FeedbackProvider } from '../../contexts/FeedbackContext';
 import { getApi, putApi } from '../../utils/api/api';
 import { Moderation } from '../../types/moderation';
 import { toast } from 'react-toastify';
@@ -100,41 +99,39 @@ export default function ModerationPage() {
             </button>
           </div>
         </div>
-        <FeedbackProvider>
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <div className="space-y-6">
-              <h2 className="text-[16px] font-semibold text-gray-900">
-                Moderation
-              </h2>
-              <div className="space-y-8">
-                <TurnoffUserLogin
-                  enabled={moderation.user_login}
-                  onChange={(enabled) =>
-                    setModeration((prev) => ({
-                      ...prev,
-                      user_login: enabled,
-                    }))
-                  }
-                />
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="space-y-6">
+            <h2 className="text-[16px] font-semibold text-gray-900">
+              Moderation
+            </h2>
+            <div className="space-y-8">
+              <TurnoffUserLogin
+                enabled={moderation.user_login}
+                onChange={(enabled) =>
+                  setModeration((prev) => ({
+                    ...prev,
+                    user_login: enabled,
+                  }))
+                }
+              />
 
-                <UserFeedbackSettings
-                  settings={moderation.moderate_settings}
-                  onChange={(key, value) =>
-                    setModeration((prev) => ({
-                      ...prev,
-                      moderate_settings: {
-                        ...prev.moderate_settings,
-                        [key]: value,
-                      },
-                    }))
-                  }
-                />
+              <UserFeedbackSettings
+                settings={moderation.moderate_settings}
+                onChange={(key, value) =>
+                  setModeration((prev) => ({
+                    ...prev,
+                    moderate_settings: {
+                      ...prev.moderate_settings,
+                      [key]: value,
+                    },
+                  }))
+                }
+              />
 
-                <FeedbackApprovalSection />
-              </div>
+              <FeedbackApprovalSection />
             </div>
           </div>
-        </FeedbackProvider>
+        </div>
       </div>
     </div>
   );

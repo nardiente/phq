@@ -3,9 +3,22 @@ import { Feedback } from '../../types/feedback';
 import { FeedbackListItem } from './FeedbackListItem';
 
 interface FeedbackListProps {
-  items: Feedback[];
-  onReject: (item: Feedback) => void;
-  onApprove: (item: Feedback) => void;
+  items: (Partial<Feedback> & {
+    content?: string;
+    date?: string;
+  })[];
+  onReject: (
+    item: Partial<Feedback> & {
+      content?: string;
+      date?: string;
+    }
+  ) => void;
+  onApprove: (
+    item: Partial<Feedback> & {
+      content?: string;
+      date?: string;
+    }
+  ) => void;
 }
 
 export const FeedbackList = memo(function FeedbackList({

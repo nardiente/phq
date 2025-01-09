@@ -2,11 +2,25 @@ import { useState, useCallback } from 'react';
 import { Feedback } from '../types/feedback';
 
 export function useRejectFeedback() {
-  const [itemToReject, setItemToReject] = useState<Feedback | null>(null);
+  const [itemToReject, setItemToReject] = useState<
+    | (Partial<Feedback> & {
+        content?: string;
+        date?: string;
+      })
+    | null
+  >(null);
 
-  const handleReject = useCallback((item: Feedback) => {
-    setItemToReject(item);
-  }, []);
+  const handleReject = useCallback(
+    (
+      item: Partial<Feedback> & {
+        content?: string;
+        date?: string;
+      }
+    ) => {
+      setItemToReject(item);
+    },
+    []
+  );
 
   const handleConfirmReject = useCallback(
     (reason: string) => {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { TabButton } from '../../ui/TabButton';
 
 interface FeedbackTabsProps {

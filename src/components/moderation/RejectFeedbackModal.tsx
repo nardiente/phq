@@ -5,7 +5,10 @@ import { Feedback } from '../../types/feedback';
 
 interface RejectFeedbackModalProps {
   type: 'idea' | 'comment';
-  item: Feedback;
+  item: Partial<Feedback> & {
+    content?: string;
+    date?: string;
+  };
   onConfirm: (reason: string) => void;
   onCancel: () => void;
 }

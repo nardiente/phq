@@ -18,6 +18,10 @@ interface FeedbackState {
     title: string;
   };
   ideas: Feedback[];
+  items: (Partial<Feedback> & {
+    content?: string;
+    date?: string;
+  })[];
   roadmaps?: Roadmap[];
   activeTab: 'ideas' | 'comments';
   loading: boolean;
@@ -44,10 +48,16 @@ type FeedbackAction =
   | { type: 'SET_FILTER_TAGS'; payload: any[] }
   | { type: 'SET_FILTER_TITLE'; payload: string }
   | { type: 'SET_IDEAS'; payload: Feedback[] }
-  | { type: 'SET_ITEMS'; payload: Feedback[] }
+  | {
+      type: 'SET_ITEMS';
+      payload: (Partial<Feedback> & {
+        content?: string;
+        date?: string;
+      })[];
+    }
   | { type: 'SET_LISTING'; payload: boolean }
   | { type: 'SET_SELECTED_IDEA'; payload: Feedback }
-  | { type: 'SET_TAB'; payload: 'ideas' }
+  | { type: 'SET_TAB'; payload: 'ideas' | 'comments' }
   | { type: 'SET_TAGS'; payload: Tag[] }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string | null }
@@ -66,7 +76,7 @@ type FeedbackAction =
 
 interface FeedbackContextType {
   state: FeedbackState;
-  setActiveTab: (tab: 'ideas') => Promise<void>;
+  setActiveTab: (tab: 'ideas' | 'comments') => Promise<void>;
   setFilter: (filter: {
     filtering: boolean;
     sort: string;
@@ -98,6 +108,7 @@ const initialState: FeedbackState = {
     title: '',
   },
   ideas: [],
+  items: [],
   activeTab: 'ideas',
   loading: false,
   error: null,
@@ -113,7 +124,16 @@ const FeedbackContext = createContext<FeedbackContextType | undefined>(
   undefined
 );
 
-const mockItems: { ideas: Feedback[] } = {
+const mockItems: {
+  ideas: (Partial<Feedback> & {
+    content?: string;
+    date?: string;
+  })[];
+  comments: (Partial<Feedback> & {
+    content?: string;
+    date?: string;
+  })[];
+} = {
   ideas: [
     {
       id: 1,
@@ -146,32 +166,32 @@ const mockItems: { ideas: Feedback[] } = {
       vote: 1,
     },
   ],
-  // comments: [
-  //   {
-  //     id: '4',
-  //     title: 'Re: Mobile responsiveness',
-  //     content:
-  //       'The mobile experience could be improved. The buttons are too small to tap accurately on my phone.',
-  //     author: 'David Kim',
-  //     date: 'Mar 15, 2024',
-  //   },
-  //   {
-  //     id: '5',
-  //     title: 'Re: Search functionality',
-  //     content:
-  //       'The new search feature is great, but it would be even better if we could filter by date range.',
-  //     author: 'Lisa Thompson',
-  //     date: 'Mar 14, 2024',
-  //   },
-  //   {
-  //     id: '6',
-  //     title: 'Re: Dashboard widgets',
-  //     content:
-  //       'Love the new dashboard layout! One suggestion: allow us to resize the widgets for better customization.',
-  //     author: 'James Wilson',
-  //     date: 'Mar 13, 2024',
-  //   },
-  // ],
+  comments: [
+    {
+      id: 4,
+      title: 'Re: Mobile responsiveness',
+      content:
+        'The mobile experience could be improved. The buttons are too small to tap accurately on my phone.',
+      author: { full_name: 'David Kim' },
+      date: 'Mar 15, 2024',
+    },
+    {
+      id: 5,
+      title: 'Re: Search functionality',
+      content:
+        'The new search feature is great, but it would be even better if we could filter by date range.',
+      author: { full_name: 'Lisa Thompson' },
+      date: 'Mar 14, 2024',
+    },
+    {
+      id: 6,
+      title: 'Re: Dashboard widgets',
+      content:
+        'Love the new dashboard layout! One suggestion: allow us to resize the widgets for better customization.',
+      author: { full_name: 'James Wilson' },
+      date: 'Mar 13, 2024',
+    },
+  ],
 };
 
 function feedbackReducer(
@@ -208,7 +228,7 @@ function feedbackReducer(
         ideas: action.payload,
       };
     case 'SET_ITEMS':
-      return { ...state, ideas: action.payload };
+      return { ...state, items: action.payload };
     case 'SET_LISTING':
       return { ...state, listing: action.payload };
     case 'SET_TAB':
@@ -259,15 +279,15 @@ function feedbackReducer(
 export function FeedbackProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(feedbackReducer, initialState);
 
-  const fetchItems = async (tab: 'ideas') => {
+  const fetchItems = async (tab: 'ideas' | 'comments') => {
     dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: null });
 
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 500));
-      const ideas = mockItems[tab];
-      dispatch({ type: 'SET_ITEMS', payload: ideas });
+      const items = mockItems[tab];
+      dispatch({ type: 'SET_ITEMS', payload: items });
     } catch (error) {
       console.error({ error });
       dispatch({
@@ -279,7 +299,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const setActiveTab = async (tab: 'ideas') => {
+  const setActiveTab = async (tab: 'ideas' | 'comments') => {
     dispatch({ type: 'SET_TAB', payload: tab });
     await fetchItems(tab);
   };
