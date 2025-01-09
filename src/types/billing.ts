@@ -1,6 +1,31 @@
+export interface Card {
+  id: number;
+  icon: string;
+  type: string;
+  number: string;
+  cvv_cvc: string;
+  expiration: string;
+  cardholder_name: string;
+  primary?: boolean;
+}
+
 export enum CheckoutMode {
   ONE_TIME = 'one_time',
   RECURRING = 'recurring',
+}
+
+export interface Country {
+  code: string;
+  country: string;
+  id: number;
+}
+
+export interface InvoiceHistory {
+  billed_on: Date;
+  status: string;
+  description: string;
+  total: number;
+  invoice_pdf: string;
 }
 
 export interface Subscription {
