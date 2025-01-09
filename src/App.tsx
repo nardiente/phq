@@ -9,6 +9,7 @@ import { FC, useEffect } from 'react';
 import AppRoutes from './routes/routes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { PanelProvider } from './contexts/PanelContext';
 
 const App: FC = () => {
   const { user } = useUser();
@@ -90,19 +91,21 @@ const App: FC = () => {
   return (
     <>
       <SocketProvider>
-        <FeedbackProvider>
-          <UserNotificationProvider>
-            <UserProvider>
-              <DropdownProvider>
-                <UnsavedChangesProvider>
-                  <BoostProvider>
-                    <AppRoutes />
-                  </BoostProvider>
-                </UnsavedChangesProvider>
-              </DropdownProvider>
-            </UserProvider>
-          </UserNotificationProvider>
-        </FeedbackProvider>
+        <PanelProvider>
+          <FeedbackProvider>
+            <UserNotificationProvider>
+              <UserProvider>
+                <DropdownProvider>
+                  <UnsavedChangesProvider>
+                    <BoostProvider>
+                      <AppRoutes />
+                    </BoostProvider>
+                  </UnsavedChangesProvider>
+                </DropdownProvider>
+              </UserProvider>
+            </UserNotificationProvider>
+          </FeedbackProvider>
+        </PanelProvider>
       </SocketProvider>
       <ToastContainer />
     </>

@@ -1,0 +1,31 @@
+@import '../../appearance-colors.css';
+
+.cursor-default {
+  background-color: #ffffff;
+  color: #e1e0e5;
+  cursor: default;
+}
+
+.upvote-a {
+  background-color: #ffffff;
+  color: #e1e0e5;
+
+  &:active {
+    border: 1.5px solid var(--public-view-tags-active-text-color) !important;
+  }
+}
+
+.upvote-arrow {
+  fill: var(--public-view-tags-active-text-color) !important;
+}
+
+.upvote-count {
+  color: #110733 !important;
+  font-family: 'Satoshi-Variable';
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  line-height: 16px;
+  text-align: center;
+}

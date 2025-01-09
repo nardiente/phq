@@ -19,3 +19,9 @@ export const urlPattern = new RegExp(
     '(\\#[-a-z\\d_]*)?$',
   'i' // validate fragment locator
 );
+
+export const dateOptions: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'short',
+  day: '2-digit',
+};

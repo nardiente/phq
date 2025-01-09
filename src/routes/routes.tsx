@@ -18,6 +18,7 @@ import TestimonialsPage from '../pages/TestimonialsPage';
 import WidgetsPage from '../pages/WidgetsPage';
 import { SSOVerifyingPage } from '../components/SSOVerifying';
 import ForgotPasswordPage from '../pages/ForgotPassword';
+import UpvotesPage from '../pages/UpvotesPage';
 
 const AppRoutes = () => {
   return (
@@ -38,26 +39,28 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/upvotes"
+        element={
+          <ProtectedRoute>
+            <UpvotesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/widgets"
+        element={
+          <ProtectedRoute>
+            <WidgetsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Settings */}
+      <Route
         path="/account"
         element={
           <ProtectedRoute>
             <AccountSettings />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/boost"
-        element={
-          <ProtectedRoute>
-            <BoostPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/create-boost"
-        element={
-          <ProtectedRoute>
-            <CreateBoostPage />
           </ProtectedRoute>
         }
       />
@@ -86,22 +89,6 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/emails"
-        element={
-          <ProtectedRoute>
-            <EmailsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/tags"
-        element={
-          <ProtectedRoute>
-            <TagsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
         path="/team"
         element={
           <ProtectedRoute>
@@ -118,6 +105,22 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/tags"
+        element={
+          <ProtectedRoute>
+            <TagsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/emails"
+        element={
+          <ProtectedRoute>
+            <EmailsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/import"
         element={
           <ProtectedRoute>
@@ -125,19 +128,29 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/boost"
+        element={
+          <ProtectedRoute>
+            <BoostPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/create-boost"
+        element={
+          <ProtectedRoute>
+            <CreateBoostPage />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/testimonials"
         element={
           <ProtectedRoute>
             <TestimonialsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/widgets"
-        element={
-          <ProtectedRoute>
-            <WidgetsPage />
           </ProtectedRoute>
         }
       />

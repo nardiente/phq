@@ -1,0 +1,151 @@
+import './styles.css';
+import * as React from 'react';
+import { PageHeaderProps } from './types';
+import { RoadmapFilter } from '../RoadmapFilter';
+import { useUser } from '../../contexts/UserContext';
+import { usePanel } from '../../contexts/PanelContext';
+import { useState } from 'react';
+import { ChangeType } from '../../types/whats-new';
+import { getApi } from '../../utils/api/api';
+import { useFeedback } from '../../contexts/FeedbackContext';
+import { WhatsNewFilter } from '../WhatsNewFilter';
+import { RbacPermissions } from '../../types/common';
+import { PlusIcon } from '../icons/plus.icon';
+
+export const PageHeader: React.FC<PageHeaderProps> = (props) => {
+  const { user } = useUser();
+  const {
+    state: { active_tab },
+    setIsOpen,
+  } = usePanel();
+  const { setFilterTitle } = useFeedback();
+
+  const has_new_idea_button =
+    active_tab === '/upvote' || active_tab === '/roadmaps';
+  const is_member = user?.user?.role_id;
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+
+  const [change_types, setChangeTypes] = useState<ChangeType[]>([]);
+  const [title, setTitle] = React.useState<string>('');
+
+  const listChangeType = () => {
+    getApi<ChangeType[]>('whatsnew/change-types').then((res) => {
+      if (res.results.data) {
+        const data = res.results.data;
+        setChangeTypes(data);
+      }
+    });
+  };
+
+  React.useEffect(() => {
+    if (props.listWhatsNew) {
+      listChangeType();
+    }
+  }, []);
+
+  return (
+    <div id="page-header">
+      <div className={`page-container ${props.pageContainerClass || ''}`}>
+        <div className="page-label default-text-color">{props.header}</div>
+        {active_tab === '/roadmaps' && (
+          <div id="RoadmapFilter" className="search">
+            <div className="control has-icons-right input-field">
+              <input
+                id="search-field"
+                className="input"
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                  if (e.target.value.length === 0) {
+                    setFilterTitle(e.target.value);
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) {
+                    setFilterTitle(title);
+                  }
+                }}
+                placeholder="Search ideas"
+                type="text"
+                value={title}
+              />
+              <span className="icon is-right">
+                <figure className="image is-16x16">
+                  <img
+                    onClick={() => setFilterTitle(title)}
+                    src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/search.svg"
+                  />
+                </figure>
+              </span>
+            </div>
+          </div>
+        )}
+        <div className="right-header">
+          {active_tab === '/roadmaps' && <RoadmapFilter />}
+          {props.listWhatsNew && (
+            <div>
+              <div className="field is-grouped">
+                <WhatsNewFilter
+                  listChangeType={listChangeType}
+                  change_types={change_types}
+                  listWhatsNew={props.listWhatsNew}
+                />
+                {!is_public &&
+                  user?.rbac_permissions.includes(
+                    RbacPermissions.CREATE_EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_YOUR_OWN_POST
+                  ) && (
+                    <button
+                      className="new-post-button"
+                      type="button"
+                      onClick={() => props.openPostForm?.(undefined)}
+                      disabled={props.disabled}
+                    >
+                      <PlusIcon />
+                      New Post
+                    </button>
+                  )}
+              </div>
+            </div>
+          )}
+          {props.secondaryButtonLabel && (
+            <div id="secondary-button">
+              <button
+                className={
+                  props.loading || props.disabled ? '' : 'is-clickable'
+                }
+                onClick={props.handleOnCancel}
+                disabled={props.loading || props.disabled}
+              >
+                {props.secondaryButtonLabel}
+              </button>
+            </div>
+          )}
+          {props.buttonLabel &&
+            ((has_new_idea_button &&
+              is_member &&
+              user.rbac_permissions.includes(
+                RbacPermissions.CREATE_EDIT_IDEAS
+              )) ||
+              !is_member ||
+              !has_new_idea_button) && (
+              <div id="primary-button">
+                <button
+                  className={
+                    props.loading || props.disabled ? '' : 'is-clickable'
+                  }
+                  onClick={() =>
+                    props.handleOnUpdate === undefined
+                      ? setIsOpen(true)
+                      : props.handleOnUpdate()
+                  }
+                  disabled={props.loading || props.disabled}
+                >
+                  {props.showButtonIcon && <PlusIcon />}
+                  {props.loading ? 'Loading...' : props.buttonLabel}
+                </button>
+              </div>
+            )}
+        </div>
+      </div>
+    </div>
+  );
+};
