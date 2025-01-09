@@ -469,7 +469,7 @@ export default function BillingPage() {
                 <div className="bg-white rounded-lg border border-gray-200 p-6">
                   <div className="space-y-6">
                     <h2 className="text-[16px] font-semibold text-gray-900">
-                      Team Members
+                      Billing and Invoicing
                     </h2>
                     <div className="credit-cards">
                       <h3>Credit cards</h3>

@@ -10,7 +10,7 @@ import ProjectDetailsPage from '../pages/Settings/ProjectDetailsPage';
 import AppearancePage from '../pages/Settings/AppearancePage';
 import ModerationPage from '../pages/Settings/ModerationPage';
 import EmailsPage from '../pages/EmailsPage';
-import TagsPage from '../pages/TagsPage';
+import TagsPage from '../pages/Settings/TagsPage';
 import TeamMembersPage from '../pages/Settings/TeamMembersPage';
 import BillingPage from '../pages/Settings/BillingPage';
 import ImportIdeasPage from '../pages/ImportIdeasPage';

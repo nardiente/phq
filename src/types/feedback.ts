@@ -1,3 +1,5 @@
+import { ApiFieldError } from '../utils/api/types';
+
 export interface FeedbackItem {
   id: string;
   title: string;
@@ -8,6 +10,12 @@ export interface FeedbackItem {
 }
 
 export interface Tag {
-  tag: string;
   id: number;
+  tag: string;
+  description?: string;
+  created_by?: number;
+  created_at?: Date;
+  updated_at?: Date;
+  field_errors?: ApiFieldError[];
+  on_delete?: (e: any) => void;
 }
