@@ -266,8 +266,8 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 500));
-      const items = mockItems[tab];
-      dispatch({ type: 'SET_ITEMS', payload: items });
+      const ideas = mockItems[tab];
+      dispatch({ type: 'SET_ITEMS', payload: ideas });
     } catch (error) {
       console.error({ error });
       dispatch({

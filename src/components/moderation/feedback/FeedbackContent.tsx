@@ -6,7 +6,7 @@ import { RejectFeedbackModal } from '../RejectFeedbackModal';
 
 export function FeedbackContent() {
   const { state, updateItemStatus } = useFeedback();
-  const { items, loading, error, activeTab } = state;
+  const { ideas, loading, error, activeTab } = state;
   const { itemToReject, handleReject, handleConfirmReject, cancelReject } =
     useRejectFeedback();
 
@@ -31,7 +31,7 @@ export function FeedbackContent() {
     );
   }
 
-  if (items.length === 0) {
+  if (ideas.length === 0) {
     return (
       <div className="text-center py-8">
         <p className="text-gray-500">No items to review</p>
@@ -42,7 +42,7 @@ export function FeedbackContent() {
   return (
     <>
       <FeedbackList
-        items={items}
+        items={ideas}
         onReject={handleReject}
         onApprove={handleApprove}
       />

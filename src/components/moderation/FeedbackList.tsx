@@ -1,11 +1,11 @@
 import { memo } from 'react';
-import { FeedbackItem } from '../../types/feedback';
+import { Feedback } from '../../types/feedback';
 import { FeedbackListItem } from './FeedbackListItem';
 
 interface FeedbackListProps {
-  items: FeedbackItem[];
-  onReject: (item: FeedbackItem) => void;
-  onApprove: (item: FeedbackItem) => void;
+  items: Feedback[];
+  onReject: (item: Feedback) => void;
+  onApprove: (item: Feedback) => void;
 }
 
 export const FeedbackList = memo(function FeedbackList({

@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { X, AlertTriangle, HelpCircle } from 'lucide-react';
 import { Toast } from '../Toast';
+import { Feedback } from '../../types/feedback';
 
 interface RejectFeedbackModalProps {
   type: 'idea' | 'comment';
-  item: {
-    title: string;
-    author: string;
-    email?: string;
-  };
+  item: Feedback;
   onConfirm: (reason: string) => void;
   onCancel: () => void;
 }
@@ -88,9 +85,9 @@ The ProductHQ team.
               />
               {showHelp && (
                 <div className="mt-2 p-3 bg-blue-50 rounded-lg text-[13px] text-blue-700">
-                  This message will be sent to {item.author} explaining why
-                  their {type} was rejected. Be clear and constructive in your
-                  feedback.
+                  This message will be sent to {item.author?.full_name}{' '}
+                  explaining why their {type} was rejected. Be clear and
+                  constructive in your feedback.
                 </div>
               )}
             </div>

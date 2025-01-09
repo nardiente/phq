@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
-import { FeedbackItem } from '../types/feedback';
+import { Feedback } from '../types/feedback';
 
 export function useRejectFeedback() {
-  const [itemToReject, setItemToReject] = useState<FeedbackItem | null>(null);
+  const [itemToReject, setItemToReject] = useState<Feedback | null>(null);
 
-  const handleReject = useCallback((item: FeedbackItem) => {
+  const handleReject = useCallback((item: Feedback) => {
     setItemToReject(item);
   }, []);
 

@@ -16,7 +16,7 @@ export interface Feedback {
   updated_at?: Date;
   status?: Status;
   status_id?: number;
-  tags?: string[] | string;
+  tags?: string[];
   feedback_tags?: FeedbackTag[];
   comment_count?: number;
   did_vote?: boolean;
