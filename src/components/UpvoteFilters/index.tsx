@@ -1,9 +1,10 @@
 import './styles.css';
-import * as React from 'react';
+import '../WhatsNewFilter/styles.css';
 import { UpvoteFiltersProps } from './types';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { Dropdown } from '../DropDown';
 import { ChevronDownIcon } from '../icons/chevron-down.icon';
+import { Fragment, useState } from 'react';
 
 export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
   const {
@@ -11,7 +12,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
     setFilter,
   } = useFeedback();
 
-  const [title, setTitle] = React.useState<string>(filters.title);
+  const [title, setTitle] = useState<string>(filters.title);
 
   const handleUpvoteSearch = () => {
     setFilter(
@@ -70,12 +71,12 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
   };
 
   return (
-    <div id="UpvoteFilter">
+    <div id="UpvoteFilter" className="mt-4">
       <div className="upvote-container">
         <div className="sort">
           <Dropdown
             content={
-              <React.Fragment>
+              <Fragment>
                 <span
                   onClick={() => onSort('Newest')}
                   className="dropdown-item is-clickable drop-down-font"
@@ -106,15 +107,15 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
                 >
                   Most Votes
                 </span>
-              </React.Fragment>
+              </Fragment>
             }
             label={
-              <React.Fragment>
+              <Fragment>
                 <span className="for-dropdown">{filters.sort}</span>
                 <span className="icon is-small" style={{ marginTop: '2px' }}>
                   <ChevronDownIcon />
                 </span>
-              </React.Fragment>
+              </Fragment>
             }
             content_class="dropdown-content"
             content_container_class=""
@@ -150,7 +151,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
         <div className="filter">
           <Dropdown
             content={
-              <React.Fragment>
+              <Fragment>
                 <div className="control right-input-field">
                   <input
                     className="input right-filter-field"
@@ -289,10 +290,10 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
                     ))}
                   </div>
                 </div>
-              </React.Fragment>
+              </Fragment>
             }
             label={
-              <React.Fragment>
+              <Fragment>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -305,7 +306,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
                   <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
                 </svg>
                 Filter
-              </React.Fragment>
+              </Fragment>
             }
             container_class="right-filter"
             content_class="dropdown-content"

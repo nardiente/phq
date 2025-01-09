@@ -13,7 +13,7 @@
     flex-direction: row;
     justify-content: space-between;
     padding: 0px;
-    width: 48.88%;
+    min-width: 1200px;
 
     .page-label {
       color: #110733;

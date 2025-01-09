@@ -1,24 +1,25 @@
 import { Fragment, useEffect } from 'react';
 
 import { useState } from 'react';
-import { useUser } from '../contexts/UserContext';
+import { useUser } from '../../contexts/UserContext';
 import moment from 'moment';
-import { Feedback, Tag } from '../types/feedback';
-import { getApi } from '../utils/api/api';
-import { Roadmap } from '../types/roadmap';
-import { getCustomerKaslKey } from '../utils/localStorage';
-import { getKaslKey } from '../utils/localStorage';
-import { useFeedback } from '../contexts/FeedbackContext';
-import { useSocket } from '../contexts/SocketContext';
-import { Permissions } from '../types/common';
+import { Feedback, Tag } from '../../types/feedback';
+import { getApi, postApi } from '../../utils/api/api';
+import { Roadmap } from '../../types/roadmap';
+import { getCustomerKaslKey, setKaslKey } from '../../utils/localStorage';
+import { getKaslKey } from '../../utils/localStorage';
+import { useFeedback } from '../../contexts/FeedbackContext';
+import { useSocket } from '../../contexts/SocketContext';
+import { Permissions } from '../../types/common';
 import { FadeLoader } from 'react-spinners';
-import { useNavigate } from 'react-router-dom';
-import { usePanel } from '../contexts/PanelContext';
-import { PageHeader } from '../components/PageHeader';
-import { UpvoteFilters } from '../components/UpvoteFilters';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { usePanel } from '../../contexts/PanelContext';
+import { PageHeader } from '../../components/PageHeader';
+import { UpvoteFilters } from '../../components/UpvoteFilters';
 import styled from 'styled-components';
-import { UpVoteEachList } from '../components/upvote-each-list';
-import { AddYourBoardModal } from '../components/AddYourBoardModal';
+import { UpVoteEachList } from './components/upvote-each-list';
+import { AddYourBoardModal } from '../../components/AddYourBoardModal';
+import queryString from 'query-string';
 
 const ListDiv = styled.div`
   background-color: var(--public-view-background-color);
@@ -27,8 +28,9 @@ const ListDiv = styled.div`
 
 export default function UpvotesPage() {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const { user: userDetails } = useUser();
+  const { user: userDetails, setShowBanner } = useUser();
   const { moderation, permissions, project, user } = userDetails ?? {};
   const {
     state: {
@@ -43,7 +45,15 @@ export default function UpvotesPage() {
     updateIdea,
     updateIdeaInRoadmap,
   } = useFeedback();
-  const { setActivePage, setIsOpen } = usePanel();
+  const {
+    setActivePage,
+    setActiveTab,
+    setIsContinueReading,
+    setIsOpen,
+    setPanelCommentId,
+    setWhatsNewId,
+    setWhatsNewPreviewId,
+  } = usePanel();
   const {
     state: { tags },
     setSocketTags,
@@ -54,6 +64,61 @@ export default function UpvotesPage() {
   const [fetching, setFetching] = useState<boolean>(true);
   const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
   const [remindAddBoard, setRemindAddBoard] = useState<boolean | undefined>();
+
+  useEffect(() => {
+    if (location.search) {
+      const params = queryString.parse(location.search);
+
+      if (params.wni || params.pi) {
+        setIsContinueReading(true);
+        if (params.wni) setWhatsNewId(Number(params.wni));
+        if (params.pi) setWhatsNewPreviewId(Number(params.pi));
+        setActiveTab('/changelog');
+      }
+      if (params.c) {
+        setPanelCommentId(Number(params.c));
+      }
+      if (
+        typeof params['u'] === 'string' &&
+        !Number.isNaN(Number(params['u'])) &&
+        typeof params['k'] === 'string'
+      ) {
+        postApi({
+          url: 'auth/activate',
+          payload: {
+            id: parseInt(params['u']),
+            activation_key: params['k'],
+          },
+        }).then((res) => {
+          if (res.results.error) {
+            if (res.results.error == 'error.account.verified') {
+              window.location.href = '/sign-in';
+              setShowBanner(true);
+              return;
+            }
+          }
+          if (res.headers['kasl-key'] && res.results.data) {
+            setKaslKey(res.headers['kasl-key'].toString());
+            if (params.i) {
+              window.location.href = `/?i=${params.i}`;
+            }
+          }
+        });
+      } else if (params.i) {
+        getFeedback(Number(params.i));
+      }
+
+      const uri = location.toString();
+      if (uri.indexOf('?') > 0) {
+        const clean_uri = uri.substring(0, uri.indexOf('?'));
+        window.history.replaceState({}, document.title, clean_uri);
+      }
+
+      return;
+    }
+
+    handleListFeedback(false);
+  }, []);
 
   useEffect(() => {
     setRemindAddBoard(
@@ -170,6 +235,7 @@ export default function UpvotesPage() {
           (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
           permissions?.length === 0
         }
+        pageContainerClass="max-w-[1200px] mx-auto pt-8 px-6"
       />
       <UpvoteFilters roadmaps={roadmaps} />
       <div id="UpVoteList">

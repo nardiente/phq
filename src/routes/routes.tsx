@@ -18,7 +18,7 @@ import TestimonialsPage from '../pages/TestimonialsPage';
 import WidgetsPage from '../pages/WidgetsPage';
 import { SSOVerifyingPage } from '../components/SSOVerifying';
 import ForgotPasswordPage from '../pages/ForgotPassword';
-import UpvotesPage from '../pages/UpvotesPage';
+import UpvotesPage from '../pages/Upvotes/UpvotesPage';
 
 const AppRoutes = () => {
   return (

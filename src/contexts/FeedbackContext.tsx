@@ -102,7 +102,7 @@ const initialState: FeedbackState = {
   listing: false,
   filters: {
     filtering: false,
-    sort: '',
+    sort: 'Newest',
     status: '',
     tags: [],
     title: '',

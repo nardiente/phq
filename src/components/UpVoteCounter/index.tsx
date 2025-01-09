@@ -38,7 +38,7 @@ export const UpVoteCounter = ({
   const [active_uv_arrow, setActiveUVArrow] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const is_public = process.env.SYSTEM_TYPE === 'public';
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const is_logged_in =
     getKaslKey() !== undefined ||

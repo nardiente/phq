@@ -1,0 +1,369 @@
+@import '../../appearance-colors.css';
+
+#UpVoteList {
+  height: calc(100vh - 215px);
+  overflow: auto;
+
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+
+  .upvote-each-list-container {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 118px;
+    padding: 8px;
+    width: 100%;
+
+    .pinned-label {
+      font-family: 'Satoshi-Variable';
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 16px;
+      letter-spacing: 0.005em;
+      text-align: left;
+      color: #fba911;
+      margin-bottom: -10px;
+    }
+
+    #UpVoteEachList {
+      align-items: flex-start;
+      background-color: #ffffff;
+      border: 1px solid #f9f9fa;
+      border-radius: 8px;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      padding: 16px;
+      width: 100%;
+
+      &:hover {
+        background-color: var(
+          --public-view-tags-active-background-color
+        ) !important;
+      }
+
+      .idea-h {
+        font-family: 'Satoshi-Variable';
+        justify-content: space-between;
+        color: #110733;
+      }
+
+      .is-20 {
+        height: 20px;
+        width: 20px;
+      }
+
+      .mr-8 {
+        margin-right: 8px;
+      }
+
+      .responsiveImage {
+        width: 100%;
+        height: 100%;
+        margin-right: 10px;
+        object-fit: cover;
+      }
+
+      .upvote-details {
+        align-items: flex-start;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        overflow-wrap: anywhere;
+        padding: 0px;
+        width: 100%;
+
+        .upvote-description {
+          align-items: center;
+          color: #4d4566;
+          display: flex;
+          font-family: 'Satoshi-Variable';
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          letter-spacing: 0.005em;
+          line-height: 24px;
+        }
+
+        .upvote-info {
+          align-items: center;
+          color: #4d4566;
+          display: flex;
+          flex-direction: row;
+          font-family: 'Satoshi-Variable';
+          font-size: 10px;
+          font-style: normal;
+          font-weight: 700;
+          letter-spacing: 0.005em;
+          line-height: 16px;
+          padding: 0px;
+          width: 100%;
+
+          .line {
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            height: 14px;
+            justify-content: center;
+            padding: 0px;
+            width: 14px;
+
+            span {
+              border: 1px solid #c3c1cc;
+              height: 0px;
+              opacity: 0.2;
+              transform: rotate(90deg);
+              width: 14px;
+            }
+          }
+
+          .upvote-tags {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: row;
+            gap: 4px;
+            padding: 0px;
+
+            .upvote-tag {
+              align-items: center;
+              background: var(--public-view-tags-active-background-color);
+              border-radius: 999px;
+              color: var(--public-view-tags-active-text-color);
+              display: flex;
+              flex-direction: row;
+              font-family: 'Satoshi-Variable';
+              font-size: 10px;
+              font-style: normal;
+              font-weight: 700;
+              letter-spacing: 0.005em;
+              line-height: 16px;
+              gap: 1px;
+              padding: 2px 6.5px;
+            }
+          }
+        }
+
+        hr {
+          height: 1px;
+          color: #e5e7eb;
+          width: 100%;
+          margin: 2px 0;
+        }
+
+        .release-date-container {
+          width: 100%;
+
+          .content {
+            width: 100%;
+            height: 16px;
+            font-family: 'Satoshi-Variable';
+            font-size: 11px;
+            font-weight: 500;
+            line-height: 16px;
+            letter-spacing: 0.005em;
+            text-align: left;
+            color: #8e8c9d;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+          }
+        }
+      }
+
+      .top-right {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+
+        hr {
+          width: 14px;
+          border: 1px solid #c3c1cc;
+          transform: rotate(90deg);
+          opacity: 20%;
+        }
+
+        .pin-icon {
+          display: flex;
+          align-items: center;
+
+          &.unpinned {
+            color: #6b7280;
+          }
+
+          &.pinned {
+            color: #fba911;
+          }
+
+          &.disabled {
+            cursor: default;
+            opacity: 50%;
+          }
+
+          &.unclickable {
+            opacity: 100%;
+          }
+        }
+      }
+    }
+
+    hr {
+      height: 1px;
+      color: #e5e7eb;
+      width: 100%;
+      margin: 2px 0;
+      padding: 1px 0;
+    }
+  }
+}
+
+@media screen and (min-width: 905px) {
+  #UpVoteList {
+    .upvote-each-list-container {
+      width: 704px;
+    }
+  }
+}
+
+#UpvotePublicView {
+  #NoAccountText {
+    color: #913187;
+  }
+
+  .dropdown-divider {
+    background-color: #e2e2ec;
+  }
+
+  #IdeaField,
+  #DescField {
+    background-color: #ffffff;
+  }
+
+  li > a {
+    color: #6f6fa2 !important;
+  }
+
+  .is-active > a {
+    color: #913187 !important;
+    border-bottom: 2px solid #913187;
+  }
+
+  Textarea::placeholder {
+    font-weight: lighter;
+  }
+}
+
+#UpVoteListView {
+  color: #6f6fa2 !important;
+
+  .buttons:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  .drop-down-button {
+    background: transparent;
+    border: none;
+  }
+
+  .drop-down-font {
+    color: #110733;
+    font-family: 'Satoshi-Variable';
+    font-size: 14px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+
+  .for-dropdown {
+    display: inline-block;
+    font-family: 'Satoshi-Variable';
+    font-size: 14px;
+    max-width: 135px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  hr.divider {
+    margin-bottom: 12px;
+    margin-left: 11px;
+    margin-right: 11px;
+    margin-top: 0px;
+    border: none;
+    color: #f1f1f6;
+    height: 1px;
+  }
+
+  #search-div {
+    padding-right: 0 !important;
+  }
+
+  .upvotes-fs {
+    color: #110733;
+    font-family: 'Satoshi-Variable';
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32.4px;
+  }
+
+  .idea-h {
+    font-family: 'Satoshi-Variable';
+  }
+
+  .idea-h:hover {
+    color: var(--public-view-tags-active-text-color) !important;
+  }
+
+  .upvote-a:active {
+    border: 2px solid var(--public-view-tags-active-text-color) !important;
+    fill: var(--public-view-tags-active-text-color) !important;
+  }
+
+  .upvote-a:focus {
+    border: 2px solid var(--public-view-tags-active-text-color) !important;
+  }
+
+  .upvote-b:active {
+    fill: var(--public-view-tags-active-text-color) !important;
+  }
+}
+
+#UpVoteCommentsView {
+  margin-bottom: 0;
+
+  .column {
+    padding-bottom: 0;
+  }
+}
+
+.no-upvote-background {
+  padding: 81.5px;
+  text-align: center;
+}
+
+.no-upvote-header {
+  color: #4d4566;
+  font-family: 'Satoshi-Variable';
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0.005em;
+}
+
+.no-upvote-sub {
+  color: #888399;
+  font-family: 'Satoshi-Variable';
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 8px;
+  line-height: 16px;
+  letter-spacing: 0.005em;
+}

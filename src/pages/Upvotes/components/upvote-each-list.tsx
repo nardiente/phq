@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
-import { Feedback, FeedbackTag } from '../types/feedback';
-import { useUser } from '../contexts/UserContext';
-import { useFeedback } from '../contexts/FeedbackContext';
-import { usePanel } from '../contexts/PanelContext';
-import { patchApi } from '../utils/api/api';
-import { Calendar4RangeIcon } from './icons/calendar4-range.icon';
-import { PinIcon } from './icons/pin.icon';
-import { PinFillIcon } from './icons/pin-fill.icon';
-import { UpVoteCounter } from './UpVoteCounter';
-import { formatDate } from '../utils/date';
+import { Feedback, FeedbackTag } from '../../../types/feedback';
+import { useUser } from '../../../contexts/UserContext';
+import { useFeedback } from '../../../contexts/FeedbackContext';
+import { usePanel } from '../../../contexts/PanelContext';
+import { patchApi } from '../../../utils/api/api';
+import { Calendar4RangeIcon } from '../../../components/icons/calendar4-range.icon';
+import { PinIcon } from '../../../components/icons/pin.icon';
+import { PinFillIcon } from '../../../components/icons/pin-fill.icon';
+import { UpVoteCounter } from '../../../components/UpVoteCounter';
+import { formatDate } from '../../../utils/date';
+import '../styles.css';
 
 const UpvoteLabelLink = styled.span`
   align-items: center;
@@ -40,7 +41,7 @@ export const UpVoteEachList = ({
 
   const [pinning, setPinning] = useState<boolean>(false);
 
-  const is_admin = process.env.SYSTEM_TYPE === 'admin';
+  const is_admin = import.meta.env.VITE_SYSTEM_TYPE === 'admin';
 
   const handleClickIdea = (feedback: Feedback) => {
     setSelectedIdea(feedback);
