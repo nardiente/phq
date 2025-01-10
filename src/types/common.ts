@@ -1,3 +1,13 @@
+export enum EmojiTypes {
+  NONE = 'none',
+  LIKE = 'like',
+  HEART = 'heart',
+  KISS = 'kiss',
+  FIRE = 'fire',
+  EYES = 'eyes',
+  SAD = 'sad',
+}
+
 export enum Permissions {
   // Upvote/Roadmap Idea
   ADD_IDEA = 'add_idea',

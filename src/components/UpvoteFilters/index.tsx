@@ -1,5 +1,4 @@
 import './styles.css';
-import '../WhatsNewFilter/styles.css';
 import { UpvoteFiltersProps } from './types';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { Dropdown } from '../DropDown';

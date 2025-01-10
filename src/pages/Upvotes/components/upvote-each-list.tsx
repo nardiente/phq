@@ -64,7 +64,7 @@ export const UpVoteEachList = ({
       <UpVoteCounter data={props} />
       <div className="upvote-details">
         <UpvoteLabelLink
-          id={props.id.toString()}
+          id={(props.id ?? 0).toString()}
           className="active-link-color is-clickable idea-h"
           onClick={() => handleClickIdea(props)}
         >

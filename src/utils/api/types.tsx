@@ -24,7 +24,8 @@ export interface Payload {
     | number[]
     | Image[]
     | undefined
-    | string[];
+    | string[]
+    | null;
 }
 
 export interface ApiResponseBody<Data = object> {

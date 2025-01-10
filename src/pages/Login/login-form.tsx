@@ -46,7 +46,7 @@ const FormHeader = styled.div`
   width: 100%;
 `;
 
-// const appId = process.env.FB_APP_ID || ''
+// const appId = import.meta.env.FB_APP_ID || ''
 
 interface LoginFormProps {
   is_mobile?: boolean;

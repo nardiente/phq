@@ -16,6 +16,20 @@ export const validateEmail = (email: string) => {
   }
 };
 
+export const validateEmailWithResponse = (email: string) => {
+  if (email.length == 0) {
+    return 'This is a required field.';
+  }
+  if (email.length > 256) {
+    return 'Maximum of 256 characters.';
+  }
+  const regex = /^\w+([\\.+-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
+  if (!regex.test(email)) {
+    return 'Invalid email address.';
+  }
+  return null;
+};
+
 export const validateFullName = (fullName: string) => {
   if (fullName.length == 0) {
     return 'This is a required field.';
@@ -44,6 +58,27 @@ export const validatePassword = (p: string) => {
   } else {
     return true;
   }
+};
+
+export const validatePasswordWithResponse = (password: string) => {
+  if (password.length == 0) {
+    return 'This is a required field.';
+  }
+  const { has_lower, has_number, has_special, has_upper, is_long_enough } =
+    isGoodPassword(password, 8);
+  if (
+    password.length > 0 &&
+    (!has_lower ||
+      !has_number ||
+      !has_special ||
+      !has_upper ||
+      !is_long_enough ||
+      password.length < 8 ||
+      password.length > 256)
+  ) {
+    return 'error.password.complexity';
+  }
+  return null;
 };
 
 export const validateSubdomain = (subdomain: string) => {

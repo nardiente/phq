@@ -27,7 +27,7 @@ interface FeedbackState {
   loading: boolean;
   error: string | null;
   tags: any[];
-  selectedIdea: any;
+  selectedIdea: Feedback | null;
   filter: {
     tags: string[];
     title: string;
@@ -35,6 +35,16 @@ interface FeedbackState {
 }
 
 type FeedbackAction =
+  | { type: 'ADD_IDEA'; payload: Feedback }
+  | {
+      type: 'ADD_IDEA_IN_ROADMAP';
+      payload: { roadmap_id: number; idea: Feedback };
+    }
+  | { type: 'DELETE_BY_ID'; payload: number }
+  | {
+      type: 'DELETE_IDEA_IN_ROADMAP_BY_ID';
+      payload: { roadmap_id: number; idea_id: number };
+    }
   | {
       type: 'SET_FILTER';
       payload: {
@@ -56,7 +66,8 @@ type FeedbackAction =
       })[];
     }
   | { type: 'SET_LISTING'; payload: boolean }
-  | { type: 'SET_SELECTED_IDEA'; payload: Feedback }
+  | { type: 'SET_ROADMAPS'; payload: Roadmap[] }
+  | { type: 'SET_SELECTED_IDEA'; payload: Feedback | null }
   | { type: 'SET_TAB'; payload: 'ideas' | 'comments' }
   | { type: 'SET_TAGS'; payload: Tag[] }
   | { type: 'SET_LOADING'; payload: boolean }
@@ -72,10 +83,18 @@ type FeedbackAction =
   | {
       type: 'UPDATE_ITEM_STATUS';
       payload: { id: number; status: 'approved' | 'rejected' };
-    };
+    }
+  | { type: 'UPDATE_ROADMAP'; payload: Roadmap };
 
 interface FeedbackContextType {
   state: FeedbackState;
+  addIdea: (idea: Feedback) => Promise<void>;
+  addIdeaInRoadmap: (roadmap_id: number, idea: Feedback) => Promise<void>;
+  deleteIdeaById: (id: number) => Promise<void>;
+  deleteIdeaInRoadmapById: (
+    roadmap_id: number,
+    idea_id: number
+  ) => Promise<void>;
   setActiveTab: (tab: 'ideas' | 'comments') => Promise<void>;
   setFilter: (filter: {
     filtering: boolean;
@@ -88,7 +107,8 @@ interface FeedbackContextType {
   setFilterTitle: (title: string) => Promise<void>;
   setIdeas: (ideas: Feedback[]) => Promise<void>;
   setListing: (listing: boolean) => Promise<void>;
-  setSelectedIdea: (idea: Feedback) => Promise<void>;
+  setRoadmaps: (roadmaps: Roadmap[]) => Promise<void>;
+  setSelectedIdea: (idea: Feedback | null) => Promise<void>;
   setTags: (tags: Tag[]) => Promise<void>;
   updateIdea: (idea: Feedback) => Promise<void>;
   updateIdeaInRoadmap: (roadmap_id: number, idea: Feedback) => Promise<void>;
@@ -96,6 +116,7 @@ interface FeedbackContextType {
     id: number,
     status: 'approved' | 'rejected'
   ) => Promise<void>;
+  updateRoadmap: (roadmap: Roadmap) => Promise<void>;
 }
 
 const initialState: FeedbackState = {
@@ -199,6 +220,44 @@ function feedbackReducer(
   action: FeedbackAction
 ): FeedbackState {
   switch (action.type) {
+    case 'ADD_IDEA':
+      return {
+        ...state,
+        ideas: [action.payload, ...(state.ideas || [])],
+      };
+    case 'ADD_IDEA_IN_ROADMAP':
+      return {
+        ...state,
+        roadmaps: state.roadmaps?.map((roadmap) => {
+          if (roadmap.id === action.payload.roadmap_id) {
+            return {
+              ...roadmap,
+              upvotes: [...(roadmap.upvotes ?? []), action.payload.idea],
+            };
+          }
+          return roadmap;
+        }),
+      };
+    case 'DELETE_BY_ID':
+      return {
+        ...state,
+        ideas: state.ideas?.filter((idea) => idea.id != action.payload),
+      };
+    case 'DELETE_IDEA_IN_ROADMAP_BY_ID':
+      return {
+        ...state,
+        roadmaps: state.roadmaps?.map((roadmap) => {
+          if (roadmap.id === action.payload.roadmap_id) {
+            return {
+              ...roadmap,
+              upvotes: roadmap.upvotes?.filter(
+                (upvote) => upvote.id !== action.payload.idea_id
+              ),
+            };
+          }
+          return roadmap;
+        }),
+      };
     case 'SET_ERROR':
       return { ...state, error: action.payload };
     case 'SET_FILTER':
@@ -231,6 +290,11 @@ function feedbackReducer(
       return { ...state, items: action.payload };
     case 'SET_LISTING':
       return { ...state, listing: action.payload };
+    case 'SET_ROADMAPS':
+      return {
+        ...state,
+        roadmaps: action.payload || [],
+      };
     case 'SET_TAB':
       return { ...state, activeTab: action.payload };
     case 'SET_TAGS':
@@ -271,6 +335,13 @@ function feedbackReducer(
         ...state,
         ideas: state.ideas.filter((item) => item.id !== action.payload.id),
       };
+    case 'UPDATE_ROADMAP':
+      return {
+        ...state,
+        roadmaps: state.roadmaps?.map((roadmap) =>
+          roadmap.id === action.payload.id ? action.payload : roadmap
+        ),
+      };
     default:
       return state;
   }
@@ -278,6 +349,31 @@ function feedbackReducer(
 
 export function FeedbackProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(feedbackReducer, initialState);
+
+  const addIdea = async (idea: Feedback) => {
+    dispatch({ type: 'ADD_IDEA', payload: idea });
+  };
+
+  const addIdeaInRoadmap = async (roadmap_id: number, idea: Feedback) => {
+    dispatch({
+      type: 'ADD_IDEA_IN_ROADMAP',
+      payload: { roadmap_id, idea },
+    });
+  };
+
+  const deleteIdeaById = async (id: number) => {
+    dispatch({ type: 'DELETE_BY_ID', payload: id });
+  };
+
+  const deleteIdeaInRoadmapById = async (
+    roadmap_id: number,
+    idea_id: number
+  ) => {
+    dispatch({
+      type: 'DELETE_IDEA_IN_ROADMAP_BY_ID',
+      payload: { roadmap_id, idea_id },
+    });
+  };
 
   const fetchItems = async (tab: 'ideas' | 'comments') => {
     dispatch({ type: 'SET_LOADING', payload: true });
@@ -330,7 +426,11 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_IDEAS', payload: ideas });
   };
 
-  const setSelectedIdea = async (idea: Feedback) => {
+  const setRoadmaps = async (roadmaps: Roadmap[]) => {
+    dispatch({ type: 'SET_ROADMAPS', payload: roadmaps });
+  };
+
+  const setSelectedIdea = async (idea: Feedback | null) => {
     dispatch({ type: 'SET_SELECTED_IDEA', payload: idea });
   };
 
@@ -370,20 +470,30 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const updateRoadmap = async (roadmap: Roadmap) => {
+    dispatch({ type: 'UPDATE_ROADMAP', payload: roadmap });
+  };
+
   const value = useMemo(
     () => ({
       state,
+      addIdea,
+      addIdeaInRoadmap,
+      deleteIdeaById,
+      deleteIdeaInRoadmapById,
       setActiveTab,
       setFilter,
       setFilterTags,
       setFilterTitle,
       setIdeas,
       setListing,
+      setRoadmaps,
       setSelectedIdea,
       setTags,
       updateIdea,
       updateIdeaInRoadmap,
       updateItemStatus,
+      updateRoadmap,
     }),
     [state]
   );

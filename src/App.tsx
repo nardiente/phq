@@ -10,6 +10,8 @@ import AppRoutes from './routes/routes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PanelProvider } from './contexts/PanelContext';
+import { WhatsNewProvider } from './contexts/WhatsNewContext';
+import { SidePanel } from './components/SidePanel';
 
 const App: FC = () => {
   const { user } = useUser();
@@ -93,17 +95,20 @@ const App: FC = () => {
       <SocketProvider>
         <PanelProvider>
           <FeedbackProvider>
-            <UserNotificationProvider>
-              <UserProvider>
-                <DropdownProvider>
-                  <UnsavedChangesProvider>
-                    <BoostProvider>
-                      <AppRoutes />
-                    </BoostProvider>
-                  </UnsavedChangesProvider>
-                </DropdownProvider>
-              </UserProvider>
-            </UserNotificationProvider>
+            <WhatsNewProvider>
+              <UserNotificationProvider>
+                <UserProvider>
+                  <SidePanel />
+                  <DropdownProvider>
+                    <UnsavedChangesProvider>
+                      <BoostProvider>
+                        <AppRoutes />
+                      </BoostProvider>
+                    </UnsavedChangesProvider>
+                  </DropdownProvider>
+                </UserProvider>
+              </UserNotificationProvider>
+            </WhatsNewProvider>
           </FeedbackProvider>
         </PanelProvider>
       </SocketProvider>

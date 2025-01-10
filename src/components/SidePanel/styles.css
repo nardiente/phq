@@ -1,0 +1,115 @@
+@import '../../appearance-colors.css';
+
+#UpvotePublicView {
+  padding-top: 15px;
+
+  li > label {
+    color: #6f6fa2 !important;
+  }
+
+  .is-active > label {
+    color: var(--public-view-active-link-color) !important;
+    border-bottom: 2px solid var(--public-view-active-link-color);
+  }
+
+  .tabs-label {
+    align-items: center;
+    border-bottom-color: #f1f1f6;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    color: var(--public-view-default-text-color) !important;
+    display: flex;
+    justify-content: center;
+    margin-bottom: -1px;
+    padding: 0.5em 1em;
+    vertical-align: top;
+  }
+}
+
+.primary-button {
+  align-items: center;
+  background: var(--public-view-primary-button-color);
+  border: 2px solid var(--public-view-primary-button-border) !important;
+  border-radius: 6px;
+  color: var(--public-view-button-text-color);
+  display: flex;
+  flex: none;
+  flex-direction: row;
+  flex-grow: 0;
+  font-family: 'Satoshi-Variable';
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 700;
+  gap: 8px;
+  height: 40px;
+  justify-content: center;
+  letter-spacing: 0.005em;
+  line-height: 20px;
+  order: 0;
+  padding: 10px 12px;
+  text-align: center;
+  white-space: nowrap;
+  width: 132px;
+}
+
+.sliding-panel-container {
+  backdrop-filter: brightness(0.5);
+  position: fixed;
+  top: 0;
+  z-index: 100;
+}
+
+.sliding-panel-container .panel-container {
+  align-items: flex-start;
+  background: var(--public-view-background-color);
+  box-shadow: -2px 0px 4px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 35px 24px 48px;
+  border-radius: unset;
+}
+
+.sliding-panel-container .panel-container .panel-content {
+  width: 100%;
+}
+
+.sliding-panel-container .panel-container .panel-content .header {
+  align-items: center;
+  color: #110733;
+  display: flex;
+  flex-direction: row;
+  font-family: 'Satoshi-Variable';
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  gap: 22px;
+  justify-content: space-between;
+  letter-spacing: 0.005em;
+  line-height: 24px;
+  padding: 0px;
+  text-align: center;
+}
+
+.sliding-panel-container .panel-container .panel-content .header .x-button {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 38px;
+  justify-content: center;
+  width: 38px;
+}
+
+.sliding-panel-container .panel-container .panel-content .header-pinned {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Satoshi-Variable';
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.005em;
+  text-align: left;
+  color: #fba911;
+  margin-bottom: 16px;
+}

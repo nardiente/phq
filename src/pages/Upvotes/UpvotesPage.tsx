@@ -217,7 +217,7 @@ export default function UpvotesPage() {
 
   useEffect(() => {
     if (tags) {
-      if (selectedIdea) {
+      if (selectedIdea?.id) {
         getFeedback(selectedIdea.id);
       }
       handleListFeedback(true);

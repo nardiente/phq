@@ -1,0 +1,109 @@
+#Comments {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  padding: 0px;
+
+  hr {
+    width: 100%;
+  }
+}
+
+.DeleteComment {
+  border: 1px solid #f0eff2;
+  border-radius: 8px;
+  height: 170px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  padding: 24px;
+  width: 100%;
+}
+
+.dc-font {
+  color: #110733;
+  font-family: 'Satoshi-Variable';
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24.3px;
+}
+
+.dcd-font {
+  color: #4d4566;
+  font-family: 'Satoshi-Variable';
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  margin-top: 12px;
+  width: 350px;
+}
+
+.d-btn {
+  align-items: center;
+  background: #ef4444;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  color: #ffffff;
+  display: flex;
+  flex: none;
+  flex-direction: row;
+  flex-grow: 0;
+  float: right;
+  font-family: 'Satoshi-Variable';
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  gap: 8px;
+  height: 32px;
+  justify-content: center;
+  letter-spacing: 0.005em;
+  line-height: 16px;
+  order: 0;
+  padding: 8px 10px;
+  text-align: center;
+  white-space: nowrap;
+  width: 82px;
+
+  &:disabled {
+    opacity: 50%;
+  }
+}
+
+.cancel-btn {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  color: #09041a;
+  display: flex;
+  flex: none;
+  float: right;
+  flex-direction: row;
+  flex-grow: 0;
+  font-family: 'Satoshi-Variable';
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  gap: 8px;
+  height: 32px;
+  justify-content: center;
+  letter-spacing: 0.005em;
+  line-height: 16px;
+  order: 0;
+  padding: 8px 10px;
+  text-align: center;
+  margin-right: 5px;
+  white-space: nowrap;
+  width: 59px;
+
+  &:disabled {
+    opacity: 50%;
+  }
+}
+
+.delete-comment-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 2px;
+}

@@ -262,7 +262,6 @@ export function UserProvider({ children }: UserProviderProps) {
           data.message?.includes('sent a notifications') &&
           data.memberNotified?.id === profile?.id
         ) {
-          console.log({ data });
           getNotifications();
         }
       }

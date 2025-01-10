@@ -6,9 +6,9 @@ export interface Feedback {
     full_name: string;
     profile_photo?: string;
   };
-  id: number;
+  id?: number;
   vote: number;
-  title: string;
+  title?: string;
   description?: string;
   created_by?: number;
   created_at?: Date;
@@ -26,6 +26,32 @@ export interface Feedback {
   vote_on_behalf_id?: number;
   estimated_release_date?: string;
   pinned?: boolean;
+  customer_id?: number;
+}
+
+export interface FeedbackComment {
+  author: {
+    id: number;
+    full_name: string;
+    profile_photo?: string;
+    is_admin: boolean;
+  };
+  draft: boolean;
+  comment: string;
+  created_at?: Date;
+  created_by_name: string;
+  id: number;
+  feedback_id: number;
+  parent_id: number;
+  emoji_list: any[];
+  my_emoji: string[];
+  hidden: boolean;
+  deleted?: boolean;
+  has_reply: boolean;
+  internal?: boolean;
+  mentioned_users: { id: number; full_name: string }[];
+  pinned?: boolean;
+  updated_by?: number;
 }
 
 export interface FeedbackItem {

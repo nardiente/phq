@@ -1,0 +1,16 @@
+.emoji-list {
+  display: flex;
+  gap: 8px;
+
+  button {
+    border: 1px solid rgb(63, 63, 187);
+    border-radius: 40px;
+    padding: 4px 8px;
+    color: black;
+  }
+
+  .active {
+    background: rgb(63, 63, 187);
+    color: white;
+  }
+}

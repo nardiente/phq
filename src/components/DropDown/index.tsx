@@ -1,4 +1,6 @@
-import * as React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import '../UpvoteFilters/styles.css';
+import '../RoadmapFilter/styles.css';
 
 export const Dropdown: React.FC<{
   container_class?: string;
@@ -10,12 +12,12 @@ export const Dropdown: React.FC<{
   tab_index?: number;
   isDisabled?: boolean;
 }> = (props) => {
-  const ref = React.useRef<HTMLElement>();
-  const [is_expanded, setExpanded] = React.useState(false);
+  const ref = useRef<HTMLElement>();
+  const [is_expanded, setExpanded] = useState(false);
 
   const toggle = () => setExpanded(!is_expanded);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const expand = (e: any) => {
       if (!ref.current || !ref.current.contains(e.target)) {
         setExpanded(false);

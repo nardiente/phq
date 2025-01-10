@@ -1,0 +1,127 @@
+#ColumnDropdown {
+  position: relative;
+  cursor: default;
+
+  .option-button {
+    cursor: pointer;
+    width: 34px;
+    height: 34px;
+
+    background: #ffffff;
+    color: #1f2937;
+
+    border: none;
+    border-radius: 8px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:not(:disabled):hover {
+      background: #f3f4f6;
+    }
+
+    &:disabled {
+      cursor: default;
+      opacity: 50%;
+    }
+  }
+
+  .options {
+    position: absolute;
+    top: 34px;
+    right: 0;
+
+    width: 171px;
+    height: 461px;
+
+    background: #ffffff;
+    border: 1px solid #e1e0e5;
+    box-shadow: 0px 10px 8px rgba(0, 0, 0, 0.04), 0px 4px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+
+    padding: 8px;
+
+    .delete-button {
+      cursor: pointer;
+      width: 100%;
+      background: #ffffff;
+      border: none;
+      border-radius: 6px;
+
+      display: flex;
+      flex-direction: row;
+      justify-content: start;
+
+      font-family: 'Satoshi-Variable';
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: 0.005em;
+      color: #110733;
+
+      &:hover:enabled {
+        background: #f0eff2;
+      }
+
+      &:disabled {
+        cursor: default;
+        opacity: 50%;
+      }
+    }
+
+    hr {
+      height: 1px;
+      background: #e1e0e5;
+      margin-top: 8px;
+      margin-bottom: 16px;
+    }
+
+    span {
+      padding-left: 12px;
+      font-family: 'Satoshi-Variable';
+      font-style: normal;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 16px;
+      letter-spacing: 0.005em;
+      color: #9ca3af;
+    }
+
+    .color-button {
+      cursor: pointer;
+      width: 100%;
+
+      background: #ffffff;
+      border: none;
+      border-radius: 6px;
+
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+
+      padding: 8px 12px;
+
+      font-family: 'Satoshi-Variable';
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: 0.005em;
+      color: #110733;
+
+      &:disabled {
+        cursor: default;
+        opacity: 50%;
+      }
+
+      div {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+      }
+    }
+  }
+}

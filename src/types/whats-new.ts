@@ -39,3 +39,9 @@ export interface ChangeTypeColor {
   background_color: string;
   id: number;
 }
+
+export enum Publications {
+  DRAFT = 'Draft',
+  PREVIEW = 'Preview',
+  PUBLISHED = 'Published',
+}

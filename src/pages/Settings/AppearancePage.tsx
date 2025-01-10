@@ -668,7 +668,7 @@ export default function AppearancePage() {
 
   return (
     <div id="Settings" className="min-h-screen bg-[#fafafa] pb-12">
-      <div className="min-w-[1200px] mx-auto pt-8 px-6">
+      <div className="max-w-[1200px] mx-auto pt-8 px-6">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-[28px] font-semibold text-gray-900">
             Account Settings

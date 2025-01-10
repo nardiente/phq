@@ -1,0 +1,158 @@
+#custom-dropdown {
+  width: 100%;
+  font-family: 'Satoshi-Variable';
+  font-weight: 500;
+  margin-bottom: 6px;
+
+  label {
+    color: #1f2937;
+    font-size: 14px;
+    line-height: '18.9px';
+  }
+
+  input {
+    background: transparent;
+    border: none;
+    font-size: 15px;
+    width: inherit;
+    line-height: 20.25px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 16px 14px;
+    cursor: pointer;
+    color: #110733;
+    justify-content: space-between;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+
+    &:focus,
+    &.focus {
+      outline: none;
+      background: #f9fafb;
+      border-color: #8340d9 !important;
+      box-shadow: 0px 0px 0px 4px rgba(168, 85, 247, 0.25);
+      color: #110733;
+    }
+
+    &:hover {
+      background: #f9fafb;
+    }
+
+    &::placeholder {
+      color: #888399;
+      font-weight: lighter;
+    }
+  }
+
+  .dropdown-menu {
+    align-items: flex-start;
+    background: #ffffff;
+    border: 1px solid #e1e0e5;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px;
+
+    &.hidden {
+      display: none;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 6px;
+      gap: 8px;
+      width: 100%;
+      cursor: pointer;
+
+      figure {
+        width: 26px;
+        height: 26px;
+
+        .avatar {
+          border-radius: 999px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #4d4566;
+          color: white;
+          width: 26px;
+          height: 26px;
+        }
+      }
+
+      .details {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Satoshi-Variable';
+        letter-spacing: 0.005em;
+        text-align: left;
+        cursor: inherit;
+
+        .name {
+          font-size: 14px;
+          font-weight: 500;
+          line-height: 20px;
+          color: #110733;
+          cursor: inherit;
+        }
+
+        .email {
+          font-size: 12px;
+          font-weight: 400;
+          line-height: 16px;
+          color: #888399;
+          cursor: inherit;
+        }
+      }
+
+      .admin-tag {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 2px 6.5px;
+        gap: 8px;
+        background: #dbeafe;
+        border-radius: 999px;
+        font-family: 'Satoshi-Variable';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 10px;
+        line-height: 16px;
+        letter-spacing: 0.005em;
+        color: #3b82f6;
+      }
+    }
+
+    .add-new-user {
+      width: 100%;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      letter-spacing: 0.005em;
+      text-align: left;
+      color: #110733;
+
+      hr {
+        height: 1px;
+        margin: 0;
+      }
+    }
+  }
+
+  .is-right {
+    position: absolute;
+    right: 0;
+    margin-top: 17px;
+    margin-right: 15px;
+  }
+}

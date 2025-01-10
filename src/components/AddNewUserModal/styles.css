@@ -1,0 +1,85 @@
+#addNewUserModal {
+  max-width: 486px;
+
+  .modal-content {
+    width: 100%;
+  }
+
+  .x-button {
+    float: right;
+    font-size: x-large;
+    margin: -12px;
+
+    .disabled {
+      cursor: default;
+      opacity: 50%;
+    }
+  }
+
+  .title {
+    font-family: 'Satoshi-Variable';
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    letter-spacing: 0.005em;
+    text-align: center;
+    color: #110733;
+  }
+
+  .bg-white {
+    background: #ffffff;
+  }
+
+  .body-container {
+    flex-direction: column;
+    gap: 22px;
+
+    .form-container {
+      flex-direction: column;
+    }
+
+    .submit-idea-button {
+      align-items: flex-end;
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      justify-content: flex-end;
+      padding: 0px;
+      width: 100%;
+
+      button {
+        align-items: center;
+        background: var(--public-view-primary-button-color);
+        border: 1px solid #ff6334 !important;
+        border-radius: 6px;
+        color: var(--public-view-button-text-color);
+        display: flex;
+        flex-direction: row;
+        font-family: 'Satoshi-Variable';
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        gap: 4px;
+        height: 35px;
+        justify-content: center;
+        letter-spacing: 0.005em;
+        line-height: 19px;
+        padding: 8px 12px;
+        text-align: center;
+        width: 103px;
+        outline: none;
+
+        &:disabled {
+          opacity: 50%;
+        }
+
+        &.cancel {
+          background: #ffffff;
+          color: #ff6334;
+          width: 69px;
+          outline: none;
+        }
+      }
+    }
+  }
+}
