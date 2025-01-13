@@ -1,0 +1,413 @@
+#RoadmapPublicView {
+  height: calc(100vh - 157px);
+  overflow: auto;
+}
+
+#RoadmapPublicView .ai-center {
+  align-items: center;
+}
+
+#RoadmapPublicView .bg-white {
+  background-color: #ffffff;
+}
+
+#RoadmapPublicView .d-flex {
+  display: flex;
+}
+
+#RoadmapPublicView hr.divider {
+  margin-bottom: 12px;
+  margin-left: 11px;
+  margin-right: 11px;
+  margin-top: 0px;
+  border: none;
+  color: #f1f1f6;
+  height: 1px;
+}
+
+#RoadmapPublicView .no-roadmap-background {
+  padding: 200px;
+  text-align: center;
+}
+
+#RoadmapPublicView .no-roadmap-header {
+  color: #4d4566;
+  font-family: 'Satoshi-Variable';
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0.005em;
+}
+
+#RoadmapPublicView .no-roadmap-sub {
+  color: #888399;
+  font-family: 'Satoshi-Variable';
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 8px;
+  line-height: 16px;
+  letter-spacing: 0.005em;
+}
+
+#RoadmapPublicView .roadmap-font {
+  color: #110733;
+  font-family: 'Satoshi-Variable';
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32.4px;
+}
+
+#RoadmapPublicView .roadmap-pf {
+  font-size: 14px;
+  font-family: 'Satoshi-Variable';
+  color: #110733;
+  font-style: normal;
+  font-weight: 700;
+  border-radius: 5px;
+  line-height: 20px;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+#RoadmapPublicView .add-column-btn {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Satoshi-Variable';
+  color: #09041a;
+  padding: 8px 12px;
+  gap: 8px;
+  border-radius: 6px;
+  line-height: 18.9px;
+  height: 35px;
+  margin-left: 10px;
+}
+
+#RoadmapPublicView .add-column-btn:not(:disabled):hover {
+  background: #f3f4f6;
+  color: #09041a;
+}
+
+#RoadmapPublicView .add-column-btn:disabled {
+  cursor: default;
+  opacity: 50%;
+}
+
+#RoadmapPublicView .add-column-btn .svg {
+  position: absolute;
+  left: 12.5%;
+  right: 12.5%;
+  top: 12.5%;
+  bottom: 12.5%;
+  background: #110733;
+}
+
+#RoadmapPublicView .add-column-btn.active {
+  color: #09041a;
+}
+
+#RoadmapPublicView svg.bi.bi-plus-lg {
+  margin-right: 5px;
+  margin-bottom: -2px;
+}
+
+#RoadmapPublicView .add-column-input {
+  font-family: 'Satoshi-Variable';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: 0.005em;
+  margin-top: 10px;
+  margin-left: -123px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  background: #ffffff;
+  flex: none;
+  border-bottom: 1px solid #8340d9;
+  order: 1;
+  align-self: stretch;
+  box-shadow:
+    0px 20px 13px rgba(0, 0, 0, 0.03),
+    0px 8px 5px rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  width: 230px;
+  height: 50px;
+}
+
+#RoadmapPublicView .add-column-input {
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #000;
+  padding-bottom: 10px;
+  position: relative;
+}
+
+#RoadmapPublicView .add-confirm-column-btn {
+  background: #ffffff;
+  color: #5a00cd;
+  border-radius: 6px;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 8px;
+  gap: 8px;
+  width: 83px;
+  height: 28px;
+  margin-left: -85px;
+  z-index: 2;
+}
+
+#RoadmapPublicView .add-column-input input:focus {
+  border-bottom: 1px solid #8340d9;
+  outline: none;
+}
+
+#RoadmapPublicView .add-column-input input {
+  border-bottom: 1px solid #8340d9;
+  outline: none;
+  margin-right: 10px;
+  padding-right: 80px;
+  flex: 1;
+}
+
+#RoadmapPublicView .add-confirm-column-btn:hover {
+  background: #d6bff3;
+  border-radius: 6px;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 8px;
+  gap: 8px;
+  width: 83px;
+  height: 28px;
+  cursor: not-allowed;
+}
+
+#RoadmapPublicView .add-confirm-column-btn:not([disabled]):hover {
+  background: #d6bff3;
+  color: #fff;
+  cursor: pointer;
+}
+
+#RoadmapPublicView
+  .add-column-input
+  input:valid
+  + .add-confirm-column-btn:not([disabled]) {
+  background: #d6bff3;
+  cursor: pointer;
+}
+
+#RoadmapPublicView .add-column-btn {
+  margin-left: 10px;
+}
+
+#RoadmapPublicView .add-column-btn-container {
+  display: inline-block;
+  position: relative;
+  width: 380px;
+}
+
+#RoadmapPublicView .add-column-btn-container #ColumnInput {
+  left: -70px;
+}
+
+@media only screen and (max-width: 767px) {
+  #RoadmapPublicView .add-column-btn {
+    margin: 10px 0;
+    width: 100%;
+    max-width: 200px;
+    margin-left: 0;
+  }
+}
+
+#RoadmapPublicView .status-font {
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+#RoadmapPublicView .title-style {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+#RoadmapPublicView .word-break {
+  word-break: 'break-all';
+}
+
+#RoadmapPublicView .tag-for {
+  background-color: #f1f1f6;
+  border-radius: 3px;
+  color: #6f6fa2;
+  font-size: 12px;
+  margin-right: 2px;
+  padding: 3.7px;
+}
+
+#RoadmapPublicView .center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+#RoadmapPublicView .empty-message {
+  z-index: 1;
+  font-family: 'Satoshi-Variable';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: 0.005em;
+  margin: 31px;
+  color: #888399;
+  width: 45px;
+  height: 20px;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+}
+
+#RoadmapPublicView .idea-list-container {
+  background: rgba(0, 0, 0, 0.01);
+  border: 1px solid rgba(225, 224, 229, 0.1);
+  border-radius: 8px;
+  width: 380px;
+  height: auto;
+
+  padding: 16px 12px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 1;
+}
+
+#RoadmapPublicView .idea-list-container .idea-card {
+  background: #ffffff;
+  border: 1px solid #f9f9fa;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+
+  padding: 16px;
+
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  width: 356px;
+  height: auto;
+  min-height: 86px;
+  overflow: hidden;
+}
+
+#RoadmapPublicView .idea-list-container .idea-card .upvote-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  gap: 12px;
+}
+
+#RoadmapPublicView .idea-list-container .idea-card .upvote-details .idea-h {
+  font-family: 'Satoshi-Variable';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  letter-spacing: 0.005em;
+  color: #110733;
+  word-break: break-word;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#RoadmapPublicView
+  .idea-list-container
+  .idea-card
+  .upvote-details
+  .upvote-tags {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0px;
+}
+
+#RoadmapPublicView
+  .idea-list-container
+  .idea-card
+  .upvote-details
+  .upvote-tags
+  .upvote-tag {
+  align-items: center;
+  background: var(--public-view-tags-active-background-color);
+  border-radius: 999px;
+  color: var(--public-view-tags-active-text-color);
+  display: flex;
+  flex-direction: row;
+  font-family: 'Satoshi-Variable';
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  line-height: 16px;
+  gap: 1px;
+  padding: 2px 6.5px;
+}
+
+#RoadmapPublicView .idea-list-container .idea-card .upvote-details hr {
+  height: 1px;
+  color: #e5e7eb;
+  width: 100%;
+  margin: 2px 0;
+}
+
+#RoadmapPublicView
+  .idea-list-container
+  .idea-card
+  .upvote-details
+  .release-date-container {
+  width: 100%;
+}
+
+#RoadmapPublicView
+  .idea-list-container
+  .idea-card
+  .upvote-details
+  .release-date-container
+  .content {
+  width: 100%;
+  height: 16px;
+  font-family: 'Satoshi-Variable';
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.005em;
+  text-align: left;
+  color: #8e8c9d;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}

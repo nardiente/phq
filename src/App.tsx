@@ -98,10 +98,10 @@ const App: FC = () => {
             <WhatsNewProvider>
               <UserNotificationProvider>
                 <UserProvider>
-                  <SidePanel />
                   <DropdownProvider>
                     <UnsavedChangesProvider>
                       <BoostProvider>
+                        <SidePanel />
                         <AppRoutes />
                       </BoostProvider>
                     </UnsavedChangesProvider>

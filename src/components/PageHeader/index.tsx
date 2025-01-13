@@ -44,106 +44,110 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
   }, []);
 
   return (
-    <div id="page-header">
-      <div className={`page-container ${props.pageContainerClass || ''}`}>
-        <div className="page-label default-text-color">{props.header}</div>
-        {active_tab === '/roadmaps' && (
-          <div id="RoadmapFilter" className="search">
-            <div className="control has-icons-right input-field">
-              <input
-                id="search-field"
-                className="input"
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                  if (e.target.value.length === 0) {
-                    setFilterTitle(e.target.value);
-                  }
-                }}
-                onKeyDown={(e) => {
-                  if (e.keyCode === 13) {
-                    setFilterTitle(title);
-                  }
-                }}
-                placeholder="Search ideas"
-                type="text"
-                value={title}
-              />
-              <span className="icon is-right">
-                <figure className="image is-16x16">
-                  <img
-                    onClick={() => setFilterTitle(title)}
-                    src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/search.svg"
-                  />
-                </figure>
-              </span>
-            </div>
-          </div>
-        )}
-        <div className="right-header">
-          {active_tab === '/roadmaps' && <RoadmapFilter />}
-          {props.listWhatsNew && (
-            <div>
-              <div className="field is-grouped">
-                <WhatsNewFilter
-                  listChangeType={listChangeType}
-                  change_types={change_types}
-                  listWhatsNew={props.listWhatsNew}
+    <div className="max-h-screen bg-[#fafafa]">
+      <div id="page-header" className="max-w-[1200px] mx-auto pt-8 px-6">
+        <div
+          className={`page-container ${props.pageContainerClass || ''} flex items-center justify-between mb-8`}
+        >
+          <div className="page-label default-text-color">{props.header}</div>
+          {active_tab === '/roadmaps' && (
+            <div id="RoadmapFilter" className="search">
+              <div className="control has-icons-right input-field">
+                <input
+                  id="search-field"
+                  className="input"
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                    if (e.target.value.length === 0) {
+                      setFilterTitle(e.target.value);
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.keyCode === 13) {
+                      setFilterTitle(title);
+                    }
+                  }}
+                  placeholder="Search ideas"
+                  type="text"
+                  value={title}
                 />
-                {!is_public &&
-                  user?.rbac_permissions.includes(
-                    RbacPermissions.CREATE_EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_YOUR_OWN_POST
-                  ) && (
-                    <button
-                      className="new-post-button"
-                      type="button"
-                      onClick={() => props.openPostForm?.(undefined)}
-                      disabled={props.disabled}
-                    >
-                      <PlusIcon />
-                      New Post
-                    </button>
-                  )}
+                <span className="icon is-right">
+                  <figure className="image is-16x16">
+                    <img
+                      onClick={() => setFilterTitle(title)}
+                      src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/search.svg"
+                    />
+                  </figure>
+                </span>
               </div>
             </div>
           )}
-          {props.secondaryButtonLabel && (
-            <div id="secondary-button">
-              <button
-                className={
-                  props.loading || props.disabled ? '' : 'is-clickable'
-                }
-                onClick={props.handleOnCancel}
-                disabled={props.loading || props.disabled}
-              >
-                {props.secondaryButtonLabel}
-              </button>
-            </div>
-          )}
-          {props.buttonLabel &&
-            ((has_new_idea_button &&
-              is_member &&
-              user.rbac_permissions.includes(
-                RbacPermissions.CREATE_EDIT_IDEAS
-              )) ||
-              !is_member ||
-              !has_new_idea_button) && (
-              <div id="primary-button">
+          <div className="right-header">
+            {active_tab === '/roadmaps' && <RoadmapFilter />}
+            {props.listWhatsNew && (
+              <div>
+                <div className="field is-grouped">
+                  <WhatsNewFilter
+                    listChangeType={listChangeType}
+                    change_types={change_types}
+                    listWhatsNew={props.listWhatsNew}
+                  />
+                  {!is_public &&
+                    user?.rbac_permissions.includes(
+                      RbacPermissions.CREATE_EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_YOUR_OWN_POST
+                    ) && (
+                      <button
+                        className="new-post-button"
+                        type="button"
+                        onClick={() => props.openPostForm?.(undefined)}
+                        disabled={props.disabled}
+                      >
+                        <PlusIcon />
+                        New Post
+                      </button>
+                    )}
+                </div>
+              </div>
+            )}
+            {props.secondaryButtonLabel && (
+              <div id="secondary-button">
                 <button
                   className={
                     props.loading || props.disabled ? '' : 'is-clickable'
                   }
-                  onClick={() =>
-                    props.handleOnUpdate === undefined
-                      ? setIsOpen(true)
-                      : props.handleOnUpdate()
-                  }
+                  onClick={props.handleOnCancel}
                   disabled={props.loading || props.disabled}
                 >
-                  {props.showButtonIcon && <PlusIcon />}
-                  {props.loading ? 'Loading...' : props.buttonLabel}
+                  {props.secondaryButtonLabel}
                 </button>
               </div>
             )}
+            {props.buttonLabel &&
+              ((has_new_idea_button &&
+                is_member &&
+                user.rbac_permissions.includes(
+                  RbacPermissions.CREATE_EDIT_IDEAS
+                )) ||
+                !is_member ||
+                !has_new_idea_button) && (
+                <div id="primary-button">
+                  <button
+                    className={
+                      props.loading || props.disabled ? '' : 'is-clickable'
+                    }
+                    onClick={() =>
+                      props.handleOnUpdate === undefined
+                        ? setIsOpen(true)
+                        : props.handleOnUpdate()
+                    }
+                    disabled={props.loading || props.disabled}
+                  >
+                    {props.showButtonIcon && <PlusIcon />}
+                    {props.loading ? 'Loading...' : props.buttonLabel}
+                  </button>
+                </div>
+              )}
+          </div>
         </div>
       </div>
     </div>

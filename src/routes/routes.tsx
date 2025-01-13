@@ -19,6 +19,7 @@ import WidgetsPage from '../pages/WidgetsPage';
 import { SSOVerifyingPage } from '../components/SSOVerifying';
 import ForgotPasswordPage from '../pages/ForgotPassword';
 import UpvotesPage from '../pages/Upvotes/UpvotesPage';
+import { RoadmapPage } from '../pages/Roadmap/RoadmapPage';
 
 const AppRoutes = () => {
   return (
@@ -43,6 +44,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <UpvotesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/roadmap"
+        element={
+          <ProtectedRoute>
+            <RoadmapPage />
           </ProtectedRoute>
         }
       />

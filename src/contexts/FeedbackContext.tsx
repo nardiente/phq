@@ -40,6 +40,7 @@ type FeedbackAction =
       type: 'ADD_IDEA_IN_ROADMAP';
       payload: { roadmap_id: number; idea: Feedback };
     }
+  | { type: 'ADD_ROADMAP'; payload: Roadmap }
   | { type: 'DELETE_BY_ID'; payload: number }
   | {
       type: 'DELETE_IDEA_IN_ROADMAP_BY_ID';
@@ -90,6 +91,7 @@ interface FeedbackContextType {
   state: FeedbackState;
   addIdea: (idea: Feedback) => Promise<void>;
   addIdeaInRoadmap: (roadmap_id: number, idea: Feedback) => Promise<void>;
+  addRoadmap: (roadmap: Roadmap) => Promise<void>;
   deleteIdeaById: (id: number) => Promise<void>;
   deleteIdeaInRoadmapById: (
     roadmap_id: number,
@@ -238,6 +240,11 @@ function feedbackReducer(
           return roadmap;
         }),
       };
+    case 'ADD_ROADMAP':
+      return {
+        ...state,
+        roadmaps: [...(state.roadmaps || []), action.payload],
+      };
     case 'DELETE_BY_ID':
       return {
         ...state,
@@ -361,6 +368,10 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const addRoadmap = async (roadmap: Roadmap) => {
+    dispatch({ type: 'ADD_ROADMAP', payload: roadmap });
+  };
+
   const deleteIdeaById = async (id: number) => {
     dispatch({ type: 'DELETE_BY_ID', payload: id });
   };
@@ -479,6 +490,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       state,
       addIdea,
       addIdeaInRoadmap,
+      addRoadmap,
       deleteIdeaById,
       deleteIdeaInRoadmapById,
       setActiveTab,

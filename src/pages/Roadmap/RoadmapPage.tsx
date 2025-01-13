@@ -1,0 +1,680 @@
+import './styles.css';
+import { Roadmap, Tag } from './types';
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from 'react-beautiful-dnd';
+import { UpvoteComponent } from './UpvoteComponent';
+import { getApi, postApi, putApi } from '../../utils/api/api';
+import { PageHeader } from '../../components/PageHeader';
+import { Feedback, FeedbackTag } from '../../types/feedback';
+import { FadeLoader } from 'react-spinners';
+import ColumnInput from '../../components/ui/column_input/ColumnInput';
+import ColumnOptionDropdown from '../../components/ui/dropdown/column_option_dropdown/ColumnOptionDropdown';
+import { RoadmapColor } from '../../types/roadmap';
+import { Permissions, RbacPermissions } from '../../types/common';
+import { AddYourBoardModal } from '../../components/AddYourBoardModal';
+import { PlusIcon } from '../../components/icons/plus.icon';
+import moment from 'moment';
+import { useUser } from '../../contexts/UserContext';
+import { useFeedback } from '../../contexts/FeedbackContext';
+import { useSocket } from '../../contexts/SocketContext';
+import { usePanel } from '../../contexts/PanelContext';
+import { getCustomerKaslKey, getKaslKey } from '../../utils/localStorage';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
+export function RoadmapPage() {
+  const navigate = useNavigate();
+
+  const { user } = useUser();
+  const { moderation, permissions, rbac_permissions } = user ?? {};
+  const {
+    state: { filter, roadmaps, selectedIdea, tags },
+    addRoadmap,
+    setRoadmaps,
+    setSelectedIdea,
+    setTags,
+    updateIdea,
+    updateIdeaInRoadmap,
+    updateRoadmap,
+  } = useFeedback();
+  const {
+    state: { tags: socketTags },
+    setSocketTags,
+  } = useSocket();
+  const { tags: filterTag, title } = filter;
+  const { setActivePage, setIsOpen } = usePanel();
+
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+  const is_logged_in = getKaslKey();
+
+  const [fetching, setFetching] = useState<boolean>(true);
+  const [editColumnNameId, setEditColumnNameId] = useState<number>(0);
+  const [columnName, setColumnName] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [roadmapColors, setRoadmapColors] = useState<RoadmapColor[]>([]);
+  const [dragging, setDragging] = useState<boolean>(false);
+
+  const getFeedback = (id: number) => {
+    getApi<Feedback>(`feedback/${id}`).then((res) => {
+      if (res.results.data) {
+        const data = res.results.data;
+        updateIdea(data);
+        updateIdeaInRoadmap(data.status_id ?? 0, data);
+        setSelectedIdea(data);
+        setActivePage('add_comment');
+        setIsOpen(true);
+      }
+    });
+  };
+
+  const handleListTag = () => {
+    getApi<Tag[]>(
+      'tags',
+      is_public
+        ? {
+            domain: window.location.host,
+          }
+        : undefined,
+      undefined,
+      is_public &&
+        moderation?.user_login === true &&
+        getKaslKey() === undefined &&
+        getCustomerKaslKey() !== undefined
+    ).then((res) => {
+      if (is_public && res.results.error === 'error-client.bad-request') {
+        navigate('/');
+      }
+      if (res.results.data) {
+        setTags(res.results.data);
+      }
+    });
+  };
+
+  const handleGetStatus = () => {
+    const url = is_public
+      ? `roadmaps/upvotes/${window.location.host}`
+      : 'roadmaps/upvotes';
+
+    setFetching(true);
+    getApi<Roadmap[]>(
+      url,
+      {
+        tags: filterTag.join(','),
+        title,
+      },
+      is_public && moderation?.user_login === true
+    )
+      .then((res) => {
+        setFetching(false);
+        if (res.results.data) {
+          const data = res.results.data;
+          setRoadmaps(data);
+
+          const ideas: Feedback[] = [];
+          data.forEach((roadmap) => {
+            roadmap.upvotes?.forEach((upvote) => {
+              if (upvote.created_at) {
+                const createdAtDate = new Date(upvote.created_at);
+                ideas.push({ ...upvote, created_at: createdAtDate });
+              }
+            });
+          });
+
+          // Sorting ideas by created_at date (Newest first)
+          ideas.sort((a, b) => {
+            const dateA = a.created_at ? new Date(a.created_at) : new Date();
+            const dateB = b.created_at ? new Date(b.created_at) : new Date();
+            return dateB.getTime() - dateA.getTime();
+          });
+        }
+        if (!tags || tags.length === 0) {
+          handleListTag();
+        }
+      })
+      .catch(() => setFetching(false));
+  };
+
+  const handleFilterData = (data: Roadmap) => {
+    if (!filter.title && !filter.tags.length) {
+      return data;
+    }
+
+    const filterTitleLower = filter.title.toLowerCase();
+    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
+
+    const filteredUpvotes =
+      data.upvotes?.filter((upvote) => {
+        const titleMatch =
+          !filterTitleLower ||
+          upvote.title?.toLowerCase().includes(filterTitleLower);
+
+        const tagMatch =
+          !filterTagLower.length ||
+          upvote.feedback_tags?.some((feedbackTag: FeedbackTag) => {
+            const tag = feedbackTag.tag;
+            return tag && filterTagLower.includes(tag.tag.toLowerCase());
+          });
+
+        return titleMatch && tagMatch;
+      }) || [];
+
+    const dataWithFilteredUpvotes = { ...data, upvotes: filteredUpvotes };
+
+    return dataWithFilteredUpvotes;
+  };
+  const handleFilterRoadmaps = (data: Roadmap[]) => {
+    if (!filter.title && !filter.tags.length) {
+      return data;
+    }
+
+    const filterTitleLower = filter.title.toLowerCase();
+    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
+
+    const filteredRoadmaps = data.map((roadmap) => {
+      const filteredUpvotes =
+        roadmap.upvotes?.filter((upvote) => {
+          const titleMatch =
+            !filterTitleLower ||
+            upvote.title?.toLowerCase().includes(filterTitleLower);
+
+          const tagMatch =
+            !filterTagLower.length ||
+            upvote.feedback_tags?.some((feedbackTag: FeedbackTag) => {
+              const tag = feedbackTag.tag;
+              return tag && filterTagLower.includes(tag.tag.toLowerCase());
+            });
+
+          return titleMatch && tagMatch;
+        }) || [];
+
+      return { ...roadmap, upvotes: filteredUpvotes };
+    });
+
+    return filteredRoadmaps;
+  };
+
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source, type } = result;
+    let { draggableId } = result;
+    draggableId = draggableId.split('-')[1];
+    if (
+      !destination ||
+      (destination.droppableId === source.droppableId &&
+        destination.index === source.index) ||
+      draggableId == ''
+    ) {
+      return;
+    }
+
+    if (type === 'column' && destination.index < (roadmaps?.length ?? 0)) {
+      const roadmap = roadmaps?.find(
+        (roadmap) => roadmap.id == Number(draggableId)
+      );
+      if (roadmap) {
+        const new_roadmaps = roadmaps;
+        new_roadmaps?.splice(source.index, 1);
+        new_roadmaps?.splice(destination.index, 0, roadmap);
+        setRoadmaps(new_roadmaps ?? []);
+        const ids = roadmaps
+          ?.filter((roadmap) => roadmap.id !== 0)
+          .map((roadmap) => roadmap.id);
+        setDragging(true);
+        putApi<Roadmap[]>('roadmaps/re-sort', {
+          ids,
+        }).then((res) => {
+          if (res.results.data) {
+            setRoadmaps(handleFilterRoadmaps(res.results.data));
+          }
+          setDragging(false);
+        });
+      }
+      return;
+    }
+
+    const start = source.droppableId;
+    const finish = destination.droppableId;
+
+    if (start === finish) {
+      const new_roadmaps = roadmaps?.map((roadmap) => {
+        const draggable = roadmap.upvotes?.find(
+          (upvote) => upvote.id == Number(draggableId)
+        );
+        if (roadmap.id === Number(source.droppableId) && draggable) {
+          const newUpvotes = roadmap?.upvotes;
+          newUpvotes?.splice(source.index, 1);
+          newUpvotes?.splice(destination.index, 0, draggable);
+          roadmap.upvotes = newUpvotes;
+        }
+        return roadmap;
+      }) as Roadmap[];
+      setRoadmaps(new_roadmaps);
+      const roadmap = new_roadmaps?.find(
+        (new_roadmap) => new_roadmap.id === Number(start)
+      );
+      if (roadmap && roadmap.upvotes) {
+        const ids = roadmap.upvotes
+          .filter((upvote) => upvote.id !== 0)
+          .map((upvote) => upvote.id ?? 0);
+        setDragging(true);
+        putApi<Roadmap>('feedback/re-index', {
+          ids,
+          status_id: roadmap.id,
+        }).then((res) => {
+          if (res.results.data) {
+            const data = res.results.data;
+            updateRoadmap(handleFilterData(data));
+          }
+          setDragging(false);
+        });
+      }
+
+      return;
+    }
+
+    let draggable = { vote: 0, title: '', id: 0 } as Feedback;
+
+    setRoadmaps(
+      roadmaps?.map((roadmap) => {
+        draggable =
+          roadmap.upvotes?.find(
+            (upvote) => upvote.id === Number(draggableId)
+          ) || draggable;
+        if (roadmap.id === Number(source.droppableId)) {
+          const newUpvotes = roadmap?.upvotes;
+          newUpvotes?.splice(source.index, 1);
+          roadmap.upvotes = newUpvotes;
+        }
+        return roadmap;
+      }) ?? []
+    );
+
+    const new_roadmaps = roadmaps?.map((roadmap) => {
+      if (roadmap.id === Number(destination.droppableId)) {
+        const newUpvotes = roadmap?.upvotes;
+        newUpvotes?.splice(destination.index, 0, draggable);
+        roadmap.upvotes = newUpvotes;
+      }
+      return roadmap;
+    });
+    setRoadmaps(new_roadmaps ?? []);
+    const roadmap_destination = new_roadmaps?.find(
+      (new_roadmap) => new_roadmap.id === Number(finish)
+    );
+    if (roadmap_destination && roadmap_destination.upvotes) {
+      const ids = roadmap_destination.upvotes
+        .filter((upvote) => upvote.id !== 0)
+        .map((upvote) => upvote.id ?? 0);
+      setDragging(true);
+      putApi<Roadmap>('feedback/re-index', {
+        ids,
+        status_id: roadmap_destination.id,
+      }).then((res) => {
+        if (res.results.data) {
+          const data = res.results.data;
+          const idea =
+            data.upvotes?.find((upvote) => upvote.id === Number(draggableId)) ||
+            draggable;
+          updateRoadmap(handleFilterData(data));
+          updateIdea(idea);
+        }
+        setDragging(false);
+      });
+    }
+  };
+
+  const handleAddColumn = () => {
+    setLoading(true);
+    postApi({
+      url: 'roadmaps',
+      payload: {
+        name: columnName,
+      },
+    }).then((res) => {
+      setLoading(false);
+      if (res.results.data) {
+        addRoadmap(res.results.data);
+        setEditColumnNameId(0);
+      }
+    });
+  };
+
+  const handleUpdateColumn = () => {
+    setLoading(true);
+    const roadmap = roadmaps?.find(
+      (roadmap) => roadmap.id === editColumnNameId
+    );
+    if (!roadmap) return;
+    putApi<Roadmap>(`roadmaps/${editColumnNameId}`, {
+      name: columnName || '',
+      sort_order: roadmap?.sort_order,
+      roadmap_color_id: roadmap?.roadmap_color_id,
+    }).then((res) => {
+      setLoading(false);
+      if (res.results.data) {
+        updateRoadmap(handleFilterData(res.results.data));
+
+        setEditColumnNameId(0);
+      }
+    });
+  };
+
+  const handleGetRoadmapColors = () => {
+    getApi<RoadmapColor[]>('roadmaps/colors').then((res) => {
+      if (res.results.data) {
+        setRoadmapColors(res.results.data);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (is_logged_in) {
+      handleGetRoadmapColors();
+    }
+  }, []);
+
+  useEffect(() => {
+    handleGetStatus();
+  }, [filter]);
+
+  useEffect(() => {
+    if (socketTags) {
+      if (selectedIdea?.id) {
+        getFeedback(selectedIdea.id);
+      }
+      handleGetStatus();
+      setSocketTags(false);
+    }
+  }, [socketTags]);
+
+  return (
+    <>
+      <PageHeader
+        buttonLabel="New Idea"
+        header="Roadmap"
+        showButtonIcon={true}
+        disabled={
+          (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
+          permissions?.length === 0
+        }
+      />
+      {!roadmaps ||
+      (roadmaps &&
+        !roadmaps.some((roadmap) => (roadmap?.upvotes?.length ?? 0) > 0) &&
+        filterTag.length === 0 &&
+        title.length === 0) ||
+      fetching ? (
+        <div
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '230px',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <FadeLoader height={5} width={2} radius={2} margin={-10} />
+          </div>
+        </div>
+      ) : (
+        <div id="RoadmapPublicView">
+          <div className="max-w-[1200px] pt-8 px-6">
+            {(!roadmaps.some((roadmap) => (roadmap.upvotes?.length ?? 0) > 0) ||
+              (is_public && permissions?.length === 0)) &&
+              !fetching && (
+                <>
+                  <div className="container no-roadmap-background">
+                    {(filterTag.length === 0 && title.length === 0) ||
+                    (is_public && permissions?.length === 0) ? (
+                      <>
+                        <div className="sad-face">
+                          <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
+                        </div>
+                        <h3 className="no-roadmap-header">
+                          {is_public && permissions?.length === 0
+                            ? 'This public board is no longer available. Please contact the admin.'
+                            : 'No upvotes have been created… yet.'}
+                        </h3>
+                        {(!is_public || (permissions?.length ?? 0) > 0) && (
+                          <h4 className="no-roadmap-sub">
+                            Now is a great time to add your first entry!
+                          </h4>
+                        )}
+                      </>
+                    ) : (
+                      'Crickets and tumbleweeds. Please try again.'
+                    )}
+                  </div>
+                </>
+              )}
+            {roadmaps.some((roadmap) => (roadmap.upvotes?.length ?? 0) > 0) &&
+              (!is_public || (is_public && (permissions?.length ?? 0) > 0)) && (
+                <DragDropContext onDragEnd={onDragEnd}>
+                  <Droppable
+                    droppableId="all-columns"
+                    direction="horizontal"
+                    type="column"
+                    children={(provided) => (
+                      /* Container */
+                      <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        className="flex gap-6"
+                      >
+                        {(roadmaps as Roadmap[]).map((roadmap) => (
+                          <Draggable
+                            key={roadmap.id}
+                            draggableId={roadmap.id.toString()}
+                            index={0}
+                            isDragDisabled={
+                              is_public ||
+                              !permissions?.includes(Permissions.DRAG_COLUMN) ||
+                              dragging ||
+                              fetching ||
+                              !rbac_permissions?.includes(
+                                RbacPermissions.CHANGE_ORDER_COLUMNS
+                              )
+                            }
+                          >
+                            {(provided) => (
+                              <div>
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  style={{
+                                    position: 'relative',
+                                    width: '380px',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    marginBottom: '16px',
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      background: `${roadmap.background_color}`,
+                                      borderRadius: '5px',
+                                      padding: '8px 10px 8px 10px',
+                                    }}
+                                  >
+                                    <span
+                                      className="roadmap-pf"
+                                      style={{
+                                        cursor:
+                                          !is_public &&
+                                          permissions?.includes(
+                                            Permissions.EDIT_COLUMN
+                                          ) &&
+                                          rbac_permissions?.includes(
+                                            RbacPermissions.CHANGE_COLUMN_NAMES
+                                          )
+                                            ? 'pointer'
+                                            : '',
+                                      }}
+                                      onClick={() => {
+                                        if (
+                                          !is_public &&
+                                          permissions?.includes(
+                                            Permissions.EDIT_COLUMN
+                                          ) &&
+                                          rbac_permissions?.includes(
+                                            RbacPermissions.CHANGE_COLUMN_NAMES
+                                          )
+                                        ) {
+                                          setEditColumnNameId(roadmap.id);
+                                          setColumnName(roadmap.name);
+                                        }
+                                      }}
+                                    >
+                                      {roadmap.name}
+                                    </span>
+                                    {editColumnNameId == roadmap.id &&
+                                      rbac_permissions?.includes(
+                                        RbacPermissions.CHANGE_COLUMN_NAMES
+                                      ) && (
+                                        <ColumnInput
+                                          value={columnName}
+                                          setEditColumnNameId={
+                                            setEditColumnNameId
+                                          }
+                                          setColumnName={setColumnName}
+                                          handleConfirm={handleUpdateColumn}
+                                          disable={loading}
+                                        />
+                                      )}
+                                  </div>
+                                  {!is_public && (
+                                    <ColumnOptionDropdown
+                                      roadmap={roadmap}
+                                      roadmapColors={roadmapColors}
+                                    />
+                                  )}
+                                </div>
+                                <Droppable droppableId={roadmap.id.toString()}>
+                                  {(provided) => (
+                                    <div
+                                      ref={provided.innerRef}
+                                      {...provided.droppableProps}
+                                      className="idea-list-container"
+                                    >
+                                      {roadmap.upvotes
+                                        ?.filter((upvote) => !upvote.draft)
+                                        .map((upvote) => {
+                                          return (
+                                            <Draggable
+                                              key={`idea-${upvote.id?.toString()}`}
+                                              draggableId={`idea-${upvote.id?.toString()}`}
+                                              index={0}
+                                              isDragDisabled={
+                                                is_public ||
+                                                !permissions?.includes(
+                                                  Permissions.DRAG_IDEA
+                                                ) ||
+                                                upvote.not_administer ||
+                                                dragging ||
+                                                fetching ||
+                                                !rbac_permissions?.includes(
+                                                  RbacPermissions.CHANGE_UPVOTE_PRIORITISATION_ROADMAP
+                                                )
+                                              }
+                                            >
+                                              {(provided) => (
+                                                <div
+                                                  ref={provided.innerRef}
+                                                  {...provided.draggableProps}
+                                                  {...provided.dragHandleProps}
+                                                >
+                                                  <UpvoteComponent
+                                                    upvote={upvote}
+                                                  />
+                                                </div>
+                                              )}
+                                            </Draggable>
+                                          );
+                                        })}
+                                      {roadmap.upvotes?.filter(
+                                        (upvote) => !upvote.draft
+                                      ).length === 0 && (
+                                        <div className="empty-message">
+                                          Empty
+                                        </div>
+                                      )}
+                                      {provided.placeholder}
+                                    </div>
+                                  )}
+                                </Droppable>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                        {!is_public && (
+                          <div className="add-column-btn-container">
+                            {rbac_permissions?.includes(
+                              RbacPermissions.ADD_DELETE_COLUMNS
+                            ) && (
+                              <>
+                                <button
+                                  className="add-column-btn w-[380px] flex"
+                                  onClick={() => {
+                                    if (!is_public) {
+                                      setEditColumnNameId(-1);
+                                      setColumnName('');
+                                    }
+                                  }}
+                                  disabled={
+                                    !permissions?.includes(
+                                      Permissions.ADD_COLUMN
+                                    )
+                                  }
+                                >
+                                  <PlusIcon />
+                                  Add Column
+                                </button>
+                                {editColumnNameId == -1 && (
+                                  <ColumnInput
+                                    value={columnName}
+                                    setEditColumnNameId={setEditColumnNameId}
+                                    setColumnName={setColumnName}
+                                    handleConfirm={handleAddColumn}
+                                    disable={loading}
+                                    isAddColumn={true}
+                                  />
+                                )}
+                              </>
+                            )}
+                          </div>
+                        )}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  />
+                </DragDropContext>
+              )}
+          </div>
+        </div>
+      )}
+      <AddYourBoardModal
+        open={
+          (!is_public &&
+            user?.project !== undefined &&
+            user.user &&
+            !user.user.stop_remind_add_board &&
+            (!user.user.remind_3_days ||
+              (user.user.remind_3_days &&
+                moment().diff(
+                  moment(user.user?.remind_3_days_timestamp),
+                  'minutes'
+                ) >= 4320))) ??
+          false
+        }
+      />
+    </>
+  );
+}

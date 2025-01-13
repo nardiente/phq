@@ -235,7 +235,6 @@ export default function UpvotesPage() {
           (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
           permissions?.length === 0
         }
-        pageContainerClass="max-w-[1200px] mx-auto pt-8 px-6"
       />
       <UpvoteFilters roadmaps={roadmaps} />
       <div id="UpVoteList">
