@@ -99,10 +99,6 @@
   box-shadow: none;
 }
 
-#UpvoteFilter .upvote-container hr {
-  display: none;
-}
-
 #UpvoteFilter .upvote-container .filter .dropdown {
   width: 100%;
 }

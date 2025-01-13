@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import './styles.css';
-import '../../react-datepicket.css';
 import { Calendar4RangeIcon } from '../icons/calendar4-range.icon';
 import { formatDate } from '../../utils/date';
 import DatePicker from 'react-datepicker';

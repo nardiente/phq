@@ -1,4 +1,7 @@
 @import 'bulma/css/bulma.css';
+@import './react-datepicket.css';
+@import './quill.snow.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

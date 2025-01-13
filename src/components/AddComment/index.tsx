@@ -351,7 +351,7 @@ const AddComment = () => {
   }
 
   return (
-    <div>
+    <div id="AddComment">
       {idea && <UpvoteCard props={idea} />}
       <hr />
       {is_logged_in && (
