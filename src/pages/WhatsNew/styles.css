@@ -1,0 +1,42 @@
+#WhatsNew {
+  height: calc(100vh - 146px);
+  overflow: auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding-top: 52.5px;
+
+  blockquote {
+    border-left: 4px solid #ccc;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding-left: 16px;
+  }
+
+  .no-whatsnew-background {
+    padding: 200px;
+    text-align: center;
+  }
+
+  .no-whatsnew-header {
+    color: #4d4566;
+    font-family: 'Satoshi-Variable';
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 20px;
+    letter-spacing: 0.005em;
+  }
+
+  .no-whatsnew-sub {
+    color: #888399;
+    font-family: 'Satoshi-Variable';
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 8px;
+    line-height: 16px;
+    letter-spacing: 0.005em;
+  }
+}

@@ -32,6 +32,10 @@ export interface WhatsNew {
   publish_on_date: string;
   change_type: ChangeType;
   change_types: ChangeType[];
+  scheduled_date?: string;
+  emoji_list: any;
+  my_emoji: any;
+  pinned?: boolean;
 }
 
 export interface ChangeTypeColor {

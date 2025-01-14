@@ -20,6 +20,7 @@ import styled from 'styled-components';
 import { UpVoteEachList } from './components/upvote-each-list';
 import { AddYourBoardModal } from '../../components/AddYourBoardModal';
 import queryString from 'query-string';
+import { useWhatsNew } from '../../contexts/WhatsNewContext';
 
 const ListDiv = styled.div`
   background-color: var(--public-view-background-color);
@@ -45,15 +46,10 @@ export default function UpvotesPage() {
     updateIdea,
     updateIdeaInRoadmap,
   } = useFeedback();
-  const {
-    setActivePage,
-    setActiveTab,
-    setIsContinueReading,
-    setIsOpen,
-    setPanelCommentId,
-    setWhatsNewId,
-    setWhatsNewPreviewId,
-  } = usePanel();
+  const { setActivePage, setActiveTab, setIsOpen, setPanelCommentId } =
+    usePanel();
+  const { setIsContinueReading, setWhatsNewId, setWhatsNewPreviewId } =
+    useWhatsNew();
   const {
     state: { tags },
     setSocketTags,
@@ -74,7 +70,7 @@ export default function UpvotesPage() {
         setIsContinueReading(true);
         if (params.wni) setWhatsNewId(Number(params.wni));
         if (params.pi) setWhatsNewPreviewId(Number(params.pi));
-        setActiveTab('/changelog');
+        setActiveTab('/posts');
       }
       if (params.c) {
         setPanelCommentId(Number(params.c));

@@ -5,46 +5,52 @@ import { useReducer } from 'react';
 import { WhatsNew } from '../types/whats-new';
 
 interface State {
+  is_continue_reading: boolean;
   posts: WhatsNew[];
+  whats_new_id: number;
+  whats_new_preview_id: number;
 }
 
 const initialState: State = {
+  is_continue_reading: false,
   posts: [],
+  whats_new_id: 0,
+  whats_new_preview_id: 0,
 };
 
 enum ActionTypes {
-  SET_POSTS = 'SET_POSTS',
   ADD_POST = 'ADD_POST',
-  UPDATE = 'UPDATE',
   DELETE = 'DELETE',
   DELETE_BY_ID = 'DELETE_BY_ID',
+  SET_IS_CONTINUE_READING = 'SET_IS_CONTINUE_READING',
+  SET_POSTS = 'SET_POSTS',
+  SET_WHATS_NEW_ID = 'SET_WHATS_NEW_ID',
+  SET_WHATS_NEW_PREVIEW_ID = 'SET_WHATS_NEW_PREVIEW_ID',
+  UPDATE = 'UPDATE',
 }
 
 type Action =
-  | { type: ActionTypes.SET_POSTS; payload: WhatsNew[] }
   | { type: ActionTypes.ADD_POST; payload: WhatsNew }
-  | { type: ActionTypes.UPDATE; payload: WhatsNew }
   | { type: ActionTypes.DELETE; payload: WhatsNew }
-  | { type: ActionTypes.DELETE_BY_ID; payload: number };
+  | { type: ActionTypes.DELETE_BY_ID; payload: number }
+  | {
+      type: ActionTypes.SET_IS_CONTINUE_READING;
+      payload: boolean;
+    }
+  | { type: ActionTypes.SET_POSTS; payload: WhatsNew[] }
+  | { type: ActionTypes.SET_WHATS_NEW_ID; payload: number }
+  | {
+      type: ActionTypes.SET_WHATS_NEW_PREVIEW_ID;
+      payload: number;
+    }
+  | { type: ActionTypes.UPDATE; payload: WhatsNew };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case ActionTypes.SET_POSTS:
-      return {
-        ...state,
-        posts: action.payload,
-      };
     case ActionTypes.ADD_POST:
       return {
         ...state,
         posts: [action.payload, ...(state.posts ?? [])],
-      };
-    case ActionTypes.UPDATE:
-      return {
-        ...state,
-        posts: state.posts?.map((post) =>
-          post.id === action.payload.id ? action.payload : post
-        ),
       };
     case ActionTypes.DELETE:
       return {
@@ -56,6 +62,33 @@ function reducer(state: State, action: Action): State {
         ...state,
         posts: state.posts?.filter((post) => post.id != action.payload),
       };
+    case ActionTypes.UPDATE:
+      return {
+        ...state,
+        posts: state.posts?.map((post) =>
+          post.id === action.payload.id ? action.payload : post
+        ),
+      };
+    case ActionTypes.SET_IS_CONTINUE_READING:
+      return {
+        ...state,
+        is_continue_reading: action.payload,
+      };
+    case ActionTypes.SET_POSTS:
+      return {
+        ...state,
+        posts: action.payload,
+      };
+    case ActionTypes.SET_WHATS_NEW_ID:
+      return {
+        ...state,
+        whats_new_id: action.payload,
+      };
+    case ActionTypes.SET_WHATS_NEW_PREVIEW_ID:
+      return {
+        ...state,
+        whats_new_preview_id: action.payload,
+      };
     default:
       return state;
   }
@@ -63,11 +96,14 @@ function reducer(state: State, action: Action): State {
 
 interface ContextType {
   state: State;
-  setPosts: (posts: WhatsNew[]) => Promise<void>;
   addPost: (post: WhatsNew) => Promise<void>;
-  updatePost: (post: WhatsNew) => Promise<void>;
   deletePost: (post: WhatsNew) => Promise<void>;
   deletePostById: (id: number) => Promise<void>;
+  updatePost: (post: WhatsNew) => Promise<void>;
+  setIsContinueReading: (is_continue_reading: boolean) => Promise<void>;
+  setPosts: (posts: WhatsNew[]) => Promise<void>;
+  setWhatsNewId: (whats_new_id: number) => Promise<void>;
+  setWhatsNewPreviewId: (whats_new_preview_id: number) => Promise<void>;
 }
 
 const Context = createContext<ContextType | undefined>(undefined);
@@ -75,16 +111,8 @@ const Context = createContext<ContextType | undefined>(undefined);
 export function WhatsNewProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const setPosts = async (posts: WhatsNew[]) => {
-    dispatch({ type: ActionTypes.SET_POSTS, payload: posts });
-  };
-
   const addPost = async (post: WhatsNew) => {
     dispatch({ type: ActionTypes.ADD_POST, payload: post });
-  };
-
-  const updatePost = async (post: WhatsNew) => {
-    dispatch({ type: ActionTypes.UPDATE, payload: post });
   };
 
   const deletePost = async (post: WhatsNew) => {
@@ -95,14 +123,43 @@ export function WhatsNewProvider({ children }: { children: ReactNode }) {
     dispatch({ type: ActionTypes.DELETE_BY_ID, payload: id });
   };
 
+  const updatePost = async (post: WhatsNew) => {
+    dispatch({ type: ActionTypes.UPDATE, payload: post });
+  };
+
+  const setIsContinueReading = async (is_continue_reading: boolean) => {
+    dispatch({
+      type: ActionTypes.SET_IS_CONTINUE_READING,
+      payload: is_continue_reading,
+    });
+  };
+
+  const setPosts = async (posts: WhatsNew[]) => {
+    dispatch({ type: ActionTypes.SET_POSTS, payload: posts });
+  };
+
+  const setWhatsNewId = async (whats_new_id: number) => {
+    dispatch({ type: ActionTypes.SET_WHATS_NEW_ID, payload: whats_new_id });
+  };
+
+  const setWhatsNewPreviewId = async (whats_new_preview_id: number) => {
+    dispatch({
+      type: ActionTypes.SET_WHATS_NEW_PREVIEW_ID,
+      payload: whats_new_preview_id,
+    });
+  };
+
   const value = useMemo(
     () => ({
       state,
-      setPosts,
       addPost,
-      updatePost,
       deletePost,
       deletePostById,
+      updatePost,
+      setIsContinueReading,
+      setPosts,
+      setWhatsNewId,
+      setWhatsNewPreviewId,
     }),
     [state]
   );

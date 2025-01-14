@@ -25,3 +25,9 @@ export const dateOptions: Intl.DateTimeFormatOptions = {
   month: 'short',
   day: '2-digit',
 };
+
+export enum Publications {
+  DRAFT = 'Draft',
+  PREVIEW = 'Preview',
+  PUBLISHED = 'Published',
+}

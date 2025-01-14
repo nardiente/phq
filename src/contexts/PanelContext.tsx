@@ -14,9 +14,6 @@ interface State {
   commentIdToDelete?: number;
   mentioned_users: any[];
   active_tab: string;
-  is_continue_reading: boolean;
-  whats_new_id: number;
-  whats_new_preview_id: number;
 }
 
 const initialState: State = {
@@ -28,9 +25,6 @@ const initialState: State = {
   panel_loading: false,
   mentioned_users: [],
   active_tab: '',
-  is_continue_reading: false,
-  whats_new_id: 0,
-  whats_new_preview_id: 0,
 };
 
 enum ActionTypes {
@@ -61,16 +55,7 @@ type PanelAction =
     }
   | { type: ActionTypes.SET_MENTIONED_USERS; payload: any }
   | { type: ActionTypes.ADD_MENTIONED_USERS; payload: any }
-  | { type: 'SET_ACTIVE_TAB'; payload: string }
-  | {
-      type: 'SET_IS_CONTINUE_READING';
-      payload: boolean;
-    }
-  | { type: 'SET_WHATS_NEW_ID'; payload: number }
-  | {
-      type: 'SET_WHATS_NEW_PREVIEW_ID';
-      payload: number;
-    };
+  | { type: 'SET_ACTIVE_TAB'; payload: string };
 
 function panelReducer(state: State, action: PanelAction): State {
   switch (action.type) {
@@ -129,21 +114,6 @@ function panelReducer(state: State, action: PanelAction): State {
         ...state,
         active_tab: action.payload,
       };
-    case 'SET_IS_CONTINUE_READING':
-      return {
-        ...state,
-        is_continue_reading: action.payload,
-      };
-    case 'SET_WHATS_NEW_ID':
-      return {
-        ...state,
-        whats_new_id: action.payload,
-      };
-    case 'SET_WHATS_NEW_PREVIEW_ID':
-      return {
-        ...state,
-        whats_new_preview_id: action.payload,
-      };
     default:
       return state;
   }
@@ -162,9 +132,6 @@ interface PanelContextType {
   setMentionedUser: (value: any) => Promise<void>;
   addMentionedUser: (value: any) => Promise<void>;
   setActiveTab: (active_tab: string) => Promise<void>;
-  setIsContinueReading: (is_continue_reading: boolean) => Promise<void>;
-  setWhatsNewId: (whats_new_id: number) => Promise<void>;
-  setWhatsNewPreviewId: (whats_new_preview_id: number) => Promise<void>;
 }
 
 const PanelContext = createContext<PanelContextType | undefined>(undefined);
@@ -219,24 +186,6 @@ export function PanelProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_ACTIVE_TAB', payload: active_tab });
   };
 
-  const setIsContinueReading = async (is_continue_reading: boolean) => {
-    dispatch({
-      type: 'SET_IS_CONTINUE_READING',
-      payload: is_continue_reading,
-    });
-  };
-
-  const setWhatsNewId = async (whats_new_id: number) => {
-    dispatch({ type: 'SET_WHATS_NEW_ID', payload: whats_new_id });
-  };
-
-  const setWhatsNewPreviewId = async (whats_new_preview_id: number) => {
-    dispatch({
-      type: 'SET_WHATS_NEW_PREVIEW_ID',
-      payload: whats_new_preview_id,
-    });
-  };
-
   const value = useMemo(
     () => ({
       state,
@@ -251,9 +200,6 @@ export function PanelProvider({ children }: { children: ReactNode }) {
       setMentionedUser,
       addMentionedUser,
       setActiveTab,
-      setIsContinueReading,
-      setWhatsNewId,
-      setWhatsNewPreviewId,
     }),
     [state]
   );

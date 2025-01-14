@@ -201,7 +201,7 @@
 }
 
 .right-drop-down-button {
-  background: var(--public-view-background-color);
+  background-color: var(--public-view-background-color) !important;
   border: none;
   border-radius: 6px;
   color: #110733;
@@ -216,11 +216,14 @@
   line-height: 19px;
   text-align: center;
   width: 78px !important;
+}
 
-  &:focus,
-  &:hover {
-    background: #f3f4f6 !important;
-  }
+.right-drop-down-button:focus {
+  background: #f3f4f6 !important;
+}
+
+.right-drop-down-button:hover {
+  background: #f3f4f6 !important;
 }
 
 .right-filter-field {
@@ -256,22 +259,26 @@
 .whats-new-filter-button {
   background: var(--public-view-background-color);
   border: none;
-  border-radius: 6px;
-  color: #110733;
-  display: flex;
+  border-radius: 6px !important;
+  color: #110733 !important;
+  display: flex !important;
   flex-direction: row;
   font-family: 'Satoshi-Variable';
-  font-size: 14px;
+  font-size: 14px !important;
   font-style: normal;
-  font-weight: 500;
-  height: 35px;
-  justify-content: center;
-  line-height: 19px;
-  text-align: center;
+  font-weight: 500 !important;
+  height: 35px !important;
+  justify-content: center !important;
+  line-height: 19px !important;
+  text-align: center !important;
   width: 110px !important;
+  align-items: center;
+}
 
-  &:focus,
-  &:hover {
-    background: #f3f4f6 !important;
-  }
+.whats-new-filter-button:focus {
+  background: #f3f4f6 !important;
+}
+
+.whats-new-filter-button:hover {
+  background: #f3f4f6 !important;
 }

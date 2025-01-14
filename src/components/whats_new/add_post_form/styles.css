@@ -1,0 +1,586 @@
+#AddPostForm {
+  width: 100%;
+  height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .title-container {
+    position: relative;
+
+    width: 706px;
+
+    border-bottom: 1px solid #8340d9;
+
+    input {
+      width: 100%;
+      border: none;
+
+      font-family: 'Satoshi-Variable';
+      font-style: normal;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 27px;
+      display: flex;
+      align-items: center;
+      letter-spacing: 0.005em;
+      color: #110733;
+
+      &::placeholder {
+        color: #c3c1cc;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: -70px;
+
+      cursor: pointer;
+
+      background: none;
+      border: none;
+
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      font-family: 'Satoshi-Variable';
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 19px;
+      text-align: center;
+      letter-spacing: 0.005em;
+      color: #888399;
+    }
+  }
+
+  .type-of-change-container {
+    width: 706px;
+    height: 75px;
+    display: flex;
+    align-items: center;
+  }
+
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: #f9f9fa;
+    margin: 0px;
+  }
+
+  .description-container {
+    .description {
+      width: 706px;
+
+      .quill {
+        .ql-toolbar {
+          border: none;
+        }
+
+        .ql-container {
+          height: calc(100vh - 314px);
+          overflow: auto;
+          border: none;
+
+          &.ql-snow {
+            overflow: hidden;
+          }
+
+          .ql-editor {
+            font-family: 'Satoshi-Variable';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 24px;
+            letter-spacing: 0.005em;
+            color: #4d4566;
+          }
+
+          .ql-editor.ql-blank::before {
+            font-family: 'Satoshi-Variable';
+            font-style: normal;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 24px;
+            letter-spacing: 0.005em;
+            color: #c3c1cc;
+          }
+
+          .ql-tooltip {
+            left: 0 !important;
+            transform: translate(60px, -30px) !important;
+          }
+        }
+      }
+    }
+  }
+
+  .bottom-container {
+    width: 100%;
+    height: 75px;
+
+    background: rgba(247, 247, 249, 0.8);
+    border-top: 1px solid #f0eff2;
+    box-shadow: 0px -4px 12px rgba(17, 7, 51, 0.04);
+    backdrop-filter: blur(6px);
+
+    display: flex;
+    justify-content: center;
+
+    .bottom {
+      width: 706px;
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 16px;
+      padding-bottom: 24px;
+
+      .react-datepicker__day {
+        color: #110733;
+      }
+
+      .react-datepicker {
+        font-family: 'Satoshi-Variable';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 24px;
+        letter-spacing: 0.005em;
+        border: 1px solid #e5e7eb;
+        align-items: flex-start;
+        background: #ffffff;
+        color: #110733;
+        padding: 0;
+        position: absolute;
+        width: 362px;
+        height: 520px;
+        bottom: 64px;
+        box-shadow: 0px 25px 25px rgba(0, 0, 0, 0.15);
+        border-radius: 12px;
+        margin-left: -22rem;
+      }
+
+      .react-datepicker__day--selected,
+      .react-datepicker__day--in-selecting-range,
+      .react-datepicker__day--in-range,
+      .react-datepicker__month-text--selected,
+      .react-datepicker__month-text--in-selecting-range,
+      .react-datepicker__month-text--in-range,
+      .react-datepicker__quarter-text--selected,
+      .react-datepicker__quarter-text--in-selecting-range,
+      .react-datepicker__quarter-text--in-range,
+      .react-datepicker__year-text--selected,
+      .react-datepicker__year-text--in-selecting-range,
+      .react-datepicker__year-text--in-range,
+      .react-datepicker__day--keyboard-selected,
+      .react-datepicker__month-text--keyboard-selected,
+      .react-datepicker__quarter-text--keyboard-selected,
+      .react-datepicker__year-text--keyboard-selected {
+        background-color: #5a00cd;
+        border-radius: 999px;
+        margin: 0.066rem;
+        color: #ffffff;
+      }
+
+      .react-datepicker__day--selected:hover,
+      .react-datepicker__day--in-selecting-range:hover,
+      .react-datepicker__day--in-range:hover,
+      .react-datepicker__month-text--selected:hover,
+      .react-datepicker__month-text--in-selecting-range:hover,
+      .react-datepicker__month-text--in-range:hover,
+      .react-datepicker__quarter-text--selected:hover,
+      .react-datepicker__quarter-text--in-selecting-range:hover,
+      .react-datepicker__quarter-text--in-range:hover,
+      .react-datepicker__year-text--selected:hover,
+      .react-datepicker__year-text--in-selecting-range:hover,
+      .react-datepicker__year-text--in-range:hover,
+      .react-datepicker__day--keyboard-selected:hover,
+      .react-datepicker__month-text--keyboard-selected:hover,
+      .react-datepicker__quarter-text--keyboard-selected:hover,
+      .react-datepicker__year-text--keyboard-selected:hover,
+      .react-datepicker__day--keyboard-selected:hover,
+      .react-datepicker__month-text--keyboard-selected:hover,
+      .react-datepicker__quarter-text--keyboard-selected:hover,
+      .react-datepicker__year-text--keyboard-selected:hover {
+        width: 46px;
+        height: 46px;
+        background: #5a00cd;
+        border-radius: 999px;
+      }
+
+      .react-datepicker__header {
+        background: #fff;
+        text-align: center;
+        border-bottom: 1px solid #aeaeae;
+        border-top-left-radius: 0.3rem;
+        padding: 8px 0;
+        position: relative;
+        padding-top: 16px;
+        border: none;
+      }
+
+      .react-datepicker__day:hover {
+        border-radius: 999px;
+      }
+
+      .react-datepicker__header .react-datepicker__day-names {
+        font-family: 'Satoshi-Variable';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 24px;
+        letter-spacing: 0.005em;
+        width: 354px;
+        height: 24px;
+        flex: none;
+        color: #110733;
+        background: transparent;
+        border: none;
+        order: 1;
+        flex-grow: 0;
+      }
+
+      .react-datepicker__header .react-datepicker__day-name {
+        color: #6b7280;
+        font-family: 'Satoshi-Variable';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 20px;
+        letter-spacing: 0.005em;
+        padding-top: 27px;
+        padding-bottom: 28px;
+        margin-bottom: 25px;
+        width: 40px;
+        height: 30px;
+        flex: none;
+        order: 0;
+        flex-grow: 0;
+      }
+
+      .react-datepicker__week {
+        font-family: 'Satoshi-Variable';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 29px;
+        width: 9px;
+        height: 20px;
+        letter-spacing: 0.005em;
+        padding-left: 19px;
+        padding-right: 19px;
+        margin-top: 29px;
+        margin-bottom: 29px;
+        flex: none;
+        order: 0;
+        flex-grow: 0;
+      }
+
+      .react-datepicker__day--outside-month {
+        font-family: 'Satoshi-Variable';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 20px;
+        color: #d1d5db;
+      }
+
+      .react-datepicker__day,
+      .react-datepicker__month-text,
+      .react-datepicker__quarter-text,
+      .react-datepicker__year-text {
+        cursor: pointer;
+        margin: 8.5px;
+      }
+
+      .react-datepicker__navigation--previous {
+        padding-top: 16px;
+      }
+
+      .react-datepicker__navigation--next {
+        padding-top: 16px;
+      }
+
+      .react-datepicker__day {
+        justify-content: center;
+        align-items: center;
+        width: 46px;
+        height: 46px;
+        padding: 8px;
+        margin-left: -9px;
+        z-index: 1;
+      }
+
+      .react-datepicker__day:selected,
+      .react-datepicker__month-text:selected,
+      .react-datepicker__quarter-text:selected,
+      .react-datepicker__year-text:selected {
+        border-radius: 999px;
+        width: 46px;
+        height: 46px;
+        background: #5a00cd;
+        color: #ffffff;
+      }
+
+      .example-datepicker {
+        z-index: 1;
+        border: none;
+      }
+
+      .example-datepicker-class .react-datepicker__today-button {
+        background-color: white;
+        border-top: 0px;
+        text-align: right;
+        margin-right: 20px;
+      }
+
+      .date-time-schedule {
+        font-family: 'Satoshi-Variable';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 19px;
+        display: flex;
+        align-items: flex-end;
+        letter-spacing: 0.005em;
+        color: #888399;
+        flex: none;
+        order: 0;
+        flex-grow: 0;
+      }
+
+      .date-time-schedule span {
+        color: #ff6334;
+      }
+
+      .react-datepicker-time__input {
+        font-family: 'Satoshi-Variable';
+        font-weight: 700;
+        height: 30px;
+      }
+
+      .react-datepicker__input-time-container {
+        clear: both;
+        width: 100%;
+        float: left;
+        margin: 5px 0 10px 115px;
+        text-align: left;
+        padding-top: 30px;
+      }
+
+      .datepicker-schedule-btn {
+        font-family: 'Satoshi-Variable';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 19px;
+        color: #ffffff;
+
+        text-align: center;
+        letter-spacing: 0.005em;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 8px 12px;
+        gap: 8px;
+
+        width: 83px;
+        height: 35px;
+        background: #5a00cd;
+        border-radius: 6px;
+        flex: none;
+        order: 0;
+        flex-grow: 0;
+        margin-left: 15rem;
+        margin-top: 28rem;
+      }
+
+      .datepicker-cancel-btn {
+        font-family: 'Satoshi-Variable';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 19px;
+        text-align: center;
+        letter-spacing: 0.005em;
+        color: #09041a;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 8px 12px;
+        gap: 8px;
+        background: #ffffff;
+        width: 69px;
+        height: 35px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        margin-top: -35px;
+        margin-left: 10rem;
+        flex: none;
+        order: 0;
+        flex-grow: 0;
+      }
+
+      .line {
+        width: 16px;
+        height: 0px;
+        opacity: 0.2;
+        border: 1px solid #c3c1cc;
+        position: relative;
+        bottom: 5px;
+        top: -2.5px;
+        transform: rotate(90deg);
+        flex: none;
+        order: 1;
+        flex-grow: 0;
+        display: inline-flex;
+      }
+
+      .schedule-cancel-btn {
+        width: 45px;
+        height: 19px;
+        font-family: 'Satoshi-Variable';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 19px;
+        text-align: center;
+        letter-spacing: 0.005em;
+        color: #888399;
+        flex: none;
+        order: 3;
+        flex-grow: 0;
+        border: none;
+        background: transparent;
+        padding-left: 15px;
+        cursor: pointer;
+      }
+
+      .preview-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 8px 12px;
+        background: #ebdff9;
+        border: none;
+        border-radius: 6px;
+        font-family: 'Satoshi-Variable';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 19px;
+        text-align: center;
+        letter-spacing: 0.005em;
+        color: #5a00cd;
+      }
+
+      .post-buttons {
+        display: flex;
+        align-items: center;
+        padding: 0px;
+        gap: 8px;
+
+        .draft-button {
+          display: flex;
+          flex-direction: row;
+          justify-content: end;
+          align-items: center;
+          padding: 8px 12px;
+          gap: 8px;
+          border: none;
+          background: transparent;
+          border-radius: 6px;
+          font-family: 'Satoshi-Variable';
+          font-style: normal;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 19px;
+          text-align: center;
+          letter-spacing: 0.005em;
+          color: #888399;
+
+          &:disabled {
+            cursor: default;
+            opacity: 50%;
+          }
+        }
+
+        .button-group {
+          display: flex;
+          align-items: center;
+          padding: 0px;
+
+          .publish-button {
+            border: none;
+            border-right: 1px solid #ff8a67;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px 12px;
+            background: #ff6334;
+            border-radius: 6px 0px 0px 6px;
+            font-family: 'Satoshi-Variable';
+            font-style: normal;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 19px;
+            text-align: center;
+            letter-spacing: 0.005em;
+            color: #ffffff;
+
+            &.no-schedule-post {
+              border-top-right-radius: 6px;
+              border-bottom-right-radius: 6px;
+            }
+
+            &:disabled {
+              cursor: default;
+              opacity: 50%;
+            }
+          }
+
+          .schedule-button {
+            color: #ffffff;
+            display: flex;
+            border: none;
+            justify-content: center;
+            align-items: center;
+            padding: 0px;
+            background: #ff6334;
+            border-radius: 0px 6px 6px 0px;
+            width: 35px;
+            height: 35px;
+
+            &:disabled {
+              cursor: default;
+              opacity: 50%;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .error {
+    width: 706px;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px !important;
+    line-height: 17px;
+    letter-spacing: 0.005em;
+    color: #f87171;
+  }
+
+  .no-pointer-events {
+    pointer-events: none;
+  }
+}

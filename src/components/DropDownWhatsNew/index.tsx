@@ -1,20 +1,26 @@
-import * as React from 'react';
+import { LegacyRef } from 'react';
+import { useEffect } from 'react';
+import { useRef } from 'react';
+import { useState } from 'react';
+import { ReactNode } from 'react';
+import { FC } from 'react';
+import '../WhatsNewFilter/styles.css';
 
-export const DropdownWhatsNew: React.FC<{
+export const DropdownWhatsNew: FC<{
   container_class?: string;
-  content: React.ReactNode;
+  content: ReactNode;
   content_class?: string;
   content_container_class?: string;
-  label: React.ReactNode;
+  label: ReactNode;
   label_class?: string;
   tab_index?: number;
 }> = (props) => {
-  const ref = React.useRef<HTMLElement>();
-  const [is_expanded, setExpanded] = React.useState(false);
+  const ref = useRef<HTMLElement>();
+  const [is_expanded, setExpanded] = useState(false);
 
   const toggle = () => setExpanded(!is_expanded);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const expand = (e: any) => {
       if (!ref.current || !ref.current.contains(e.target)) {
         setExpanded(false);
@@ -28,7 +34,7 @@ export const DropdownWhatsNew: React.FC<{
   }, []);
 
   return (
-    <div ref={ref as React.LegacyRef<HTMLDivElement>}>
+    <div ref={ref as LegacyRef<HTMLDivElement>}>
       <div
         className={`dropdown ${is_expanded ? ' is-active' : ''}${
           props.container_class ? ` ${props.container_class}` : ''
@@ -38,9 +44,7 @@ export const DropdownWhatsNew: React.FC<{
           <button
             aria-controls="dropdown-menu"
             aria-haspopup="true"
-            className={`button${
-              props.label_class ? ` ${props.label_class}` : ''
-            }`}
+            className={`${props.label_class ? ` ${props.label_class}` : ''}`}
             onClick={toggle}
             tabIndex={props.tab_index}
           >

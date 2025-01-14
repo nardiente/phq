@@ -48,6 +48,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
     },
     { icon: ThumbsUp, label: 'Upvotes', id: 'upvotes' },
     { icon: Map, label: 'Roadmap', id: 'roadmap' },
+    { icon: Zap, label: 'Posts', id: 'posts' },
     { icon: Zap, label: "What's New", id: 'boost' },
     {
       icon: LayoutTemplate,

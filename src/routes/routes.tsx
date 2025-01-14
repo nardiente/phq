@@ -20,6 +20,7 @@ import { SSOVerifyingPage } from '../components/SSOVerifying';
 import ForgotPasswordPage from '../pages/ForgotPassword';
 import UpvotesPage from '../pages/Upvotes/UpvotesPage';
 import { RoadmapPage } from '../pages/Roadmap/RoadmapPage';
+import { WhatsNewPage } from '../pages/WhatsNew';
 
 const AppRoutes = () => {
   return (
@@ -52,6 +53,30 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <RoadmapPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/posts"
+        element={
+          <ProtectedRoute>
+            <WhatsNewPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/boost"
+        element={
+          <ProtectedRoute>
+            <BoostPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/create-boost"
+        element={
+          <ProtectedRoute>
+            <CreateBoostPage />
           </ProtectedRoute>
         }
       />
@@ -134,23 +159,6 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <ImportIdeasPage />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/boost"
-        element={
-          <ProtectedRoute>
-            <BoostPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/create-boost"
-        element={
-          <ProtectedRoute>
-            <CreateBoostPage />
           </ProtectedRoute>
         }
       />
