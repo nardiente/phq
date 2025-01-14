@@ -21,7 +21,7 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
   const { setFilterTitle } = useFeedback();
 
   const has_new_idea_button =
-    active_tab === '/upvote' || active_tab === '/roadmaps';
+    active_tab === '/upvotes' || active_tab === '/roadmap';
   const is_member = user?.user?.role_id;
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
@@ -45,17 +45,17 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
 
   return (
     <div className="max-h-screen bg-[#fafafa]">
-      <div id="page-header" className="max-w-[1200px] mx-auto pt-8 px-6">
+      <div id="page-header">
         <div
           className={`page-container ${props.pageContainerClass || ''} flex items-center justify-between mb-8`}
         >
           <div className="page-label default-text-color">{props.header}</div>
-          {active_tab === '/roadmaps' && (
+          {active_tab === '/roadmap' && (
             <div id="RoadmapFilter" className="search">
               <div className="control has-icons-right input-field">
                 <input
                   id="search-field"
-                  className="input"
+                  className="input border-t-0 border-r-0 border-l-0 rounded-none border-[#c5c5da] bg-transparent text-[#3d3d5e] p-2 shadow-none"
                   onChange={(e) => {
                     setTitle(e.target.value);
                     if (e.target.value.length === 0) {
@@ -83,7 +83,7 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
             </div>
           )}
           <div className="right-header">
-            {active_tab === '/roadmaps' && <RoadmapFilter />}
+            {active_tab === '/roadmap' && <RoadmapFilter />}
             {props.listWhatsNew && (
               <div>
                 <div className="field is-grouped">

@@ -1,28 +1,26 @@
 @import '../../appearance-colors.css';
 
-#RoadmapFilter {
-  &.search {
-    width: 630px;
+#RoadmapFilter.search {
+  width: 630px;
+}
 
-    .input-field {
-      .input {
-        font-family: 'Satoshi-Variable';
-        font-size: 15px;
-        font-style: normal;
-        font-weight: 500;
-        letter-spacing: 0.005em;
-        line-height: 20px;
+#RoadmapFilter.search .input-field .input {
+  font-family: 'Satoshi-Variable';
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  line-height: 20px;
+}
 
-        &::placeholder {
-          color: #888399;
-        }
+#RoadmapFilter.search .input-field .input::placeholder {
+  color: #888399;
+}
 
-        &:focus {
-          border-bottom: 1px solid var(--public-view-tags-active-text-color) !important;
-        }
-      }
-    }
-  }
+#RoadmapFilter.search .input-field .input:focus {
+  outline: none;
+  box-shadow: none;
+  border-bottom: 1px solid var(--public-view-tags-active-text-color) !important;
 }
 
 #upvote-filters {
@@ -228,18 +226,18 @@
 .right-drop-down-button {
   background: var(--public-view-background-color);
   border: none;
-  border-radius: 6px;
-  color: #110733;
-  display: flex;
+  border-radius: 6px !important;
+  color: #110733 !important;
+  display: flex !important;
   flex-direction: row;
   font-family: 'Satoshi-Variable';
-  font-size: 14px;
+  font-size: 14px !important;
   font-style: normal;
-  font-weight: 500;
-  height: 35px;
-  justify-content: center;
-  line-height: 19px;
-  text-align: center;
+  font-weight: 500 !important;
+  height: 35px !important;
+  justify-content: center !important;
+  line-height: 19px !important;
+  text-align: center !important;
   width: 78px !important;
 }
 

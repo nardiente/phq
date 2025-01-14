@@ -46,7 +46,7 @@ export function RoadmapPage() {
     setSocketTags,
   } = useSocket();
   const { tags: filterTag, title } = filter;
-  const { setActivePage, setIsOpen } = usePanel();
+  const { setActivePage, setActiveTab, setIsOpen } = usePanel();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const is_logged_in = getKaslKey();
@@ -371,6 +371,7 @@ export function RoadmapPage() {
   };
 
   useEffect(() => {
+    setActiveTab('/roadmap');
     if (is_logged_in) {
       handleGetRoadmapColors();
     }

@@ -66,6 +66,7 @@ export default function UpvotesPage() {
   const [remindAddBoard, setRemindAddBoard] = useState<boolean | undefined>();
 
   useEffect(() => {
+    setActiveTab('/upvotes');
     if (location.search) {
       const params = queryString.parse(location.search);
 
