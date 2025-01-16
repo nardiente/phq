@@ -351,7 +351,7 @@ const AddPostForm = ({
   }, [image_uploaded]);
 
   return (
-    <div id="AddPostForm">
+    <div id="AddPostForm" className="pt-5">
       <div className="title-container">
         <input
           type="text"
