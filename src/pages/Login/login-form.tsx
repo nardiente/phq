@@ -362,6 +362,7 @@ export const LoginForm = (props: LoginFormProps) => {
       setLoading(false);
       if (res.results.errors) {
         setApiFieldErrors(res.results.errors);
+        return;
       }
       if (res.results.error) {
         switch (res.results.error) {
@@ -417,12 +418,15 @@ export const LoginForm = (props: LoginFormProps) => {
             ]);
             break;
           default:
-            setApiFieldErrors([
-              {
-                field: 'password',
-                message: res.results.error,
-              },
-            ]);
+            toast(t(res.results.error), {
+              autoClose: 3000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              progress: undefined,
+              theme: 'dark',
+              className: 'custom-theme-toast',
+            });
             break;
         }
       }
