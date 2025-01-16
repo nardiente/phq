@@ -31,8 +31,11 @@ const GithubLogin = ({
 
   const processGithubLogin = async (githubCode: string) => {
     setLoadingSocial(true);
-    getApi<{ access_token: string }>('auth/github-access-token', {
-      code: githubCode,
+    getApi<{ access_token: string }>({
+      url: 'auth/github-access-token',
+      params: {
+        code: githubCode,
+      },
     }).then((res) => {
       setLoadingSocial(false);
       if (res.results.data && res.results.data.access_token) {

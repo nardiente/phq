@@ -74,7 +74,7 @@ export default function TagsPage() {
   };
 
   const handleGetTags = () => {
-    getApi<Tag[]>(`tags`).then((res) => {
+    getApi<Tag[]>({ url: `tags` }).then((res) => {
       if (res.results.data) {
         const data = res.results.data;
         setTagList(data);

@@ -16,7 +16,6 @@ import { Project } from '../types/project';
 import { ProjectAppearance } from '../types/appearance';
 import { Permissions } from '../types/common';
 import {
-  getCustomerKaslKey,
   getKaslKey,
   getSessionToken,
   setCustomerKaslKey,
@@ -169,13 +168,13 @@ export function UserProvider({ children }: UserProviderProps) {
 
   const handleGetUser = async () => {
     setFetching(true);
-    getApi<UserContextConfig>(
-      `users/me${
+    getApi<UserContextConfig>({
+      url: `users/me${
         import.meta.env.VITE_SYSTEM_TYPE === 'public'
           ? `/public/${window.location.host}`
           : ''
-      }`
-    )
+      }`,
+    })
       .then((res) => {
         if (res.results.data) {
           const result = res.results.data;
@@ -271,19 +270,15 @@ export function UserProvider({ children }: UserProviderProps) {
   };
 
   const handleListTag = () => {
-    getApi<Tag[]>(
-      'tags',
-      is_public
+    getApi<Tag[]>({
+      url: 'tags',
+      params: is_public
         ? {
             domain: window.location.host,
           }
         : undefined,
-      undefined,
-      is_public &&
-        moderation?.user_login === true &&
-        getKaslKey() === null &&
-        getCustomerKaslKey() !== null
-    ).then((res) => {
+      useCustomerKey: is_public && moderation?.user_login === true,
+    }).then((res) => {
       if (is_public && res.results.error === 'error-client.bad-request') {
         navigate('/dashboard');
       }
@@ -300,11 +295,11 @@ export function UserProvider({ children }: UserProviderProps) {
       Object.assign(params, { limit: 3 });
     }
 
-    getApi<UserNotification>(
-      'notifications',
-      params
-      // is_public && moderation?.user_login === true,
-    ).then((res) => {
+    getApi<UserNotification>({
+      url: 'notifications',
+      params: params,
+      // useSessionToken: is_public && moderation?.user_login === true, // Uncomment if needed
+    }).then((res) => {
       setFetchingNotification(false);
       if (res.results.data) {
         setUserNotification(res.results.data);

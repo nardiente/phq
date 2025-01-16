@@ -96,12 +96,11 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
   ];
 
   useEffect(() => {
-    if (activeItem === 'account') {
-      setShowSettings(true);
-    }
-    if (activeItem === 'dashboard') {
-      setShowSettings(false);
-    }
+    setShowSettings(
+      settingsMenuItems
+        .map((settingsMenuItem) => settingsMenuItem.id)
+        .includes(activeItem)
+    );
   }, [activeItem]);
 
   const handleNavigation = (item: any) => {

@@ -33,9 +33,9 @@ export const WhatsNewPage = () => {
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const retrieveWhatsNew = (id?: number) => {
-    getApi<WhatsNew>(
-      `whatsnew/${id || whats_new_preview_id || whats_new_id}`
-    ).then((res) => {
+    getApi<WhatsNew>({
+      url: `whatsnew/${id || whats_new_preview_id || whats_new_id}`,
+    }).then((res) => {
       if (res.results.data) {
         setWhatsNew(res.results.data);
         setIsContinueReading(true);
@@ -55,8 +55,11 @@ export const WhatsNewPage = () => {
       : 'whatsnew';
 
     setFetching(true);
-    getApi<WhatsNew[]>(url, {
-      change_type_id: filters.join(','),
+    getApi<WhatsNew[]>({
+      url,
+      params: {
+        change_type_id: filters.join(','),
+      },
     }).then((res) => {
       setFetching(false);
       if (res.results.data) {

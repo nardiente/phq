@@ -180,7 +180,7 @@ export default function TeamMembersPage() {
 
   const handleGetProfiles = () => {
     setFetchingTeam(true);
-    getApi<User[]>('users/me/team').then((res) => {
+    getApi<User[]>({ url: 'users/me/team' }).then((res) => {
       if (res.results.data) {
         const data = res.results.data;
         if (data.length === 0) {

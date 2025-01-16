@@ -136,7 +136,9 @@ export const SubmitIdea = () => {
   }, [tags]);
 
   const handleGetStatus = () => {
-    getApi<Roadmap[]>(`roadmaps`).then((res) => {
+    getApi<Roadmap[]>({
+      url: 'roadmaps',
+    }).then((res) => {
       if (res.results.data) {
         const data = res.results.data;
         setRoadmaps(data);

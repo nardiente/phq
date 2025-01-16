@@ -210,14 +210,14 @@ export const Comment = ({
 
   const handleGetReplies = () => {
     setPanelLoading(true);
-    getApi<FeedbackComment[]>(
-      `feedback/${comment.feedback_id}/comment`,
-      {
+    getApi<FeedbackComment[]>({
+      url: `feedback/${comment.feedback_id}/comment`,
+      params: {
         parent_id: comment.id.toString(),
         direction: 'desc',
       },
-      is_public && user?.moderation?.user_login === true
-    )
+      useSessionToken: is_public && user?.moderation?.user_login === true,
+    })
       .then((res) => {
         if (res.results.data) {
           const data = res.results.data;

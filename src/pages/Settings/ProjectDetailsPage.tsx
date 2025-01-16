@@ -110,7 +110,7 @@ export default function ProjectDetailsPage() {
 
   const handleGetPrivateUsers = () => {
     setFetchingPrivateUsers(true);
-    getApi<User[]>('projects/private-users')
+    getApi<User[]>({ url: 'projects/private-users' })
       .then((res) => {
         setFetchingPrivateUsers(false);
         if (res.results.data) {
@@ -122,7 +122,7 @@ export default function ProjectDetailsPage() {
 
   const handleGetProject = () => {
     setFetching(true);
-    getApi<Project>('projects')
+    getApi<Project>({ url: 'projects' })
       .then((res) => {
         setFetching(false);
         if (res.results.data) {

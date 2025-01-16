@@ -261,7 +261,9 @@ export default function AppearancePage() {
   ]);
 
   const handleGetAppearance = () => {
-    getApi<ProjectAppearance>('projects/appearance').then((appearance) => {
+    getApi<ProjectAppearance>({
+      url: 'projects/appearance',
+    }).then((appearance) => {
       const data = appearance.results.data;
       setAppearance(data);
       setActiveLinkColor(data?.active_link_color || '#913187');

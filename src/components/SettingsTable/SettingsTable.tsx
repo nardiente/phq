@@ -36,12 +36,13 @@ export const SettingsTable: React.FC = () => {
   React.useEffect(() => {
     setLoading(false);
 
-    const rbcaPermissionsPromise = getApi<RbacPermission[]>(
-      'users/rbac-permissions'
-    );
-    const rolesPermissionPromise = getApi<RolesPermission[]>(
-      'users/roles-permission'
-    );
+    const rbcaPermissionsPromise = getApi<RbacPermission[]>({
+      url: 'users/rbac-permissions',
+    });
+
+    const rolesPermissionPromise = getApi<RolesPermission[]>({
+      url: 'users/roles-permission',
+    });
 
     Promise.all([rbcaPermissionsPromise, rolesPermissionPromise])
       .then(([rbcaPermissionsRes, rolesPermissionRes]) => {

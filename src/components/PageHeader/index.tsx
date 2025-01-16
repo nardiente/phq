@@ -29,7 +29,9 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
   const [title, setTitle] = React.useState<string>('');
 
   const listChangeType = () => {
-    getApi<ChangeType[]>('whatsnew/change-types').then((res) => {
+    getApi<ChangeType[]>({
+      url: 'whatsnew/change-types',
+    }).then((res) => {
       if (res.results.data) {
         const data = res.results.data;
         setChangeTypes(data);

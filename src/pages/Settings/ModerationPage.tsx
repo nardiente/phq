@@ -33,7 +33,7 @@ export default function ModerationPage() {
 
   const getModeration = () => {
     setFetching(true);
-    getApi<{ message: string; data: Moderation }>('users/moderation')
+    getApi<{ message: string; data: Moderation }>({ url: 'users/moderation' })
       .then((res) => {
         if (res.results.data) {
           setModeration(res.results.data.data);

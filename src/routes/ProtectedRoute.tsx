@@ -48,7 +48,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
 
   useEffect(() => {
-    setCurrentPage(location.pathname.slice(1) as PageType);
+    let pathname = location.pathname.slice(1);
+    if (pathname.length === 0) {
+      pathname = 'dashboard';
+    }
+    setCurrentPage(pathname as PageType);
   }, [location]);
 
   if (!isAuthenticated()) {

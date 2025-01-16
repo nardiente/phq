@@ -6,8 +6,7 @@ import moment from 'moment';
 import { Feedback, Tag } from '../../types/feedback';
 import { getApi, postApi } from '../../utils/api/api';
 import { Roadmap } from '../../types/roadmap';
-import { getCustomerKaslKey, setKaslKey } from '../../utils/localStorage';
-import { getKaslKey } from '../../utils/localStorage';
+import { setKaslKey } from '../../utils/localStorage';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
 import { Permissions } from '../../types/common';
@@ -131,7 +130,7 @@ export default function UpvotesPage() {
   }, [user]);
 
   const getFeedback = (id: number) => {
-    getApi<Feedback>(`feedback/${id}`).then((res) => {
+    getApi<Feedback>({ url: `feedback/${id}` }).then((res) => {
       if (res.results.data) {
         const data = res.results.data;
         updateIdea(data);
@@ -144,28 +143,26 @@ export default function UpvotesPage() {
   };
 
   const handleGetStatus = () => {
-    getApi<Roadmap[]>(`roadmaps?domain=${window.location.host}`).then((res) => {
-      if (res.results.data) {
-        const data = res.results.data;
-        setRoadmaps(data);
+    getApi<Roadmap[]>({ url: `roadmaps?domain=${window.location.host}` }).then(
+      (res) => {
+        if (res.results.data) {
+          const data = res.results.data;
+          setRoadmaps(data);
+        }
       }
-    });
+    );
   };
 
   const handleListTag = () => {
-    getApi<Tag[]>(
-      'tags',
-      is_public
+    getApi<Tag[]>({
+      url: 'tags',
+      params: is_public
         ? {
             domain: window.location.host,
           }
         : undefined,
-      undefined,
-      is_public &&
-        moderation?.user_login === true &&
-        getKaslKey() === undefined &&
-        getCustomerKaslKey() !== undefined
-    ).then((res) => {
+      useCustomerKey: is_public && moderation?.user_login === true,
+    }).then((res) => {
       if (is_public && res.results.error === 'error-client.bad-request') {
         navigate('/');
       }
@@ -183,16 +180,16 @@ export default function UpvotesPage() {
 
     setFetching(true);
     setListing(true);
-    getApi<Feedback[]>(
+    getApi<Feedback[]>({
       url,
-      {
+      params: {
         sort,
         status,
         tags: filterTags.join(','),
         title,
       },
-      is_public && moderation?.user_login === true
-    )
+      useSessionToken: is_public && moderation?.user_login === true,
+    })
       .then((res) => {
         setFetching(false);
         setListing(false);

@@ -99,7 +99,9 @@ const AddPostForm = ({
   const [enable_button, setEnableButton] = useState<boolean>(false);
 
   const listChangeType = () => {
-    getApi<ChangeType[]>('whatsnew/change-types').then((res) => {
+    getApi<ChangeType[]>({
+      url: 'whatsnew/change-types',
+    }).then((res) => {
       if (res.results.data) {
         const data = res.results.data;
         setChangeTypes(data);

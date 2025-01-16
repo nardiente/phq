@@ -89,13 +89,13 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
                 <span className="text-purple-600 text-lg">
-                  {user?.first_name.charAt(0)}
+                  {user?.first_name?.charAt(0)}
                 </span>
               </div>
               <div className="flex flex-col">
                 <span className="text-sm font-medium text-gray-900">
-                  {user?.full_name.substring(0, 20).trim()}
-                  {(user?.full_name.length ?? 0) > 20 ? '...' : ''}
+                  {user?.full_name?.substring(0, 20).trim()}
+                  {(user?.full_name?.length ?? 0) > 20 ? '...' : ''}
                 </span>
                 <span className="px-2 py-0.5 text-[12px] font-medium bg-blue-50 text-blue-600 rounded w-fit">
                   {user?.type === UserTypes.CUSTOMER ? 'Admin' : ''}

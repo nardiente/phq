@@ -11,12 +11,17 @@ import { Moderation } from '../../types/moderation';
 export const api_url = import.meta.env.VITE_API_HOST;
 export const api_public_url = import.meta.env.VITE_API_HOST_PUBLIC;
 
-export const getApi = async <Data = any>(
-  url: string,
-  params?: QueryStringParams,
-  useSessionToken?: boolean,
-  useCustomerKey?: boolean
-) => {
+export const getApi = async <Data = any>({
+  url,
+  params,
+  useSessionToken,
+  useCustomerKey,
+}: {
+  url: string;
+  params?: QueryStringParams;
+  useSessionToken?: boolean;
+  useCustomerKey?: boolean;
+}) => {
   const qs_filters = new URLSearchParams(params);
   const query_string = qs_filters ? `?${qs_filters.toString()}` : '';
   let results: ApiResponseBody<Data> = {};

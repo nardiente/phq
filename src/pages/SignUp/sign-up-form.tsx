@@ -265,9 +265,9 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props) => {
           ? params['session_id'][0] || ''
           : params['session_id'];
         setCheckoutSessionId(sessionId);
-        getApi<{ first_name: string; last_name: string; email: string }>(
-          `auth/checkout-session/${params['session_id']}`
-        ).then(async (res) => {
+        getApi<{ first_name: string; last_name: string; email: string }>({
+          url: `auth/checkout-session/${params['session_id']}`,
+        }).then(async (res) => {
           if (res.results.data) {
             const data = res.results.data;
             setEmail(data.email);

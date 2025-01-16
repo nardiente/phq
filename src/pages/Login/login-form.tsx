@@ -322,10 +322,10 @@ export const LoginForm = (props: LoginFormProps) => {
 
   const loginGoogle = async () => {
     setLoadingSocial(true);
-    getApi(
-      `auth/google-auth-url${is_public ? `?d=${window.location.host}` : ''}`,
-      is_public ? { d: window.location.host } : undefined
-    )
+    getApi({
+      url: `auth/google-auth-url${is_public ? `?d=${window.location.host}` : ''}`,
+      params: is_public ? { d: window.location.host } : undefined,
+    })
       .then((res) => {
         if (res.results.data) {
           window.location.assign(res.results.data as string);

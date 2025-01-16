@@ -90,7 +90,9 @@ export default function BillingPage() {
   const handleGetCard = () => {
     setFetchingCard(true);
     setCards([]);
-    getApi<Card[]>('billing/card').then((res) => {
+    getApi<Card[]>({
+      url: 'billing/card',
+    }).then((res) => {
       setFetchingCard(false);
       if (res.results.data) {
         setCards(res.results.data);
@@ -101,7 +103,9 @@ export default function BillingPage() {
   const handleGetSubscription = () => {
     setFetchingSubscription(true);
     setSubscriptions([]);
-    getApi<Subscription[]>('billing').then((res) => {
+    getApi<Subscription[]>({
+      url: 'billing',
+    }).then((res) => {
       setFetchingSubscription(false);
       if (res.results.data) {
         const data = res.results.data;
@@ -129,7 +133,9 @@ export default function BillingPage() {
   const handleInvoiceHistory = () => {
     setFetchingInvoices(true);
     setInvoices([]);
-    getApi<InvoiceHistory[]>('billing/invoice-history').then((res) => {
+    getApi<InvoiceHistory[]>({
+      url: 'billing/invoice-history',
+    }).then((res) => {
       setFetchingInvoices(false);
       if (res.results.data) {
         setInvoices(res.results.data);
@@ -138,7 +144,9 @@ export default function BillingPage() {
   };
 
   const listCountries = () => {
-    getApi<Country[]>('billing/countries').then((res) => {
+    getApi<Country[]>({
+      url: 'billing/countries',
+    }).then((res) => {
       if (res.results.data) {
         setCountries(res.results.data);
       }

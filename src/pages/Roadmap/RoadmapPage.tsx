@@ -22,13 +22,10 @@ import { useUser } from '../../contexts/UserContext';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
 import { usePanel } from '../../contexts/PanelContext';
-import { getCustomerKaslKey, getKaslKey } from '../../utils/localStorage';
-import { useNavigate } from 'react-router-dom';
+import { getKaslKey } from '../../utils/localStorage';
 import { useEffect, useState } from 'react';
 
 export function RoadmapPage() {
-  const navigate = useNavigate();
-
   const { user } = useUser();
   const { moderation, permissions, rbac_permissions } = user ?? {};
   const {
@@ -59,7 +56,7 @@ export function RoadmapPage() {
   const [dragging, setDragging] = useState<boolean>(false);
 
   const getFeedback = (id: number) => {
-    getApi<Feedback>(`feedback/${id}`).then((res) => {
+    getApi<Feedback>({ url: `feedback/${id}` }).then((res) => {
       if (res.results.data) {
         const data = res.results.data;
         updateIdea(data);
@@ -72,22 +69,15 @@ export function RoadmapPage() {
   };
 
   const handleListTag = () => {
-    getApi<Tag[]>(
-      'tags',
-      is_public
+    getApi<Tag[]>({
+      url: 'tags',
+      params: is_public
         ? {
             domain: window.location.host,
           }
         : undefined,
-      undefined,
-      is_public &&
-        moderation?.user_login === true &&
-        getKaslKey() === undefined &&
-        getCustomerKaslKey() !== undefined
-    ).then((res) => {
-      if (is_public && res.results.error === 'error-client.bad-request') {
-        navigate('/');
-      }
+      useCustomerKey: moderation?.user_login === true && is_public,
+    }).then((res) => {
       if (res.results.data) {
         setTags(res.results.data);
       }
@@ -100,14 +90,14 @@ export function RoadmapPage() {
       : 'roadmaps/upvotes';
 
     setFetching(true);
-    getApi<Roadmap[]>(
+    getApi<Roadmap[]>({
       url,
-      {
+      params: {
         tags: filterTag.join(','),
         title,
       },
-      is_public && moderation?.user_login === true
-    )
+      useSessionToken: is_public && moderation?.user_login === true,
+    })
       .then((res) => {
         setFetching(false);
         if (res.results.data) {
@@ -363,7 +353,7 @@ export function RoadmapPage() {
   };
 
   const handleGetRoadmapColors = () => {
-    getApi<RoadmapColor[]>('roadmaps/colors').then((res) => {
+    getApi<RoadmapColor[]>({ url: 'roadmaps/colors' }).then((res) => {
       if (res.results.data) {
         setRoadmapColors(res.results.data);
       }

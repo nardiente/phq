@@ -29,7 +29,7 @@ export const LoginPage = () => {
 
     if (isLoggedIn) {
       // has logged in user
-      window.location.href = isPublicSite ? '/' : '/upvotes';
+      window.location.href = isPublicSite ? '/' : '/dashboard';
     } else {
       // no logged in user
       const containers = document.getElementsByClassName(

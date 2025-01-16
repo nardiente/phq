@@ -144,13 +144,13 @@ const AddComment = () => {
   const handleGetComments = () => {
     setFetchingComment(true);
     setPanelLoading(true);
-    getApi<FeedbackComment[]>(
-      `feedback/${idea?.id ?? 0}/comment`,
-      {
+    getApi<FeedbackComment[]>({
+      url: `feedback/${idea?.id ?? 0}/comment`,
+      params: {
         direction: 'desc',
       },
-      is_public && user?.moderation?.user_login === true
-    )
+      useSessionToken: is_public && user?.moderation?.user_login === true,
+    })
       .then((res) => {
         if (res.results.data) {
           const data = res.results.data;
