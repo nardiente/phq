@@ -25,6 +25,7 @@ import { Suspense } from 'react';
 import Fallback from './Fallback';
 import SegmentsPage from '../pages/SegmentsPage';
 import UserProfilesPage from '../pages/UserProfilesPage';
+import PrioritizationPage from '../pages/PrioritizationPage';
 
 const AppRoutes = () => {
   return (
@@ -49,6 +50,7 @@ const AppRoutes = () => {
             <Route path="/widgets" element={<WidgetsPage />} />
             <Route path="/segments" element={<SegmentsPage />} />
             <Route path="/profiles" element={<UserProfilesPage />} />
+            <Route path="/prioritization" element={<PrioritizationPage />} />
 
             {/* Settings */}
             <Route path="/account" element={<AccountSettings />} />

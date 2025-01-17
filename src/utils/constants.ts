@@ -31,3 +31,28 @@ export enum Publications {
   PREVIEW = 'Preview',
   PUBLISHED = 'Published',
 }
+
+export const INITIAL_ITEMS = [
+  {
+    id: 1,
+    name: 'Online Patient Registration',
+    status: 'Under Review',
+    estimatedDate: 'Mar 20, 2023',
+    reach: 24,
+    impact: 3,
+    confidence: '100% - High',
+    effort: 3,
+    score: 0,
+  },
+  {
+    id: 2,
+    name: 'Patient Portal',
+    status: 'Planned',
+    estimatedDate: 'Apr 15, 2023',
+    reach: 15,
+    impact: 3,
+    confidence: '50% - Low',
+    effort: 2,
+    score: 0,
+  },
+] as const;

@@ -61,6 +61,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
     },
     { icon: PieChart, label: 'Segments', id: 'segments' },
     { icon: Users, label: 'Customer Profiles', id: 'profiles' },
+    { icon: Map, label: 'Prioritization', id: 'prioritization' },
   ];
 
   const settingsMenuItems = [

@@ -33,3 +33,23 @@ export interface RoadmapColor {
   id: number;
   name: string;
 }
+
+export interface RoadmapItem {
+  id: number;
+  name: string;
+  status: 'Under Review' | 'Planned' | 'Completed' | 'In Progress';
+  estimatedDate?: string;
+  reach: number;
+  impact: string | number;
+  confidence: string;
+  effort: number;
+  score: number;
+}
+
+export interface IdeaFormData {
+  name: string;
+  description: string;
+  status: RoadmapItem['status'];
+  estimatedDate: string;
+  tags: string[];
+}
