@@ -24,6 +24,7 @@ import { WhatsNewPage } from '../pages/WhatsNew';
 import { Suspense } from 'react';
 import Fallback from './Fallback';
 import SegmentsPage from '../pages/SegmentsPage';
+import UserProfilesPage from '../pages/UserProfilesPage';
 
 const AppRoutes = () => {
   return (
@@ -47,6 +48,7 @@ const AppRoutes = () => {
             <Route path="/create-boost" element={<CreateBoostPage />} />
             <Route path="/widgets" element={<WidgetsPage />} />
             <Route path="/segments" element={<SegmentsPage />} />
+            <Route path="/profiles" element={<UserProfilesPage />} />
 
             {/* Settings */}
             <Route path="/account" element={<AccountSettings />} />

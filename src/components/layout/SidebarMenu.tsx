@@ -21,6 +21,7 @@ import {
   Heart,
   LayoutTemplate,
   PieChart,
+  Users,
 } from 'lucide-react';
 import { PageType } from '../../routes/ProtectedRoute';
 import { useUser } from '../../contexts/UserContext';
@@ -59,6 +60,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       disabled: false,
     },
     { icon: PieChart, label: 'Segments', id: 'segments' },
+    { icon: Users, label: 'Customer Profiles', id: 'profiles' },
   ];
 
   const settingsMenuItems = [
