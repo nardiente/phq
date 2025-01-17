@@ -23,6 +23,7 @@ import { RoadmapPage } from '../pages/Roadmap/RoadmapPage';
 import { WhatsNewPage } from '../pages/WhatsNew';
 import { Suspense } from 'react';
 import Fallback from './Fallback';
+import SegmentsPage from '../pages/SegmentsPage';
 
 const AppRoutes = () => {
   return (
@@ -45,6 +46,7 @@ const AppRoutes = () => {
             <Route path="/boost" element={<BoostPage />} />
             <Route path="/create-boost" element={<CreateBoostPage />} />
             <Route path="/widgets" element={<WidgetsPage />} />
+            <Route path="/segments" element={<SegmentsPage />} />
 
             {/* Settings */}
             <Route path="/account" element={<AccountSettings />} />

@@ -20,6 +20,7 @@ import {
   Paintbrush,
   Heart,
   LayoutTemplate,
+  PieChart,
 } from 'lucide-react';
 import { PageType } from '../../routes/ProtectedRoute';
 import { useUser } from '../../contexts/UserContext';
@@ -57,6 +58,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       badge: 'COMING\nSOON',
       disabled: false,
     },
+    { icon: PieChart, label: 'Segments', id: 'segments' },
   ];
 
   const settingsMenuItems = [
