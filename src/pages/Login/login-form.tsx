@@ -490,7 +490,7 @@ export const LoginForm = (props: LoginFormProps) => {
 
   return (
     <div id="LoginForm">
-      {showBanner && (
+      {showBanner === true && (
         <div className="custom-banner">
           {bannerText}
           <button onClick={() => setShowBanner(false)}>

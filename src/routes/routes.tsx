@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from '../pages/Login';
 import SignUpPage from '../pages/SignUp';
 import ProtectedRoute from './ProtectedRoute';
@@ -21,167 +21,50 @@ import ForgotPasswordPage from '../pages/ForgotPassword';
 import UpvotesPage from '../pages/Upvotes/UpvotesPage';
 import { RoadmapPage } from '../pages/Roadmap/RoadmapPage';
 import { WhatsNewPage } from '../pages/WhatsNew';
+import { Suspense } from 'react';
+import Fallback from './Fallback';
 
 const AppRoutes = () => {
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/sign-in" element={<LoginPage />} />
-      <Route path="/sign-in/google" element={<SSOVerifyingPage />} />
-      <Route path="/sign-up" element={<SignUpPage />} />
-      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+    <BrowserRouter>
+      <Suspense fallback={<Fallback />}>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/sign-in" element={<LoginPage />} />
+          <Route path="/sign-in/google" element={<SSOVerifyingPage />} />
+          <Route path="/sign-up" element={<SignUpPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-      {/* Protected Route */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/upvotes"
-        element={
-          <ProtectedRoute>
-            <UpvotesPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/roadmap"
-        element={
-          <ProtectedRoute>
-            <RoadmapPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/posts"
-        element={
-          <ProtectedRoute>
-            <WhatsNewPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/boost"
-        element={
-          <ProtectedRoute>
-            <BoostPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/create-boost"
-        element={
-          <ProtectedRoute>
-            <CreateBoostPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/widgets"
-        element={
-          <ProtectedRoute>
-            <WidgetsPage />
-          </ProtectedRoute>
-        }
-      />
+          {/* Protected Route */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/upvotes" element={<UpvotesPage />} />
+            <Route path="/roadmap" element={<RoadmapPage />} />
+            <Route path="/posts" element={<WhatsNewPage />} />
+            <Route path="/boost" element={<BoostPage />} />
+            <Route path="/create-boost" element={<CreateBoostPage />} />
+            <Route path="/widgets" element={<WidgetsPage />} />
 
-      {/* Settings */}
-      <Route
-        path="/account"
-        element={
-          <ProtectedRoute>
-            <AccountSettings />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/project"
-        element={
-          <ProtectedRoute>
-            <ProjectDetailsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/appearance"
-        element={
-          <ProtectedRoute>
-            <AppearancePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/moderation"
-        element={
-          <ProtectedRoute>
-            <ModerationPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/team"
-        element={
-          <ProtectedRoute>
-            <TeamMembersPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/billing"
-        element={
-          <ProtectedRoute>
-            <BillingPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/tags"
-        element={
-          <ProtectedRoute>
-            <TagsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/emails"
-        element={
-          <ProtectedRoute>
-            <EmailsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/import"
-        element={
-          <ProtectedRoute>
-            <ImportIdeasPage />
-          </ProtectedRoute>
-        }
-      />
+            {/* Settings */}
+            <Route path="/account" element={<AccountSettings />} />
+            <Route path="/project" element={<ProjectDetailsPage />} />
+            <Route path="/appearance" element={<AppearancePage />} />
+            <Route path="/moderation" element={<ModerationPage />} />
+            <Route path="/team" element={<TeamMembersPage />} />
+            <Route path="/billing" element={<BillingPage />} />
+            <Route path="/tags" element={<TagsPage />} />
+            <Route path="/emails" element={<EmailsPage />} />
+            <Route path="/import" element={<ImportIdeasPage />} />
 
-      <Route
-        path="/testimonials"
-        element={
-          <ProtectedRoute>
-            <TestimonialsPage />
-          </ProtectedRoute>
-        }
-      />
+            <Route path="/testimonials" element={<TestimonialsPage />} />
+          </Route>
 
-      {/* Redirect unknown routes */}
-      <Route
-        path="*"
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+          {/* Redirect unknown routes */}
+          <Route path="*" element={<DashboardPage />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
   );
 };
 

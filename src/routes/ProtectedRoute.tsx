@@ -1,17 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { useUser } from '../contexts/UserContext';
 import Banner from '../components/Banner';
 import { SidebarMenu } from '../components/layout/SidebarMenu';
-import { getKaslKey } from '../utils/localStorage';
-
-// Mock function to check if the user is authenticated
-const isAuthenticated = (): boolean => {
-  return getKaslKey() !== null;
-};
-
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-}
 
 export type PageType =
   | 'home'
@@ -41,9 +32,16 @@ export type PageType =
   | 'submit-feature'
   | 'our-roadmap';
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+type ProtectedRouteProps = {
+  redirectTo?: string;
+};
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  redirectTo = '/sign-in',
+}) => {
   const navigate = useNavigate();
-  const location = useLocation();
+
+  const { isAuthenticated } = useUser();
 
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
 
@@ -56,7 +54,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }, [location]);
 
   if (!isAuthenticated()) {
-    return <Navigate to="/sign-in" replace />;
+    return <Navigate to={redirectTo} replace />;
   }
 
   const handleNavigation = (page: PageType) => {
@@ -72,7 +70,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
       />
       <div className="flex-1">
         <Banner onNavigate={handleNavigation} />
-        {children}
+        <Outlet />
       </div>
     </div>
   );
