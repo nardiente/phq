@@ -8,7 +8,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: PROD
 
     steps:
       - name: Checkout code
@@ -22,12 +21,12 @@ jobs:
       - name: Set up local environment variables
         run: |
           touch .env.local
-          echo VITE_API_HOST=${{vars.API_HOST}} >> .env.local
-          echo VITE_API_HOST_PUBLIC=${{vars.API_HOST_PUBLIC}} >> .env.local
-          echo VITE_SYSTEM_TYPE=${{vars.SYSTEM_TYPE}} >> .env.local
-          echo VITE_SOCKET_URL=${{vars.SOCKET_URL}} >> .env.local
-          echo VITE_GITHUB_CLIENT_ID=${{vars.GITHUB_CLIENT_ID}} >> .env.local
-          echo VITE_CRYPTO_KEY=${{secrets.CRYPTO_KEY}} >> .env.local
+          echo VITE_API_HOST=${{vars.API_HOST_PROD}} >> .env.local
+          echo VITE_API_HOST_PUBLIC=${{vars.API_HOST_PUBLIC_PROD}} >> .env.local
+          echo VITE_SYSTEM_TYPE=${{vars.SYSTEM_TYPE_ADMIN}} >> .env.local
+          echo VITE_SOCKET_URL=${{vars.SOCKET_URL_PROD}} >> .env.local
+          echo VITE_GITHUB_CLIENT_ID=${{vars.CLIENT_ID_PROD}} >> .env.local
+          echo VITE_CRYPTO_KEY=${{secrets.CRYPTO_KEY_PROD}} >> .env.local
 
       - name: Install dependencies
         run: npm install
@@ -44,7 +43,7 @@ jobs:
 
       - name: Sync files to S3
         run: |
-          aws s3 sync ./build s3://${{vars.AWS_S3_BUCKET}} --delete --acl public-read
+          aws s3 sync ./build s3://${{vars.AWS_S3_BUCKET_PROD}} --delete --acl public-read
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
