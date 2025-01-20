@@ -24,3 +24,55 @@
 .is-clickable {
   cursor: pointer;
 }
+
+.restrict-banner {
+  position: absolute;
+  top: 20px;
+
+  z-index: 51;
+
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  .content {
+    position: relative;
+    width: 1200px;
+    background: #110733;
+    border-radius: 6px;
+    font-family: 'Satoshi-Variable';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: 0.005em;
+    color: #ffffff;
+    padding: 25px;
+
+    a {
+      color: #9578f3;
+    }
+
+    button {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+
+      cursor: pointer;
+
+      background: none;
+      border: none;
+
+      color: #9ca3af;
+    }
+  }
+}
+
+@media screen and (max-width: 904px) {
+  .restrict-banner {
+    padding: 0px 20px;
+    .content {
+      width: 100%;
+    }
+  }
+}

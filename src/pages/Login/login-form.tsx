@@ -299,7 +299,7 @@ export const LoginForm = (props: LoginFormProps) => {
               subscription.status === 'canceled' &&
               subscription.trial_end
             ) {
-              navigate('/billing-and-invoicing');
+              navigate('/billing');
               return;
             }
             navigate('/dashboard');
@@ -454,7 +454,7 @@ export const LoginForm = (props: LoginFormProps) => {
             subscription.status === 'canceled' &&
             subscription.trial_end
           ) {
-            navigate('/billing-and-invoicing');
+            navigate('/billing');
             return;
           }
           navigate('/dashboard');

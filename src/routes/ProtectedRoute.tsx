@@ -41,7 +41,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const { isAuthenticated } = useUser();
+  const { isAuthenticated, showBanner } = useUser();
 
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
 
@@ -52,6 +52,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     }
     setCurrentPage(pathname as PageType);
   }, [location]);
+
+  useEffect(() => {
+    if (showBanner) {
+      setCurrentPage('billing');
+      navigate('/billing');
+    }
+  }, [showBanner]);
 
   if (!isAuthenticated()) {
     return <Navigate to={redirectTo} replace />;
