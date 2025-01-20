@@ -51,7 +51,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       pathname = 'dashboard';
     }
     setCurrentPage(pathname as PageType);
-  }, [location]);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (showBanner) {
