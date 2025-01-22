@@ -27,6 +27,7 @@ jobs:
           echo VITE_SOCKET_URL=${{vars.SOCKET_URL_PROD}} >> .env.local
           echo VITE_GITHUB_CLIENT_ID=${{vars.CLIENT_ID_PROD}} >> .env.local
           echo VITE_CRYPTO_KEY=${{secrets.CRYPTO_KEY_PROD}} >> .env.local
+          echo VITE_SURVEY_FORM_URL=${{vars.SURVEY_FORM_URL_PROD}} >> .env.local
 
       - name: Install dependencies
         run: npm install
