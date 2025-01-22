@@ -41,7 +41,7 @@ export const AddYourBoardModal = ({ open }: Props) => {
     <Modal id="addYourBoardModal" isOpen={showAddBoard}>
       <ModalHeader>
         <a
-          className={loading ? 'disabled' : ''}
+          className={`text-purple-600 hover:text-purple-700 hover:underline ${loading ? 'disabled' : ''}`}
           onClick={() =>
             !loading ? stopRemind({ stop_remind_add_board: true }) : {}
           }
@@ -59,7 +59,12 @@ export const AddYourBoardModal = ({ open }: Props) => {
                 Add your board to your website.
               </span>
               <span>
-                <a href="https://support.producthq.io/articles/how-to-add-a-board-to-your-site-145e70-32dd7">
+                <a
+                  href="https://support.producthq.io/articles/how-to-add-a-board-to-your-site-145e70-32dd7"
+                  className="text-purple-600 hover:text-purple-700 hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Doc: How To Add A Board To Your Site
                 </a>
               </span>
@@ -95,7 +100,7 @@ export const AddYourBoardModal = ({ open }: Props) => {
       </ModalBody>
       <ModalFooter>
         <a
-          className={loading ? 'disabled' : ''}
+          className={`text-purple-600 hover:text-purple-700 hover:underline ${loading ? 'disabled' : ''}`}
           onClick={() => (!loading ? stopRemind({ remind_3_days: true }) : {})}
           aria-disabled={loading}
         >

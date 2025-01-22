@@ -68,8 +68,8 @@
   }
 
   .modal-footer {
+    width: 100%;
     font-family: 'Satoshi-Variable';
-    padding-left: 20px;
-    padding-bottom: 10px;
+    padding-left: 10px;
   }
 }

@@ -46,6 +46,7 @@ type FeedbackAction =
       type: 'DELETE_IDEA_IN_ROADMAP_BY_ID';
       payload: { roadmap_id: number; idea_id: number };
     }
+  | { type: 'FILTER_SET_DEFAULT' }
   | {
       type: 'SET_FILTER';
       payload: {
@@ -56,6 +57,7 @@ type FeedbackAction =
         title: string;
       };
     }
+  | { type: 'SET_FILTER_DEFAULT' }
   | { type: 'SET_FILTER_TAGS'; payload: any[] }
   | { type: 'SET_FILTER_TITLE'; payload: string }
   | { type: 'SET_IDEAS'; payload: Feedback[] }
@@ -98,6 +100,7 @@ interface FeedbackContextType {
     idea_id: number
   ) => Promise<void>;
   setActiveTab: (tab: 'ideas' | 'comments') => Promise<void>;
+  setDefaultFilter: () => Promise<void>;
   setFilter: (filter: {
     filtering: boolean;
     sort: string;
@@ -105,6 +108,7 @@ interface FeedbackContextType {
     tags: any[];
     title: string;
   }) => Promise<void>;
+  setFilterDefault: () => Promise<void>;
   setFilterTags: (tags: any[]) => Promise<void>;
   setFilterTitle: (title: string) => Promise<void>;
   setIdeas: (ideas: Feedback[]) => Promise<void>;
@@ -265,12 +269,31 @@ function feedbackReducer(
           return roadmap;
         }),
       };
+    case 'FILTER_SET_DEFAULT':
+      return {
+        ...state,
+        filters: {
+          filtering: false,
+          sort: '',
+          status: '',
+          tags: [],
+          title: '',
+        },
+      };
     case 'SET_ERROR':
       return { ...state, error: action.payload };
     case 'SET_FILTER':
       return {
         ...state,
         filters: action.payload,
+      };
+    case 'SET_FILTER_DEFAULT':
+      return {
+        ...state,
+        filter: {
+          tags: [],
+          title: '',
+        },
       };
     case 'SET_FILTER_TAGS':
       return {
@@ -411,6 +434,10 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     await fetchItems(tab);
   };
 
+  const setDefaultFilter = async () => {
+    dispatch({ type: 'FILTER_SET_DEFAULT' });
+  };
+
   const setFilter = async (filter: {
     filtering: boolean;
     sort: string;
@@ -419,6 +446,10 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     title: string;
   }) => {
     dispatch({ type: 'SET_FILTER', payload: filter });
+  };
+
+  const setFilterDefault = async () => {
+    dispatch({ type: 'SET_FILTER_DEFAULT' });
   };
 
   const setFilterTags = async (tags: any[]) => {
@@ -494,7 +525,9 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       deleteIdeaById,
       deleteIdeaInRoadmapById,
       setActiveTab,
+      setDefaultFilter,
       setFilter,
+      setFilterDefault,
       setFilterTags,
       setFilterTitle,
       setIdeas,

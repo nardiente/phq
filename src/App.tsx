@@ -21,7 +21,7 @@ import { Permissions } from './types/common';
 import { usePanel } from './contexts/PanelContext';
 
 const App: FC = () => {
-  const { user, showBanner, handleGetUser, setShowBanner, setUser } = useUser();
+  const { user, showBanner, setShowBanner, setUser } = useUser();
   const { admin_profile, user: user_profile, moderation } = user ?? {};
   const {
     state: { socket },
@@ -33,10 +33,6 @@ const App: FC = () => {
   const { setPanelLoading } = usePanel();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-
-  useEffect(() => {
-    handleGetUser();
-  }, []);
 
   useEffect(() => {
     if (is_public && moderation?.user_login === true) {

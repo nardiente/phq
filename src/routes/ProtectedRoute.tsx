@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate, Outlet, useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import Banner from '../components/Banner';
 import { SidebarMenu } from '../components/layout/SidebarMenu';
+import moment from 'moment';
+import { AddYourBoardModal } from '../components/AddYourBoardModal';
 
 export type PageType =
   | 'home'
@@ -30,7 +32,8 @@ export type PageType =
   | 'roadmap'
   | 'docs'
   | 'submit-feature'
-  | 'our-roadmap';
+  | 'our-roadmap'
+  | 'pricing';
 
 type ProtectedRouteProps = {
   redirectTo?: string;
@@ -40,34 +43,53 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   redirectTo = '/sign-in',
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const { isAuthenticated, showBanner } = useUser();
+  const { isAuthenticated, user: userDetails, showBanner } = useUser();
+  const { project, user } = userDetails ?? {};
 
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
+  const [remindAddBoard, setRemindAddBoard] = useState<boolean | undefined>();
+
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+
+  const handleNavigation = useCallback(
+    (page: PageType) => {
+      setCurrentPage(page);
+      navigate('/' + page.toString());
+    },
+    [navigate]
+  );
 
   useEffect(() => {
     let pathname = location.pathname.slice(1);
-    if (pathname.length === 0) {
-      pathname = 'dashboard';
+    if (pathname !== 'pricing') {
+      if (pathname.length === 0) {
+        pathname = 'dashboard';
+      }
+      if (showBanner) {
+        pathname = 'billing';
+      }
+      handleNavigation(pathname as PageType);
     }
-    setCurrentPage(pathname as PageType);
-  }, [location.pathname]);
+  }, [location.pathname, showBanner, handleNavigation]);
 
   useEffect(() => {
-    if (showBanner) {
-      setCurrentPage('billing');
-      navigate('/billing');
-    }
-  }, [showBanner]);
+    setRemindAddBoard(
+      !is_public &&
+        project !== undefined &&
+        user &&
+        !user.stop_remind_add_board &&
+        (!user.remind_3_days ||
+          (user.remind_3_days &&
+            moment().diff(moment(user.remind_3_days_timestamp), 'minutes') >=
+              4320))
+    );
+  }, [user]);
 
   if (!isAuthenticated()) {
     return <Navigate to={redirectTo} replace />;
   }
-
-  const handleNavigation = (page: PageType) => {
-    setCurrentPage(page);
-    navigate('/' + page.toString());
-  };
 
   return (
     <div className="min-h-screen bg-[#fafafa] flex">
@@ -78,6 +100,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       <div className="flex-1">
         <Banner onNavigate={handleNavigation} />
         <Outlet />
+        <AddYourBoardModal open={remindAddBoard ?? false} />
       </div>
     </div>
   );

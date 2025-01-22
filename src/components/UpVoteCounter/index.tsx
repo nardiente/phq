@@ -41,10 +41,10 @@ export const UpVoteCounter = ({
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const is_logged_in =
-    getKaslKey() !== undefined ||
+    getKaslKey() !== null ||
     (is_public &&
       moderation?.user_login === true &&
-      getSessionToken() !== undefined);
+      getSessionToken() !== null);
   const is_member = !!user?.user?.role_id;
 
   const can_upvote =

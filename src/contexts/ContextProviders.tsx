@@ -8,6 +8,7 @@ import { FeedbackProvider } from './FeedbackContext';
 import { SocketProvider } from './SocketContext';
 import { PanelProvider } from './PanelContext';
 import { BoostProvider } from './BoostContext';
+import { OnboardingProvider } from './OnboardingContext';
 
 type ContextProvidersProps = {
   children: ReactNode;
@@ -15,23 +16,25 @@ type ContextProvidersProps = {
 
 const ContextProviders: React.FC<ContextProvidersProps> = ({ children }) => {
   return (
-    <SocketProvider>
-      <PanelProvider>
-        <FeedbackProvider>
-          <WhatsNewProvider>
-            <UserNotificationProvider>
-              <DropdownProvider>
-                <UnsavedChangesProvider>
-                  <BoostProvider>
-                    <UserProvider>{children}</UserProvider>
-                  </BoostProvider>
-                </UnsavedChangesProvider>
-              </DropdownProvider>
-            </UserNotificationProvider>
-          </WhatsNewProvider>
-        </FeedbackProvider>
-      </PanelProvider>
-    </SocketProvider>
+    <OnboardingProvider>
+      <SocketProvider>
+        <PanelProvider>
+          <FeedbackProvider>
+            <WhatsNewProvider>
+              <UserNotificationProvider>
+                <DropdownProvider>
+                  <UnsavedChangesProvider>
+                    <BoostProvider>
+                      <UserProvider>{children}</UserProvider>
+                    </BoostProvider>
+                  </UnsavedChangesProvider>
+                </DropdownProvider>
+              </UserNotificationProvider>
+            </WhatsNewProvider>
+          </FeedbackProvider>
+        </PanelProvider>
+      </SocketProvider>
+    </OnboardingProvider>
   );
 };
 

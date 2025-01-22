@@ -1,8 +1,5 @@
-import { Fragment, useEffect } from 'react';
-
-import { useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useUser } from '../../contexts/UserContext';
-import moment from 'moment';
 import { Feedback, Tag } from '../../types/feedback';
 import { getApi, postApi } from '../../utils/api/api';
 import { Roadmap } from '../../types/roadmap';
@@ -17,7 +14,6 @@ import { PageHeader } from '../../components/PageHeader';
 import { UpvoteFilters } from '../../components/UpvoteFilters';
 import styled from 'styled-components';
 import { UpVoteEachList } from './components/upvote-each-list';
-import { AddYourBoardModal } from '../../components/AddYourBoardModal';
 import queryString from 'query-string';
 import { useWhatsNew } from '../../contexts/WhatsNewContext';
 
@@ -31,7 +27,7 @@ export default function UpvotesPage() {
   const location = useLocation();
 
   const { user: userDetails, setShowBanner } = useUser();
-  const { moderation, permissions, project, user } = userDetails ?? {};
+  const { moderation, permissions } = userDetails ?? {};
   const {
     state: {
       filters: { filtering, sort, status, tags: filterTags, title },
@@ -58,7 +54,6 @@ export default function UpvotesPage() {
 
   const [fetching, setFetching] = useState<boolean>(true);
   const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
-  const [remindAddBoard, setRemindAddBoard] = useState<boolean | undefined>();
 
   useEffect(() => {
     setActiveTab('/upvotes');
@@ -115,19 +110,6 @@ export default function UpvotesPage() {
 
     handleListFeedback(false);
   }, []);
-
-  useEffect(() => {
-    setRemindAddBoard(
-      !is_public &&
-        project !== undefined &&
-        user &&
-        !user.stop_remind_add_board &&
-        (!user.remind_3_days ||
-          (user.remind_3_days &&
-            moment().diff(moment(user.remind_3_days_timestamp), 'minutes') >=
-              4320))
-    );
-  }, [user]);
 
   const getFeedback = (id: number) => {
     getApi<Feedback>({ url: `feedback/${id}` }).then((res) => {
@@ -324,7 +306,6 @@ export default function UpvotesPage() {
           </>
         )}
       </div>
-      <AddYourBoardModal open={remindAddBoard ?? false} />
     </>
   );
 }

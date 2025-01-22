@@ -1,0 +1,72 @@
+#successOnboarding {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  #logo {
+    max-width: 125px;
+    max-height: 32px;
+    align-self: center;
+  }
+
+  p {
+    font-family: 'Satoshi-Variable';
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32.4px;
+    letter-spacing: 0.005em;
+    text-align: left;
+    color: #000000;
+  }
+
+  .gif-container {
+    display: flex;
+    gap: 21px;
+    flex-direction: column;
+
+    .next-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      ul {
+        list-style: disc;
+        margin-left: 25px;
+
+        li {
+          font-family: 'Satoshi-Variable';
+          font-size: 14px;
+          font-weight: 500;
+          line-height: 18.9px;
+          letter-spacing: 0.005em;
+          text-align: left;
+          color: #110733;
+        }
+      }
+
+      button {
+        cursor: pointer;
+        width: 100%;
+        padding: 18px 24px;
+        background: #5a00cd;
+        border: none;
+        border-radius: 6px;
+
+        font-family: 'Satoshi-Variable';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 24px;
+        text-align: center;
+        letter-spacing: 0.005em;
+        color: #ffffff;
+
+        &:disabled {
+          cursor: default;
+          opacity: 50%;
+        }
+      }
+    }
+  }
+}

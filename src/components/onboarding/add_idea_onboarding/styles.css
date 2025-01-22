@@ -1,0 +1,109 @@
+#AddIdeaOnboarding {
+  width: 400px;
+
+  h1 {
+    font-family: 'Satoshi-Variable';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 32px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.005em;
+    color: #000000;
+
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-family: 'Satoshi-Variable';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.005em;
+    color: #4d4566;
+
+    margin-bottom: 24px;
+    max-width: 400px;
+  }
+
+  button {
+    cursor: pointer;
+    width: 100%;
+    padding: 18px 24px;
+    background: #5a00cd;
+    border: none;
+    border-radius: 6px;
+
+    font-family: 'Satoshi-Variable';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    letter-spacing: 0.005em;
+    color: #ffffff;
+
+    &:disabled {
+      cursor: default;
+      opacity: 50%;
+    }
+  }
+
+  .input:focus {
+    background: #f9fafb;
+    border: 1px solid #8340d9 !important;
+    box-shadow: 0px 0px 0px 4px rgba(168, 85, 247, 0.25);
+    border-radius: 6px;
+  }
+
+  .input::placeholder {
+    color: #4d4566;
+    font-family: 'Satoshi-Variable';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 20px;
+    letter-spacing: 0.005em;
+  }
+
+  label {
+    color: #110733;
+    font-family: 'Satoshi-Variable';
+    font-size: 14px !important;
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0.005em;
+  }
+
+  .skip-text {
+    color: #5a00cd;
+    font-family: 'Satoshi-Variable';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    letter-spacing: 0.005em;
+    text-decoration-line: underline;
+
+    &.disabled {
+      opacity: 50%;
+      cursor: default;
+    }
+  }
+}
+
+@media screen and (max-width: 904px) {
+  #AddIdeaOnboarding {
+    width: 100%;
+    padding: 25px;
+  }
+}
+
+#Onboarding .right {
+  background-position: unset !important;
+}

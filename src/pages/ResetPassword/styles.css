@@ -1,0 +1,97 @@
+#ResetPasswordPage {
+  background: #ffffff;
+  overflow-x: clip;
+
+  #ResetPasswordForm {
+    display: flex;
+    justify-content: center;
+
+    form {
+      width: 100%;
+
+      .form {
+        order: 0;
+      }
+
+      fieldset {
+        width: inherit;
+      }
+    }
+  }
+
+  a {
+    color: #5a00cd;
+    text-decoration: none;
+  }
+
+  .back-signin {
+    font-family: 'Satoshi-Variable';
+    font-style: normal;
+    font-weight: 700 !important;
+    font-size: 15px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: 0.005em;
+    color: #5a00cd;
+  }
+
+  .description {
+    font-family: 'Satoshi-Variable';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.005em;
+    color: #4d4566;
+    margin-bottom: 24px;
+  }
+
+  .hero-body {
+    padding: 0;
+
+    &.mobile {
+      display: flex;
+      align-items: flex-start;
+    }
+  }
+
+  .left-image {
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: inline-flex;
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  .logo {
+    margin-right: 2%;
+    margin-top: 2%;
+    position: absolute;
+
+    &.mobile {
+      height: 27.69px;
+      width: 115.8px;
+    }
+  }
+
+  .margin-bottom-0 {
+    margin-bottom: 0;
+  }
+
+  .padding-top-web {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-bottom: auto;
+    margin-top: auto;
+  }
+
+  .right-column {
+    display: flex;
+    flex-direction: column;
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+}

@@ -6,7 +6,7 @@ import {
   setSessionToken,
 } from '../../utils/localStorage';
 import * as React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { UIButton } from '../../components/UIButton';
 import { UIField } from '../../components/UIField';
@@ -55,6 +55,7 @@ interface LoginFormProps {
 
 export const LoginForm = (props: LoginFormProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
 
   const {
@@ -323,8 +324,8 @@ export const LoginForm = (props: LoginFormProps) => {
   const loginGoogle = async () => {
     setLoadingSocial(true);
     getApi({
-      url: `auth/google-auth-url${is_public ? `?d=${window.location.host}` : ''}`,
-      params: is_public ? { d: window.location.host } : undefined,
+      url: 'auth/google-auth-url',
+      params: { d: window.location.host },
     })
       .then((res) => {
         if (res.results.data) {

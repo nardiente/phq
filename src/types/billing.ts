@@ -43,4 +43,56 @@ export interface Subscription {
   cancel_at_period_end: boolean;
   mode?: CheckoutMode;
   is_trial?: boolean;
+  remaining_days?: number;
+}
+
+export interface UserSubscription {
+  can_purchase_powerup?: boolean;
+  is_trial?: boolean;
+  price_id: string;
+  prices: Price[];
+  status: string;
+  stripe_subs_id: string;
+}
+
+export interface Plan {
+  monthly: {
+    plans: Price[];
+    powerups: Price[];
+  };
+  yearly: {
+    plans: Price[];
+    powerups: Price[];
+  };
+  subscription?: UserSubscription;
+}
+
+export interface Price {
+  active: boolean;
+  id: string;
+  amount: number;
+  planName: string;
+  price: string;
+  product: Product;
+  recurring: {
+    interval: string;
+    interval_count: number;
+  };
+}
+
+export interface Product {
+  id: string;
+  name: string;
+}
+
+export interface CheckoutSession {
+  url: string;
+}
+
+export interface Feature {
+  tag: string;
+  name: string;
+  starter: string;
+  growth: string;
+  scale: string;
 }

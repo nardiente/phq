@@ -32,7 +32,6 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
   };
 
   const handleLogout = () => {
-    // localStorage.removeItem('authToken');
     eraseKaslKey();
     navigate('/sign-in');
   };
@@ -112,7 +111,7 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
               Account Settings
             </button>
             <a
-              href="https://app.producthq.io/pricing"
+              href={`${window.location.origin}/pricing`}
               target="_blank"
               rel="noopener noreferrer"
               className="block w-[calc(100%-16px)] mx-2 px-4 py-2 text-sm text-[#22C55E] hover:bg-gray-50 border border-[#22C55E] rounded-lg text-center cursor-pointer"

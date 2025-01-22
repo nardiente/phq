@@ -1,0 +1,11 @@
+#SurveyOnboarding {
+  height: 100vh;
+
+  #zf-widget {
+    height: inherit;
+
+    #zf-widget-iframe {
+      height: inherit;
+    }
+  }
+}

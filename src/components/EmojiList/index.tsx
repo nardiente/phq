@@ -15,7 +15,7 @@ interface EmojiListProps {
 
 const EmojiList: React.FC<EmojiListProps> = ({ comment, addEmoji }) => {
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-  const is_logged_in = getKaslKey();
+  const is_logged_in = getKaslKey() !== null;
 
   const { deleted, emoji_list, my_emoji } = comment as FeedbackComment;
 

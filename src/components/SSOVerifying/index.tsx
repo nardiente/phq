@@ -33,7 +33,7 @@ export const SSOVerifyingPage = () => {
           state?: string;
         };
         if (data.state) {
-          navigate(
+          window.location.assign(
             `http://${data.state}/sign-in?sso=1&e=${data.email}&f=${data.given_name}&l=${data.family_name}`
           );
         } else {

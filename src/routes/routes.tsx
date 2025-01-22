@@ -26,6 +26,10 @@ import Fallback from './Fallback';
 import SegmentsPage from '../pages/SegmentsPage';
 import UserProfilesPage from '../pages/UserProfilesPage';
 import PrioritizationPage from '../pages/PrioritizationPage';
+import PricingPage from '../pages/Pricing';
+import SuccessPage from '../pages/success/success';
+import OnboardingPage from '../pages/onboarding/onboarding';
+import ResetPasswordPage from '../pages/ResetPassword';
 
 const AppRoutes = () => {
   return (
@@ -38,9 +42,17 @@ const AppRoutes = () => {
           <Route path="/sign-in/google" element={<SSOVerifyingPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/ob-board" element={<OnboardingPage />} />
+          <Route path="/ob-idea" element={<OnboardingPage />} />
+          <Route path="/ob-tags" element={<OnboardingPage />} />
+          <Route path="/ob-survey" element={<OnboardingPage />} />
+          <Route path="/ob-success" element={<OnboardingPage />} />
 
           {/* Protected Route */}
           <Route element={<ProtectedRoute />}>
+            <Route path="/success" element={<SuccessPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/upvotes" element={<UpvotesPage />} />
             <Route path="/roadmap" element={<RoadmapPage />} />

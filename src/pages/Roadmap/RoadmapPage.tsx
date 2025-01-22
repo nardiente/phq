@@ -46,7 +46,7 @@ export function RoadmapPage() {
   const { setActivePage, setActiveTab, setIsOpen } = usePanel();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-  const is_logged_in = getKaslKey();
+  const is_logged_in = getKaslKey() !== null;
 
   const [fetching, setFetching] = useState<boolean>(true);
   const [editColumnNameId, setEditColumnNameId] = useState<number>(0);

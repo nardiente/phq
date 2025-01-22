@@ -45,8 +45,6 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       icon: LayoutDashboard,
       label: 'Dashboard',
       id: 'dashboard',
-      badge: 'COMING\nSOON',
-      disabled: false,
     },
     { icon: ThumbsUp, label: 'Upvotes', id: 'upvotes' },
     { icon: Map, label: 'Roadmap', id: 'roadmap' },
@@ -56,8 +54,6 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       icon: LayoutTemplate,
       label: 'Widgets',
       id: 'widgets',
-      badge: 'COMING\nSOON',
-      disabled: false,
     },
     { icon: PieChart, label: 'Segments', id: 'segments' },
     { icon: Users, label: 'Customer Profiles', id: 'profiles' },
@@ -76,15 +72,11 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       icon: Mail,
       label: 'Emails',
       id: 'emails',
-      badge: 'COMING\nSOON',
-      disabled: false,
     },
     {
       icon: Upload,
       label: 'Import Ideas',
       id: 'import',
-      badge: 'COMING\nSOON',
-      disabled: false,
     },
   ];
 
@@ -250,10 +242,10 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
 
           {isExpanded && (
             <a
-              href="https://app.producthq.io/pricing"
+              href={`${window.location.origin}/pricing`}
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-full mt-4 px-4 py-2 text-sm font-medium text-[#22C55E] border border-[#22C55E] rounded-lg hover:bg-green-50 text-center"
+              className={`block w-full mt-4 px-4 py-2 text-sm font-medium ${activeItem === 'pricing' ? 'bg-purple-50 text-purple-700' : 'text-[#22C55E] border-[#22C55E]'} border rounded-lg hover:bg-green-50 text-center`}
             >
               CHOOSE PLAN
             </a>

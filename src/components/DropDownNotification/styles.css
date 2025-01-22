@@ -1,0 +1,13 @@
+#DropDownNotification {
+  .dropdown-content {
+    padding: 0;
+  }
+
+  .left-auto {
+    left: auto !important;
+  }
+
+  .width-278px {
+    width: 278px !important;
+  }
+}

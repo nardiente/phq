@@ -1,0 +1,685 @@
+.pricingBanner {
+  position: relative;
+  padding-top: 60px;
+  @media only screen and (max-width: 991px) {
+    padding-bottom: 60px;
+  }
+  @media only screen and (max-width: 575px) {
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+  .bannerImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 200px);
+    @media only screen and (max-width: 991px) {
+      height: 100%;
+    }
+    img {
+      height: 100%;
+      width: 100%;
+    }
+  }
+  .dd-container {
+    position: relative;
+    z-index: 2;
+    .bannerContent {
+      text-align: center;
+      h6 {
+        text-transform: uppercase;
+        color: #5a00cd;
+        font-size: 14px;
+        line-height: 15.4px;
+      }
+      h1 {
+        font-size: 50px;
+        line-height: 55px;
+        margin-top: 10px;
+        @media only screen and (max-width: 1199px) {
+          font-size: 42px;
+          line-height: 46px;
+        }
+        @media only screen and (max-width: 1199px) {
+          font-size: 30px;
+          line-height: 38px;
+        }
+      }
+      p {
+        margin-top: 20px;
+        line-height: 36px;
+        @media only screen and (max-width: 1199px) {
+          margin-top: 16px;
+          line-height: 26px;
+        }
+        @media only screen and (max-width: 1199px) {
+          margin-top: 8px;
+          line-height: 20px;
+        }
+      }
+    }
+    .pricingTabs {
+      .priceTabsNav {
+        ul {
+          display: flex;
+          justify-content: center;
+          column-gap: 15px;
+          margin-top: 50px;
+          margin-bottom: 45px;
+          @media only screen and (max-width: 1199px) {
+            margin-top: 40px;
+            margin-bottom: 35px;
+          }
+          li {
+            a {
+              color: #110733;
+              font-size: 16px;
+              line-height: 20px;
+              letter-spacing: -0.34px;
+              padding: 12px;
+              border-radius: 6px;
+              font-weight: 600;
+              transition: all 0.2s ease;
+              display: inline-flex;
+              span {
+                background-color: #129800;
+                color: #fff;
+                border-radius: 5px;
+                padding: 1px 10px;
+                margin-left: 8px;
+                letter-spacing: -0.34px;
+              }
+            }
+          }
+        }
+      }
+      .pricesBlocksWrapper {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 1100px;
+        margin-left: auto;
+        margin-right: auto;
+        @media only screen and (max-width: 991px) {
+          justify-content: center;
+          row-gap: 16px;
+        }
+        .priceItem {
+          width: 33.3333%;
+          padding-left: 12px;
+          padding-right: 12px;
+          @media only screen and (max-width: 1199px) {
+            padding-left: 8px;
+            padding-right: 8px;
+          }
+          @media only screen and (max-width: 991px) {
+            width: 50%;
+          }
+          @media only screen and (max-width: 767px) {
+            width: 100%;
+            padding-left: 0;
+            padding-right: 0;
+          }
+          .priceBlock {
+            border: 1px solid #e5e7eb;
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: #fff;
+            .offerText {
+              background: linear-gradient(
+                96.86deg,
+                #96adfe 0.67%,
+                #aa6edf 48.57%,
+                #f35e96 72.53%,
+                #ffb976 84.5%,
+                #ffeee9 96.48%
+              );
+              text-align: center;
+              padding-top: 8px;
+              padding-bottom: 8px;
+              span {
+                color: #fff;
+                text-transform: uppercase;
+                font-size: 14px;
+                line-height: 30px;
+                font-weight: 900;
+                font-family: 'Satoshi-Variable';
+              }
+            }
+            .contentText {
+              padding: 20px 30px;
+              @media only screen and (max-width: 1199px) {
+                padding: 20px;
+              }
+              h6 {
+                display: flex;
+                align-items: center;
+                column-gap: 5px;
+                font-size: 24px;
+                line-height: 24px;
+                color: #09041a;
+                font-weight: 600;
+                margin-bottom: 12px;
+                @media only screen and (max-width: 1199px) {
+                  font-size: 20px;
+                  line-height: 20px;
+                }
+              }
+              p {
+                font-size: 16px;
+                line-height: 28px;
+                color: #0e0426;
+                font-weight: 400;
+              }
+              h4 {
+                font-size: 35px;
+                line-height: 35px;
+                font-family: 'Satoshi-Variable';
+                font-weight: 700;
+                color: #110733;
+                margin-top: 20px;
+                @media only screen and (max-width: 1199px) {
+                  font-size: 30px;
+                  line-height: 30px;
+                }
+                span {
+                  font-size: 18px;
+                  line-height: 30px;
+                  font-weight: 500;
+                  font-family: 'Satoshi-Variable';
+                  color: #6b7280;
+                  @media only screen and (max-width: 1199px) {
+                    font-size: 16px;
+                    line-height: 24px;
+                  }
+                }
+              }
+              .btn-block {
+                border-top: 1px solid #e5e7eb;
+                margin-top: 15px;
+                a {
+                  display: block;
+                  width: 100%;
+                  text-align: center;
+                  background-color: #5a00cd;
+                  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.13);
+                  border-radius: 5px;
+                  color: #fff;
+                  font-size: 16px;
+                  line-height: 20px;
+                  font-weight: 500;
+                  letter-spacing: -0.34px;
+                  padding: 15px 0;
+                  font-family: 'Satoshi-Variable';
+                  margin-top: 20px;
+                  &:hover {
+                    background-color: #5a00cd;
+                    &:not(.disabled) {
+                      background-color: rgb(255, 107, 61);
+                    }
+                  }
+                  &.disabled {
+                    opacity: 50%;
+                  }
+                }
+              }
+            }
+          }
+          &:nth-child(2) {
+            .priceBlock {
+              border: 2px solid #5a00cd;
+              h4 {
+                color: #5a00cd;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.pricingBanner .pricingTabs .priceTabsNav ul li.active a,
+.pricingBanner .pricingTabs .priceTabsNav ul li:not(.active) a:hover {
+  background-color: #ebdff9;
+  color: #5a00cd;
+}
+.pricingFaqs {
+  padding-top: 70px;
+  padding-bottom: 70px;
+  @media only screen and (max-width: 1199px) {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+  @media only screen and (max-width: 767px) {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  .sectionTitle {
+    max-width: 1097px;
+    margin-left: auto;
+    margin-right: auto;
+    h2 {
+      font-size: 30px;
+      line-height: 52px;
+      color: #09041a;
+      font-weight: 700;
+      margin-bottom: 20px;
+      @media only screen and (max-width: 991px) {
+        margin-bottom: 10px;
+      }
+    }
+  }
+  .faqsWrapper {
+    max-width: 1097px;
+    margin-left: auto;
+    margin-right: auto;
+    .faqItem {
+      border-bottom: 1px solid #e5e7eb;
+      .titleBlock {
+        display: flex;
+        align-items: center;
+        padding-top: 25px;
+        padding-bottom: 25px;
+        padding-right: 20px;
+        cursor: pointer;
+        @media only screen and (max-width: 991px) {
+          padding-top: 20px;
+          padding-bottom: 20px;
+        }
+        h6 {
+          color: #0e0426;
+          font-size: 18px;
+          line-height: 24px;
+          width: calc(100% - 24px);
+          padding-right: 15px;
+        }
+        .icon {
+          width: 24px;
+          height: 24px;
+        }
+      }
+      .contentBlock {
+        p {
+          font-size: 18px;
+          line-height: 30px;
+          font-weight: 400;
+          color: #09041a;
+          margin-bottom: 15px;
+          @media only screen and (max-width: 991px) {
+            font-size: 16px;
+            line-height: 24px;
+          }
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+      .content {
+        padding-bottom: 30px;
+        padding-right: 100px;
+        @media only screen and (max-width: 767px) {
+          padding-right: 0;
+          padding-bottom: 20px;
+        }
+      }
+    }
+  }
+}
+.pricingTestimonialsWarpper {
+  padding-top: 75px;
+  padding-bottom: 75px;
+  @media only screen and (max-width: 1199px) {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+  @media only screen and (max-width: 991px) {
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+  .testimonialsWarpper {
+    display: flex;
+    flex-wrap: wrap;
+    @media only screen and (max-width: 991px) {
+      row-gap: 16px;
+    }
+    .testItem {
+      width: 33.3333%;
+      padding-left: 12px;
+      padding-right: 12px;
+      @media only screen and (max-width: 1199px) {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+      @media only screen and (max-width: 991px) {
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+      }
+      .testBlock {
+        border: 1px solid #e5e7eb;
+        border-radius: 15px;
+        padding: 45px 28px;
+        height: 100%;
+        @media only screen and (max-width: 1399px) {
+          padding: 35px 20px;
+        }
+        @media only screen and (max-width: 1199px) {
+          padding: 28px 18px;
+        }
+        .titleBlock {
+          padding-bottom: 20px;
+          margin-bottom: 20px;
+          border-bottom: 1px solid #e5e7eb;
+          h5 {
+            color: #110733;
+            font-size: 18px;
+            line-height: 24px;
+            display: flex;
+            align-items: center;
+            span {
+              font-weight: 400;
+              color: #ededed;
+              margin-left: 5px;
+              margin-right: 5px;
+            }
+          }
+          h6 {
+            color: #110733;
+            font-size: 16px;
+            line-height: 22px;
+            font-weight: 400;
+            margin-top: 10px;
+            @media only screen and (max-width: 1199px) {
+              font-size: 16px;
+              line-height: 18px;
+            }
+          }
+        }
+        .contentBlock {
+          p {
+            font-size: 18px;
+            line-height: 30px;
+            font-weight: 400;
+            @media only screen and (max-width: 1399px) {
+              font-size: 16px;
+              line-height: 24px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.comparefeaturesSection {
+  .sectionTitleBlock {
+    .wrapper {
+      max-width: 1097px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      .rightBlock {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        @media only screen and (min-width: 992px) {
+          display: none;
+        }
+        .tableTitleBlock {
+          width: 33.3333%;
+          text-align: center;
+          h6 {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            line-height: 18px;
+            column-gap: 5px;
+            @media only screen and (max-width: 767px) {
+              padding: 10px;
+              border-radius: 6px;
+            }
+          }
+          &.active {
+            h6 {
+              background-color: #ebdff9;
+            }
+          }
+        }
+      }
+    }
+  }
+  .tablesWrapper {
+    .wrapper {
+      display: flex;
+      max-width: 1097px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 30px;
+      flex-wrap: wrap;
+      .topTitle {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        .rightBlock {
+          display: flex;
+          flex-wrap: wrap;
+          .Icontitle {
+            width: 33.3333%;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: center;
+            border-top: 1px solid #e5e7eb;
+            align-items: center;
+            @media only screen and (max-width: 991px) {
+              display: none;
+            }
+            h6 {
+              display: inline-flex;
+              justify-content: center;
+              align-items: center;
+              font-size: 18px;
+              line-height: 18px;
+              column-gap: 5px;
+            }
+          }
+        }
+        .title {
+          margin-bottom: 0;
+          height: 60px;
+          display: flex;
+          align-items: center;
+          border-top: 1px solid #e5e7eb;
+        }
+      }
+      .leftBlock {
+        width: 50%;
+        @media only screen and (max-width: 991px) {
+          width: 42%;
+        }
+        @media only screen and (max-width: 767px) {
+          display: none;
+        }
+        .tableItem {
+          display: flex;
+          align-items: center;
+          &:last-child {
+            border-bottom: 0;
+          }
+        }
+      }
+      .rightBlock {
+        width: 50%;
+        display: flex;
+        flex-wrap: wrap;
+        @media only screen and (max-width: 991px) {
+          width: 58%;
+        }
+        @media only screen and (max-width: 767px) {
+          width: 100%;
+        }
+        .tableBlock {
+          width: 33.3333%;
+          text-align: center;
+          &:not(:last-child) {
+            border-right: 1px solid #e5e7eb;
+            @media only screen and (max-width: 767px) {
+              border-right: 0;
+            }
+          }
+          @media only screen and (max-width: 767px) {
+            width: 100%;
+          }
+          .tableItem {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            &:last-child {
+              border-bottom: 0;
+            }
+            h6 {
+              &:first-child {
+                @media only screen and (min-width: 768px) {
+                  display: none;
+                }
+                @media only screen and (max-width: 767px) {
+                  padding-right: 15px;
+                }
+              }
+              &:last-child {
+                @media only screen and (max-width: 767px) {
+                  padding-left: 15px;
+                }
+              }
+              .icon {
+                @media only screen and (max-width: 991px) {
+                  width: 20px;
+                  height: 20px;
+                }
+              }
+              .btn {
+                background-color: #5a00cd;
+                color: #fff;
+                padding: 11px 18px;
+                border-radius: 5px;
+                font-size: 18px;
+                line-height: 24px;
+                font-weight: 500;
+                font-family: 'Satoshi-Variable';
+                transition: all 0.2s ease;
+                @media only screen and (max-width: 767px) {
+                  font-size: 14px;
+                  line-height: 18px;
+                  padding: 9px 12px;
+                }
+                &:hover {
+                  background-color: #5a00cd;
+                  &:not(.disabled) {
+                    background-color: #ff6b3d;
+                  }
+                }
+                &.disabled {
+                  opacity: 50%;
+                }
+              }
+            }
+          }
+          .title {
+            h5 {
+              @media only screen and (min-width: 768px) {
+                opacity: 0;
+              }
+            }
+          }
+          .bigtitle {
+            h5 {
+              @media only screen and (min-width: 768px) {
+                opacity: 0;
+              }
+            }
+          }
+        }
+      }
+      .title {
+        margin-bottom: 0;
+        border-bottom: 1px solid #e5e7eb;
+        height: 36px;
+        margin-top: 50px;
+        @media only screen and (max-width: 991px) {
+          margin-top: 30px;
+        }
+        @media only screen and (max-width: 767px) {
+          height: auto;
+          text-align: left;
+          padding-bottom: 20px;
+        }
+        &:first-child {
+          margin-top: 0;
+        }
+        h5 {
+          color: #5a00cd;
+          font-size: 16px;
+          line-height: 16px;
+          text-transform: uppercase;
+        }
+      }
+      .tableItem {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        height: 60px;
+        border-bottom: 1px solid #e5e7eb;
+        @media only screen and (max-width: 991px) {
+          padding-top: 8px;
+          padding-bottom: 8px;
+          height: 48px;
+        }
+        @media only screen and (max-width: 767px) {
+          height: auto;
+          display: flex;
+          align-items: center;
+          padding-top: 12px;
+          padding-bottom: 12px;
+        }
+        h6 {
+          color: #0e0426;
+          font-size: 18px;
+          line-height: 24px;
+          font-weight: 500;
+          @media only screen and (max-width: 991px) {
+            font-size: 16px;
+            line-height: 20px;
+          }
+          @media only screen and (max-width: 767px) {
+            width: 50%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+          }
+        }
+      }
+      .bigtitle {
+        height: 45px;
+        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 20px;
+        margin-top: 50px;
+        @media only screen and (max-width: 767px) {
+          text-align: left;
+          height: auto;
+          padding-bottom: 20px;
+          margin-top: 30px;
+        }
+        h5 {
+          font-size: 30px;
+          line-height: 30px;
+          @media only screen and (max-width: 991px) {
+            font-size: 24px;
+            line-height: 24px;
+          }
+        }
+      }
+    }
+  }
+}

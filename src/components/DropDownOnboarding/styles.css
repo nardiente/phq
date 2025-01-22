@@ -1,0 +1,22 @@
+#for-status {
+  span {
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.dropdown-trigger-container {
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+#select-status-tooltip {
+  display: flex;
+}
+
+.width-400 {
+  width: 400px;
+}
