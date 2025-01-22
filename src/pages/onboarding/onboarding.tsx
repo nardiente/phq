@@ -52,7 +52,7 @@ const OnboardingPage = () => {
       {activePage === OnboardingPages.SURVEY ? (
         <SurveyOnboarding />
       ) : (
-        <div id="Onboarding">
+        <div id="Onboarding" className="bg-white">
           <div className="left">
             <div className="left-container">
               {activePage !== OnboardingPages.SUCCESS && <ProgressionBar />}
