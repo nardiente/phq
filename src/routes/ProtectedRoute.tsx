@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import Banner from '../components/Banner';
 import { SidebarMenu } from '../components/layout/SidebarMenu';
 import moment from 'moment';
 import { AddYourBoardModal } from '../components/AddYourBoardModal';
+import { SidePanel } from '../components/SidePanel';
 
 export type PageType =
   | 'home'
@@ -45,7 +46,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { isAuthenticated, user: userDetails, showBanner } = useUser();
+  const {
+    handleGetUser,
+    isAuthenticated,
+    user: userDetails,
+    showBanner,
+  } = useUser();
   const { project, user } = userDetails ?? {};
 
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
@@ -60,6 +66,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     },
     [navigate]
   );
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate(redirectTo);
+    } else {
+      handleGetUser();
+    }
+  }, []);
 
   useEffect(() => {
     let pathname = location.pathname.slice(1);
@@ -87,22 +101,21 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }, [user]);
 
-  if (!isAuthenticated()) {
-    return <Navigate to={redirectTo} replace />;
-  }
-
   return (
-    <div className="min-h-screen bg-[#fafafa] flex">
-      <SidebarMenu
-        activeItem={currentPage === 'settings' ? 'account' : currentPage}
-        onNavigate={handleNavigation}
-      />
-      <div className="flex-1">
-        <Banner onNavigate={handleNavigation} />
-        <Outlet />
-        <AddYourBoardModal open={remindAddBoard ?? false} />
+    <>
+      <div className="min-h-screen bg-[#fafafa] flex">
+        <SidebarMenu
+          activeItem={currentPage === 'settings' ? 'account' : currentPage}
+          onNavigate={handleNavigation}
+        />
+        <div className="flex-1">
+          <Banner onNavigate={handleNavigation} />
+          <Outlet />
+          <AddYourBoardModal open={remindAddBoard ?? false} />
+        </div>
       </div>
-    </div>
+      <SidePanel />
+    </>
   );
 };
 

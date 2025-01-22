@@ -416,7 +416,7 @@ export function RoadmapPage() {
         </div>
       ) : (
         <div id="RoadmapPublicView">
-          <div className="max-w-[1200px] pt-8 px-6">
+          <div className="max-w-[1200px] pt-8 px-6 columns">
             {(!roadmaps.some((roadmap) => (roadmap.upvotes?.length ?? 0) > 0) ||
               (is_public && permissions?.length === 0)) &&
               !fetching && (
@@ -452,18 +452,15 @@ export function RoadmapPage() {
                     droppableId="all-columns"
                     direction="horizontal"
                     type="column"
-                    children={(provided) => (
+                  >
+                    {(provided) => (
                       /* Container */
-                      <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        className="flex gap-6"
-                      >
-                        {(roadmaps as Roadmap[]).map((roadmap) => (
+                      <div ref={provided.innerRef} className="flex gap-6">
+                        {(roadmaps as Roadmap[]).map((roadmap, idx) => (
                           <Draggable
+                            draggableId={`roadmap-${roadmap.id.toString()}`}
                             key={roadmap.id}
-                            draggableId={roadmap.id.toString()}
-                            index={0}
+                            index={idx}
                             isDragDisabled={
                               is_public ||
                               !permissions?.includes(Permissions.DRAG_COLUMN) ||
@@ -475,10 +472,12 @@ export function RoadmapPage() {
                             }
                           >
                             {(provided) => (
-                              <div>
+                              <div
+                                className="bg-[#fafafa]"
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                              >
                                 <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                   style={{
                                     position: 'relative',
@@ -552,17 +551,16 @@ export function RoadmapPage() {
                                   {(provided) => (
                                     <div
                                       ref={provided.innerRef}
-                                      {...provided.droppableProps}
                                       className="idea-list-container"
                                     >
                                       {roadmap.upvotes
                                         ?.filter((upvote) => !upvote.draft)
-                                        .map((upvote) => {
+                                        .map((upvote, idx) => {
                                           return (
                                             <Draggable
-                                              key={`idea-${upvote.id?.toString()}`}
                                               draggableId={`idea-${upvote.id?.toString()}`}
-                                              index={0}
+                                              key={upvote.id}
+                                              index={idx}
                                               isDragDisabled={
                                                 is_public ||
                                                 !permissions?.includes(
@@ -578,9 +576,9 @@ export function RoadmapPage() {
                                             >
                                               {(provided) => (
                                                 <div
-                                                  ref={provided.innerRef}
                                                   {...provided.draggableProps}
                                                   {...provided.dragHandleProps}
+                                                  ref={provided.innerRef}
                                                 >
                                                   <UpvoteComponent
                                                     upvote={upvote}
@@ -645,7 +643,7 @@ export function RoadmapPage() {
                         {provided.placeholder}
                       </div>
                     )}
-                  />
+                  </Droppable>
                 </DragDropContext>
               )}
           </div>

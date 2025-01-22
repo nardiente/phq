@@ -3,7 +3,6 @@ import { FC, useEffect } from 'react';
 import AppRoutes from './routes/routes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { SidePanel } from './components/SidePanel';
 import {
   getSessionToken,
   setCustomerKaslKey,
@@ -299,7 +298,6 @@ const App: FC = () => {
           </div>
         </div>
       )}
-      <SidePanel />
       <AppRoutes />
       <ToastContainer />
     </>
