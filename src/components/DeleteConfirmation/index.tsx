@@ -137,7 +137,7 @@ const DeleteConfirmation = () => {
     <div id="delete-container">
       <img
         className="icon"
-        src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/shocked.svg"
+        src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/shocked.png"
       />
       <h1 className="delete-title">
         {deleteType == 'idea' && 'Delete idea?'}

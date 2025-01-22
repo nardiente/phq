@@ -22,7 +22,7 @@ const SuccessMessage = () => {
     <div id="success-container">
       <img
         className="icon"
-        src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/public/success_msg_icon.svg"
+        src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/public/success_msg_icon.png"
       />
       <h1 className="success-title">Coolio!</h1>
       {successType == 'idea' && (
