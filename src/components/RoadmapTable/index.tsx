@@ -15,7 +15,7 @@ const RoadmapTable = ({ items, onItemsChange }: RoadmapTableProps) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow">
+    <div className="bg-white rounded-lg shadow overflow-auto">
       <table className="min-w-full">
         <TableHeader />
         <tbody>

@@ -29,7 +29,7 @@ export default function PrioritizationPage() {
 
   return (
     <>
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-semibold text-gray-900">
             Prioritization
