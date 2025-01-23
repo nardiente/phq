@@ -22,6 +22,7 @@ import {
   LayoutTemplate,
   PieChart,
   Users,
+  LucideIcon,
 } from 'lucide-react';
 import { PageType } from '../../routes/ProtectedRoute';
 import { useUser } from '../../contexts/UserContext';
@@ -29,6 +30,14 @@ import { useUser } from '../../contexts/UserContext';
 interface SidebarMenuProps {
   activeItem: string;
   onNavigate: (page: PageType) => void;
+}
+
+interface MenuItem {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  badge?: string;
+  disabled?: boolean;
 }
 
 export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
@@ -40,7 +49,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const company_info = is_public ? user?.admin_profile : user?.user;
 
-  const mainMenuItems = [
+  const mainMenuItems: MenuItem[] = [
     {
       icon: LayoutDashboard,
       label: 'Dashboard',
@@ -60,7 +69,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
     { icon: Map, label: 'Prioritization', id: 'prioritization' },
   ];
 
-  const settingsMenuItems = [
+  const settingsMenuItems: MenuItem[] = [
     { icon: User, label: 'Account Details', id: 'account' },
     { icon: Settings2, label: 'Project Details', id: 'project' },
     { icon: Paintbrush, label: 'Appearance', id: 'appearance' },

@@ -1,17 +1,12 @@
 import { Fragment, useEffect, useState } from 'react';
-import { Textarea } from '../../components/Field';
-import { Field } from '../../components/Field';
-import styled from 'styled-components';
 import { Loader, TrashIcon } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
-import { Permissions, RbacPermissions } from '../../types/common';
+import { Permissions } from '../../types/common';
 import { toast } from 'react-toastify';
 import { Project } from '../../types/project';
 import { deleteApi, getApi, patchApi, postApi } from '../../utils/api/api';
 import { User } from '../../types/user';
 import { ApiFieldError } from '../../utils/api/types';
-import { UIField } from '../../components/UIField';
-import { validateEmail } from '../../utils/custom-validation';
 import { ModalBody } from 'reactstrap';
 import { Modal } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
@@ -19,25 +14,20 @@ import { useUnsavedChanges } from '../../contexts/UnsavedChangesContext';
 import { useNavigate } from 'react-router-dom';
 import './styles.css';
 import { Toggle } from '../../components/ui/Toggle';
-
-const SettingsArea = styled.div`
-  background-color: white;
-  border-top-right-radius: 6px;
-  overflow: auto;
-  width: 704px;
-`;
-const SettingsSection = styled.div`
-  background: #ffffff;
-  border: 1px solid #f9f9fa;
-  border-radius: 8px;
-  padding: 24px 20px;
-`;
+import SettingsHeader from '../../components/Settings/SettingsHeader';
+import Button from '../../components/Button';
+import SettingsContainer from '../../components/Settings/SettingsContainer';
+import { Settings } from '../../components/Settings/Settings';
+import InputField from '../../components/InputField';
+import SectionHeader from '../../components/Settings/SectionHeader';
+import TextAreaInput from '../../components/TextAreaInput';
 
 export default function ProjectDetailsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { user, setUser } = useUser();
+  const { permissions } = user ?? {};
   const { setHasUnsavedChanges } = useUnsavedChanges();
 
   const [project, setProject] = useState<Project>();
@@ -463,698 +453,508 @@ export default function ProjectDetailsPage() {
   };
 
   return (
-    <div id="Settings" className="min-h-screen bg-[#fafafa] pb-12">
-      <div className="max-w-[1200px] mx-auto pt-8 px-6">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-[28px] font-semibold text-gray-900">
-            Account Settings
-          </h1>
-          <div className="flex gap-3">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleUpdateProject}
-              className="px-4 py-2 bg-[#FF5C35] hover:bg-[#ff4a1a] text-white rounded-lg"
-              disabled={loading}
-            >
-              Update
-            </button>
+    <Settings>
+      <SettingsHeader
+        title="Account Settings"
+        primaryButton={
+          <Button
+            text="Update"
+            disabled={loading}
+            onClick={handleUpdateProject}
+            variant="primary"
+          />
+        }
+        secondaryButton={
+          <Button
+            text="Cancel"
+            onClick={() => navigate('/dashboard')}
+            variant="secondary"
+          />
+        }
+      />
+      <SettingsContainer id="ProjectDetails">
+        <div className="flex flex-col gap-6">
+          <SectionHeader title="Project Details" />
+          <InputField
+            error={project_name_error_msg}
+            label="Project Name"
+            onChange={handleProjectNameOnChange}
+            placeholder="Your project name."
+            value={project_name}
+          />
+          <TextAreaInput
+            className=""
+            error={description_error_msg}
+            onChange={handleDescriptionOnChange}
+            value={description}
+            placeholder="Your project description here."
+          />
+        </div>
+        <div className="flex flex-col gap-6">
+          <SectionHeader
+            title="Default Domain Name"
+            description={
+              <div className="flex flex-col gap-1">
+                <p>
+                  Once configured, add this link to your site to display the
+                  upvote, roadmap, and what&apos;s new features. We recommend
+                  adding it to your main menu or footer.
+                </p>
+                <p>
+                  Click&nbsp;
+                  <a
+                    href="https://support.producthq.io/articles/how-to-add-a-board-to-your-site-145e70-32dd7"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#5a00cd] hover:underline"
+                  >
+                    here
+                  </a>
+                  &nbsp;for instructions on how to set up a default domain name.
+                </p>
+              </div>
+            }
+          />
+          <InputField
+            domain={domain}
+            error={portal_subdomain_error_msg}
+            label="Default Domain Name"
+            onChange={handlePortalSubdomainOnChange}
+            onClick={() => {
+              navigator.clipboard.writeText(`${portal_subdomain}${domain}`);
+              toast('Default Domain Name successfully copied to clipboard', {
+                position: 'bottom-center',
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'dark',
+                className: 'custom-theme',
+              });
+            }}
+            placeholder="your-company"
+            value={portal_subdomain}
+          />
+        </div>
+        <div className="flex flex-col gap-6">
+          <SectionHeader
+            title="Custom Domain Name"
+            description={
+              <p>
+                Click&nbsp;
+                <a
+                  href="https://support.producthq.io/articles/how-to-set-up-your-custom-domain-name-145e70-e8cd0"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  here
+                </a>
+                &nbsp;for instructions on how to set up a customer domain name.
+              </p>
+            }
+          />
+          <InputField
+            error={custom_domain_error_msg}
+            label="Custom Domain"
+            onChange={handleCustomDomainOnChange}
+            onClick={() => {
+              navigator.clipboard.writeText(`${custom_domain}`);
+              toast('Custom Domain successfully copied to clipboard', {
+                position: 'bottom-center',
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'dark',
+                className: 'custom-theme',
+              });
+            }}
+            placeholder="feedback.yoursite.com"
+            value={custom_domain}
+          />
+        </div>
+        <div className="flex flex-col gap-6">
+          <SectionHeader
+            title="Hide Date And Time"
+            description={
+              <p>
+                Hide the date and time on upvotes, comments, and what&apos;s new
+                posts.
+              </p>
+            }
+          />
+          <div className="custom-input">
+            <div className="modules">
+              <div className="flex items-center gap-2">
+                <Toggle
+                  checked={hide_datetime}
+                  onChange={handleHideDatetime}
+                  disabled={!permissions?.includes(Permissions.PROJECT_DETAILS)}
+                />
+                <label
+                  className="switch-label text-[14px]"
+                  htmlFor="switchHideDatetime"
+                >
+                  Hide/Show time and date
+                </label>
+              </div>
+            </div>
           </div>
         </div>
-        {!user || user.rbac_permissions.length == 0 ? (
-          <SettingsArea>
-            <SettingsSection>
-              <div className="center-loader">
-                <Loader />
+        <div className="flex flex-col gap-6">
+          <SectionHeader
+            title="Modules"
+            description={
+              <p>
+                By default, these modules are turned on (purple) which means all
+                features are visible to public view. When the toggles are turned
+                off, the feature is hidden from public view.
+              </p>
+            }
+          />
+          <div className="flex flex-col gap-1.5">
+            <label className="block text-[13px] font-medium m-0">Modules</label>
+            <div className="flex gap-8">
+              <div className="flex items-center gap-2">
+                <Toggle
+                  checked={module_upvotes}
+                  onChange={handleModuleUpvotes}
+                  disabled={!permissions?.includes(Permissions.PROJECT_DETAILS)}
+                />
+                <label
+                  className="switch-label text-[14px]"
+                  htmlFor="switchUpvotes"
+                >
+                  Upvotes
+                </label>
               </div>
-            </SettingsSection>
-          </SettingsArea>
-        ) : (
-          <>
-            {user.rbac_permissions?.includes(
-              RbacPermissions.MANAGE_PROJECT_DETAILS_PAGE
-            ) && (
-              <div
-                id="ProjectDetails"
-                className="bg-white rounded-lg border border-gray-200 p-6"
+              <div className="flex items-center gap-2">
+                <Toggle
+                  checked={module_roadmap}
+                  onChange={handleModuleRoadmap}
+                  disabled={!permissions?.includes(Permissions.PROJECT_DETAILS)}
+                />
+                <label
+                  className="switch-label text-[14px]"
+                  htmlFor="switchRoadmap"
+                >
+                  Roadmap
+                </label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Toggle
+                  checked={module_whats_new}
+                  onChange={handleModuleWhatsNew}
+                  disabled={!permissions?.includes(Permissions.PROJECT_DETAILS)}
+                />
+                <label
+                  className="switch-label text-[14px]"
+                  htmlFor="switchWhatsNew"
+                >
+                  What&apos;s New
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        {!fetching && (
+          <div className="flex flex-col gap-6">
+            <SectionHeader title="Board Privacy" />
+            <div className="bg-gray-200 rounded-lg flex gap-1 p-1">
+              <button
+                className={`flex-1 cursor-pointer bg-gray-200 border-none rounded-lg py-3 font-satoshi font-medium text-sm leading-5 tracking-tight text-[#110733] disabled:cursor-default ${!is_private_settings ? 'bg-white' : ''}`}
+                onClick={() => handlePrivateSetting(false)}
+                disabled={!permissions?.includes(Permissions.PROJECT_DETAILS)}
               >
-                <div className="space-y-8 text-gray-700 settings-section">
-                  <div className="space-y-6">
-                    <h2 className="text-[16px] font-semibold text-gray-900">
-                      Project Details
-                    </h2>
+                Public
+              </button>
+              <button
+                className={`flex-1 cursor-pointer bg-gray-200 border-none rounded-lg py-3 font-satoshi font-medium text-sm leading-5 tracking-tight text-[#110733] disabled:cursor-default ${is_private_settings ? 'bg-white' : ''}`}
+                onClick={() => handlePrivateSetting(true)}
+                disabled={!permissions?.includes(Permissions.PROJECT_DETAILS)}
+              >
+                Private
+              </button>
+            </div>
+            {!is_private_settings ? (
+              <div className="flex flex-col gap-1.5">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Toggle
+                      checked={index_search_engine}
+                      onChange={() => {
+                        setIndexSearchEngine(!index_search_engine);
+                      }}
+                      disabled={
+                        !permissions?.includes(Permissions.PROJECT_DETAILS)
+                      }
+                    />
+                    <label
+                      className="switch-label text-[14px]"
+                      htmlFor="switchUsers"
+                    >
+                      Index in Search engines like google
+                    </label>
                   </div>
-                  <div className="custom-input">
-                    <label className="custom-label">Project Name</label>
-                    <Field
-                      class_name="input-enclosed w-full h-10"
-                      id="ProjectNameField"
-                      placeholder="Your project name."
-                      value={project_name}
-                      name="ProjectNameField"
-                      type="text"
-                      tab_index={1}
-                      onChange={handleProjectNameOnChange}
-                      has_error={project_name_error_msg !== '' ? true : false}
-                      error_msg={project_name_error_msg}
-                      readOnly={
-                        !user.permissions.includes(Permissions.PROJECT_DETAILS)
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex flex-col gap-6">
+                  <SectionHeader
+                    title="Specific Person"
+                    description={
+                      <p>Grant access to specific people, Invited via Email</p>
+                    }
+                  />
+                  <div className="grid grid-cols-2 gap-4 m-0">
+                    <InputField
+                      label="First Name"
+                      onChange={(e) => {
+                        setApiFieldErrors(
+                          field_errors.filter(
+                            (field_error) => field_error.field !== 'first_name'
+                          )
+                        );
+                        setFirstName(e.target.value);
+                      }}
+                      placeholder="First name"
+                      value={first_name}
+                      variant={
+                        field_errors.some(
+                          (field_error) => field_error.field === 'first_name'
+                        )
+                          ? 'error'
+                          : 'default'
+                      }
+                      error={
+                        field_errors.find(
+                          (field_error) => field_error.field === 'first_name'
+                        )?.message
+                      }
+                      readOnly={loadingInvite}
+                    />
+                    <InputField
+                      label="Last Name"
+                      onChange={(e) => {
+                        setApiFieldErrors(
+                          field_errors.filter(
+                            (field_error) => field_error.field !== 'last_name'
+                          )
+                        );
+                        setLastName(e.target.value);
+                      }}
+                      error={
+                        field_errors.find(
+                          (field_error) => field_error.field === 'last_name'
+                        )?.message
+                      }
+                      placeholder="Last name"
+                      readOnly={loadingInvite}
+                      value={last_name}
+                      variant={
+                        field_errors.some(
+                          (field_error) => field_error.field === 'last_name'
+                        )
+                          ? 'error'
+                          : 'default'
                       }
                     />
                   </div>
-                  <Textarea
-                    class_name="textarea w-full"
-                    id="DescriptionField"
-                    placeholder="Your project description here."
-                    value={description}
-                    name="DescriptionField"
-                    type="text"
-                    tab_index={2}
-                    onChange={handleDescriptionOnChange}
-                    has_error={description_error_msg !== '' ? true : false}
-                    error_msg={description_error_msg}
-                    readonly={
-                      !user.permissions.includes(Permissions.PROJECT_DETAILS)
+                  <InputField
+                    label="Email Address"
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setApiFieldErrors(
+                        field_errors.filter(
+                          (field_error) => field_error.field !== 'email'
+                        )
+                      );
+                    }}
+                    error={
+                      field_errors.find(
+                        (field_error) => field_error.field === 'email'
+                      )?.message
+                    }
+                    placeholder="name@address.com"
+                    readOnly={loadingInvite}
+                    type="email"
+                    value={email}
+                    variant={
+                      field_errors.some(
+                        (field_error) => field_error.field === 'email'
+                      )
+                        ? 'error'
+                        : 'default'
                     }
                   />
+                  <Button
+                    className="w-fit text-[13px]"
+                    text="Invite"
+                    disabled={
+                      !permissions?.includes(Permissions.PROJECT_DETAILS) ||
+                      email.length === 0 ||
+                      first_name.length === 0 ||
+                      last_name.length === 0 ||
+                      field_errors.some(
+                        (field_error) =>
+                          field_error.field === 'email' ||
+                          field_error.field === 'first_name' ||
+                          field_error.field === 'last_name'
+                      ) ||
+                      loadingInvite
+                    }
+                    onClick={handleInvite}
+                    variant="secondary"
+                  />
                 </div>
-                <div className="settings-section">
-                  <h3>Default Domain Name</h3>
-                  <p>
-                    Once configured, add this link to your site to display the
-                    upvote, roadmap, and what&apos;s new features. We recommend
-                    adding it to your main menu or footer.
-                  </p>
-                  <p>
-                    Click&nbsp;
-                    <a
-                      href="https://support.producthq.io/articles/how-to-add-a-board-to-your-site-145e70-32dd7"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      here
-                    </a>
-                    &nbsp;for instructions on how to set up a default domain
-                    name.
-                  </p>
-                  <div className="custom-input">
-                    <label className="custom-label">Default Domain Name</label>
-                    <div className="default-domain-name">
-                      <div className="default-domain-field">
-                        <Field
-                          class_name="input-enclosed w-full h-10"
-                          id="PortalSubdomainField"
-                          placeholder="your-company"
-                          value={portal_subdomain}
-                          name="PortalSubdomainField"
-                          type="text"
-                          tab_index={3}
-                          onChange={handlePortalSubdomainOnChange}
-                          has_error={
-                            portal_subdomain_error_msg !== '' ? true : false
-                          }
-                          error_msg={portal_subdomain_error_msg}
-                          readOnly={
-                            !user.permissions.includes(
-                              Permissions.PROJECT_DETAILS
-                            )
-                          }
-                        />
-                      </div>
-                      <div className="sub-domain-border">{domain}</div>
-                      <a
-                        className="domain-copy-button"
-                        onClick={() => {
-                          navigator.clipboard.writeText(
-                            `${portal_subdomain}${domain}`
-                          );
-                          toast(
-                            'Default Domain Name successfully copied to clipboard',
-                            {
-                              position: 'bottom-center',
-                              autoClose: 3000,
-                              hideProgressBar: true,
-                              closeOnClick: true,
-                              pauseOnHover: true,
-                              draggable: true,
-                              progress: undefined,
-                              theme: 'dark',
-                              className: 'custom-theme',
-                            }
-                          );
-                        }}
-                      >
-                        <img
-                          className="max-width"
-                          src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/updated_copy.svg"
-                        />
-                        Copy
-                      </a>
+                <div className="flex flex-col gap-6 settings-section">
+                  {fetching_private_users && (
+                    <div className="center-loader">
+                      <Loader />
                     </div>
-                  </div>
-                </div>
-                <div className="settings-section">
-                  <h3>Custom Domain Name</h3>
-                  <p>
-                    Click&nbsp;
-                    <a
-                      href="https://support.producthq.io/articles/how-to-set-up-your-custom-domain-name-145e70-e8cd0"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      here
-                    </a>
-                    &nbsp;for instructions on how to set up a customer domain
-                    name.
-                  </p>
-                  <div className="custom-input">
-                    <label className="custom-label">Custom Domain</label>
-                    <div className="custom-domain-name">
-                      <div className="custom-domain-field">
-                        <Field
-                          is_required={false}
-                          class_name="input-enclosed w-full h-10"
-                          id="CustomDomainField"
-                          placeholder="feedback.yoursite.com"
-                          value={custom_domain}
-                          name="CustomDomainField"
-                          type="text"
-                          tab_index={4}
-                          onChange={handleCustomDomainOnChange}
-                          has_error={
-                            custom_domain_error_msg !== '' ? true : false
-                          }
-                          error_msg={custom_domain_error_msg}
-                          readOnly={
-                            !user.permissions.includes(
-                              Permissions.PROJECT_DETAILS
-                            )
-                          }
-                        />
-                      </div>
-                      <a
-                        className="domain-copy-button"
-                        onClick={() => {
-                          navigator.clipboard.writeText(`${custom_domain}`);
-                          toast(
-                            'Custom Domain successfully copied to clipboard',
-                            {
-                              position: 'bottom-center',
-                              autoClose: 3000,
-                              hideProgressBar: true,
-                              closeOnClick: true,
-                              pauseOnHover: true,
-                              draggable: true,
-                              progress: undefined,
-                              theme: 'dark',
-                              className: 'custom-theme',
-                            }
-                          );
-                        }}
-                      >
-                        <img
-                          className="max-width"
-                          src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/updated_copy.svg"
-                        />
-                        Copy
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div className="settings-section">
-                  <h3>Hide Date And Time</h3>
-                  <p>
-                    Hide the date and time on upvotes, comments, and what&apos;s
-                    new posts.
-                  </p>
-                  <div className="custom-input">
-                    <div className="modules">
-                      <div className="flex items-center gap-2">
-                        <Toggle
-                          checked={hide_datetime}
-                          onChange={handleHideDatetime}
-                          disabled={
-                            !user.permissions.includes(
-                              Permissions.PROJECT_DETAILS
-                            )
-                          }
-                        />
-                        <label
-                          className="switch-label"
-                          htmlFor="switchHideDatetime"
-                        >
-                          Hide/Show time and date
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="settings-section">
-                  <h3>Modules</h3>
-                  <p>
-                    By default, these modules are turned on (purple) which means
-                    all features are visible to public view. When the toggles
-                    are turned off, the feature is hidden from public view.
-                  </p>
-                  <div className="custom-input">
-                    <label className="custom-label">Modules</label>
-                    <div className="modules">
-                      <div className="flex items-center gap-2">
-                        <Toggle
-                          checked={module_upvotes}
-                          onChange={handleModuleUpvotes}
-                          disabled={
-                            !user.permissions.includes(
-                              Permissions.PROJECT_DETAILS
-                            )
-                          }
-                        />
-                        <label className="switch-label" htmlFor="switchUpvotes">
-                          Upvotes
-                        </label>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Toggle
-                          checked={module_roadmap}
-                          onChange={handleModuleRoadmap}
-                          disabled={
-                            !user.permissions.includes(
-                              Permissions.PROJECT_DETAILS
-                            )
-                          }
-                        />
-                        <label className="switch-label" htmlFor="switchRoadmap">
-                          Roadmap
-                        </label>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Toggle
-                          checked={module_whats_new}
-                          onChange={handleModuleWhatsNew}
-                          disabled={
-                            !user.permissions.includes(
-                              Permissions.PROJECT_DETAILS
-                            )
-                          }
-                        />
-                        <label
-                          className="switch-label"
-                          htmlFor="switchWhatsNew"
-                        >
-                          What&apos;s New
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {!fetching && (
-                  <div className="settings-section">
-                    <h3>Board Privacy</h3>
-                    <div className="idea-settings">
-                      <button
-                        className={!is_private_settings ? 'active' : ''}
-                        onClick={() => handlePrivateSetting(false)}
-                        disabled={
-                          !user.permissions.includes(
-                            Permissions.PROJECT_DETAILS
-                          )
+                  )}
+                  {!fetching_private_users && (
+                    <table id="UserTable">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                        </tr>
+                      </thead>
+                      <tbody
+                        style={
+                          private_users.length === 0 ? { display: 'flex' } : {}
                         }
                       >
-                        Public
-                      </button>
-                      <button
-                        className={is_private_settings ? 'active' : ''}
-                        onClick={() => handlePrivateSetting(true)}
-                        disabled={
-                          !user.permissions.includes(
-                            Permissions.PROJECT_DETAILS
-                          )
-                        }
-                      >
-                        Private
-                      </button>
-                    </div>
-                    <div className="custom-input">
-                      {!is_private_settings ? (
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <Toggle
-                              checked={index_search_engine}
-                              onChange={() => {
-                                setIndexSearchEngine(!index_search_engine);
-                              }}
-                              disabled={
-                                !user.permissions.includes(
-                                  Permissions.PROJECT_DETAILS
-                                )
-                              }
-                            />
-                            <label
-                              className="switch-label"
-                              htmlFor="switchUsers"
-                            >
-                              Index in Search engines like google
-                            </label>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          <div className="settings-section">
-                            <h3>Specific Person</h3>
-                            <p>
-                              Grant access to specific people, Invited via Email
-                            </p>
-                            <div
-                              style={{
-                                display: 'flex',
-                                gap: '15px',
-                                alignItems: 'flex-start',
-                              }}
-                            >
-                              <UIField
-                                error_label={
-                                  field_errors.find(
-                                    (field_error) =>
-                                      field_error.field === 'first_name'
-                                  )?.message
-                                }
-                                id="FirstNameField"
-                                is_error_state={field_errors.some(
-                                  (field_error) =>
-                                    field_error.field === 'first_name'
-                                )}
-                                label="First Name"
-                                value={first_name}
-                                type="text"
-                                tab_index={5}
-                                onChange={(e) => {
-                                  setApiFieldErrors(
-                                    field_errors.filter(
-                                      (field_error) =>
-                                        field_error.field !== 'first_name'
-                                    )
-                                  );
-                                  setFirstName(e.target.value);
-                                }}
-                                placeholder="First name"
-                                readOnly={loadingInvite}
-                                input_class="no-background"
-                              />
-                              <UIField
-                                error_label={
-                                  field_errors.find(
-                                    (field_error) =>
-                                      field_error.field === 'last_name'
-                                  )?.message
-                                }
-                                id="LastNameField"
-                                is_error_state={field_errors.some(
-                                  (field_error) =>
-                                    field_error.field === 'last_name'
-                                )}
-                                label="Last Name"
-                                value={last_name}
-                                type="text"
-                                tab_index={6}
-                                onChange={(e) => {
-                                  setApiFieldErrors(
-                                    field_errors.filter(
-                                      (field_error) =>
-                                        field_error.field !== 'last_name'
-                                    )
-                                  );
-                                  setLastName(e.target.value);
-                                }}
-                                placeholder="Last name"
-                                readOnly={loadingInvite}
-                                input_class="no-background"
-                              />
-                            </div>
-                            <div className="custom-input">
-                              <div className="email-address">
-                                <UIField
-                                  error_label={
-                                    field_errors.find(
-                                      (field_error) =>
-                                        field_error.field === 'email'
-                                    )?.message
-                                  }
-                                  id="EmailAddressField"
-                                  is_error_state={field_errors.some(
-                                    (field_error) =>
-                                      field_error.field === 'email'
-                                  )}
-                                  label="Email Address"
-                                  max_length={256}
-                                  onBlur={(e) => {
-                                    let email_address_error;
-                                    if (!validateEmail(e.target.value)) {
-                                      email_address_error = {
-                                        field: 'email',
-                                        message: 'Invalid email address.',
-                                      };
-                                    }
-                                    if (email_address_error) {
-                                      let copy_field_errors =
-                                        field_errors.filter(
-                                          (field_error) =>
-                                            field_error.field !== 'email'
-                                        );
-                                      if (copy_field_errors.length > 0)
-                                        copy_field_errors.push(
-                                          email_address_error
-                                        );
-                                      else
-                                        copy_field_errors = [
-                                          email_address_error,
-                                        ];
-                                      setApiFieldErrors(copy_field_errors);
-                                    }
-                                  }}
-                                  value={email}
-                                  type="email"
-                                  tab_index={7}
-                                  onChange={(e) => {
-                                    setEmail(e.target.value);
-                                    setApiFieldErrors(
-                                      field_errors.filter(
-                                        (field_error) =>
-                                          field_error.field !== 'email'
-                                      )
-                                    );
-                                  }}
-                                  placeholder="name@address.com"
-                                  input_class="no-background"
-                                  readOnly={loadingInvite}
-                                />
-                                <button
-                                  className={`invite-button${
-                                    !user.permissions.includes(
-                                      Permissions.PROJECT_DETAILS
-                                    ) ||
-                                    email.length === 0 ||
-                                    field_errors.some(
-                                      (field_error) =>
-                                        field_error.field === 'email'
-                                    )
-                                      ? ' is-not-clickable'
-                                      : ' is-clickable'
-                                  }${
-                                    field_errors.some(
-                                      (field_error) =>
-                                        field_error.field === 'email'
-                                    )
-                                      ? ' margin-bottom-34'
-                                      : ''
-                                  }`}
-                                  disabled={
-                                    !user.permissions.includes(
-                                      Permissions.PROJECT_DETAILS
-                                    ) ||
-                                    email.length === 0 ||
-                                    first_name.length === 0 ||
-                                    last_name.length === 0 ||
-                                    field_errors.some(
-                                      (field_error) =>
-                                        field_error.field === 'email' ||
-                                        field_error.field === 'first_name' ||
-                                        field_error.field === 'last_name'
-                                    ) ||
-                                    loadingInvite
-                                  }
-                                  onClick={handleInvite}
-                                  tabIndex={8}
-                                >
-                                  Invite
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="settings-section">
-                            {fetching_private_users && (
-                              <div className="center-loader">
-                                <Loader />
-                              </div>
-                            )}
-                            {!fetching_private_users && (
-                              <table id="UserTable">
-                                <thead>
-                                  <tr>
-                                    <th>Name</th>
-                                  </tr>
-                                </thead>
-                                <tbody
-                                  style={
-                                    private_users.length === 0
-                                      ? { display: 'flex' }
-                                      : {}
-                                  }
-                                >
-                                  {private_users.length > 0 &&
-                                    private_users.map((private_user, key) => (
-                                      <Fragment key={key}>
-                                        <Modal isOpen={modalStates[key]}>
-                                          <ModalBody>
-                                            <span
-                                              style={{
-                                                display: 'flex',
-                                                fontSize: 'x-large',
-                                                justifyContent: 'end',
-                                              }}
-                                            >
-                                              <label
-                                                onClick={(e) => {
-                                                  e.preventDefault();
-                                                  handleSetModal(key);
-                                                }}
-                                              >
-                                                <img
-                                                  className="is-clickable"
-                                                  src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/cross.svg"
-                                                  role="button"
-                                                />
-                                              </label>
-                                            </span>
-                                            <div
-                                              style={{
-                                                display: 'grid',
-                                                textAlign: 'center',
-                                                marginBottom: '20px',
-                                              }}
-                                            >
-                                              <span className="modal-delete-text-header">
-                                                Delete{' '}
-                                                {selected_private_user_name}
-                                              </span>
-                                              <span className="modal-delete-text-sub">
-                                                Are you sure you want to delete
-                                                this user?
-                                              </span>
-                                            </div>
-                                            <div className="flex justify-center pb-3.5 gap-2">
-                                              <button
-                                                type="button"
-                                                onClick={(e) => {
-                                                  e.preventDefault();
-                                                  handleSetModal(key);
-                                                }}
-                                                className="button modal-cancel-btn"
-                                              >
-                                                Cancel
-                                              </button>
-                                              <button
-                                                type="button"
-                                                onClick={(e) => {
-                                                  e.preventDefault();
-                                                  onSubmitDelete(key);
-                                                }}
-                                                id={key.toString()}
-                                                className="button modal-delete-btn"
-                                              >
-                                                Delete
-                                              </button>
-                                            </div>
-                                          </ModalBody>
-                                        </Modal>
-                                        <tr>
-                                          <td>
-                                            <div className="user-container">
-                                              <div className="avatar-and-info">
-                                                <div className="placeholder-avatar">
-                                                  {private_user.profile_photo &&
-                                                  private_user.profile_photo !=
-                                                    'https://s3.amazonaws.com/uat-app.productfeedback.co/assets/profile-placeholder.svg' ? (
-                                                    <img
-                                                      className="is-rounded responsiveImage"
-                                                      src={
-                                                        private_user.profile_photo
-                                                      }
-                                                    />
-                                                  ) : (
-                                                    private_user.first_name?.charAt(
-                                                      0
-                                                    )
-                                                  )}
-                                                </div>
-                                              </div>
-                                              <div className="user-details">
-                                                <h3 className="name">
-                                                  {(private_user.first_name &&
-                                                    private_user.first_name
-                                                      .length > 0) ||
-                                                  (private_user.last_name &&
-                                                    private_user.last_name
-                                                      .length > 0)
-                                                    ? `${private_user.first_name} ${private_user.last_name}`
-                                                    : private_user.full_name}
-                                                </h3>
-                                                <p className="email">
-                                                  {private_user.email}
-                                                </p>
-                                              </div>
-                                              <button
-                                                className="delete-user-button is-clickable"
-                                                onClick={(e) => {
-                                                  e.preventDefault();
-                                                  handleOnClickDelete(
-                                                    private_user.id || 0,
-                                                    key
-                                                  );
-                                                }}
-                                              >
-                                                <TrashIcon />
-                                              </button>
-                                            </div>
-                                          </td>
-                                        </tr>
-                                      </Fragment>
-                                    ))}
-                                  {private_users.length === 0 && (
-                                    <span
-                                      className="no-members"
-                                      style={{ margin: '10px' }}
+                        {private_users.length > 0 &&
+                          private_users.map((private_user, key) => (
+                            <Fragment key={key}>
+                              <Modal isOpen={modalStates[key]}>
+                                <ModalBody>
+                                  <span
+                                    style={{
+                                      display: 'flex',
+                                      fontSize: 'x-large',
+                                      justifyContent: 'end',
+                                    }}
+                                  >
+                                    <label
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        handleSetModal(key);
+                                      }}
                                     >
-                                      {t('no-specific-persons-label')}
+                                      <img
+                                        className="is-clickable"
+                                        src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/cross.svg"
+                                        role="button"
+                                      />
+                                    </label>
+                                  </span>
+                                  <div
+                                    style={{
+                                      display: 'grid',
+                                      textAlign: 'center',
+                                      marginBottom: '20px',
+                                    }}
+                                  >
+                                    <span className="modal-delete-text-header">
+                                      Delete {selected_private_user_name}
                                     </span>
-                                  )}
-                                </tbody>
-                              </table>
-                            )}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
+                                    <span className="modal-delete-text-sub">
+                                      Are you sure you want to delete this user?
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-center pb-3.5 gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        handleSetModal(key);
+                                      }}
+                                      className="button modal-cancel-btn"
+                                    >
+                                      Cancel
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        onSubmitDelete(key);
+                                      }}
+                                      id={key.toString()}
+                                      className="button modal-delete-btn"
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                </ModalBody>
+                              </Modal>
+                              <tr>
+                                <td>
+                                  <div className="user-container">
+                                    <div className="avatar-and-info">
+                                      <div className="placeholder-avatar">
+                                        {private_user.profile_photo &&
+                                        private_user.profile_photo !=
+                                          'https://s3.amazonaws.com/uat-app.productfeedback.co/assets/profile-placeholder.svg' ? (
+                                          <img
+                                            className="is-rounded responsiveImage"
+                                            src={private_user.profile_photo}
+                                          />
+                                        ) : (
+                                          private_user.first_name?.charAt(0)
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div className="user-details">
+                                      <h3 className="name">
+                                        {(private_user.first_name &&
+                                          private_user.first_name.length > 0) ||
+                                        (private_user.last_name &&
+                                          private_user.last_name.length > 0)
+                                          ? `${private_user.first_name} ${private_user.last_name}`
+                                          : private_user.full_name}
+                                      </h3>
+                                      <p className="email">
+                                        {private_user.email}
+                                      </p>
+                                    </div>
+                                    <button
+                                      className="delete-user-button is-clickable"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        handleOnClickDelete(
+                                          private_user.id || 0,
+                                          key
+                                        );
+                                      }}
+                                    >
+                                      <TrashIcon />
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            </Fragment>
+                          ))}
+                        {private_users.length === 0 && (
+                          <span className="no-members text-[14px] m-[10px]">
+                            {t('no-specific-persons-label')}
+                          </span>
+                        )}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              </>
             )}
-          </>
+          </div>
         )}
-      </div>
-    </div>
+      </SettingsContainer>
+    </Settings>
   );
 }

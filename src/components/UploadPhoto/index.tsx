@@ -27,147 +27,134 @@ export const UploadPhoto: React.FC<{
   show_modal: boolean;
 }> = (props) => {
   const { t } = useTranslation();
-
   const inputRef = React.useRef<HTMLInputElement>();
-
   const { user, setUser } = useUser();
 
   const [dragActive, setDragActive] = React.useState(false);
   const [file, setFile] = React.useState<File | undefined>(undefined);
-  const [image_error_msg, setImageErrMsg] = React.useState('');
+  const [imageErrorMsg, setImageErrorMsg] = React.useState('');
   const [fileDataURL, setFileDataURL] = React.useState(DROP_BOX_IMAGE);
-  const [heic_blob_url, setHeicBlobUrl] = React.useState('');
-  const [upload_btn_disabled, setUploadButtonDisabled] = React.useState(true);
-  const [uploading, setUploading] = React.useState(false);
+  const [heicBlobUrl, setHeicBlobUrl] = React.useState('');
+  const [uploadState, setUploadState] = React.useState({
+    buttonDisabled: true,
+    uploading: false,
+  });
 
-  const handleSetFile = (file: any) => {
-    const allowed_file_types = AllowedFileTypes.split(',');
-    const allowed = allowed_file_types.find(
-      (allowed_file_type) =>
-        (file.name.toLowerCase().includes(allowed_file_type) ||
-          file.type.includes('image/')) &&
-        !file.name.toLowerCase().includes('.psd')
-    );
-    if ((file && file.size > props.maxFileSize) || !allowed) {
-      setImageErrMsg(
-        'Please upload an image in jpeg, png, gif, svg, bmp, tiff, heic or webp format and no larger than 2 MB.'
-      );
-      setUploadButtonDisabled(true);
+  const handleSetFile = (file: File) => {
+    const isValidFile = validateFile(file);
+    if (!isValidFile) {
+      setImageErrorMsg('Please upload a valid image file.');
+      setUploadState((prev) => ({ ...prev, buttonDisabled: true }));
     } else {
-      setImageErrMsg('');
-      setUploadButtonDisabled(false);
+      setImageErrorMsg('');
+      setUploadState((prev) => ({ ...prev, buttonDisabled: false }));
       setFile(file);
     }
   };
 
-  // triggers when file is selected with click
-  const handleChange = function (e: any) {
+  const validateFile = (file: File) => {
+    const allowedFileTypes = AllowedFileTypes.split(',');
+    const isAllowedType = allowedFileTypes.some(
+      (type) =>
+        file.name.toLowerCase().includes(type) || file.type.includes('image/')
+    );
+    return (
+      file.size <= props.maxFileSize &&
+      isAllowedType &&
+      !file.name.toLowerCase().includes('.psd')
+    );
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      handleSetFile(file);
+      handleSetFile(e.target.files[0]);
     }
   };
 
-  // handle drag events
-  const handleDrag = function (e: any) {
+  const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true);
-    } else if (e.type === 'dragleave') {
-      setDragActive(false);
-    }
+    setDragActive(e.type === 'dragenter' || e.type === 'dragover');
   };
 
-  // triggers when file is dropped
-  const handleDrop = function (e: any) {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0];
-      handleSetFile(file);
+      handleSetFile(e.dataTransfer.files[0]);
     }
   };
 
-  const handleUpload = (image_type: string) => {
-    setUploading(!uploading);
+  const handleUpload = async (imageType: string) => {
+    setUploadState((prev) => ({ ...prev, uploading: true }));
     const { name, type } = file as File;
     const url =
-      image_type === ImageType.WHATS_NEW_IMAGES
+      imageType === ImageType.WHATS_NEW_IMAGES
         ? 'whatsnew/upload/image'
         : 'users/upload/photo';
-    postApi({
-      url,
-      payload: {
-        content: fileDataURL,
-        image_type,
-        filename: name.replace('.heic', '.png'),
-        type: type || fileDataURL.split(';base64,')[0].split(':')[1],
-      },
-    })
-      .then((res) => {
-        if (res.results.data) {
-          setUser({
-            ...user,
-            user: res.results.data as User,
-          } as UserContextConfig);
-          if (image_type !== ImageType.WHATS_NEW_IMAGES) {
-            const { company_logo, profile_photo } = res.results.data as User;
-            if (profile_photo?.toLowerCase().includes('.heic')) {
-              fetch(profile_photo)
-                .then((response) => response.blob())
-                .then((blob) => {
-                  heic2any({ blob, toType: 'image/png' }).then((newImage) => {
-                    const url = URL.createObjectURL(newImage as Blob);
-                    props.setProfilePhoto(url);
-                  });
-                });
-            } else {
-              props.setProfilePhoto(profile_photo || PROFILE_PLACEHOLDER);
-            }
-            if (company_logo?.toLowerCase().includes('.heic')) {
-              fetch(company_logo)
-                .then((response) => response.blob())
-                .then((blob) => {
-                  heic2any({ blob, toType: 'image/png' }).then((newImage) => {
-                    const url = URL.createObjectURL(newImage as Blob);
-                    props.setCompanyLogo(url);
-                  });
-                });
-            } else {
-              props.setCompanyLogo(company_logo || COMPANY_LOGO_PLACEHOLDER);
-            }
-          }
-          if (image_type === ImageType.WHATS_NEW_IMAGES) {
-            const { image } = res.results.data as WhatsNew;
-            if (image?.toLowerCase().includes('.heic')) {
-              fetch(image)
-                .then((response) => response.blob())
-                .then((blob) => {
-                  heic2any({ blob, toType: 'image/png' }).then((newImage) => {
-                    const url = URL.createObjectURL(newImage as Blob);
-                    props.setProfilePhoto(url);
-                  });
-                });
-            } else {
-              props.setProfilePhoto(image || '');
-            }
-          }
-        }
-      })
-      .finally(() => {
-        props.setModal(false);
-        setTimeout(() => {
-          setUploadButtonDisabled(true);
-          setUploading(false);
-          setFile(undefined);
-          setFileDataURL(DROP_BOX_IMAGE);
-          setHeicBlobUrl('');
-          setImageErrMsg('');
-        }, 500);
+
+    try {
+      const res = await postApi({
+        url,
+        payload: {
+          content: fileDataURL,
+          image_type: imageType,
+          filename: name.replace('.heic', '.png'),
+          type: type || fileDataURL.split(';base64,')[0].split(':')[1],
+        },
       });
+      handleResponse(res, imageType);
+    } finally {
+      resetUploadState();
+    }
+  };
+
+  const handleResponse = (res: any, imageType: string) => {
+    if (res.results.data) {
+      setUser({ ...user, user: res.results.data as User } as UserContextConfig);
+      updateProfileAndCompanyPhotos(res.results.data, imageType);
+    }
+  };
+
+  const updateProfileAndCompanyPhotos = (data: User, imageType: string) => {
+    const { company_logo, profile_photo } = data;
+    updatePhoto(profile_photo, props.setProfilePhoto, PROFILE_PLACEHOLDER);
+    updatePhoto(company_logo, props.setCompanyLogo, COMPANY_LOGO_PLACEHOLDER);
+    if (imageType === ImageType.WHATS_NEW_IMAGES) {
+      const { image } = data as WhatsNew;
+      updatePhoto(image, props.setProfilePhoto, '');
+    }
+  };
+
+  const updatePhoto = (
+    photoUrl: string | undefined,
+    setPhoto: (url: string) => void,
+    placeholder: string
+  ) => {
+    if (photoUrl?.toLowerCase().includes('.heic')) {
+      fetch(photoUrl)
+        .then((response) => response.blob())
+        .then((blob) => heic2any({ blob, toType: 'image/png' }))
+        .then((newImage) => {
+          const url = URL.createObjectURL(newImage as Blob);
+          setPhoto(url);
+        });
+    } else {
+      setPhoto(photoUrl || placeholder);
+    }
+  };
+
+  const resetUploadState = () => {
+    props.setModal(false);
+    setTimeout(() => {
+      setUploadState({ buttonDisabled: true, uploading: false });
+      setFile(undefined);
+      setFileDataURL(DROP_BOX_IMAGE);
+      setHeicBlobUrl('');
+      setImageErrorMsg('');
+    }, 500);
   };
 
   // triggers the input when the button is clicked
@@ -185,42 +172,22 @@ export const UploadPhoto: React.FC<{
       fileReader.onload = (e) => {
         const { result } = e.target as FileReader;
         if (result && !isCancel) {
-          if (
-            file.type &&
-            (file.type.toLowerCase() === 'image/tiff' ||
-              file.name.toLowerCase().includes('.tiff'))
-          ) {
-            const tiff = new Tiff({ buffer: result as ArrayBuffer });
-            const canvas = tiff.toDataURL();
-            setFileDataURL(canvas);
-          } else if (
-            file.type.toLowerCase() === 'image/heic' ||
-            file.name.toLowerCase().includes('.heic')
-          ) {
-            setUploading(true);
-            heic2any({ blob: file, toType: 'image/png' }).then((newImage) => {
-              const reader = new FileReader();
-              reader.readAsDataURL(newImage as Blob);
-              reader.onloadend = function () {
-                const base64data = reader.result;
-                setHeicBlobUrl(base64data as string);
-                setFileDataURL(base64data as string);
-              };
-              setUploading(false);
-            });
-          } else {
-            setFileDataURL(result as string);
-          }
+          processFile(result);
         }
       };
 
-      if (
-        file.type &&
-        (file.type.toLowerCase() === 'image/tiff' ||
-          file.name.toLowerCase().includes('.tiff') ||
-          file.type.toLowerCase() === 'image/heic' ||
-          file.name.toLowerCase().includes('.heic'))
-      ) {
+      const isImageType = (file: File) => {
+        const fileType = file.type.toLowerCase();
+        const fileName = file.name.toLowerCase();
+        return (
+          fileType === 'image/tiff' ||
+          fileName.includes('.tiff') ||
+          fileType === 'image/heic' ||
+          fileName.includes('.heic')
+        );
+      };
+
+      if (file.type && isImageType(file)) {
         fileReader.readAsArrayBuffer(file);
       } else {
         fileReader.readAsDataURL(file);
@@ -234,23 +201,43 @@ export const UploadPhoto: React.FC<{
     };
   }, [file]);
 
+  const processFile = (result: string | ArrayBuffer) => {
+    if (
+      file?.type &&
+      (file.type.toLowerCase() === 'image/tiff' ||
+        file.name.toLowerCase().includes('.tiff'))
+    ) {
+      const tiff = new Tiff({ buffer: result as ArrayBuffer });
+      setFileDataURL(tiff.toDataURL());
+    } else if (
+      file?.type.toLowerCase() === 'image/heic' ||
+      file?.name.toLowerCase().includes('.heic')
+    ) {
+      convertHeicToPng(file);
+    } else {
+      setFileDataURL(result as string);
+    }
+  };
+
+  const convertHeicToPng = (file: File) => {
+    setUploadState((prev) => ({ ...prev, uploading: true }));
+    heic2any({ blob: file, toType: 'image/png' }).then((newImage) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(newImage as Blob);
+      reader.onloadend = () => {
+        const base64data = reader.result;
+        setHeicBlobUrl(base64data as string);
+        setFileDataURL(base64data as string);
+      };
+      setUploadState((prev) => ({ ...prev, uploading: false }));
+    });
+  };
+
   return (
     <Modal isOpen={props.show_modal}>
       <ModalHeader>
         <span style={{ float: 'right', fontSize: 'x-large' }}>
-          <label
-            onClick={() => {
-              props.setModal(false);
-              setTimeout(() => {
-                setUploadButtonDisabled(true);
-                setUploading(false);
-                setFile(undefined);
-                setFileDataURL(DROP_BOX_IMAGE);
-                setHeicBlobUrl('');
-                setImageErrMsg('');
-              }, 500);
-            }}
-          >
+          <label onClick={() => resetUploadState()}>
             <img
               className="is-clickable"
               src="../../../static/icons/cross.svg"
@@ -261,7 +248,7 @@ export const UploadPhoto: React.FC<{
         <span className="upload-photo-heading">{`Upload ${props.image_type === ImageType.PROFILE_PHOTOS ? 'Profile Photo' : 'Company Logo'}`}</span>
       </ModalHeader>
       <ModalBody>
-        {image_error_msg.length > 0 ? (
+        {imageErrorMsg && (
           <span
             style={{
               display: 'flex',
@@ -271,13 +258,11 @@ export const UploadPhoto: React.FC<{
               textAlign: 'center',
             }}
           >
-            {image_error_msg}
+            {imageErrorMsg}
           </span>
-        ) : (
-          ''
         )}
         <FadeLoader
-          loading={uploading}
+          loading={uploadState.uploading}
           cssOverride={{
             display: 'flex',
             position: 'absolute',
@@ -295,7 +280,6 @@ export const UploadPhoto: React.FC<{
           id="input-file-upload"
           ref={inputRef as React.LegacyRef<HTMLInputElement>}
           type="file"
-          // accept={AllowedFileTypes}
           onChange={handleChange}
         />
         <div
@@ -308,12 +292,10 @@ export const UploadPhoto: React.FC<{
             src={
               !fileDataURL.toLowerCase().includes('image/') &&
               fileDataURL !== DROP_BOX_IMAGE
-                ? heic_blob_url
+                ? heicBlobUrl
                 : fileDataURL
             }
-            style={{
-              opacity: uploading ? '0.5' : '1',
-            }}
+            style={{ opacity: uploadState.uploading ? '0.5' : '1' }}
             className="cursor-pointer"
           />
           {dragActive && (
@@ -329,11 +311,9 @@ export const UploadPhoto: React.FC<{
         <div id="button-div" style={{ justifyContent: 'end' }}>
           <button
             type="button"
-            onClick={() => {
-              handleUpload(props.image_type);
-            }}
+            onClick={() => handleUpload(props.image_type)}
             className="button upload_button"
-            disabled={upload_btn_disabled || uploading}
+            disabled={uploadState.buttonDisabled || uploadState.uploading}
           >
             {t('upload')}
           </button>

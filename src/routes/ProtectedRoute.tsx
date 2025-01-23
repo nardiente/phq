@@ -46,12 +46,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
 
-  const {
-    handleGetUser,
-    isAuthenticated,
-    user: userDetails,
-    showBanner,
-  } = useUser();
+  const { isAuthenticated, user: userDetails, showBanner } = useUser();
   const { project, user } = userDetails ?? {};
 
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
@@ -70,8 +65,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   useEffect(() => {
     if (!isAuthenticated()) {
       navigate(redirectTo);
-    } else {
-      handleGetUser();
     }
   }, []);
 

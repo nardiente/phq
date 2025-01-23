@@ -141,20 +141,7 @@
 }
 
 #ProjectDetails {
-  background: #ffffff;
-  border-radius: 8px;
-
-  padding: 24px;
-
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
-
   .settings-section {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-
     h3 {
       font-family: 'Satoshi-Variable';
       font-style: normal;
