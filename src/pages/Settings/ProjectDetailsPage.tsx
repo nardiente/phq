@@ -14,12 +14,12 @@ import { useUnsavedChanges } from '../../contexts/UnsavedChangesContext';
 import { useNavigate } from 'react-router-dom';
 import './styles.css';
 import { Toggle } from '../../components/ui/Toggle';
-import SettingsHeader from '../../components/Settings/SettingsHeader';
+import SettingsHeader from '../../components/SettingsHeader';
 import Button from '../../components/Button';
-import SettingsContainer from '../../components/Settings/SettingsContainer';
+import SettingsContainer from '../../components/SettingsContainer';
 import { Settings } from '../../components/Settings';
 import InputField from '../../components/InputField';
-import SectionHeader from '../../components/Settings/SectionHeader';
+import SectionHeader from '../../components/SectionHeader';
 import TextAreaInput from '../../components/TextAreaInput';
 
 export default function ProjectDetailsPage() {

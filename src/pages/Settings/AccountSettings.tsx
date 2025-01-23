@@ -11,11 +11,11 @@ import { toast } from 'react-toastify';
 import { eraseKaslKey } from '../../utils/localStorage';
 import { deleteApi } from '../../utils/api/api';
 import { Settings } from '../../components/Settings';
-import SettingsHeader from '../../components/Settings/SettingsHeader';
+import SettingsHeader from '../../components/SettingsHeader';
 import Button from '../../components/Button';
-import SettingsContainer from '../../components/Settings/SettingsContainer';
+import SettingsContainer from '../../components/SettingsContainer';
 import InputField from '../../components/InputField';
-import SectionHeader from '../../components/Settings/SectionHeader';
+import SectionHeader from '../../components/SectionHeader';
 
 export function AccountSettings() {
   const navigate = useNavigate();
