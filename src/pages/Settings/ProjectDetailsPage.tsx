@@ -17,7 +17,7 @@ import { Toggle } from '../../components/ui/Toggle';
 import SettingsHeader from '../../components/Settings/SettingsHeader';
 import Button from '../../components/Button';
 import SettingsContainer from '../../components/Settings/SettingsContainer';
-import { Settings } from '../../components/Settings/Settings';
+import { Settings } from '../../components/Settings';
 import InputField from '../../components/InputField';
 import SectionHeader from '../../components/Settings/SectionHeader';
 import TextAreaInput from '../../components/TextAreaInput';

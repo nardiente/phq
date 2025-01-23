@@ -10,7 +10,7 @@ import { useUser } from '../../contexts/UserContext';
 import { toast } from 'react-toastify';
 import { eraseKaslKey } from '../../utils/localStorage';
 import { deleteApi } from '../../utils/api/api';
-import { Settings } from '../../components/Settings/Settings';
+import { Settings } from '../../components/Settings';
 import SettingsHeader from '../../components/Settings/SettingsHeader';
 import Button from '../../components/Button';
 import SettingsContainer from '../../components/Settings/SettingsContainer';
