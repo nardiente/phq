@@ -15,12 +15,6 @@
     width: fit-content;
   }
 
-  .focus-container {
-    box-shadow: 0px 0px 0px 4px rgba(168, 85, 247, 0.25);
-    border-radius: 6px;
-    outline: 1px solid #8340d9 !important;
-  }
-
   .header {
     margin-bottom: 7px;
     margin-top: 37px;
@@ -473,14 +467,11 @@
 }
 
 #Appearance {
-  background: #ffffff;
-  border-radius: 8px;
-
-  padding: 24px;
-
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  .focus-container {
+    box-shadow: 0px 0px 0px 4px rgba(168, 85, 247, 0.25);
+    border-radius: 6px;
+    outline: 1px solid #8340d9 !important;
+  }
 
   .settings-section {
     display: flex;

@@ -5,66 +5,18 @@ import { useUnsavedChanges } from '../../contexts/UnsavedChangesContext';
 import { getApi, postApi } from '../../utils/api/api';
 import { toast } from 'react-toastify';
 import { useUser } from '../../contexts/UserContext';
-import { Loader } from 'lucide-react';
 import { RbacPermissions, Permissions } from '../../types/common';
-import styled from 'styled-components';
-import { useTranslation } from 'react-i18next';
 import { DisplayUserName } from '../../components/DisplayUserName/display-user-name';
 import './styles.css';
-
-const SettingsArea = styled.div`
-  grid-column-start: 2;
-  background-color: white;
-  border-top-right-radius: 6px;
-  width: 704px;
-`;
-
-const SettingsSection = styled.div`
-  background: #ffffff;
-  border: 1px solid #f9f9fa;
-  border-radius: 8px;
-  padding: 24px 20px;
-`;
-
-const Container = styled.span`
-  display: inline-flex;
-  align-items: center;
-  height: 40px;
-  width: 100%;
-  padding: 8px 8px;
-  border: 1px solid #e2e2ec;
-  border-radius: 4px;
-  gap: 0.5rem;
-
-  input[type='color'] {
-    -webkit-appearance: none;
-    border: none;
-    width: auto;
-    height: auto;
-    cursor: pointer;
-    background: none;
-    &::-webkit-color-swatch-wrapper {
-      padding: 0;
-      width: 24px;
-      height: 24px;
-    }
-    &::-webkit-color-swatch {
-      border: 1px solid #e2e2ec;
-      border-radius: 50%;
-      padding: 0;
-    }
-  }
-
-  input[type='text'] {
-    border: none;
-    width: 100%;
-    font-size: 16px;
-  }
-`;
+import { Settings } from '../../components/Settings';
+import SettingsHeader from '../../components/SettingsHeader';
+import Button from '../../components/Button';
+import SettingsContainer from '../../components/SettingsContainer';
+import SectionHeader from '../../components/SectionHeader';
+import ColorPicker from '../../components/ColorPicker';
 
 export default function AppearancePage() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   const { setHasUnsavedChanges } = useUnsavedChanges();
   const { user } = useUser();
@@ -669,1036 +621,432 @@ export default function AppearancePage() {
   }, []);
 
   return (
-    <div id="Settings" className="min-h-screen bg-[#fafafa] pb-12">
-      <div className="max-w-[1200px] mx-auto pt-8 px-6">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-[28px] font-semibold text-gray-900">
-            Account Settings
-          </h1>
-          <div className="flex gap-3">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleUpdate}
-              className="px-4 py-2 bg-[#FF5C35] hover:bg-[#ff4a1a] text-white rounded-lg"
-              disabled={loading || loading_user}
-            >
-              Update
-            </button>
-          </div>
-        </div>
-        {!user || user.rbac_permissions.length == 0 ? (
-          <SettingsArea>
-            <SettingsSection>
-              <div className="center-loader">
-                <Loader />
-              </div>
-            </SettingsSection>
-          </SettingsArea>
-        ) : (
+    <Settings>
+      <SettingsHeader
+        title="Account Settings"
+        primaryButton={
+          <Button
+            text="Update"
+            disabled={loading || loading_user}
+            onClick={handleUpdate}
+          />
+        }
+        secondaryButton={
+          <Button
+            text="Cancel"
+            onClick={() => navigate('/dashboard')}
+            variant="secondary"
+          />
+        }
+      />
+
+      <>
+        {(is_member &&
+          user?.rbac_permissions.includes(
+            RbacPermissions.MANAGE_PROJECT_DETAILS_PAGE
+          )) ||
+        (!is_member && is_admin) ? (
           <>
-            {(is_member &&
-              user.rbac_permissions.includes(
-                RbacPermissions.MANAGE_PROJECT_DETAILS_PAGE
-              )) ||
-            (!is_member && is_admin) ? (
-              <>
-                <div
-                  id="Appearance"
-                  className="bg-white rounded-lg border border-gray-200 p-6 mb-2"
-                >
-                  <div className="settings-section">
-                    <h3>Appearance</h3>
-                    <p>
-                      Customise the appearance of your Upvotes, Roadmap and
-                      What&apos;s New interface to match your brand&apos;s look
-                      and feel.
-                    </p>
-                  </div>
-                  <div className="settings-section">
-                    <h3>General</h3>
-                    <div className="custom-grid">
-                      <div className="custom-input">
-                        <label>Active Link Colour</label>
-                        <Container
-                          className={focus_al_container}
-                          onFocus={() => {
-                            setFocusALContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusALContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="ActiveLinkColorField"
-                            name="ActiveLinkColorField"
-                            onChange={handleOnActiveLinkColor}
-                            value={active_link_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="ActiveLinkColorField"
-                            name="ActiveLinkColorField"
-                            onChange={handleOnActiveLinkColor}
-                            value={active_link_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="ActiveLinkColorHexError"
-                          style={{
-                            display: active_link_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Background Colour</label>
-                        <Container
-                          className={focus_bg_container}
-                          onFocus={() => {
-                            setFocusBGContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusBGContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="BackgroundColorField"
-                            name="BackgroundColorField"
-                            onChange={handleOnBackgroundColor}
-                            value={background_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="BackgroundColorField"
-                            name="BackgroundColorField"
-                            onChange={handleOnBackgroundColor}
-                            value={background_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="BackgroundColorHexError"
-                          style={{
-                            display: background_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Default Text Colour</label>
-                        <Container
-                          className={focus_dt_container}
-                          onFocus={() => {
-                            setFocusDTContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusDTContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="DefaultTextColorField"
-                            name="DefaultTextColorField"
-                            onChange={handleOnDefaultTextColor}
-                            value={default_text_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="DefaultTextColorField"
-                            name="DefaultTextColorField"
-                            onChange={handleOnDefaultTextColor}
-                            value={default_text_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="DefaultTextColorHexError"
-                          style={{
-                            display: default_text_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Icon Colour</label>
-                        <Container
-                          className={focus_ic_container}
-                          onFocus={() => {
-                            setFocusICContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusICContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="IconColorField"
-                            name="IconColorField"
-                            onChange={handleOnIconColor}
-                            value={icon_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="IconColorField"
-                            name="IconColorField"
-                            onChange={handleOnIconColor}
-                            value={icon_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="IconColorHexError"
-                          style={{
-                            display: icon_color_valid_hex ? 'none' : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="settings-section">
-                    <h3>Primary button colour</h3>
-                    <div className="custom-grid">
-                      <div className="custom-input">
-                        <label>Primary Button Border</label>
-                        <Container
-                          className={focus_pbb_container}
-                          onFocus={() => {
-                            setFocusPBBContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusPBBContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="PrimaryButtonBorderField"
-                            name="PrimaryButtonBorderField"
-                            onChange={handleOnPrimaryButtonBorder}
-                            value={primary_button_border}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="PrimaryButtonBorderField"
-                            name="PrimaryButtonBorderField"
-                            onChange={handleOnPrimaryButtonBorder}
-                            value={primary_button_border}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="PrimaryButtonBorderHexError"
-                          style={{
-                            display: primary_button_border_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Primary Button Colour</label>
-                        <Container
-                          className={focus_pb_container}
-                          onFocus={() => {
-                            setFocusPBContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusPBContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="PrimaryButtonColorField"
-                            name="PrimaryButtonColorField"
-                            onChange={handleOnPrimaryButtonColor}
-                            value={primary_button_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="PrimaryButtonColorField"
-                            name="PrimaryButtonColorField"
-                            onChange={handleOnPrimaryButtonColor}
-                            value={primary_button_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="PrimaryButtonColorHexError"
-                          style={{
-                            display: primary_button_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Primary Button Text Colour</label>
-                        <Container
-                          className={focus_tc_container}
-                          onFocus={() => {
-                            setFocusTCContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusTCContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="PrimaryButtonTextColorField"
-                            name="PrimaryButtonTextColorField"
-                            onChange={handleOnButtonTextColor}
-                            value={button_text_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="PrimaryButtonTextColorField"
-                            name="PrimaryButtonTextColorField"
-                            onChange={handleOnButtonTextColor}
-                            value={button_text_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="PrimaryButtonTextColorHexError"
-                          style={{
-                            display: button_text_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="settings-section">
-                    <h3>Sign in buttons</h3>
-                    <div className="custom-grid">
-                      <div className="custom-input">
-                        <label>Sign In Button Border Colour</label>
-                        <Container
-                          className={focus_sbb_container}
-                          onFocus={() => {
-                            setFocusSBBContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusSBBContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="SignInButtonBorderColorField"
-                            name="SignInButtonBorderColorField"
-                            onChange={handleOnInButtonBorderColor}
-                            value={sign_in_button_border_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="SignInButtonBorderColorField"
-                            name="SignInButtonBorderColorField"
-                            onChange={handleOnInButtonBorderColor}
-                            value={sign_in_button_border_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="SignInButtonBorderHexError"
-                          style={{
-                            display: sign_in_button_border_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Sign In Button Colour</label>
-                        <Container
-                          className={focus_sb_container}
-                          onFocus={() => {
-                            setFocusSBContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusSBContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="SignInButtonColorField"
-                            name="SignInButtonColorField"
-                            onChange={handleOnInButtonColor}
-                            value={sign_in_button_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="SignInButtonColorField"
-                            name="SignInButtonColorField"
-                            onChange={handleOnInButtonColor}
-                            value={sign_in_button_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="SignInButtonHexError"
-                          style={{
-                            display: sign_in_button_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Sign In Button Hover Colour</label>
-                        <Container
-                          className={focus_sbh_container}
-                          onFocus={() => {
-                            setFocusSBHContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusSBHContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="SignInButtonHoverColorField"
-                            name="SignInButtonHoverColorField"
-                            onChange={handleOnInButtonHoverColor}
-                            value={sign_in_button_hover_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="SignInButtonHoverColorField"
-                            name="SignInButtonHoverColorField"
-                            onChange={handleOnInButtonHoverColor}
-                            value={sign_in_button_hover_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="SignInButtonHoverHexError"
-                          style={{
-                            display: sign_in_button_hover_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Sign In Button Text Colour</label>
-                        <Container
-                          className={focus_sbt_container}
-                          onFocus={() => {
-                            setFocusSBTContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusSBTContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="SignInButtonTextColorField"
-                            name="SignInButtonTextColorField"
-                            onChange={handleOnInButtonTextColor}
-                            value={sign_in_button_text_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="SignInButtonTextColorField"
-                            name="SignInButtonTextColorField"
-                            onChange={handleOnInButtonTextColor}
-                            value={sign_in_button_text_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="SignInButtonTextHexError"
-                          style={{
-                            display: sign_in_button_text_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Sign In Button Text Hover Colour</label>
-                        <Container
-                          className={focus_sb_container}
-                          onFocus={() => {
-                            setFocusSBContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusSBContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="SignInButtonTextHoverColorField"
-                            name="SignInButtonTextHoverColorField"
-                            onChange={handleOnInButtonTextHoverColor}
-                            value={sign_in_button_text_hover_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="SignInButtonTextHoverColorField"
-                            name="SignInButtonTextHoverColorField"
-                            onChange={handleOnInButtonTextHoverColor}
-                            value={sign_in_button_text_hover_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="SignInButtonHexError"
-                          style={{
-                            display: sign_in_button_text_hover_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="settings-section">
-                    <h3>Sign up buttons</h3>
-                    <div className="custom-grid">
-                      <div className="custom-input">
-                        <label>Sign Up Button Border Colour</label>
-                        <Container
-                          className={focus_subb_container}
-                          onFocus={() => {
-                            setFocusSUBBContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusSUBBContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="SignUpButtonBorderColorField"
-                            name="SignUpButtonBorderColorField"
-                            onChange={handleOnUpButtonBorderColor}
-                            value={sign_up_button_border_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="SignUpButtonBorderColorField"
-                            name="SignUpButtonBorderColorField"
-                            onChange={handleOnUpButtonBorderColor}
-                            value={sign_up_button_border_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="SignUpButtonBorderHexError"
-                          style={{
-                            display: sign_up_button_border_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Sign Up Button Colour</label>
-                        <Container
-                          className={focus_sub_container}
-                          onFocus={() => {
-                            setFocusSUBContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusSUBContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="SignUpButtonColorField"
-                            name="SignUpButtonColorField"
-                            onChange={handleOnUpButtonColor}
-                            value={sign_up_button_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="SignUpButtonColorField"
-                            name="SignUpButtonColorField"
-                            onChange={handleOnUpButtonColor}
-                            value={sign_up_button_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="SignUpButtonHexError"
-                          style={{
-                            display: sign_up_button_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Sign Up Button Hover Colour</label>
-                        <Container
-                          className={focus_subh_container}
-                          onFocus={() => {
-                            setFocusSUBHContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusSUBHContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="SignUpButtonHoverColorField"
-                            name="SignUpButtonHoverColorField"
-                            onChange={handleOnUpButtonHoverColor}
-                            value={sign_up_button_hover_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="SignUpButtonHoverColorField"
-                            name="SignUpButtonHoverColorField"
-                            onChange={handleOnUpButtonHoverColor}
-                            value={sign_up_button_hover_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="SignUpButtonHoverHexError"
-                          style={{
-                            display: sign_up_button_hover_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Sign Up Button Text Colour</label>
-                        <Container
-                          className={focus_subt_container}
-                          onFocus={() => {
-                            setFocusSUBTContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusSUBTContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="SignUpButtonTextColorField"
-                            name="SignUpButtonTextColorField"
-                            onChange={handleOnUpButtonTextColor}
-                            value={sign_up_button_text_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="SignUpButtonTextColorField"
-                            name="SignUpButtonTextColorField"
-                            onChange={handleOnUpButtonTextColor}
-                            value={sign_up_button_text_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="SignUpButtonTextHexError"
-                          style={{
-                            display: sign_up_button_text_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Sign Up Button Text Hover Colour</label>
-                        <Container
-                          className={focus_sub_container}
-                          onFocus={() => {
-                            setFocusSUBContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusSUBContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="SignUpButtonTextHoverColorField"
-                            name="SignUpButtonTextHoverColorField"
-                            onChange={handleOnUpButtonTextHoverColor}
-                            value={sign_up_button_text_hover_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="SignUpButtonTextHoverColorField"
-                            name="SignUpButtonTextHoverColorField"
-                            onChange={handleOnUpButtonTextHoverColor}
-                            value={sign_up_button_text_hover_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="SignUpButtonHexError"
-                          style={{
-                            display: sign_up_button_text_hover_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="settings-section">
-                    <h3>Tags</h3>
-                    <div className="custom-grid">
-                      <div className="custom-input">
-                        <label>Tags Default Background Colour</label>
-                        <Container
-                          className={focus_tdb_container}
-                          onFocus={() => {
-                            setFocusTDBContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusTDBContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="TagsDefaultBackgroundColorField"
-                            name="TagsDefaultBackgroundColorField"
-                            onChange={handleOnTagsDefaultBackgroundColor}
-                            value={tags_default_background_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="TagsDefaultBackgroundColorField"
-                            name="TagsDefaultBackgroundColorField"
-                            onChange={handleOnTagsDefaultBackgroundColor}
-                            value={tags_default_background_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="TagsDefaultBackgroundHexError"
-                          style={{
-                            display: tags_default_background_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Tags Default Text Colour</label>
-                        <Container
-                          className={focus_tdt_container}
-                          onFocus={() => {
-                            setFocusTDTContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusTDTContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="TagsDefaultTextColorField"
-                            name="TagsDefaultTextColorField"
-                            onChange={handleOnTagsDefaultTextColor}
-                            value={tags_default_text_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="TagsDefaultTextColorField"
-                            name="TagsDefaultTextColorField"
-                            onChange={handleOnTagsDefaultTextColor}
-                            value={tags_default_text_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="TagsDefaultTextHexError"
-                          style={{
-                            display: tags_default_text_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Tags Highlighted Background Colour</label>
-                        <Container
-                          className={focus_tb_container}
-                          onFocus={() => {
-                            setFocusTBContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusTBContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="TagsActiveBackgroundColorField"
-                            name="TagsActiveBackgroundColorField"
-                            onChange={handleOnTagsActiveBackgroundColor}
-                            value={tags_active_background_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="TagsActiveBackgroundColorField"
-                            name="TagsActiveBackgroundColorField"
-                            onChange={handleOnTagsActiveBackgroundColor}
-                            value={tags_active_background_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="TagsActiveTextHexError"
-                          style={{
-                            display: tags_active_background_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                      <div className="custom-input">
-                        <label>Tags Highlighted Text Colour</label>
-                        <Container
-                          className={focus_tt_container}
-                          onFocus={() => {
-                            setFocusTTContainer('focus-container');
-                          }}
-                          onBlur={() => {
-                            setFocusTTContainer('');
-                          }}
-                        >
-                          <input
-                            type="color"
-                            id="TagsActiveTextColorField"
-                            name="TagsActiveTextColorField"
-                            onChange={handleOnTagsActiveTextColor}
-                            value={tags_active_text_color}
-                            disabled={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                          <input
-                            className="no-outline"
-                            type="text"
-                            id="TagsActiveTextColorField"
-                            name="TagsActiveTextColorField"
-                            onChange={handleOnTagsActiveTextColor}
-                            value={tags_active_text_color}
-                            readOnly={
-                              !user.permissions.includes(Permissions.APPEARANCE)
-                            }
-                          />
-                        </Container>
-                        <label
-                          className="has-text-danger is-size-7"
-                          id="TagsActiveTextHexError"
-                          style={{
-                            display: tags_active_text_color_valid_hex
-                              ? 'none'
-                              : 'inline',
-                          }}
-                        >
-                          {t('error.invalid_hex_value')}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
+            <SettingsContainer id="Appearance">
+              <SectionHeader
+                title="Appearance"
+                description={
+                  <p>
+                    Customise the appearance of your Upvotes, Roadmap and
+                    What&apos;s New interface to match your brand&apos;s look
+                    and feel.
+                  </p>
+                }
+              />
+              <div className="flex flex-col gap-6">
+                <SectionHeader title="General" />
+                <div className="grid grid-cols-2 gap-4 m-0">
+                  <ColorPicker
+                    label="Active Link Colour"
+                    onChange={handleOnActiveLinkColor}
+                    className={focus_al_container}
+                    error={!active_link_color_valid_hex}
+                    onBlur={() => {
+                      setFocusALContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusALContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={active_link_color}
+                  />
+                  <ColorPicker
+                    className={focus_bg_container}
+                    error={!background_color_valid_hex}
+                    label="Background Colour"
+                    onChange={handleOnBackgroundColor}
+                    onBlur={() => {
+                      setFocusBGContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusBGContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={background_color}
+                  />
                 </div>
-                <DisplayUserName
-                  selectedFormat={user_name_display_format}
-                  handleOnChangeUserNameFormat={handleOnChangeUserNameFormat}
-                />
-              </>
-            ) : (
-              <Navigate to="/no-access-page" replace />
-            )}
+                <div className="grid grid-cols-2 gap-4 m-0">
+                  <ColorPicker
+                    label="Default Text Colour"
+                    onChange={handleOnDefaultTextColor}
+                    className={focus_dt_container}
+                    error={!default_text_color_valid_hex}
+                    onBlur={() => {
+                      setFocusDTContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusDTContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={default_text_color}
+                  />
+                  <ColorPicker
+                    label="Icon Colour"
+                    onChange={handleOnIconColor}
+                    className={focus_ic_container}
+                    error={!icon_color_valid_hex}
+                    onBlur={() => {
+                      setFocusICContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusICContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value="icon_color"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-6">
+                <SectionHeader title="Primary button colour" />
+                <div className="grid grid-cols-2 gap-4 m-0">
+                  <ColorPicker
+                    label="Primary Button Border"
+                    onChange={handleOnPrimaryButtonBorder}
+                    className={focus_pbb_container}
+                    error={!primary_button_border_valid_hex}
+                    onBlur={() => {
+                      setFocusPBBContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusPBBContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={primary_button_border}
+                  />
+                  <ColorPicker
+                    label="Primary Button Colour"
+                    onChange={handleOnPrimaryButtonColor}
+                    className={focus_pb_container}
+                    error={!primary_button_color_valid_hex}
+                    onBlur={() => {
+                      setFocusPBContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusPBContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={primary_button_color}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 m-0">
+                  <ColorPicker
+                    label="Primary Button Text Colour"
+                    onChange={handleOnButtonTextColor}
+                    className={focus_tc_container}
+                    error={!button_text_color_valid_hex}
+                    onBlur={() => {
+                      setFocusTCContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusTCContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={button_text_color}
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-6">
+                <SectionHeader title="Sign in buttons" />
+                <div className="grid grid-cols-2 gap-4 m-0">
+                  <ColorPicker
+                    label="Sign In Button Border Colour"
+                    onChange={handleOnInButtonBorderColor}
+                    className={focus_sbb_container}
+                    error={!sign_in_button_border_color_valid_hex}
+                    onBlur={() => {
+                      setFocusSBBContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusSBBContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={sign_in_button_border_color}
+                  />
+                  <ColorPicker
+                    label="Sign In Button Colour"
+                    onChange={handleOnInButtonColor}
+                    className={focus_sb_container}
+                    error={!sign_in_button_color_valid_hex}
+                    onBlur={() => {
+                      setFocusSBContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusSBContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={sign_in_button_color}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 m-0">
+                  <ColorPicker
+                    label="Sign In Button Hover Colour"
+                    onChange={handleOnInButtonHoverColor}
+                    className={focus_sbh_container}
+                    error={!sign_in_button_hover_color_valid_hex}
+                    onBlur={() => {
+                      setFocusSBHContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusSBHContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={sign_in_button_hover_color}
+                  />
+                  <ColorPicker
+                    label="Sign In Button Text Colour"
+                    onChange={handleOnInButtonTextColor}
+                    className={focus_sbt_container}
+                    error={!sign_in_button_text_color_valid_hex}
+                    onBlur={() => {
+                      setFocusSBTContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusSBTContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={sign_in_button_text_color}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 m-0">
+                  <ColorPicker
+                    label="Sign In Button Text Hover Colour"
+                    onChange={handleOnInButtonTextHoverColor}
+                    className={focus_sb_container}
+                    error={!sign_in_button_text_hover_color_valid_hex}
+                    onBlur={() => {
+                      setFocusSBContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusSBContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={sign_in_button_text_hover_color}
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-6">
+                <SectionHeader title="Sign up buttons" />
+                <div className="grid grid-cols-2 gap-4 m-0">
+                  <ColorPicker
+                    label="Sign Up Button Border Colour"
+                    onChange={handleOnUpButtonBorderColor}
+                    className={focus_subb_container}
+                    error={!sign_up_button_border_color_valid_hex}
+                    onBlur={() => {
+                      setFocusSUBBContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusSUBBContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={sign_up_button_border_color}
+                  />
+                  <ColorPicker
+                    label="Sign Up Button Colour"
+                    onChange={handleOnUpButtonColor}
+                    className={focus_sub_container}
+                    error={!sign_up_button_color_valid_hex}
+                    onBlur={() => {
+                      setFocusSUBContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusSUBContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={sign_up_button_color}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 m-0">
+                  <ColorPicker
+                    label="Sign Up Button Hover Colour"
+                    onChange={handleOnUpButtonHoverColor}
+                    className={focus_subh_container}
+                    error={!sign_up_button_hover_color_valid_hex}
+                    onBlur={() => {
+                      setFocusSUBHContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusSUBHContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={sign_up_button_hover_color}
+                  />
+                  <ColorPicker
+                    label="Sign Up Button Text Colour"
+                    onChange={handleOnUpButtonTextColor}
+                    className={focus_subt_container}
+                    error={!sign_up_button_text_color_valid_hex}
+                    onBlur={() => {
+                      setFocusSUBTContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusSUBTContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={sign_up_button_text_color}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 m-0">
+                  <ColorPicker
+                    label="Sign Up Button Text Hover Colour"
+                    onChange={handleOnUpButtonTextHoverColor}
+                    className={focus_sub_container}
+                    error={!sign_up_button_text_hover_color_valid_hex}
+                    onBlur={() => {
+                      setFocusSUBContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusSUBContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={sign_up_button_text_hover_color}
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-6">
+                <SectionHeader title="Tags" />
+                <div className="grid grid-cols-2 gap-4 m-0">
+                  <ColorPicker
+                    label="Tags Default Background Colour"
+                    onChange={handleOnTagsDefaultBackgroundColor}
+                    className={focus_tdb_container}
+                    error={!tags_default_background_color_valid_hex}
+                    onBlur={() => {
+                      setFocusTDBContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusTDBContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={tags_default_background_color}
+                  />
+                  <ColorPicker
+                    label="Tags Default Text Colour"
+                    onChange={handleOnTagsDefaultTextColor}
+                    className={focus_tdt_container}
+                    error={!tags_default_text_color_valid_hex}
+                    onBlur={() => {
+                      setFocusTDTContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusTDTContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={tags_default_text_color}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 m-0">
+                  <ColorPicker
+                    label="Tags Highlighted Background Colour"
+                    onChange={handleOnTagsActiveBackgroundColor}
+                    className={focus_tb_container}
+                    error={!tags_active_background_color_valid_hex}
+                    onBlur={() => {
+                      setFocusTBContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusTBContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={tags_active_background_color}
+                  />
+                  <ColorPicker
+                    label="Tags Highlighted Text Colour"
+                    onChange={handleOnTagsActiveTextColor}
+                    className={focus_tt_container}
+                    error={!tags_active_text_color_valid_hex}
+                    onBlur={() => {
+                      setFocusTTContainer('');
+                    }}
+                    onFocus={() => {
+                      setFocusTTContainer('focus-container');
+                    }}
+                    readOnly={
+                      !user?.permissions.includes(Permissions.APPEARANCE)
+                    }
+                    value={tags_active_text_color}
+                  />
+                </div>
+              </div>
+            </SettingsContainer>
+            <DisplayUserName
+              selectedFormat={user_name_display_format}
+              handleOnChangeUserNameFormat={handleOnChangeUserNameFormat}
+            />
           </>
+        ) : (
+          <Navigate to="/no-access-page" replace />
         )}
-      </div>
-    </div>
+      </>
+    </Settings>
   );
 }
