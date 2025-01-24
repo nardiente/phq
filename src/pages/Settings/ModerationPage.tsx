@@ -7,6 +7,10 @@ import { Moderation } from '../../types/moderation';
 import { toast } from 'react-toastify';
 import { useSocket } from '../../contexts/SocketContext';
 import { useNavigate } from 'react-router-dom';
+import { Settings } from '../../components/Settings';
+import SettingsHeader from '../../components/SettingsHeader';
+import Button from '../../components/Button';
+import SettingsContainer from '../../components/SettingsContainer';
 
 export default function ModerationPage() {
   const navigate = useNavigate();
@@ -77,62 +81,53 @@ export default function ModerationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] pb-12">
-      <div className="max-w-[1200px] mx-auto pt-8 px-6">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-[28px] font-semibold text-gray-900">
-            Account Settings
-          </h1>
-          <div className="flex gap-3">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200"
-            >
-              Cancel
-            </button>
-            <button
-              className="px-4 py-2 bg-[#FF5C35] hover:bg-[#ff4a1a] text-white rounded-lg"
-              disabled={fetching || loading}
-              onClick={handleUpdate}
-            >
-              Update
-            </button>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="space-y-6">
-            <h2 className="text-[16px] font-semibold text-gray-900">
-              Moderation
-            </h2>
-            <div className="space-y-8">
-              <TurnoffUserLogin
-                enabled={moderation.user_login}
-                onChange={(enabled) =>
-                  setModeration((prev) => ({
-                    ...prev,
-                    user_login: enabled,
-                  }))
-                }
-              />
+    <Settings>
+      <SettingsHeader
+        title="Account Settings"
+        primaryButton={
+          <Button
+            text="Update"
+            disabled={fetching || loading}
+            onClick={handleUpdate}
+          />
+        }
+        secondaryButton={
+          <Button
+            text="Cancel"
+            onClick={() => navigate('/dashboard')}
+            variant="secondary"
+          />
+        }
+      />
+      <SettingsContainer>
+        <h2 className="text-[16px] font-semibold text-gray-900">Moderation</h2>
+        <div className="space-y-8">
+          <TurnoffUserLogin
+            enabled={moderation.user_login}
+            onChange={(enabled) =>
+              setModeration((prev) => ({
+                ...prev,
+                user_login: enabled,
+              }))
+            }
+          />
 
-              <UserFeedbackSettings
-                settings={moderation.moderate_settings}
-                onChange={(key, value) =>
-                  setModeration((prev) => ({
-                    ...prev,
-                    moderate_settings: {
-                      ...prev.moderate_settings,
-                      [key]: value,
-                    },
-                  }))
-                }
-              />
+          <UserFeedbackSettings
+            settings={moderation.moderate_settings}
+            onChange={(key, value) =>
+              setModeration((prev) => ({
+                ...prev,
+                moderate_settings: {
+                  ...prev.moderate_settings,
+                  [key]: value,
+                },
+              }))
+            }
+          />
 
-              <FeedbackApprovalSection />
-            </div>
-          </div>
+          <FeedbackApprovalSection />
         </div>
-      </div>
-    </div>
+      </SettingsContainer>
+    </Settings>
   );
 }
