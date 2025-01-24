@@ -1,5 +1,4 @@
 import { Tag } from '../../types/feedback';
-import styled from 'styled-components';
 import { Modal, ModalBody } from 'reactstrap';
 import { useSocket } from '../../contexts/SocketContext';
 import { useUser } from '../../contexts/UserContext';
@@ -9,12 +8,7 @@ import { ApiFieldError } from '../../utils/api/types';
 import { deleteApi, patchApi } from '../../utils/api/api';
 import { Permissions } from '../../types/common';
 import Field from '../Field';
-
-const IconImg = styled.img`
-  vertical-align: middle;
-  margin-bottom: 0.25em;
-  margin-right: 0.5em;
-`;
+import { PencilIcon, Trash } from 'lucide-react';
 
 export const EditableTag: React.FC<Tag> = (props: Tag) => {
   const { t } = useTranslation();
@@ -89,7 +83,7 @@ export const EditableTag: React.FC<Tag> = (props: Tag) => {
           setUpdatedTagName(tag_name);
           setUpdatedTagDescription(tag_description);
           console.log('EditableTag handleOnClickSubmit socket:', socket);
-          socket?.send(
+          socket?.current?.send(
             JSON.stringify({
               action: 'updateTag',
               created_by:
@@ -118,17 +112,9 @@ export const EditableTag: React.FC<Tag> = (props: Tag) => {
         id="Tags"
         isOpen={show_modal}
         centered={true}
-        style={{
-          boxSizing: 'border-box',
-          backgroundColor: 'white',
-          border: '1px solid #E2E2EC',
-          borderRadius: '8px',
-          boxShadow: '0px 4px 16px rgba(69, 86, 172, 0.04)',
-          position: 'absolute',
-          width: '397px',
-        }}
+        style={{ width: 'inherit' }}
       >
-        <ModalBody style={{ padding: '24px' }}>
+        <ModalBody>
           <span
             style={{
               display: 'flex',
@@ -161,7 +147,6 @@ export const EditableTag: React.FC<Tag> = (props: Tag) => {
             style={{
               display: 'flex',
               justifyContent: 'center',
-              paddingBottom: '15px',
             }}
           >
             <button
@@ -186,12 +171,7 @@ export const EditableTag: React.FC<Tag> = (props: Tag) => {
         <tr key={`Tag${props.id}`}>
           <td>{updated_tag_name}</td>
           <td>{updated_tag_description}</td>
-          <td
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-            }}
-          >
+          <td className="flex justify-end gap-2">
             <button
               className="edit-tag"
               onClick={handleOnClickEditTag}
@@ -200,7 +180,7 @@ export const EditableTag: React.FC<Tag> = (props: Tag) => {
               disabled={!user?.permissions.includes(Permissions.TAGS)}
             >
               <span>
-                <IconImg src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/pencil-square.svg" />
+                <PencilIcon width={16} />
               </span>
             </button>
             <button
@@ -212,10 +192,7 @@ export const EditableTag: React.FC<Tag> = (props: Tag) => {
               disabled={!user?.permissions.includes(Permissions.TAGS)}
             >
               <span>
-                <IconImg
-                  src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/trash.svg"
-                  style={{ marginLeft: '15px' }}
-                />
+                <Trash width={16} />
               </span>
             </button>
           </td>
@@ -289,7 +266,9 @@ const TagList = ({ data }: { data: Tag[] }) => {
         const created_by = tags.length > 0 ? tags[0].created_by || 0 : 0;
         setTags(tags.filter((tag) => tag.id !== Number(id)));
         console.log('TagList handleOnClickDeleteTag socket:', socket);
-        socket?.send(JSON.stringify({ action: 'updateTag', created_by }));
+        socket?.current?.send(
+          JSON.stringify({ action: 'updateTag', created_by })
+        );
       }
     });
   };

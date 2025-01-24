@@ -244,7 +244,7 @@ const AddComment = () => {
           setSuccessType('comment');
           setActivePage('success');
         }
-        socket?.send(
+        socket?.current?.send(
           JSON.stringify({
             action: 'updateTag',
             created_by: idea?.customer_id ?? 0,

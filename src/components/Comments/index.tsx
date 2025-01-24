@@ -55,7 +55,7 @@ export const Comments = ({
           }
           setPanelCommentIdToDelete(0);
           handleGetComments();
-          socket?.send(
+          socket?.current?.send(
             JSON.stringify({
               action: 'updateTag',
               created_by: idea?.customer_id || 0,

@@ -79,7 +79,7 @@ export default function TagsPage() {
         const data = res.results.data;
         setTagList(data);
         console.log('TagsPage handleGetTags socket:', socket);
-        socket?.send(
+        socket?.current?.send(
           JSON.stringify({
             action: 'updateTag',
             created_by: data.length > 0 ? data[0].created_by || 0 : 0,

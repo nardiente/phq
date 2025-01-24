@@ -276,7 +276,7 @@ export const Comment = ({
             comment_count: (idea.comment_count ?? 0) + 1,
           });
         }
-        socket?.send(
+        socket?.current?.send(
           JSON.stringify({
             action: 'updateTag',
             created_by: idea?.customer_id || 0,

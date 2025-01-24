@@ -38,6 +38,7 @@ interface MenuItem {
   icon: LucideIcon;
   badge?: string;
   disabled?: boolean;
+  hidden?: boolean;
 }
 
 export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
@@ -57,23 +58,31 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
     },
     { icon: ThumbsUp, label: 'Upvotes', id: 'upvotes' },
     { icon: Map, label: 'Roadmap', id: 'roadmap' },
-    { icon: Zap, label: 'Posts', id: 'posts' },
-    { icon: Zap, label: "What's New", id: 'boost' },
+    { icon: Zap, label: "What's New", id: 'posts' },
+    { icon: Zap, label: "What's New", id: 'boost', hidden: true },
     {
       icon: LayoutTemplate,
       label: 'Widgets',
       id: 'widgets',
+      badge: 'COMING\nSOON',
+      disabled: false,
     },
-    { icon: PieChart, label: 'Segments', id: 'segments' },
-    { icon: Users, label: 'Customer Profiles', id: 'profiles' },
-    { icon: Map, label: 'Prioritization', id: 'prioritization' },
+    { icon: PieChart, label: 'Segments', id: 'segments', hidden: true },
+    { icon: Users, label: 'Customer Profiles', id: 'profiles', hidden: true },
+    { icon: Map, label: 'Prioritization', id: 'prioritization', hidden: true },
   ];
 
   const settingsMenuItems: MenuItem[] = [
     { icon: User, label: 'Account Details', id: 'account' },
     { icon: Settings2, label: 'Project Details', id: 'project' },
     { icon: Paintbrush, label: 'Appearance', id: 'appearance' },
-    { icon: MessageSquare, label: 'Moderation', id: 'moderation' },
+    {
+      icon: MessageSquare,
+      label: 'Moderation',
+      id: 'moderation',
+      badge: 'COMING\nSOON',
+      disabled: false,
+    },
     { icon: Users2, label: 'Team Members', id: 'team' },
     { icon: CreditCard, label: 'Billing and Invoicing', id: 'billing' },
     { icon: Tag, label: 'Tags', id: 'tags' },
@@ -81,11 +90,15 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       icon: Mail,
       label: 'Emails',
       id: 'emails',
+      badge: 'COMING\nSOON',
+      disabled: false,
     },
     {
       icon: Upload,
       label: 'Import Ideas',
       id: 'import',
+      badge: 'COMING\nSOON',
+      disabled: false,
     },
   ];
 
@@ -221,32 +234,34 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
             </button>
           )}
           <div className="space-y-1">
-            {(showSettings ? settingsMenuItems : mainMenuItems).map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleNavigation(item)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
-                  activeItem === item.id
-                    ? 'bg-purple-50 text-purple-700'
-                    : item.disabled
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'text-gray-600 hover:bg-gray-50'
-                }`}
-                disabled={item.disabled && item.id !== 'widgets'}
-              >
-                <item.icon size={18} />
-                {isExpanded && (
-                  <>
-                    <span className="flex-1 text-left">{item.label}</span>
-                    {item.badge && (
-                      <span className="text-xs font-medium text-[#5A00CD] bg-purple-50/50 px-2 py-0.5 rounded whitespace-pre-line leading-tight">
-                        {item.badge}
-                      </span>
-                    )}
-                  </>
-                )}
-              </button>
-            ))}
+            {(showSettings ? settingsMenuItems : mainMenuItems)
+              .filter((m) => !m.hidden)
+              .map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleNavigation(item)}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
+                    activeItem === item.id
+                      ? 'bg-purple-50 text-purple-700'
+                      : item.disabled
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                  disabled={item.disabled && item.id !== 'widgets'}
+                >
+                  <item.icon size={18} />
+                  {isExpanded && (
+                    <>
+                      <span className="flex-1 text-left">{item.label}</span>
+                      {item.badge && (
+                        <span className="text-xs font-medium text-[#5A00CD] bg-purple-50/50 px-2 py-0.5 rounded whitespace-pre-line leading-tight">
+                          {item.badge}
+                        </span>
+                      )}
+                    </>
+                  )}
+                </button>
+              ))}
           </div>
 
           {isExpanded && (

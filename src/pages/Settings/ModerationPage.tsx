@@ -11,6 +11,7 @@ import { Settings } from '../../components/Settings';
 import SettingsHeader from '../../components/SettingsHeader';
 import Button from '../../components/Button';
 import SettingsContainer from '../../components/SettingsContainer';
+import { ComingSoonLayout } from '../../components/ComingSoonLayout';
 
 export default function ModerationPage() {
   const navigate = useNavigate();
@@ -68,7 +69,7 @@ export default function ModerationPage() {
           });
           if (data.data.notified === true) {
             console.log('SettingsModerationPage handleUpdate socket:', socket);
-            socket?.send(
+            socket?.current?.send(
               JSON.stringify({
                 action: 'updateNotification',
                 user_id: data.data.user_id,
@@ -81,53 +82,57 @@ export default function ModerationPage() {
   };
 
   return (
-    <Settings>
-      <SettingsHeader
-        title="Account Settings"
-        primaryButton={
-          <Button
-            text="Update"
-            disabled={fetching || loading}
-            onClick={handleUpdate}
-          />
-        }
-        secondaryButton={
-          <Button
-            text="Cancel"
-            onClick={() => navigate('/dashboard')}
-            variant="secondary"
-          />
-        }
-      />
-      <SettingsContainer>
-        <h2 className="text-[16px] font-semibold text-gray-900">Moderation</h2>
-        <div className="space-y-8">
-          <TurnoffUserLogin
-            enabled={moderation.user_login}
-            onChange={(enabled) =>
-              setModeration((prev) => ({
-                ...prev,
-                user_login: enabled,
-              }))
-            }
-          />
+    <ComingSoonLayout>
+      <Settings>
+        <SettingsHeader
+          title="Account Settings"
+          primaryButton={
+            <Button
+              text="Update"
+              disabled={fetching || loading}
+              onClick={handleUpdate}
+            />
+          }
+          secondaryButton={
+            <Button
+              text="Cancel"
+              onClick={() => navigate('/dashboard')}
+              variant="secondary"
+            />
+          }
+        />
+        <SettingsContainer>
+          <h2 className="text-[16px] font-semibold text-gray-900">
+            Moderation
+          </h2>
+          <div className="space-y-8">
+            <TurnoffUserLogin
+              enabled={moderation.user_login}
+              onChange={(enabled) =>
+                setModeration((prev) => ({
+                  ...prev,
+                  user_login: enabled,
+                }))
+              }
+            />
 
-          <UserFeedbackSettings
-            settings={moderation.moderate_settings}
-            onChange={(key, value) =>
-              setModeration((prev) => ({
-                ...prev,
-                moderate_settings: {
-                  ...prev.moderate_settings,
-                  [key]: value,
-                },
-              }))
-            }
-          />
+            <UserFeedbackSettings
+              settings={moderation.moderate_settings}
+              onChange={(key, value) =>
+                setModeration((prev) => ({
+                  ...prev,
+                  moderate_settings: {
+                    ...prev.moderate_settings,
+                    [key]: value,
+                  },
+                }))
+              }
+            />
 
-          <FeedbackApprovalSection />
-        </div>
-      </SettingsContainer>
-    </Settings>
+            <FeedbackApprovalSection />
+          </div>
+        </SettingsContainer>
+      </Settings>
+    </ComingSoonLayout>
   );
 }
