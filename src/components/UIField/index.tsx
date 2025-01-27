@@ -60,7 +60,7 @@ export const UIField: React.FC<UIFieldProps> = (props) => {
               value={props.value}
             />
             <span
-              className={`absolute right-0 flex items-center${props.has_icon ? '' : ' hidden'}${props.has_eye_icon ? ' mr-6' : ''}`}
+              className={`absolute right-0 flex items-center${props.has_icon ? '' : ' hidden'}${props.has_eye_icon ? ' mr-6' : ''} ${props.icon_class}`}
             >
               {props.icon_svg ? (
                 props.icon_svg
@@ -76,7 +76,7 @@ export const UIField: React.FC<UIFieldProps> = (props) => {
             </span>
             <span
               aria-checked={props.type !== 'password'}
-              className={`w-10 h-10 absolute right-0 cursor-pointer${props.has_eye_icon ? '' : ' hidden'}`}
+              className={`w-10 h-10 absolute right-0 cursor-pointer${props.has_eye_icon ? '' : ' hidden'} ${props.icon_class}`}
               onClick={onViewPassword}
               role="switch"
             >

@@ -18,24 +18,14 @@ import queryString from 'query-string';
 import { Permissions, RbacPermissions } from '../../types/common';
 import { Modal, ModalFooter, ModalBody, ModalHeader } from 'reactstrap';
 import { ChevronDownIcon, Loader } from 'lucide-react';
-import styled from 'styled-components';
 import { UIField } from '../../components/UIField';
 import { Dropdown } from '../../components/DropDown';
 import './styles.css';
-
-const SettingsArea = styled.div`
-  background-color: white;
-  border-top-right-radius: 6px;
-  overflow: auto;
-  width: 704px;
-`;
-
-const SettingsSection = styled.div`
-  background: #ffffff;
-  border: 1px solid #f9f9fa;
-  border-radius: 8px;
-  padding: 24px 20px;
-`;
+import { Settings } from '../../components/Settings';
+import SettingsHeader from '../../components/SettingsHeader';
+import Button from '../../components/Button';
+import SettingsContainer from '../../components/SettingsContainer';
+import SectionHeader from '../../components/SectionHeader';
 
 export default function BillingPage() {
   const location = useLocation();
@@ -447,172 +437,51 @@ export default function BillingPage() {
   return (
     <Fragment>
       {!user || user?.rbac_permissions.length === 0 ? (
-        <SettingsArea>
-          <SettingsSection>
-            <div className="center-loader">
-              <Loader />
-            </div>
-          </SettingsSection>
-        </SettingsArea>
+        <div className="flex items-center justify-center mt-8">
+          <Loader />
+        </div>
       ) : (
         <>
           {user.rbac_permissions?.includes(
             RbacPermissions.MANAGE_BILLING_INVOICING_PAGE
           ) && (
-            <div className="min-h-screen bg-[#fafafa] pb-2">
-              <div className="max-w-[1200px] mx-auto pt-8 px-6">
-                <div className="flex items-center justify-between mb-8">
-                  <h1 className="text-[28px] font-semibold text-gray-900">
-                    Account Settings
-                  </h1>
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => navigate('/dashboard')}
-                      className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                  <div className="space-y-6">
-                    <h2 className="text-[16px] font-semibold text-gray-900">
-                      Billing and Invoicing
-                    </h2>
-                    <div className="credit-cards">
-                      <h3>Credit cards</h3>
-                      {fetching_card && (
-                        <div className="center-loader">
-                          <Loader />
-                        </div>
-                      )}
-                      {!fetching_card && (
-                        <table>
-                          <thead>
-                            <tr>
-                              <th>Card details</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {cards.length === 0 && (
-                              <tr>
-                                <td>
-                                  <div className="card-detail">
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="16"
-                                      height="16"
-                                      fill="currentColor"
-                                      className="bi bi-credit-card-2-back"
-                                      viewBox="0 0 16 16"
-                                    >
-                                      <path d="M11 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1z" />
-                                      <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2zm13 2v5H1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm-1 9H2a1 1 0 0 1-1-1v-1h14v1a1 1 0 0 1-1 1z" />
-                                    </svg>
-                                    <label className="no-card">
-                                      No credit card added
-                                    </label>
-                                  </div>
-                                </td>
-                              </tr>
-                            )}
-                            {cards.map((card, idx) => (
-                              <Fragment key={idx}>
-                                <tr>
-                                  <td>
-                                    <div className="card-detail">
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        fill="currentColor"
-                                        className="bi bi-credit-card-2-back"
-                                        viewBox="0 0 16 16"
-                                      >
-                                        <path d="M11 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1z" />
-                                        <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2zm13 2v5H1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm-1 9H2a1 1 0 0 1-1-1v-1h14v1a1 1 0 0 1-1 1z" />
-                                      </svg>
-                                      <label>
-                                        {cc_format(card.number, 'x')}
-                                      </label>
-                                      {card.primary && <div>Primary</div>}
-                                    </div>
-                                    <div className="button-group">
-                                      <button
-                                        className="is-clickable delete-card-button"
-                                        onClick={() => {
-                                          setAddCard(false);
-                                          clearCardFields();
-                                          setDeleteCardId(card.id);
-                                          setDeletingCard(true);
-                                        }}
-                                        type="button"
-                                        disabled={
-                                          !user.permissions.includes(
-                                            Permissions.DELETE_CARD
-                                          )
-                                        }
-                                      >
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="16"
-                                          height="16"
-                                          fill="currentColor"
-                                          className="bi bi-trash"
-                                          viewBox="0 0 16 16"
-                                        >
-                                          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
-                                          <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
-                                        </svg>
-                                      </button>
-                                    </div>
-                                  </td>
-                                </tr>
-                              </Fragment>
-                            ))}
-                          </tbody>
-                        </table>
-                      )}
-                      {!add_card && cards.length === 0 && !fetching_card && (
-                        <button
-                          className="is-clickable add-card-button"
-                          onClick={() => setAddCard(true)}
-                          type="button"
-                          disabled={
-                            !user.permissions.includes(Permissions.ADD_CARD)
-                          }
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="14"
-                            height="14"
-                            fill="currentColor"
-                            className="bi bi-credit-card-2-front"
-                            viewBox="0 0 16 16"
-                          >
-                            <path d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2z" />
-                            <path d="M2 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z" />
-                          </svg>
-                          Add Card
-                        </button>
-                      )}
-                      {add_card && (
-                        <div className="card-form-container">
-                          <div className="card-form">
-                            <label className="form-title">
-                              Add credit card
-                            </label>
-                            <UIField
-                              container_class="margin-bottom-0"
-                              error_label={
-                                card_no_error ||
-                                api_field_errors.find(
-                                  (api_field_error) =>
-                                    api_field_error.field === 'number'
-                                )?.message
-                              }
-                              has_icon={true}
-                              icon_svg={
+            <Settings>
+              <SettingsHeader
+                title="Account Settings"
+                secondaryButton={
+                  <Button
+                    className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200"
+                    onClick={() => navigate('/dashboard')}
+                    text="Cancel"
+                    variant="secondary"
+                  />
+                }
+              />
+
+              <SettingsContainer>
+                <SectionHeader title="Billing and Invoicing" />
+
+                <div className="credit-cards">
+                  <h2 className="text-[16px] font-semibold text-gray-900">
+                    Credit cards
+                  </h2>
+                  {fetching_card && (
+                    <div className="center-loader">
+                      <Loader />
+                    </div>
+                  )}
+                  {!fetching_card && (
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Card details</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {cards.length === 0 && (
+                          <tr>
+                            <td>
+                              <div className="card-detail">
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   width="16"
@@ -624,513 +493,588 @@ export default function BillingPage() {
                                   <path d="M11 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1z" />
                                   <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2zm13 2v5H1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm-1 9H2a1 1 0 0 1-1-1v-1h14v1a1 1 0 0 1-1 1z" />
                                 </svg>
-                              }
-                              id="CardNoField"
-                              input_class="input-style"
-                              is_error_state={
-                                card_no_error.length > 0 ||
-                                api_field_errors.some(
-                                  (api_field_error) =>
-                                    api_field_error.field === 'number'
-                                )
-                              }
-                              label="Card number"
-                              label_class="input-label"
-                              max_length={23}
-                              onBlur={(e: any) => {
-                                if (add_card) {
-                                  const val = e.target.value;
-                                  if (val.length === 0) {
-                                    setCardNoError('error.number.required');
-                                  } else if (val.length < 14) {
-                                    setCardNoError('Invalid card number.');
-                                  }
-                                }
-                              }}
-                              onChange={(e: any) => {
-                                setCardNoError('');
-                                setApiFieldErrors(
-                                  api_field_errors.filter(
-                                    (api_field_error) =>
-                                      api_field_error.field !== 'number'
-                                  )
-                                );
-                                const val = e.target.value.toLowerCase();
-                                if (!val.includes('c') && !val.includes('v')) {
-                                  setCardNo(cc_format(e.target.value));
-                                }
-                              }}
-                              onKeyDown={allowNumbersOnly}
-                              placeholder="xxxx-xxxx-xxxx-xxxx"
-                              required={true}
-                              type="text"
-                              value={card_no}
-                            />
-                            <div className="two-column-field">
-                              <UIField
-                                container_class="margin-bottom-0"
-                                error_label={
-                                  validation_error ||
-                                  api_field_errors.find(
-                                    (api_field_error) =>
-                                      api_field_error.field === 'expiration'
-                                  )?.message
-                                }
-                                id="ExpirationField"
-                                type="text"
-                                input_class="input-style"
-                                is_error_state={
-                                  validation_error.length > 0 ||
-                                  api_field_errors.some(
-                                    (api_field_error) =>
-                                      api_field_error.field === 'expiration'
-                                  )
-                                }
-                                label="Expiration"
-                                label_class="input-label"
-                                max_length={5}
-                                onBlur={validateExpiration}
-                                onChange={(e: any) => {
-                                  setApiFieldErrors(
-                                    api_field_errors.filter(
-                                      (api_field_error) =>
-                                        api_field_error.field !== 'expiration'
-                                    )
-                                  );
-                                  handleOnChangeExpiration(e);
-                                }}
-                                onKeyDown={allowNumbersOnly}
-                                placeholder="MM/YY"
-                                required={true}
-                                value={expiration}
-                              />
-                              <UIField
-                                container_class="margin-bottom-0"
-                                error_label={
-                                  cvv_cvc_error ||
-                                  api_field_errors.find(
-                                    (api_field_error) =>
-                                      api_field_error.field === 'cvv_cvc'
-                                  )?.message
-                                }
-                                id="CvvCvcField"
-                                type="text"
-                                input_class="input-style"
-                                is_error_state={
-                                  cvv_cvc_error.length > 0 ||
-                                  api_field_errors.some(
-                                    (api_field_error) =>
-                                      api_field_error.field === 'cvv_cvc'
-                                  )
-                                }
-                                label="CVV/CVC"
-                                label_class="input-label"
-                                max_length={4}
-                                onBlur={(e: any) => {
-                                  if (add_card) {
-                                    const val = e.target.value;
-                                    if (val.length === 0) {
-                                      setCvvCvcError('error.cvv_cvc.required');
-                                    } else if (val.length < 3) {
-                                      setCvvCvcError('error.cvv_cvc.invalid');
-                                    }
-                                  }
-                                }}
-                                onChange={(e: any) => {
-                                  setCvvCvcError('');
-                                  setApiFieldErrors(
-                                    api_field_errors.filter(
-                                      (api_field_error) =>
-                                        api_field_error.field !== 'cvv_cvc'
-                                    )
-                                  );
-                                  const val = e.target.value.toLowerCase();
-                                  if (
-                                    !val.includes('c') &&
-                                    !val.includes('v')
-                                  ) {
-                                    setCvvCvc(e.target.value);
-                                  }
-                                }}
-                                onKeyDown={allowNumbersOnly}
-                                placeholder="cvv/cvc"
-                                required={true}
-                                value={cvv_cvc}
-                              />
-                            </div>
-                            <UIField
-                              container_class="margin-bottom-0"
-                              error_label={
-                                api_field_errors.find(
-                                  (api_field_error) =>
-                                    api_field_error.field === 'cardholder_name'
-                                )?.message
-                              }
-                              id="CardholderField"
-                              type="text"
-                              input_class="input-style"
-                              is_error_state={api_field_errors.some(
-                                (api_field_error) =>
-                                  api_field_error.field === 'cardholder_name'
-                              )}
-                              label="Cardholder name"
-                              label_class="input-label"
-                              onChange={(e: any) => {
-                                setApiFieldErrors(
-                                  api_field_errors.filter(
-                                    (api_field_error) =>
-                                      api_field_error.field !==
-                                      'cardholder_name'
-                                  )
-                                );
-                                setCardholder(e.target.value);
-                              }}
-                              placeholder="cardholder name"
-                              value={cardholder}
-                            />
-                            <div className="country-field">
-                              <label>Country</label>
-                              <Dropdown
-                                content={
-                                  <div className="dropdown-content-container">
-                                    {countries.map((country, idx) => (
-                                      <span
-                                        key={idx}
-                                        className="drop-down-font is-clickable"
-                                        onClick={() =>
-                                          setCountrySelected(country)
-                                        }
-                                      >
-                                        {country.country}
-                                      </span>
-                                    ))}
-                                  </div>
-                                }
-                                label={
-                                  <span
-                                    className="country-label"
-                                    style={
-                                      !country_selected?.country
-                                        ? {
-                                            color: '#888399',
-                                            fontWeight: 'lighter',
-                                          }
-                                        : {}
+                                <label className="no-card">
+                                  No credit card added
+                                </label>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                        {cards.map((card, idx) => (
+                          <Fragment key={idx}>
+                            <tr>
+                              <td>
+                                <div className="card-detail">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    className="bi bi-credit-card-2-back"
+                                    viewBox="0 0 16 16"
+                                  >
+                                    <path d="M11 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1z" />
+                                    <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2zm13 2v5H1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm-1 9H2a1 1 0 0 1-1-1v-1h14v1a1 1 0 0 1-1 1z" />
+                                  </svg>
+                                  <label>{cc_format(card.number, 'x')}</label>
+                                  {card.primary && <div>Primary</div>}
+                                </div>
+                                <div className="button-group">
+                                  <button
+                                    className="is-clickable delete-card-button"
+                                    onClick={() => {
+                                      setAddCard(false);
+                                      clearCardFields();
+                                      setDeleteCardId(card.id);
+                                      setDeletingCard(true);
+                                    }}
+                                    type="button"
+                                    disabled={
+                                      !user.permissions.includes(
+                                        Permissions.DELETE_CARD
+                                      )
                                     }
                                   >
-                                    {country_selected?.country || 'country'}
-                                    <span
-                                      style={{
-                                        marginTop: '9px',
-                                        color: '#110733',
-                                      }}
-                                    >
-                                      <ChevronDownIcon />
-                                    </span>
-                                  </span>
-                                }
-                                container_class="dropdown-container"
-                                content_class="dropdown-content"
-                                label_class="drop-down-button"
-                              />
-                            </div>
-                            <div className="button-group">
-                              <button
-                                className={`${
-                                  loading ? '' : 'is-clickable '
-                                }secondary-button`}
-                                onClick={() => {
-                                  clearCardFields();
-                                  setAddCard(false);
-                                }}
-                                disabled={loading}
-                                type="button"
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                className={`${
-                                  disabled_button ? '' : 'is-clickable '
-                                }primary-button`}
-                                onClick={addCard}
-                                disabled={disabled_button}
-                                type="button"
-                              >
-                                {loading ? 'Loading...' : 'Add Card'}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="subscriptions">
-                      <h3>Subscriptions</h3>
-                      {fetching_subscription && (
-                        <div className="center-loader">
-                          <Loader />
-                        </div>
-                      )}
-                      {!fetching_subscription && subscriptions.length === 0 && (
-                        <div className="no-subscription">
-                          <label className="trial-ended">
-                            {user.subscription?.is_trial
-                              ? 'Your 14-day free trial has ended. '
-                              : ''}
-                            Keep collecting invaluable insights from your
-                            customers. Subscribe{' '}
-                            <a
-                              href="/pricing"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              style={{ color: 'blue' }}
-                            >
-                              here
-                            </a>
-                            .
-                          </label>
-                        </div>
-                      )}
-                      {!fetching_subscription && subscriptions.length > 0 && (
-                        <table>
-                          <thead>
-                            <tr>
-                              <th className="plan-type-width">Plan Type</th>
-                              <th className="billing-cycle-width">
-                                Billing Cycle
-                              </th>
-                              <th className="total-width">Total</th>
-                              <th className="cancel-width"></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {subscriptions.map((subscription, idx) => (
-                              <tr key={idx}>
-                                <td className="plan-type-width">
-                                  <div className="plan-type">
-                                    {`${subscription?.name}${
-                                      subscription?.is_trial
-                                        ? user.user?.is_beta
-                                          ? ' (Beta)'
-                                          : ' (Trial)'
-                                        : ''
-                                    }`}
-                                    {(subscription.cancel_at_period_end ||
-                                      subscription.status === 'canceled') && (
-                                      <span style={{ color: 'red' }}>
-                                        {' (cancelled)'}
-                                      </span>
-                                    )}
-                                  </div>
-                                </td>
-                                <td className="billing-cycle-width">
-                                  <div className="billing-cycle">
-                                    {!user.user?.is_beta && (
-                                      <Fragment>
-                                        {moment(
-                                          subscription.current_period_start
-                                        ).format('DD/MM/YYYY')}{' '}
-                                        -{' '}
-                                        <div
-                                          className={billingCycleStyle(
-                                            subscription
-                                          )}
-                                        >
-                                          <>
-                                            {subscription.mode !==
-                                            CheckoutMode.ONE_TIME
-                                              ? moment(
-                                                  subscription.current_period_end
-                                                ).format('DD/MM/YYYY')
-                                              : subscription.current_period_end}
-                                          </>
-                                        </div>
-                                        {getRemainingDays(subscription) <= 7 &&
-                                          getRemainingDays(subscription) >
-                                            0 && (
-                                            <>
-                                              <span className="tooltip">
-                                                <svg
-                                                  xmlns="http://www.w3.org/2000/svg"
-                                                  width="16"
-                                                  height="16"
-                                                  fill="currentColor"
-                                                  className="bi bi-exclamation-circle"
-                                                  viewBox="0 0 16 16"
-                                                >
-                                                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                                  <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
-                                                </svg>
-                                                <span className="tooltiptext">
-                                                  Plan will end on{' '}
-                                                  <>
-                                                    {subscription.mode !==
-                                                    CheckoutMode.ONE_TIME
-                                                      ? moment(
-                                                          subscription.current_period_end
-                                                        ).format('MMM DD')
-                                                      : subscription.current_period_end}
-                                                  </>
-                                                </span>
-                                              </span>
-                                            </>
-                                          )}
-                                      </Fragment>
-                                    )}
-                                  </div>
-                                </td>
-                                <td className="total-width">
-                                  <div className="total">{`$${
-                                    user.subscription?.is_trial
-                                      ? 0
-                                      : subscription?.price
-                                  }`}</div>
-                                </td>
-                                <td className="cancel-subscription">
-                                  {['active', 'succeeded'].includes(
-                                    subscription.status
-                                  ) && !subscription.cancel_at_period_end ? (
                                     <svg
                                       xmlns="http://www.w3.org/2000/svg"
                                       width="16"
                                       height="16"
                                       fill="currentColor"
-                                      className="bi bi-calendar2-x is-clickable"
+                                      className="bi bi-trash"
                                       viewBox="0 0 16 16"
-                                      onClick={() => {
-                                        setCancelSubsId(subscription?.id || 0);
-                                        setCancellingSubscription(true);
-                                      }}
                                     >
-                                      <path d="M6.146 8.146a.5.5 0 0 1 .708 0L8 9.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 10l1.147 1.146a.5.5 0 0 1-.708.708L8 10.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 10 6.146 8.854a.5.5 0 0 1 0-.708z" />
-                                      <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H2z" />
-                                      <path d="M2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5V4z" />
+                                      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                                      <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
                                     </svg>
-                                  ) : (
-                                    <div></div>
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      )}
-                    </div>
-                    <div className="invoice-history">
-                      <h3>Invoice History</h3>
-                      {fetching_invoices && (
-                        <div className="center-loader">
-                          <Loader />
-                        </div>
-                      )}
-                      {!fetching_invoices && invoices && (
-                        <table>
-                          <thead>
-                            <tr>
-                              <th className="billed-on-width">Billed on</th>
-                              <th
-                                className="status-width"
-                                style={{ marginLeft: '-3px' }}
-                              >
-                                Status
-                              </th>
-                              <th
-                                className="description-width"
-                                style={{ marginLeft: '-4px' }}
-                              >
-                                Description
-                              </th>
-                              <th
-                                className="total-width"
-                                style={{ marginLeft: '-8px' }}
-                              >
-                                Total
-                              </th>
-                              <th></th>
+                                  </button>
+                                </div>
+                              </td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            {invoices
-                              .filter(
-                                (invoice) =>
-                                  invoice.invoice_pdf &&
-                                  invoice.invoice_pdf.length > 0
+                          </Fragment>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                  {!add_card && cards.length === 0 && !fetching_card && (
+                    <button
+                      className="is-clickable add-card-button"
+                      onClick={() => setAddCard(true)}
+                      type="button"
+                      disabled={
+                        !user.permissions.includes(Permissions.ADD_CARD)
+                      }
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        fill="currentColor"
+                        className="bi bi-credit-card-2-front"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2z" />
+                        <path d="M2 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z" />
+                      </svg>
+                      Add Card
+                    </button>
+                  )}
+                  {add_card && (
+                    <div className="card-form-container">
+                      <div className="card-form">
+                        <label className="form-title">Add credit card</label>
+                        <UIField
+                          container_class="margin-bottom-0"
+                          error_label={
+                            card_no_error ||
+                            api_field_errors.find(
+                              (api_field_error) =>
+                                api_field_error.field === 'number'
+                            )?.message
+                          }
+                          has_icon={true}
+                          icon_class="mt-[12px] mr-[15px]"
+                          icon_svg={
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              fill="currentColor"
+                              className="bi bi-credit-card-2-back"
+                              viewBox="0 0 16 16"
+                            >
+                              <path d="M11 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1z" />
+                              <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2zm13 2v5H1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm-1 9H2a1 1 0 0 1-1-1v-1h14v1a1 1 0 0 1-1 1z" />
+                            </svg>
+                          }
+                          id="CardNoField"
+                          input_class="input-style"
+                          is_error_state={
+                            card_no_error.length > 0 ||
+                            api_field_errors.some(
+                              (api_field_error) =>
+                                api_field_error.field === 'number'
+                            )
+                          }
+                          label="Card number"
+                          label_class="input-label"
+                          max_length={23}
+                          onBlur={(e: any) => {
+                            if (add_card) {
+                              const val = e.target.value;
+                              if (val.length === 0) {
+                                setCardNoError('error.number.required');
+                              } else if (val.length < 14) {
+                                setCardNoError('Invalid card number.');
+                              }
+                            }
+                          }}
+                          onChange={(e: any) => {
+                            setCardNoError('');
+                            setApiFieldErrors(
+                              api_field_errors.filter(
+                                (api_field_error) =>
+                                  api_field_error.field !== 'number'
                               )
-                              .map((invoice, idx) => (
-                                <tr key={idx}>
-                                  <td className="billed-on-width">
-                                    {moment(invoice.billed_on).format(
-                                      'DD/MM/YYYY'
-                                    )}
-                                  </td>
-                                  <td className="status-width">
-                                    <div
-                                      className="status-badge"
-                                      style={{
-                                        background: `${
-                                          invoice.status == 'Paid'
-                                            ? '#D1FAE5'
-                                            : '#B60104'
-                                        }`,
-                                        color: `${
-                                          invoice.status == 'Paid'
-                                            ? '#4D4566'
-                                            : '#FFFFFF'
-                                        }`,
-                                      }}
-                                    >
-                                      {invoice.status}
-                                    </div>
-                                  </td>
-                                  <td className="description-width">
-                                    {invoice.description}
-                                  </td>
-                                  <td className="total-width">{`$${invoice.total}`}</td>
-                                  <td className="export-pdf">
-                                    {user.permissions.includes(
-                                      Permissions.DOWNLOAD_INVOICE
-                                    ) ? (
-                                      <a
-                                        className="is-clickable"
-                                        href={`${invoice.invoice_pdf}`}
-                                        download
-                                      >
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="16"
-                                          height="16"
-                                          fill="currentColor"
-                                          className="bi bi-file-earmark-pdf"
-                                          viewBox="0 0 16 16"
-                                        >
-                                          <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
-                                          <path d="M4.603 14.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.697 19.697 0 0 0 1.062-2.227 7.269 7.269 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.188-.012.396-.047.614-.084.51-.27 1.134-.52 1.794a10.954 10.954 0 0 0 .98 1.686 5.753 5.753 0 0 1 1.334.05c.364.066.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.856.856 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.712 5.712 0 0 1-.911-.95 11.651 11.651 0 0 0-1.997.406 11.307 11.307 0 0 1-1.02 1.51c-.292.35-.609.656-.927.787a.793.793 0 0 1-.58.029zm1.379-1.901c-.166.076-.32.156-.459.238-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361.01.022.02.036.026.044a.266.266 0 0 0 .035-.012c.137-.056.355-.235.635-.572a8.18 8.18 0 0 0 .45-.606zm1.64-1.33a12.71 12.71 0 0 1 1.01-.193 11.744 11.744 0 0 1-.51-.858 20.801 20.801 0 0 1-.5 1.05zm2.446.45c.15.163.296.3.435.41.24.19.407.253.498.256a.107.107 0 0 0 .07-.015.307.307 0 0 0 .094-.125.436.436 0 0 0 .059-.2.095.095 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a3.876 3.876 0 0 0-.612-.053zM8.078 7.8a6.7 6.7 0 0 0 .2-.828c.031-.188.043-.343.038-.465a.613.613 0 0 0-.032-.198.517.517 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822.024.111.054.227.09.346z" />
-                                        </svg>
-                                      </a>
-                                    ) : (
-                                      <svg
-                                        style={{ opacity: '50%' }}
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        fill="currentColor"
-                                        className="bi bi-file-earmark-pdf"
-                                        viewBox="0 0 16 16"
-                                      >
-                                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
-                                        <path d="M4.603 14.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.697 19.697 0 0 0 1.062-2.227 7.269 7.269 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.188-.012.396-.047.614-.084.51-.27 1.134-.52 1.794a10.954 10.954 0 0 0 .98 1.686 5.753 5.753 0 0 1 1.334.05c.364.066.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.856.856 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.712 5.712 0 0 1-.911-.95 11.651 11.651 0 0 0-1.997.406 11.307 11.307 0 0 1-1.02 1.51c-.292.35-.609.656-.927.787a.793.793 0 0 1-.58.029zm1.379-1.901c-.166.076-.32.156-.459.238-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361.01.022.02.036.026.044a.266.266 0 0 0 .035-.012c.137-.056.355-.235.635-.572a8.18 8.18 0 0 0 .45-.606zm1.64-1.33a12.71 12.71 0 0 1 1.01-.193 11.744 11.744 0 0 1-.51-.858 20.801 20.801 0 0 1-.5 1.05zm2.446.45c.15.163.296.3.435.41.24.19.407.253.498.256a.107.107 0 0 0 .07-.015.307.307 0 0 0 .094-.125.436.436 0 0 0 .059-.2.095.095 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a3.876 3.876 0 0 0-.612-.053zM8.078 7.8a6.7 6.7 0 0 0 .2-.828c.031-.188.043-.343.038-.465a.613.613 0 0 0-.032-.198.517.517 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822.024.111.054.227.09.346z" />
-                                      </svg>
-                                    )}
-                                  </td>
-                                </tr>
-                              ))}
-                          </tbody>
-                        </table>
-                      )}
+                            );
+                            const val = e.target.value.toLowerCase();
+                            if (!val.includes('c') && !val.includes('v')) {
+                              setCardNo(cc_format(e.target.value));
+                            }
+                          }}
+                          onKeyDown={allowNumbersOnly}
+                          placeholder="xxxx-xxxx-xxxx-xxxx"
+                          required={true}
+                          type="text"
+                          value={card_no}
+                        />
+                        <div className="two-column-field">
+                          <UIField
+                            container_class="margin-bottom-0"
+                            error_label={
+                              validation_error ||
+                              api_field_errors.find(
+                                (api_field_error) =>
+                                  api_field_error.field === 'expiration'
+                              )?.message
+                            }
+                            id="ExpirationField"
+                            type="text"
+                            input_class="input-style"
+                            is_error_state={
+                              validation_error.length > 0 ||
+                              api_field_errors.some(
+                                (api_field_error) =>
+                                  api_field_error.field === 'expiration'
+                              )
+                            }
+                            label="Expiration"
+                            label_class="input-label"
+                            max_length={5}
+                            onBlur={validateExpiration}
+                            onChange={(e: any) => {
+                              setApiFieldErrors(
+                                api_field_errors.filter(
+                                  (api_field_error) =>
+                                    api_field_error.field !== 'expiration'
+                                )
+                              );
+                              handleOnChangeExpiration(e);
+                            }}
+                            onKeyDown={allowNumbersOnly}
+                            placeholder="MM/YY"
+                            required={true}
+                            value={expiration}
+                          />
+                          <UIField
+                            container_class="margin-bottom-0"
+                            error_label={
+                              cvv_cvc_error ||
+                              api_field_errors.find(
+                                (api_field_error) =>
+                                  api_field_error.field === 'cvv_cvc'
+                              )?.message
+                            }
+                            id="CvvCvcField"
+                            type="text"
+                            input_class="input-style"
+                            is_error_state={
+                              cvv_cvc_error.length > 0 ||
+                              api_field_errors.some(
+                                (api_field_error) =>
+                                  api_field_error.field === 'cvv_cvc'
+                              )
+                            }
+                            label="CVV/CVC"
+                            label_class="input-label"
+                            max_length={4}
+                            onBlur={(e: any) => {
+                              if (add_card) {
+                                const val = e.target.value;
+                                if (val.length === 0) {
+                                  setCvvCvcError('error.cvv_cvc.required');
+                                } else if (val.length < 3) {
+                                  setCvvCvcError('error.cvv_cvc.invalid');
+                                }
+                              }
+                            }}
+                            onChange={(e: any) => {
+                              setCvvCvcError('');
+                              setApiFieldErrors(
+                                api_field_errors.filter(
+                                  (api_field_error) =>
+                                    api_field_error.field !== 'cvv_cvc'
+                                )
+                              );
+                              const val = e.target.value.toLowerCase();
+                              if (!val.includes('c') && !val.includes('v')) {
+                                setCvvCvc(e.target.value);
+                              }
+                            }}
+                            onKeyDown={allowNumbersOnly}
+                            placeholder="cvv/cvc"
+                            required={true}
+                            value={cvv_cvc}
+                          />
+                        </div>
+                        <UIField
+                          container_class="margin-bottom-0"
+                          error_label={
+                            api_field_errors.find(
+                              (api_field_error) =>
+                                api_field_error.field === 'cardholder_name'
+                            )?.message
+                          }
+                          id="CardholderField"
+                          type="text"
+                          input_class="input-style"
+                          is_error_state={api_field_errors.some(
+                            (api_field_error) =>
+                              api_field_error.field === 'cardholder_name'
+                          )}
+                          label="Cardholder name"
+                          label_class="input-label"
+                          onChange={(e: any) => {
+                            setApiFieldErrors(
+                              api_field_errors.filter(
+                                (api_field_error) =>
+                                  api_field_error.field !== 'cardholder_name'
+                              )
+                            );
+                            setCardholder(e.target.value);
+                          }}
+                          placeholder="cardholder name"
+                          value={cardholder}
+                        />
+                        <div className="country-field">
+                          <label>Country</label>
+                          <Dropdown
+                            content={
+                              <div className="dropdown-content-container">
+                                {countries.map((country, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="drop-down-font is-clickable"
+                                    onClick={() => setCountrySelected(country)}
+                                  >
+                                    {country.country}
+                                  </span>
+                                ))}
+                              </div>
+                            }
+                            label={
+                              <span
+                                className="country-label"
+                                style={
+                                  !country_selected?.country
+                                    ? {
+                                        color: '#888399',
+                                        fontWeight: 'lighter',
+                                      }
+                                    : {}
+                                }
+                              >
+                                {country_selected?.country || 'country'}
+                                <span className="mt-[4px] text-[#110733]">
+                                  <ChevronDownIcon />
+                                </span>
+                              </span>
+                            }
+                            container_class="dropdown-container"
+                            content_class="dropdown-content"
+                            label_class="drop-down-button"
+                          />
+                        </div>
+                        <div className="button-group">
+                          <button
+                            className={`${
+                              loading ? '' : 'is-clickable '
+                            }secondary-button`}
+                            onClick={() => {
+                              clearCardFields();
+                              setAddCard(false);
+                            }}
+                            disabled={loading}
+                            type="button"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className={`${
+                              disabled_button ? '' : 'is-clickable '
+                            }primary-button`}
+                            onClick={addCard}
+                            disabled={disabled_button}
+                            type="button"
+                          >
+                            {loading ? 'Loading...' : 'Add Card'}
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
-              </div>
-            </div>
+                <div className="subscriptions">
+                  <h3>Subscriptions</h3>
+                  {fetching_subscription && (
+                    <div className="center-loader">
+                      <Loader />
+                    </div>
+                  )}
+                  {!fetching_subscription && subscriptions.length === 0 && (
+                    <div className="no-subscription">
+                      <label className="trial-ended">
+                        {user.subscription?.is_trial
+                          ? 'Your 14-day free trial has ended. '
+                          : ''}
+                        Keep collecting invaluable insights from your customers.
+                        Subscribe{' '}
+                        <a
+                          href="/pricing"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: 'blue' }}
+                        >
+                          here
+                        </a>
+                        .
+                      </label>
+                    </div>
+                  )}
+                  {!fetching_subscription && subscriptions.length > 0 && (
+                    <table>
+                      <thead>
+                        <tr>
+                          <th className="plan-type-width">Plan Type</th>
+                          <th className="billing-cycle-width">Billing Cycle</th>
+                          <th className="total-width">Total</th>
+                          <th className="cancel-width"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {subscriptions.map((subscription, idx) => (
+                          <tr key={idx}>
+                            <td className="plan-type-width">
+                              <div className="plan-type">
+                                {`${subscription?.name}${
+                                  subscription?.is_trial
+                                    ? user.user?.is_beta
+                                      ? ' (Beta)'
+                                      : ' (Trial)'
+                                    : ''
+                                }`}
+                                {(subscription.cancel_at_period_end ||
+                                  subscription.status === 'canceled') && (
+                                  <span style={{ color: 'red' }}>
+                                    {' (cancelled)'}
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="billing-cycle-width">
+                              <div className="billing-cycle">
+                                {!user.user?.is_beta && (
+                                  <Fragment>
+                                    {moment(
+                                      subscription.current_period_start
+                                    ).format('DD/MM/YYYY')}{' '}
+                                    -{' '}
+                                    <div
+                                      className={billingCycleStyle(
+                                        subscription
+                                      )}
+                                    >
+                                      {subscription.mode !==
+                                      CheckoutMode.ONE_TIME
+                                        ? moment(
+                                            subscription.current_period_end
+                                          ).format('DD/MM/YYYY')
+                                        : subscription.current_period_end.toString()}
+                                    </div>
+                                    {getRemainingDays(subscription) <= 7 &&
+                                      getRemainingDays(subscription) > 0 && (
+                                        <>
+                                          <span className="tooltip">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="16"
+                                              height="16"
+                                              fill="currentColor"
+                                              className="bi bi-exclamation-circle"
+                                              viewBox="0 0 16 16"
+                                            >
+                                              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                              <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
+                                            </svg>
+                                            <span className="tooltiptext">
+                                              Plan will end on{' '}
+                                              {subscription.mode !==
+                                              CheckoutMode.ONE_TIME
+                                                ? moment(
+                                                    subscription.current_period_end
+                                                  ).format('MMM DD')
+                                                : subscription.current_period_end.toString()}
+                                            </span>
+                                          </span>
+                                        </>
+                                      )}
+                                  </Fragment>
+                                )}
+                              </div>
+                            </td>
+                            <td className="total-width">
+                              <div className="total">{`$${
+                                user.subscription?.is_trial
+                                  ? 0
+                                  : subscription?.price
+                              }`}</div>
+                            </td>
+                            <td className="cancel-subscription">
+                              {['active', 'succeeded'].includes(
+                                subscription.status
+                              ) && !subscription.cancel_at_period_end ? (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  fill="currentColor"
+                                  className="bi bi-calendar2-x is-clickable"
+                                  viewBox="0 0 16 16"
+                                  onClick={() => {
+                                    setCancelSubsId(subscription?.id || 0);
+                                    setCancellingSubscription(true);
+                                  }}
+                                >
+                                  <path d="M6.146 8.146a.5.5 0 0 1 .708 0L8 9.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 10l1.147 1.146a.5.5 0 0 1-.708.708L8 10.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 10 6.146 8.854a.5.5 0 0 1 0-.708z" />
+                                  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H2z" />
+                                  <path d="M2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5V4z" />
+                                </svg>
+                              ) : (
+                                <div></div>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+                <div className="invoice-history">
+                  <h3>Invoice History</h3>
+                  {fetching_invoices && (
+                    <div className="center-loader">
+                      <Loader />
+                    </div>
+                  )}
+                  {!fetching_invoices && invoices && (
+                    <table>
+                      <thead>
+                        <tr>
+                          <th className="billed-on-width">Billed on</th>
+                          <th className="status-width">Status</th>
+                          <th className="description-width">Description</th>
+                          <th className="total-width">Total</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {invoices
+                          .filter(
+                            (invoice) =>
+                              invoice.invoice_pdf &&
+                              invoice.invoice_pdf.length > 0
+                          )
+                          .map((invoice, idx) => (
+                            <tr key={idx}>
+                              <td className="billed-on-width">
+                                {moment(invoice.billed_on).format('DD/MM/YYYY')}
+                              </td>
+                              <td className="status-width">
+                                <div
+                                  className="status-badge"
+                                  style={{
+                                    background: `${
+                                      invoice.status == 'Paid'
+                                        ? '#D1FAE5'
+                                        : '#B60104'
+                                    }`,
+                                    color: `${
+                                      invoice.status == 'Paid'
+                                        ? '#4D4566'
+                                        : '#FFFFFF'
+                                    }`,
+                                  }}
+                                >
+                                  {invoice.status}
+                                </div>
+                              </td>
+                              <td className="description-width">
+                                {invoice.description}
+                              </td>
+                              <td className="total-width">{`$${invoice.total}`}</td>
+                              <td className="flex items-center justify-end export-pdf">
+                                {user.permissions.includes(
+                                  Permissions.DOWNLOAD_INVOICE
+                                ) ? (
+                                  <a
+                                    className="is-clickable"
+                                    href={`${invoice.invoice_pdf}`}
+                                    download
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      fill="currentColor"
+                                      className="bi bi-file-earmark-pdf"
+                                      viewBox="0 0 16 16"
+                                    >
+                                      <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
+                                      <path d="M4.603 14.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.697 19.697 0 0 0 1.062-2.227 7.269 7.269 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.188-.012.396-.047.614-.084.51-.27 1.134-.52 1.794a10.954 10.954 0 0 0 .98 1.686 5.753 5.753 0 0 1 1.334.05c.364.066.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.856.856 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.712 5.712 0 0 1-.911-.95 11.651 11.651 0 0 0-1.997.406 11.307 11.307 0 0 1-1.02 1.51c-.292.35-.609.656-.927.787a.793.793 0 0 1-.58.029zm1.379-1.901c-.166.076-.32.156-.459.238-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361.01.022.02.036.026.044a.266.266 0 0 0 .035-.012c.137-.056.355-.235.635-.572a8.18 8.18 0 0 0 .45-.606zm1.64-1.33a12.71 12.71 0 0 1 1.01-.193 11.744 11.744 0 0 1-.51-.858 20.801 20.801 0 0 1-.5 1.05zm2.446.45c.15.163.296.3.435.41.24.19.407.253.498.256a.107.107 0 0 0 .07-.015.307.307 0 0 0 .094-.125.436.436 0 0 0 .059-.2.095.095 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a3.876 3.876 0 0 0-.612-.053zM8.078 7.8a6.7 6.7 0 0 0 .2-.828c.031-.188.043-.343.038-.465a.613.613 0 0 0-.032-.198.517.517 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822.024.111.054.227.09.346z" />
+                                    </svg>
+                                  </a>
+                                ) : (
+                                  <svg
+                                    style={{ opacity: '50%' }}
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    className="bi bi-file-earmark-pdf"
+                                    viewBox="0 0 16 16"
+                                  >
+                                    <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
+                                    <path d="M4.603 14.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.697 19.697 0 0 0 1.062-2.227 7.269 7.269 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.188-.012.396-.047.614-.084.51-.27 1.134-.52 1.794a10.954 10.954 0 0 0 .98 1.686 5.753 5.753 0 0 1 1.334.05c.364.066.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.856.856 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.712 5.712 0 0 1-.911-.95 11.651 11.651 0 0 0-1.997.406 11.307 11.307 0 0 1-1.02 1.51c-.292.35-.609.656-.927.787a.793.793 0 0 1-.58.029zm1.379-1.901c-.166.076-.32.156-.459.238-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361.01.022.02.036.026.044a.266.266 0 0 0 .035-.012c.137-.056.355-.235.635-.572a8.18 8.18 0 0 0 .45-.606zm1.64-1.33a12.71 12.71 0 0 1 1.01-.193 11.744 11.744 0 0 1-.51-.858 20.801 20.801 0 0 1-.5 1.05zm2.446.45c.15.163.296.3.435.41.24.19.407.253.498.256a.107.107 0 0 0 .07-.015.307.307 0 0 0 .094-.125.436.436 0 0 0 .059-.2.095.095 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a3.876 3.876 0 0 0-.612-.053zM8.078 7.8a6.7 6.7 0 0 0 .2-.828c.031-.188.043-.343.038-.465a.613.613 0 0 0-.032-.198.517.517 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822.024.111.054.227.09.346z" />
+                                  </svg>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              </SettingsContainer>
+            </Settings>
           )}
         </>
       )}

@@ -1760,6 +1760,7 @@ svg.bi.bi-exclamation-circle {
           color: #4d4566;
 
           &.export-pdf {
+            width: 6.89%;
             color: #5a00cd;
           }
         }
@@ -1774,6 +1775,7 @@ svg.bi.bi-exclamation-circle {
       width: 21.57%;
       display: flex;
       justify-content: center;
+      margin-left: -3px;
 
       .status-badge {
         display: flex;
@@ -1797,12 +1799,14 @@ svg.bi.bi-exclamation-circle {
     .description-width {
       width: 29.29%;
       white-space: pre-wrap;
+      margin-left: -4px;
     }
 
     .total-width {
       width: 24.25%;
       display: flex;
       justify-content: center;
+      margin-left: -8px;
     }
   }
 }

@@ -16,6 +16,7 @@ export interface UIFieldProps {
   has_icon?: boolean;
   icon?: string;
   icon_svg?: React.ReactNode;
+  icon_class?: string;
   id: string;
   input_class?: string;
   is_error_state?: boolean;
