@@ -14,11 +14,11 @@ const Fallback = () => {
     '/ob-tags',
     '/ob-survey',
     '/ob-success',
+    '/pricing',
   ];
 
   const pathExceptions = [
     '/forgot-password',
-    '/pricing',
     '/reset-password',
     '/sign-in',
     '/sign-in/google',

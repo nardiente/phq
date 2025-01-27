@@ -403,7 +403,7 @@ export function RoadmapPage() {
         </div>
       ) : (
         <div id="RoadmapPublicView">
-          <div className="pt-8 px-6 columns">
+          <div className="pt-8 px-6 columns max-w-[1600px]">
             {(roadmaps === undefined ||
               !roadmaps.some((roadmap) => (roadmap.upvotes?.length ?? 0) > 0) ||
               (is_public && permissions?.length === 0)) &&
