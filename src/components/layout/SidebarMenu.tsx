@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import {
   LayoutDashboard,
   MessageSquare,
@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { PageType } from '../../routes/ProtectedRoute';
 import { useUser } from '../../contexts/UserContext';
+import { ComingSoon } from '../ComingSoon';
 
 interface SidebarMenuProps {
   activeItem: string;
@@ -36,7 +37,7 @@ interface MenuItem {
   id: string;
   label: string;
   icon: LucideIcon;
-  badge?: string;
+  badge?: ReactNode;
   disabled?: boolean;
   hidden?: boolean;
 }
@@ -64,7 +65,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       icon: LayoutTemplate,
       label: 'Widgets',
       id: 'widgets',
-      badge: 'COMING\nSOON',
+      badge: <ComingSoon />,
       disabled: false,
     },
     { icon: PieChart, label: 'Segments', id: 'segments', hidden: true },
@@ -80,7 +81,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       icon: MessageSquare,
       label: 'Moderation',
       id: 'moderation',
-      badge: 'COMING\nSOON',
+      badge: <ComingSoon />,
       disabled: false,
     },
     { icon: Users2, label: 'Team Members', id: 'team' },
@@ -90,14 +91,14 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       icon: Mail,
       label: 'Emails',
       id: 'emails',
-      badge: 'COMING\nSOON',
+      badge: <ComingSoon />,
       disabled: false,
     },
     {
       icon: Upload,
       label: 'Import Ideas',
       id: 'import',
-      badge: 'COMING\nSOON',
+      badge: <ComingSoon />,
       disabled: false,
     },
   ];
@@ -150,7 +151,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
   return (
     <div
       className={`bg-white border-r border-gray-200 transition-all duration-300 mr-[5px] ${
-        isExpanded ? 'w-64' : 'w-16'
+        isExpanded ? 'w-max' : 'w-16'
       }`}
     >
       <div className="sticky top-0 flex flex-col h-screen">

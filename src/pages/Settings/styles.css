@@ -858,7 +858,6 @@
   }
 
   label {
-    color: #110733;
     font-family: 'Satoshi-Variable';
     font-size: 14px !important;
     font-weight: 500;
@@ -937,10 +936,12 @@
           color: #4d4566;
 
           &.delete-member {
+            width: 15%;
             color: #ba1f0d;
             display: flex;
             gap: 10px;
             align-items: center;
+            justify-content: end;
           }
         }
       }

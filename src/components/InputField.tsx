@@ -8,11 +8,13 @@ interface InputFieldProps {
   value?: string;
   domain?: string;
   error?: string;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onClick?: () => void;
   placeholder?: string;
   variant?: 'default' | 'error' | 'success' | 'outline';
   readOnly?: boolean;
+  disabled?: boolean;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -22,11 +24,13 @@ const InputField: React.FC<InputFieldProps> = ({
   value = '',
   domain = '',
   error = '',
+  onBlur,
   onChange,
   onClick,
   placeholder,
   variant = 'default',
   readOnly = false,
+  disabled = false,
 }) => {
   const baseStyles = 'w-full px-4 py-2 border rounded-lg text-[14px]';
   const variantStyles = {
@@ -43,10 +47,12 @@ const InputField: React.FC<InputFieldProps> = ({
         <input
           type={type}
           value={value}
+          onBlur={onBlur}
           onChange={onChange}
           className={`${baseStyles} ${variantStyles[variant]} focus:outline-none ${domain.length > 0 || onClick !== undefined ? 'rounded-r-[0px]' : ''} ${className}`}
           placeholder={placeholder}
           readOnly={readOnly}
+          disabled={disabled}
         />
         {domain.length > 0 && (
           <label className="px-4 py-2 text-[14px] border bg-[#f9fafb]">
@@ -68,7 +74,7 @@ const InputField: React.FC<InputFieldProps> = ({
         )}
       </div>
       {error.length > 0 && (
-        <label className="not-italic font-medium text-sm leading-[17px] tracking-[0.005em] text-red-400">
+        <label className="not-italic font-medium text-sm leading-[17px] tracking-[0.005em] text-red-400 !important">
           {error}
         </label>
       )}

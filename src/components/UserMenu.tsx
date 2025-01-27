@@ -83,7 +83,7 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
       )}
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-1 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+        <div className="absolute right-0 top-full mt-1 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
           <div className="px-4 py-3 border-b border-gray-100">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
@@ -103,7 +103,7 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
             </div>
           </div>
 
-          <div className="py-1">
+          <div className="flex flex-col gap-1">
             <button
               onClick={() => handleNavigation('account')}
               className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
@@ -114,7 +114,7 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
               href={`${window.location.origin}/pricing`}
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-[calc(100%-16px)] mx-2 px-4 py-2 text-sm text-[#22C55E] hover:bg-gray-50 border border-[#22C55E] rounded-lg text-center cursor-pointer"
+              className="block w-[calc(100%-16px)] mx-2 px-4 py-2 text-sm text-[#22C55E] hover:bg-gray-50 border border-[#22C55E] rounded-lg text-center cursor-pointer mb-0"
             >
               CHOOSE PLAN
             </a>

@@ -155,21 +155,8 @@ export const WhatsNewPage = () => {
           {(!posts ||
             (posts && posts.length === 0 && statusFilter.length === 0)) &&
             fetching && (
-              <div
-                style={{
-                  position: 'absolute',
-                  left: '50%',
-                  top: '230px',
-                }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <FadeLoader height={5} width={2} radius={2} margin={-10} />
-                </div>
+              <div className="flex justify-center items-center">
+                <FadeLoader height={5} width={2} radius={2} margin={-10} />
               </div>
             )}
           <div id="WhatsNew">
@@ -183,7 +170,7 @@ export const WhatsNewPage = () => {
                       (is_public && permissions?.length === 0) ? (
                         <>
                           {' '}
-                          <div className="sad-face">
+                          <div className="flex justify-center mb-2 sad-face">
                             <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
                           </div>
                           <h3 className="no-whatsnew-header">

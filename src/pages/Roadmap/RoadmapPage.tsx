@@ -392,32 +392,20 @@ export function RoadmapPage() {
           permissions?.length === 0
         }
       />
-      {!roadmaps ||
-      (roadmaps &&
-        !roadmaps.some((roadmap) => (roadmap?.upvotes?.length ?? 0) > 0) &&
-        filterTag.length === 0 &&
-        title.length === 0) ||
+      {(!roadmaps ||
+        (roadmaps &&
+          !roadmaps.some((roadmap) => (roadmap?.upvotes?.length ?? 0) > 0) &&
+          filterTag.length === 0 &&
+          title.length === 0)) &&
       fetching ? (
-        <div
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '230px',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            <FadeLoader height={5} width={2} radius={2} margin={-10} />
-          </div>
+        <div className="flex justify-center items-center">
+          <FadeLoader height={5} width={2} radius={2} margin={-10} />
         </div>
       ) : (
         <div id="RoadmapPublicView">
-          <div className="max-w-[1200px] pt-8 px-6 columns">
-            {(!roadmaps.some((roadmap) => (roadmap.upvotes?.length ?? 0) > 0) ||
+          <div className="pt-8 px-6 columns">
+            {(roadmaps === undefined ||
+              !roadmaps.some((roadmap) => (roadmap.upvotes?.length ?? 0) > 0) ||
               (is_public && permissions?.length === 0)) &&
               !fetching && (
                 <>
@@ -425,7 +413,7 @@ export function RoadmapPage() {
                     {(filterTag.length === 0 && title.length === 0) ||
                     (is_public && permissions?.length === 0) ? (
                       <>
-                        <div className="sad-face">
+                        <div className="flex justify-center mb-2 sad-face">
                           <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
                         </div>
                         <h3 className="no-roadmap-header">
@@ -445,7 +433,8 @@ export function RoadmapPage() {
                   </div>
                 </>
               )}
-            {roadmaps.some((roadmap) => (roadmap.upvotes?.length ?? 0) > 0) &&
+            {roadmaps !== undefined &&
+              roadmaps.some((roadmap) => (roadmap.upvotes?.length ?? 0) > 0) &&
               (!is_public || (is_public && (permissions?.length ?? 0) > 0)) && (
                 <DragDropContext onDragEnd={onDragEnd}>
                   <Droppable
