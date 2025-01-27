@@ -30,7 +30,7 @@ const TextAreaInput: React.FC<TextAreaInputProps> = ({
       <textarea
         value={value}
         onChange={onChange}
-        className={`${baseClass} ${variantClass} ${className} focus:outline-none`}
+        className={`${baseClass} ${variantClass} ${className} focus:outline-none placeholder:opacity-[50%]`}
         placeholder={placeholder}
       />
       {error.length > 0 && (

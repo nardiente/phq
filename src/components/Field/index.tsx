@@ -38,7 +38,7 @@ export const Field: React.FC<FieldProps> = (props) => {
           required={props.is_required}
           placeholder={props.placeholder}
           value={props.value}
-          className={`form-input bg-white outline-none text-gray-700 ${props.class_name}`}
+          className={`form-input bg-white outline-none text-gray-700 placeholder:opacity-[50%] ${props.class_name}`}
           tabIndex={props.tab_index}
           type={inpuType}
           aria-label={!props.label ? props.name : undefined}
