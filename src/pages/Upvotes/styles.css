@@ -9,6 +9,7 @@
   flex-direction: column;
   gap: 8px;
   width: 100%;
+  justify-items: center;
 
   .upvote-each-list-container {
     align-items: flex-start;

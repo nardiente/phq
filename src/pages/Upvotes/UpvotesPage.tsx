@@ -12,15 +12,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { usePanel } from '../../contexts/PanelContext';
 import { PageHeader } from '../../components/PageHeader';
 import { UpvoteFilters } from '../../components/UpvoteFilters';
-import styled from 'styled-components';
 import { UpVoteEachList } from './components/upvote-each-list';
 import queryString from 'query-string';
 import { useWhatsNew } from '../../contexts/WhatsNewContext';
-
-const ListDiv = styled.div`
-  background-color: var(--public-view-background-color);
-  padding-top: 15px;
-`;
 
 export default function UpvotesPage() {
   const navigate = useNavigate();
@@ -231,49 +225,47 @@ export default function UpvotesPage() {
           <>
             {(ideas.length === 0 || (is_public && permissions?.length === 0)) &&
               !fetching && (
-                <ListDiv>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    paddingLeft: '30px',
+                    paddingRight: '30px',
+                  }}
+                >
                   <div
                     style={{
                       display: 'flex',
-                      justifyContent: 'center',
-                      paddingLeft: '30px',
-                      paddingRight: '30px',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      paddingTop: '10%',
                     }}
                   >
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        paddingTop: '10%',
-                      }}
-                    >
-                      <h4>
-                        {!filtering ||
-                        (is_public && permissions?.length === 0) ? (
-                          <div className="container no-upvote-background">
-                            <div className="sad-face">
-                              <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
-                            </div>
-                            <h3 className="no-upvote-header">
-                              {is_public && permissions?.length === 0
-                                ? 'This public board is no longer available. Please contact the admin.'
-                                : 'No ideas have been created… yet.'}
-                            </h3>
-                            {(!is_public ||
-                              (permissions && permissions?.length > 0)) && (
-                              <h4 className="no-upvote-sub">
-                                Now is a great time to add your first idea.
-                              </h4>
-                            )}
+                    <h4>
+                      {!filtering ||
+                      (is_public && permissions?.length === 0) ? (
+                        <div className="container no-upvote-background">
+                          <div className="flex items-center justify-center mb-2 sad-face">
+                            <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
                           </div>
-                        ) : (
-                          'Crickets and tumbleweeds. Please try again.'
-                        )}
-                      </h4>
-                    </div>
+                          <h3 className="no-upvote-header">
+                            {is_public && permissions?.length === 0
+                              ? 'This public board is no longer available. Please contact the admin.'
+                              : 'No ideas have been created… yet.'}
+                          </h3>
+                          {(!is_public ||
+                            (permissions && permissions?.length > 0)) && (
+                            <h4 className="no-upvote-sub">
+                              Now is a great time to add your first idea.
+                            </h4>
+                          )}
+                        </div>
+                      ) : (
+                        'Crickets and tumbleweeds. Please try again.'
+                      )}
+                    </h4>
                   </div>
-                </ListDiv>
+                </div>
               )}
             {ideas.length > 0 &&
               (!is_public ||
