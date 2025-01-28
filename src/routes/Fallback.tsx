@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 const Fallback = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { pathname, search } = location;
 
   const { isAuthenticated } = useUser();
 
@@ -25,11 +26,13 @@ const Fallback = () => {
     '/sign-up',
   ];
 
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+
   useEffect(() => {
-    const { pathname, search } = location;
     if (
-      ![...pathExceptions, ...onbordingPaths].includes(pathname) ||
-      (pathExceptions.includes(pathname) && search.length === 0)
+      !is_public &&
+      (![...pathExceptions, ...onbordingPaths].includes(pathname) ||
+        (pathExceptions.includes(pathname) && search.length === 0))
     ) {
       if (isAuthenticated() && pathname === '/sign-in') {
         navigate('/dashboard');
@@ -38,7 +41,7 @@ const Fallback = () => {
         navigate('/sign-in');
       }
     }
-  }, [isAuthenticated, location.pathname, navigate]);
+  }, []);
 
   return (
     <div className="h-screen flex items-center justify-center">Loading...</div>

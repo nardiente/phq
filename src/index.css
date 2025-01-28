@@ -1,6 +1,7 @@
 @import 'bulma/css/bulma.css';
 @import './react-datepicket.css';
 @import './quill.snow.css';
+@import './appearance-colors.css';
 
 @tailwind base;
 @tailwind components;
@@ -66,6 +67,34 @@
       color: #9ca3af;
     }
   }
+}
+
+.sign-in {
+  background: var(--public-view-sign-in-button-color);
+  border: 1px solid var(--public-view-sign-in-button-border-color);
+  color: var(--public-view-sign-in-button-text-color);
+  font-family: 'Satoshi-Variable';
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.sign-in:hover {
+  background: var(--public-view-sign-in-button-hover-color) !important;
+  color: var(--public-view-sign-in-button-text-hover-color);
+}
+
+.sign-up {
+  background: var(--public-view-sign-up-button-color);
+  border: 1px solid var(--public-view-sign-up-button-border-color);
+  color: var(--public-view-sign-up-button-text-color);
+  font-family: 'Satoshi-Variable';
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.sign-up:hover {
+  background: var(--public-view-sign-up-button-hover-color) !important;
+  color: var(--public-view-sign-up-button-text-hover-color);
 }
 
 @media screen and (max-width: 904px) {

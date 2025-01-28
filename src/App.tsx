@@ -67,8 +67,8 @@ const App: FC = () => {
 
       linkIconTag = document.createElement('link');
       linkIconTag.rel = 'icon';
-      linkIconTag.type = 'image/x-icon';
-      linkIconTag.href = '/static/icons/favicon.ico';
+      linkIconTag.type = 'image/svg+xml';
+      linkIconTag.href = '/favicon.ico';
       document.head.appendChild(linkIconTag);
     }
 

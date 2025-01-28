@@ -11,14 +11,8 @@ import { Header } from '../../components/Header';
 import { getKaslKey } from '../../utils/localStorage';
 import { getSessionToken } from '../../utils/localStorage';
 import { useUser } from '../../contexts/UserContext';
-import { PageType } from '../../routes/ProtectedRoute';
-import { useNavigate } from 'react-router-dom';
-import { SidebarMenu } from '../../components/layout/SidebarMenu';
-import Banner from '../../components/Banner';
 
 export const PricingPage: React.FC = () => {
-  const navigate = useNavigate();
-
   const { user } = useUser();
   const { moderation } = user ?? {};
 
@@ -110,7 +104,6 @@ export const PricingPage: React.FC = () => {
   });
   const [features, setFeatures] = useState<Feature[]>([]);
   const [tabView, setTabView] = useState<string>('monthly');
-  const [currentPage, setCurrentPage] = useState<PageType>('pricing');
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const is_logged_in =
@@ -141,13 +134,9 @@ export const PricingPage: React.FC = () => {
     });
   };
 
-  const handleNavigation = (page: PageType) => {
-    setCurrentPage(page);
-    navigate('/' + page.toString());
-  };
-
-  const pricing = (
+  return (
     <>
+      {!is_logged_in && <Header />}
       <PricingBanner
         features={features}
         plan={plan}
@@ -157,25 +146,6 @@ export const PricingPage: React.FC = () => {
       <Testimonials />
       <CompareFeatures plan={plan} tabView={tabView} setTabView={setTabView} />
       <Faqs />
-    </>
-  );
-
-  if (is_logged_in || is_public) {
-    return (
-      <div className="min-h-screen bg-[#fafafa] flex">
-        <SidebarMenu activeItem={currentPage} onNavigate={handleNavigation} />
-        <div className="flex-1">
-          <Banner onNavigate={handleNavigation} />
-          {pricing}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <Header />
-      {pricing}
     </>
   );
 };

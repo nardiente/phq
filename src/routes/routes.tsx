@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from '../pages/Login';
 import SignUpPage from '../pages/SignUp';
-import ProtectedRoute from './ProtectedRoute';
+import AppRoute from './AppRoute';
 import DashboardPage from '../pages/DashboardPage';
 import { AccountSettings } from '../pages/Settings/AccountSettings';
 import BoostPage from '../pages/BoostPage';
@@ -36,22 +36,22 @@ const AppRoutes = () => {
     <BrowserRouter>
       <Suspense fallback={<Fallback />}>
         <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/sign-in" element={<LoginPage />} />
-          <Route path="/sign-in/google" element={<SSOVerifyingPage />} />
-          <Route path="/sign-up" element={<SignUpPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/pricing" element={<PricingPage />} />
-          <Route path="/ob-board" element={<OnboardingPage />} />
-          <Route path="/ob-idea" element={<OnboardingPage />} />
-          <Route path="/ob-tags" element={<OnboardingPage />} />
-          <Route path="/ob-survey" element={<OnboardingPage />} />
-          <Route path="/ob-success" element={<OnboardingPage />} />
+          <Route element={<AppRoute />}>
+            {/* Public Routes */}
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/sign-in" element={<LoginPage />} />
+            <Route path="/sign-in/google" element={<SSOVerifyingPage />} />
+            <Route path="/sign-up" element={<SignUpPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/ob-board" element={<OnboardingPage />} />
+            <Route path="/ob-idea" element={<OnboardingPage />} />
+            <Route path="/ob-tags" element={<OnboardingPage />} />
+            <Route path="/ob-survey" element={<OnboardingPage />} />
+            <Route path="/ob-success" element={<OnboardingPage />} />
 
-          {/* Protected Route */}
-          <Route element={<ProtectedRoute />}>
+            {/* Protected Route */}
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/upvotes" element={<UpvotesPage />} />

@@ -15,6 +15,8 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -33,7 +35,7 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
 
   const handleLogout = () => {
     eraseKaslKey();
-    navigate('/sign-in');
+    navigate(is_public ? '/upvotes' : '/sign-in');
   };
 
   return (
@@ -96,9 +98,11 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
                   {user?.full_name?.substring(0, 20).trim()}
                   {(user?.full_name?.length ?? 0) > 20 ? '...' : ''}
                 </span>
-                <span className="px-2 py-0.5 text-[12px] font-medium bg-blue-50 text-blue-600 rounded w-fit">
-                  {user?.type === UserTypes.CUSTOMER ? 'Admin' : ''}
-                </span>
+                {user?.type === UserTypes.CUSTOMER && (
+                  <span className="px-2 py-0.5 text-[12px] font-medium bg-blue-50 text-blue-600 rounded w-fit">
+                    Admin
+                  </span>
+                )}
               </div>
             </div>
           </div>

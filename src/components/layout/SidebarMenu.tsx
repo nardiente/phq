@@ -24,7 +24,7 @@ import {
   Users,
   LucideIcon,
 } from 'lucide-react';
-import { PageType } from '../../routes/ProtectedRoute';
+import { PageType } from '../../routes/AppRoute';
 import { useUser } from '../../contexts/UserContext';
 import { ComingSoon } from '../ComingSoon';
 
@@ -37,6 +37,7 @@ interface MenuItem {
   id: string;
   label: string;
   icon: LucideIcon;
+  link?: string;
   badge?: ReactNode;
   disabled?: boolean;
   hidden?: boolean;
@@ -103,16 +104,26 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
     },
   ];
 
-  const bottomMenuItems = [
+  const bottomMenuItems: MenuItem[] = [
     {
       icon: BookOpen,
       label: 'Documentation',
       id: 'docs',
-      externalLink: 'https://support.producthq.io/',
+      link: 'https://support.producthq.io/',
     },
     { icon: Heart, label: 'Leave Testimonial', id: 'testimonials' },
-    { icon: ThumbsUp, label: 'Submit Feature Request', id: 'submit-feature' },
-    { icon: Map, label: 'Our Roadmap', id: 'our-roadmap' },
+    {
+      icon: ThumbsUp,
+      label: 'Submit Feature Request',
+      id: 'submit-feature',
+      link: 'https://feedback.producthq.io/upvotes',
+    },
+    {
+      icon: Map,
+      label: 'Our Roadmap',
+      id: 'our-roadmap',
+      link: 'https://feedback.producthq.io/roadmap',
+    },
   ];
 
   useEffect(() => {
@@ -123,20 +134,12 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
     );
   }, [activeItem]);
 
-  const handleNavigation = (item: any) => {
-    if (item.id === 'submit-feature') {
-      window.open('https://feedback.producthq.io/upvotes', '_blank');
+  const handleNavigation = (item: MenuItem) => {
+    if (item.link && item.link.length > 0) {
+      window.open(item.link, '_blank');
       return;
     }
-    if (item.id === 'our-roadmap') {
-      window.open('https://feedback.producthq.io/roadmap', '_blank');
-      return;
-    }
-    if (item.externalLink) {
-      window.open(item.externalLink, '_blank');
-      return;
-    }
-    onNavigate(item.id);
+    onNavigate(item.id as PageType);
   };
 
   const toggleSettings = () => {
@@ -222,7 +225,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
           </button>
         </div>
 
-        <div className="flex-1 px-3 py-4">
+        <div className="flex-1 px-3 py-4 overflow-auto">
           {showSettings && (
             <button
               onClick={toggleSettings}
@@ -277,7 +280,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
           )}
         </div>
 
-        <div className="px-3 py-4 border-t border-gray-100">
+        <div className="px-3 py-4 border-t border-gray-100 overflow-auto">
           <div className="space-y-1">
             {!showSettings && (
               <>
