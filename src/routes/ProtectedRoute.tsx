@@ -6,35 +6,7 @@ import { SidebarMenu } from '../components/layout/SidebarMenu';
 import moment from 'moment';
 import { AddYourBoardModal } from '../components/AddYourBoardModal';
 import { SidePanel } from '../components/SidePanel';
-
-export type PageType =
-  | 'home'
-  | 'settings'
-  | 'account'
-  | 'boost'
-  | 'create-boost'
-  | 'project'
-  | 'appearance'
-  | 'moderation'
-  | 'emails'
-  | 'tags'
-  | 'team'
-  | 'billing'
-  | 'import'
-  | 'dashboard'
-  | 'activity'
-  | 'mentions'
-  | 'matrix'
-  | 'widgets'
-  | 'surveys'
-  | 'testimonials'
-  | 'sign-in'
-  | 'upvotes'
-  | 'roadmap'
-  | 'docs'
-  | 'submit-feature'
-  | 'our-roadmap'
-  | 'pricing';
+import { PageType } from '../types/app';
 
 type ProtectedRouteProps = {
   redirectTo?: string;

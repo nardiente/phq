@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { DollarSign, ThumbsUp, MessageSquare, ArrowUp, Trash2, Share2 } from 'lucide-react';
+import {
+  DollarSign,
+  ThumbsUp,
+  MessageSquare,
+  ArrowUp,
+  Trash2,
+  Share2,
+} from 'lucide-react';
 
 interface Activity {
   type: 'subscription' | 'vote' | 'interaction' | 'create' | 'delete' | 'share';
@@ -9,43 +16,43 @@ interface Activity {
 
 const RecentActivities: React.FC = () => {
   const [filterType, setFilterType] = useState('All');
-  
+
   const activities: Activity[] = [
     {
       type: 'subscription',
       title: 'Subscribed to Growth $199',
-      date: 'May 28, 2023'
+      date: 'May 28, 2023',
     },
     {
       type: 'vote',
       title: 'Voted on an Idea',
-      date: 'May 28, 2023'
+      date: 'May 28, 2023',
     },
     {
       type: 'interaction',
       title: 'Interaction - clicked smiley emoji on post.',
-      date: 'May 28, 2023'
+      date: 'May 28, 2023',
     },
     {
       type: 'create',
       title: 'Created an Idea',
-      date: 'May 28, 2023'
+      date: 'May 28, 2023',
     },
     {
       type: 'delete',
       title: 'Deleted an Idea',
-      date: 'May 28, 2023'
+      date: 'May 28, 2023',
     },
     {
       type: 'interaction',
       title: 'Interaction - shared a post.',
-      date: 'May 28, 2023'
+      date: 'May 28, 2023',
     },
     {
       type: 'delete',
       title: 'Deleted an Idea',
-      date: 'May 28, 2023'
-    }
+      date: 'May 28, 2023',
+    },
   ];
 
   const getIcon = (type: string) => {
@@ -94,7 +101,7 @@ const RecentActivities: React.FC = () => {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold">Recent activities</h2>
           <div className="relative">
-            <select 
+            <select
               className="appearance-none bg-white border border-gray-300 rounded-md px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-300"
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
@@ -107,8 +114,18 @@ const RecentActivities: React.FC = () => {
               <option>Charges</option>
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              <svg
+                className="w-4 h-4 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </div>
           </div>

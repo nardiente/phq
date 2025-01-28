@@ -9,7 +9,7 @@
     "Last seen": "2024-07-27",
     "Status": "Active",
     "Date of Birth": "1990-05-15",
-    "Lifetime Spend": 150.00,
+    "Lifetime Spend": 150.0,
     "Role": "User",
     "Job Title": "Engineer",
     "Data attribute": "A"
@@ -39,7 +39,7 @@
     "Last seen": "2024-07-26",
     "Status": "",
     "Date of Birth": "",
-    "Lifetime Spend": 50.00,
+    "Lifetime Spend": 50.0,
     "Role": "User",
     "Job Title": "",
     "Data attribute": ""
@@ -54,7 +54,7 @@
     "Last seen": "2024-07-27",
     "Status": "Active",
     "Date of Birth": "1992-03-20",
-    "Lifetime Spend": 300.00,
+    "Lifetime Spend": 300.0,
     "Role": "Admin",
     "Job Title": "Manager",
     "Data attribute": "A"
@@ -69,7 +69,7 @@
     "Last seen": "",
     "Status": "Inactive",
     "Date of Birth": "1985-08-05",
-    "Lifetime Spend": 75.00,
+    "Lifetime Spend": 75.0,
     "Role": "User",
     "Job Title": "Developer",
     "Data attribute": ""
@@ -99,7 +99,7 @@
     "Last seen": "2024-07-27",
     "Status": "Active",
     "Date of Birth": "1987-04-12",
-    "Lifetime Spend": 450.00,
+    "Lifetime Spend": 450.0,
     "Role": "Admin",
     "Job Title": "Director",
     "Data attribute": "A"
@@ -114,7 +114,7 @@
     "Last seen": "",
     "Status": "",
     "Date of Birth": "1993-09-25",
-    "Lifetime Spend": 100.00,
+    "Lifetime Spend": 100.0,
     "Role": "User",
     "Job Title": "",
     "Data attribute": "B"
@@ -144,7 +144,7 @@
     "Last seen": "2024-07-27",
     "Status": "Active",
     "Date of Birth": "1989-02-08",
-    "Lifetime Spend": 600.00,
+    "Lifetime Spend": 600.0,
     "Role": "Admin",
     "Job Title": "CEO",
     "Data attribute": "A"
@@ -159,7 +159,7 @@
     "Last seen": "",
     "Status": "",
     "Date of Birth": "1994-07-14",
-    "Lifetime Spend": 25.00,
+    "Lifetime Spend": 25.0,
     "Role": "User",
     "Job Title": "",
     "Data attribute": "C"
@@ -189,7 +189,7 @@
     "Last seen": "2024-07-27",
     "Status": "Active",
     "Date of Birth": "1993-10-22",
-    "Lifetime Spend": 750.00,
+    "Lifetime Spend": 750.0,
     "Role": "Admin",
     "Job Title": "CTO",
     "Data attribute": "A"
@@ -204,7 +204,7 @@
     "Last seen": "",
     "Status": "",
     "Date of Birth": "1990-01-17",
-    "Lifetime Spend": 125.00,
+    "Lifetime Spend": 125.0,
     "Role": "User",
     "Job Title": "",
     "Data attribute": ""
@@ -234,7 +234,7 @@
     "Last seen": "2024-07-27",
     "Status": "Active",
     "Date of Birth": "1995-08-11",
-    "Lifetime Spend": 900.00,
+    "Lifetime Spend": 900.0,
     "Role": "Admin",
     "Job Title": "Director",
     "Data attribute": "A"
@@ -249,7 +249,7 @@
     "Last seen": "",
     "Status": "Inactive",
     "Date of Birth": "1992-03-24",
-    "Lifetime Spend": 50.00,
+    "Lifetime Spend": 50.0,
     "Role": "User",
     "Job Title": "",
     "Data attribute": "B"
@@ -279,7 +279,7 @@
     "Last seen": "2024-07-27",
     "Status": "Active",
     "Date of Birth": "1991-09-16",
-    "Lifetime Spend": 1200.00,
+    "Lifetime Spend": 1200.0,
     "Role": "Admin",
     "Job Title": "COO",
     "Data attribute": "A"
@@ -294,7 +294,7 @@
     "Last seen": "",
     "Status": "",
     "Date of Birth": "1994-04-30",
-    "Lifetime Spend": 75.00,
+    "Lifetime Spend": 75.0,
     "Role": "User",
     "Job Title": "",
     "Data attribute": "C"

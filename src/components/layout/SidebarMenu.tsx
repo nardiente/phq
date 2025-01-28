@@ -24,7 +24,7 @@ import {
   Users,
   LucideIcon,
 } from 'lucide-react';
-import { PageType } from '../../routes/AppRoute';
+import { PageType } from '../../types/app';
 import { useUser } from '../../contexts/UserContext';
 import { ComingSoon } from '../ComingSoon';
 

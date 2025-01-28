@@ -1,16 +1,30 @@
-import { Info } from 'lucide-react'
+import { Info } from 'lucide-react';
 
 const TableHeader = () => {
   return (
     <thead>
       <tr className="border-b">
-        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">#</th>
-        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">Idea Name</th>
-        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">Status</th>
-        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">Estimated</th>
-        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">Reach</th>
-        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">Impact</th>
-        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">Confidence</th>
+        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">
+          #
+        </th>
+        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">
+          Idea Name
+        </th>
+        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">
+          Status
+        </th>
+        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">
+          Estimated
+        </th>
+        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">
+          Reach
+        </th>
+        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">
+          Impact
+        </th>
+        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">
+          Confidence
+        </th>
         <th className="py-4 px-6 text-left text-sm font-medium text-gray-500 flex items-center gap-1">
           Effort
           <div className="group relative">
@@ -20,10 +34,12 @@ const TableHeader = () => {
             </div>
           </div>
         </th>
-        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">Score</th>
+        <th className="py-4 px-6 text-left text-sm font-medium text-gray-500">
+          Score
+        </th>
       </tr>
     </thead>
-  )
-}
+  );
+};
 
-export default TableHeader
+export default TableHeader;

@@ -15,7 +15,10 @@
     "id": "2",
     "name": "Recent Signups",
     "filters": {
-      "Signed Up": { "operator": "is greater than", "filterValue": "2024-01-01" }
+      "Signed Up": {
+        "operator": "is greater than",
+        "filterValue": "2024-01-01"
+      }
     },
     "selectedAttributes": {
       "Full Name": true,

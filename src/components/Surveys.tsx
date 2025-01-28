@@ -8,25 +8,30 @@ interface Survey {
 const Surveys: React.FC = () => {
   const surveys: Survey[] = [
     {
-      title: "Design satisfaction survey",
-      description: "Understand user satisfaction of new designs to keep iterating and improving"
+      title: 'Design satisfaction survey',
+      description:
+        'Understand user satisfaction of new designs to keep iterating and improving',
     },
     {
-      title: "Net Promoter Score® (NPS®) survey",
-      description: "Measure long-term loyalty and happiness the tried-and-tested way"
+      title: 'Net Promoter Score® (NPS®) survey',
+      description:
+        'Measure long-term loyalty and happiness the tried-and-tested way',
     },
     {
-      title: "Feedback categorization survey",
-      description: "Get categorized responses by prompting users to report issues, share their ideas, and more"
+      title: 'Feedback categorization survey',
+      description:
+        'Get categorized responses by prompting users to report issues, share their ideas, and more',
     },
     {
-      title: "Product discovery survey",
-      description: "Dig deep into how customers use your product and find innovative ways to improve it"
+      title: 'Product discovery survey',
+      description:
+        'Dig deep into how customers use your product and find innovative ways to improve it',
     },
     {
-      title: "Beta feedback survey",
-      description: "Gather feedback before you launch your product with this survey for beta users"
-    }
+      title: 'Beta feedback survey',
+      description:
+        'Gather feedback before you launch your product with this survey for beta users',
+    },
   ];
 
   return (

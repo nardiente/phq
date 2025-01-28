@@ -27,8 +27,12 @@ const Interviews: React.FC = () => {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-6">Interviews</h2>
         <div className="bg-gray-50 rounded-lg p-12 text-center">
-          <p className="text-lg text-gray-600">Interview content coming soon...</p>
-          <p className="text-sm text-gray-500 mt-2">This section is under development</p>
+          <p className="text-lg text-gray-600">
+            Interview content coming soon...
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            This section is under development
+          </p>
         </div>
       </div>
     </div>

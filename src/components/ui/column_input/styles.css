@@ -7,7 +7,9 @@
   height: 48px;
 
   background: #ffffff;
-  box-shadow: 0px 20px 13px rgba(0, 0, 0, 0.03), 0px 8px 5px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0px 20px 13px rgba(0, 0, 0, 0.03),
+    0px 8px 5px rgba(0, 0, 0, 0.08);
   border-radius: 4px;
 
   padding: 4px 8px;
@@ -41,7 +43,7 @@
     }
 
     button {
-      background: #D6BFF3;
+      background: #d6bff3;
       border: none;
       border-radius: 6px;
 

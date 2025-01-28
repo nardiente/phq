@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { X } from "lucide-react";
+import React, { useState } from 'react';
+import { X } from 'lucide-react';
 
 interface SaveSegmentModalProps {
   isOpen: boolean;
@@ -12,9 +12,9 @@ const SaveSegmentModal: React.FC<SaveSegmentModalProps> = ({
   isOpen,
   onClose,
   onSave,
-  title = "Save Segment",
+  title = 'Save Segment',
 }) => {
-  const [segmentName, setSegmentName] = useState("");
+  const [segmentName, setSegmentName] = useState('');
 
   if (!isOpen) return null;
 
@@ -23,7 +23,7 @@ const SaveSegmentModal: React.FC<SaveSegmentModalProps> = ({
       if (onSave) {
         onSave(segmentName);
       }
-      setSegmentName("");
+      setSegmentName('');
       onClose();
     }
   };

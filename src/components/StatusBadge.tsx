@@ -19,8 +19,13 @@ const StatusBadge = ({ status }: StatusBadgeProps) => {
   };
 
   return (
-    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${getStatusColor()}`}>
-      <span className="w-1.5 h-1.5 rounded-full mr-1.5" style={{ backgroundColor: 'currentColor' }}></span>
+    <span
+      className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${getStatusColor()}`}
+    >
+      <span
+        className="w-1.5 h-1.5 rounded-full mr-1.5"
+        style={{ backgroundColor: 'currentColor' }}
+      ></span>
       {status}
     </span>
   );

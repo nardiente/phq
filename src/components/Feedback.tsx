@@ -39,7 +39,8 @@ const Feedback: React.FC = () => {
               </span>
             </div>
             <p className="text-gray-700">
-              "The new dashboard layout is much more intuitive. I can find everything I need quickly now."
+              "The new dashboard layout is much more intuitive. I can find
+              everything I need quickly now."
             </p>
           </div>
 
@@ -54,7 +55,8 @@ const Feedback: React.FC = () => {
               </span>
             </div>
             <p className="text-gray-700">
-              "Would love to see more customization options for the reports section."
+              "Would love to see more customization options for the reports
+              section."
             </p>
           </div>
 
@@ -69,7 +71,8 @@ const Feedback: React.FC = () => {
               </span>
             </div>
             <p className="text-gray-700">
-              "The contrast in the dark mode could be improved for better readability."
+              "The contrast in the dark mode could be improved for better
+              readability."
             </p>
           </div>
         </div>

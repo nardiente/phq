@@ -7,39 +7,7 @@ import moment from 'moment';
 import { AddYourBoardModal } from '../components/AddYourBoardModal';
 import { SidePanel } from '../components/SidePanel';
 import Footer from '../components/Footer';
-
-export type PageType =
-  | 'home'
-  | 'settings'
-  | 'account'
-  | 'boost'
-  | 'create-boost'
-  | 'project'
-  | 'appearance'
-  | 'moderation'
-  | 'emails'
-  | 'tags'
-  | 'team'
-  | 'billing'
-  | 'import'
-  | 'dashboard'
-  | 'activity'
-  | 'mentions'
-  | 'matrix'
-  | 'widgets'
-  | 'surveys'
-  | 'testimonials'
-  | 'sign-in'
-  | 'upvotes'
-  | 'roadmap'
-  | 'docs'
-  | 'submit-feature'
-  | 'our-roadmap'
-  | 'pricing'
-  | 'posts'
-  | 'segments'
-  | 'profiles'
-  | 'prioritization';
+import { PageType } from '../types/app';
 
 const AppRoute = () => {
   const navigate = useNavigate();
