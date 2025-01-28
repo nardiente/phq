@@ -51,7 +51,9 @@ jobs:
 
       - name: Copy build files to EC2 instance
         run: |
-          scp -o StrictHostKeyChecking=no -i ${{ secrets.AWS_EC2_KEY }} -r ./dist ${{ vars.AWS_EC2_USER }}@${{ vars.AWS_EC2_INSTANCE_IP_UAT }}:/home/nino/uat/productfeedback-skywalk/dist
+          touch id_rsa
+          echo ${{ secrets.AWS_EC2_KEY }} >> id_rsa
+          scp -o StrictHostKeyChecking=no -i id_rsa -r ./dist ${{ vars.AWS_EC2_USER }}@${{ vars.AWS_EC2_INSTANCE_IP_UAT }}:/home/nino/uat/productfeedback-skywalk/dist
         env:
           EC2_KEY: ${{ secrets.AWS_EC2_KEY }}
           EC2_INSTANCE_IP: ${{ vars.AWS_EC2_INSTANCE_IP_UAT }}
