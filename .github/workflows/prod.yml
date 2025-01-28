@@ -53,7 +53,9 @@ jobs:
         run: |
           touch id_rsa
           echo ${{ secrets.AWS_EC2_KEY }} >> id_rsa
-          scp -o StrictHostKeyChecking=no -i id_rsa -r ./dist ${{ vars.AWS_EC2_USER }}@${{ vars.AWS_EC2_INSTANCE_IP_PROD }}:/home/nino/uat/productfeedback-skywalk/dist
+          chmod 600 id_rsa
+          scp -o StrictHostKeyChecking=no -i id_rsa -r ./dist ${{ vars.AWS_EC2_USER }}@${{ vars.AWS_EC2_INSTANCE_IP_PROD }}:/home/nino/uat/productfeedback-skywalk/dist || { echo 'SCP failed'; exit 1; }
+          rm id_rsa
         env:
           EC2_KEY: ${{ secrets.AWS_EC2_KEY }}
           EC2_INSTANCE_IP: ${{ vars.AWS_EC2_INSTANCE_IP_PROD }}
