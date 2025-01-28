@@ -56,7 +56,7 @@ jobs:
         run: |
           touch id_rsa
           echo ${{ secrets.AWS_EC2_KEY }} >> id_rsa
-          ssh -o StrictHostKeyChecking=no -i id_rsa ${{ vars.AWS_EC2_USER }}@${{ vars.AWS_EC2_INSTANCE_IP_PROD }} "aws s3 cp s3://${{ vars.AWS_S3_BUCKET_PROD }} /home/nino/uat/productfeedback-skywalk/dist --recursive"
+          scp -o StrictHostKeyChecking=no -i /id_rsa -r ./dist/* ${{ vars.AWS_EC2_USER }}@${{ vars.AWS_EC2_INSTANCE_IP_PROD }}:/home/nino/uat/productfeedback-skywalk/dist/
         env:
           EC2_KEY: ${{ secrets.AWS_EC2_KEY }}
           EC2_INSTANCE_IP: ${{ vars.AWS_EC2_INSTANCE_IP_PROD }}
