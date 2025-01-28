@@ -49,6 +49,14 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+      - name: Set up system type local environment variable for public
+        run: |
+          echo VITE_SYSTEM_TYPE=${{vars.SYSTEM_TYPE_PUBLIC}} >> .env.local
+          echo VITE_ADMIN_HOST=${{vars.ADMIN_HOST_UAT}} >> .env.local
+
+      - name: Build project for public
+        run: npm run build
+
       - name: Install SSH
         run: sudo apt-get update && sudo apt-get install -y openssh-client
 
@@ -64,7 +72,7 @@ jobs:
       - name: Copy build files to EC2 instance
         run: |
           touch id_rsa
-          echo "${{ secrets.AWS_EC2_KEY }}"" >> id_rsa
+          echo "${{ secrets.AWS_EC2_KEY }}" >> id_rsa
           chmod 600 id_rsa
           scp -o StrictHostKeyChecking=no -i id_rsa -r ./dist/* ${{ vars.AWS_EC2_USER }}@${{ vars.AWS_EC2_INSTANCE_IP_UAT }}:/home/nino/uat/productfeedback-skywalk/dist/
         env:
