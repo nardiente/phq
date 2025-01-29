@@ -1,0 +1,1115 @@
+.custom-container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  @media only screen and (min-width: 992px) {
+    max-width: 960px;
+  }
+  @media only screen and (min-width: 1200px) {
+    max-width: 1110px;
+  }
+  @media only screen and (min-width: 1400px) {
+    max-width: 1280px;
+  }
+  @media only screen and (min-width: 1600px) {
+    max-width: 1380px;
+  }
+  @media only screen and (max-width: 991px) {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  @media only screen and (max-width: 767px) {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+.solidBtn {
+  background-color: #ff6b3d;
+  padding: 15px 21px;
+  color: #fff;
+  display: inline-block;
+  border-radius: 5px;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.13);
+  border: none;
+  @media only screen and (max-width: 767px) {
+    font-size: 14px;
+    line-height: 18px;
+    padding: 14px 18px;
+  }
+  &:hover {
+    background-color: #5a00cd;
+    color: #fff;
+  }
+}
+
+/* Header */
+.landingHeader {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  @media only screen and (max-width: 991px) {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  a {
+    display: inline-flex;
+    img {
+      max-width: 152px;
+    }
+  }
+}
+
+/* Hero Section */
+.freeTrialHeroSection {
+  background-image: url(https://producthq.io/wp-content/uploads/2024/10/Rectangle-5184.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding-top: 140px;
+  padding-bottom: 180px;
+  position: relative;
+  @media only screen and (max-width: 1399px) {
+    padding-top: 120px;
+    padding-bottom: 120px;
+  }
+  @media only screen and (max-width: 1199px) {
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
+  @media only screen and (max-width: 767px) {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+  @media only screen and (max-width: 575px) {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+  &:before {
+    content: '';
+    background-image: url(../../../static/images/freeTrialHeroBefore.png);
+    position: absolute;
+    width: 103px;
+    height: 340px;
+    background-size: contain;
+    top: 25px;
+    left: 0;
+    @media only screen and (max-width: 1199px) {
+      display: none;
+    }
+  }
+  &:after {
+    content: '';
+    background-image: url(../../../static/images/freeTrialHeroAfter.png);
+    position: absolute;
+    width: 113px;
+    height: 373px;
+    background-size: contain;
+    top: 20%;
+    right: 0;
+    @media only screen and (max-width: 1199px) {
+      display: none;
+    }
+  }
+  .heroText {
+    text-align: center;
+    h1 {
+      margin-left: auto;
+      margin-right: auto;
+      letter-spacing: -0.03em;
+      font-size: 50px;
+      line-height: 55px;
+      @media only screen and (max-width: 1399px) {
+        font-size: 42px;
+        line-height: 52px;
+      }
+      @media only screen and (max-width: 991px) {
+        font-size: 36px;
+        line-height: 42px;
+      }
+      @media only screen and (max-width: 767px) {
+        font-size: 32px;
+        line-height: 38px;
+      }
+      @media only screen and (max-width: 575px) {
+        font-size: 28px;
+        line-height: 32px;
+      }
+      br {
+        @media only screen and (max-width: 575px) {
+          display: none;
+        }
+      }
+    }
+    p {
+      max-width: 806px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 20px;
+      @media only screen and (max-width: 575px) {
+        margin-top: 15px;
+      }
+    }
+    .solidBtn {
+      margin-top: 35px;
+      @media only screen and (max-width: 767px) {
+        margin-top: 20px;
+      }
+    }
+  }
+}
+
+/* Features */
+.freeTrialFeatures {
+  padding-top: 30px;
+  .wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    @media only screen and (max-width: 991px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media only screen and (max-width: 767px) {
+      grid-template-columns: repeat(1, 1fr);
+    }
+    .iconTextItem {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding-top: 30px;
+      padding-bottom: 30px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      column-gap: 10px;
+      justify-content: center;
+      @media only screen and (max-width: 1399px) {
+        padding-top: 24px;
+        padding-bottom: 24px;
+      }
+      @media only screen and (max-width: 767px) {
+        padding-top: 18px;
+        padding-bottom: 18px;
+      }
+      .text {
+        color: #000000;
+        font-size: 16px;
+        line-height: 20px;
+        font-weight: 600;
+        letter-spacing: -0.34px;
+      }
+    }
+  }
+}
+
+/* Video */
+.freeTrialVideo {
+  padding-top: 75px;
+  @media only screen and (max-width: 1399px) {
+    padding-top: 60px;
+  }
+  @media only screen and (max-width: 991px) {
+    padding-top: 50px;
+  }
+  @media only screen and (max-width: 767px) {
+    padding-top: 40px;
+  }
+  .videoBox {
+    max-width: 1064px;
+    margin: 0 auto;
+    position: relative;
+    background: #ffffff;
+    border: 5px solid #f9f5fd;
+    border-radius: 30px;
+    overflow: hidden;
+    .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      width: 102px;
+      height: 102px;
+      border-radius: 50%;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
+      background: #f9f5fd;
+      border: 1.5px solid rgba(90, 0, 205, 0.07);
+      @media only screen and (max-width: 1399px) {
+        width: 92px;
+        height: 92px;
+      }
+      @media only screen and (max-width: 1199px) {
+        width: 72px;
+        height: 72px;
+      }
+      @media only screen and (max-width: 991px) {
+        width: 60px;
+        height: 60px;
+      }
+      @media only screen and (max-width: 767px) {
+        width: 36px;
+        height: 36px;
+      }
+      &:hover {
+        border: 3px solid rgba(90, 0, 205, 0.07);
+      }
+      img {
+        transform: translateX(4px);
+        @media only screen and (max-width: 1199px) {
+          max-width: 16px;
+        }
+        @media only screen and (max-width: 767px) {
+          max-width: 10px;
+        }
+      }
+    }
+  }
+  .buttonBox {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+  }
+}
+
+/* Image Text Section */
+.imageTextBlocksSection {
+  padding-top: 75px;
+  @media only screen and (max-width: 1199px) {
+    padding-top: 60px;
+  }
+  @media only screen and (max-width: 767px) {
+    padding-top: 50px;
+  }
+  .wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 80px;
+    padding-top: 65px;
+    @media only screen and (max-width: 1199px) {
+      row-gap: 70px;
+      padding-top: 50px;
+    }
+    @media only screen and (max-width: 1199px) {
+      row-gap: 60px;
+      padding-top: 40px;
+    }
+    .imageTextItemBlock {
+      width: 100%;
+      position: relative;
+      .imageTextItemWrapper {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        .textBlock {
+          width: 516px;
+          @media only screen and (max-width: 1399px) {
+            width: 486px;
+          }
+          @media only screen and (max-width: 1199px) {
+            width: 406px;
+          }
+          @media only screen and (max-width: 991px) {
+            width: 100%;
+            order: 2;
+            padding-top: 20px;
+          }
+          h2 {
+            font-size: 40px;
+            line-height: 54px;
+            @media only screen and (max-width: 1399px) {
+              font-size: 36px;
+              line-height: 48px;
+            }
+            @media only screen and (max-width: 1199px) {
+              font-size: 32px;
+              line-height: 42px;
+            }
+            @media only screen and (max-width: 575px) {
+              font-size: 28px;
+              line-height: 36px;
+            }
+          }
+          ul {
+            margin-top: 20px;
+            li {
+              display: flex;
+              margin-bottom: 16px;
+              @media only screen and (max-width: 1199px) {
+                margin-bottom: 10px;
+              }
+              .icon {
+                display: flex;
+                width: 24px;
+                height: 24px;
+                transform: translateY(3px);
+                @media only screen and (max-width: 1199px) {
+                  width: 20px;
+                  height: 20px;
+                }
+                img {
+                  width: 16px;
+                  @media only screen and (max-width: 1199px) {
+                    width: 12px;
+                  }
+                }
+              }
+              .text {
+                padding-left: 16px;
+                font-size: 18px;
+                line-height: 30px;
+                color: #09041a;
+                width: calc(100% - 24px);
+                font-family: 'Satoshi-Variable';
+                @media only screen and (max-width: 1199px) {
+                  width: calc(100% - 20px);
+                  font-size: 16px;
+                  line-height: 24px;
+                }
+              }
+            }
+          }
+        }
+        .imageBlock {
+          width: calc(100% - 516px);
+          @media only screen and (max-width: 1399px) {
+            width: calc(100% - 486px);
+          }
+          @media only screen and (max-width: 1199px) {
+            width: calc(100% - 406px);
+          }
+          @media only screen and (max-width: 991px) {
+            width: 100%;
+            order: 1;
+          }
+          img {
+            width: 100%;
+          }
+        }
+      }
+      &:nth-child(odd) {
+        &:before {
+          content: '';
+          position: absolute;
+          background-image: url(../../../static/images/imageTextOddbefore.png);
+          width: 107px;
+          height: 401px;
+          background-repeat: no-repeat;
+          background-size: contain;
+          position: absolute;
+          top: -60px;
+          right: 0;
+          @media only screen and (max-width: 1399px) {
+            width: 100px;
+            height: 370px;
+          }
+          @media only screen and (max-width: 1199px) {
+            display: none;
+          }
+        }
+        .textBlock {
+          padding-right: 68px;
+          @media only screen and (max-width: 1199px) {
+            padding-right: 40px;
+          }
+          @media only screen and (max-width: 991px) {
+            padding-right: 0;
+          }
+        }
+      }
+      &:nth-child(even) {
+        &:before {
+          content: '';
+          position: absolute;
+          background-image: url(../../../static/images/imageTextEvenbefore.png);
+          width: 132px;
+          height: 490px;
+          background-repeat: no-repeat;
+          background-size: contain;
+          position: absolute;
+          top: -60px;
+          left: 0;
+          @media only screen and (max-width: 1399px) {
+            width: 100px;
+            height: 370px;
+          }
+          @media only screen and (max-width: 1199px) {
+            display: none;
+          }
+        }
+        .textBlock {
+          padding-left: 68px;
+          order: 2;
+          @media only screen and (max-width: 1199px) {
+            padding-left: 40px;
+          }
+          @media only screen and (max-width: 991px) {
+            padding-left: 0;
+            order: 2;
+          }
+        }
+        .imageBlock {
+          order: 1;
+        }
+      }
+      .buttonBlock {
+        margin-top: 40px;
+        @media only screen and (max-width: 1199px) {
+          margin-top: 25px;
+        }
+      }
+    }
+  }
+  .sectionTitle {
+    text-align: center;
+    h2 {
+      font-size: 40px;
+      line-height: 52px;
+      @media only screen and (max-width: 1399px) {
+        font-size: 36px;
+        line-height: 48px;
+      }
+      @media only screen and (max-width: 767px) {
+        font-size: 32px;
+        line-height: 42px;
+      }
+      @media only screen and (max-width: 575px) {
+        font-size: 28px;
+        line-height: 36px;
+      }
+      br {
+        @media only screen and (max-width: 575px) {
+          display: none;
+        }
+      }
+    }
+    p {
+      margin-top: 20px;
+      @media only screen and (max-width: 1199px) {
+        margin-top: 10px;
+      }
+      br {
+        @media only screen and (max-width: 575px) {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+/* Testimonials */
+.FreeTrialTestimonialsWarpper {
+  padding-top: 60px;
+  padding-bottom: 60px;
+  background: linear-gradient(
+    83.94deg,
+    #ac80e6 -6.41%,
+    #8300e5 44.9%,
+    #3636b2 96.21%
+  );
+  @media only screen and (max-width: 1199px) {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+  @media only screen and (max-width: 991px) {
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+  @media only screen and (max-width: 767px) {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  .sectionTitle {
+    text-align: center;
+    h2 {
+      color: #fff;
+      font-size: 40px;
+      line-height: 42px;
+      margin-bottom: 60px;
+      @media only screen and (max-width: 1399px) {
+        font-size: 36px;
+        line-height: 48px;
+        margin-bottom: 50px;
+      }
+      @media only screen and (max-width: 767px) {
+        font-size: 32px;
+        line-height: 42px;
+        margin-bottom: 40px;
+      }
+      @media only screen and (max-width: 575px) {
+        font-size: 28px;
+        line-height: 36px;
+      }
+    }
+  }
+  .testimonialsWarpper {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 24px;
+    @media only screen and (max-width: 1199px) {
+      row-gap: 16px;
+    }
+    .testItem {
+      width: 33.3333%;
+      padding-left: 12px;
+      padding-right: 12px;
+      @media only screen and (max-width: 1199px) {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+      @media only screen and (max-width: 991px) {
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+      }
+      .testBlock {
+        border: 1px solid #e5e7eb;
+        border-radius: 15px;
+        padding: 45px 28px;
+        height: 100%;
+        background-color: #fff;
+        @media only screen and (max-width: 1399px) {
+          padding: 35px 20px;
+        }
+        @media only screen and (max-width: 1199px) {
+          padding: 28px 18px;
+        }
+        .titleBlock {
+          padding-bottom: 20px;
+          margin-bottom: 20px;
+          border-bottom: 1px solid #e5e7eb;
+          h5 {
+            color: #110733;
+            font-size: 18px;
+            line-height: 24px;
+            display: flex;
+            align-items: center;
+            span {
+              font-weight: 400;
+              color: #ededed;
+              margin-left: 5px;
+              margin-right: 5px;
+            }
+          }
+          h6 {
+            color: #110733;
+            font-size: 16px;
+            line-height: 22px;
+            font-weight: 400;
+            margin-top: 10px;
+            @media only screen and (max-width: 1199px) {
+              font-size: 16px;
+              line-height: 18px;
+            }
+          }
+        }
+        .contentBlock {
+          p {
+            font-size: 18px;
+            line-height: 30px;
+            font-weight: 400;
+            @media only screen and (max-width: 1399px) {
+              font-size: 16px;
+              line-height: 24px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Pricing Plans */
+.pricingPlans {
+  padding-top: 75px;
+  padding-bottom: 75px;
+  @media only screen and (max-width: 1199px) {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+  @media only screen and (max-width: 767px) {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  .bannerContent {
+    text-align: center;
+    h2 {
+      font-size: 40px;
+      line-height: 42px;
+      @media only screen and (max-width: 1399px) {
+        font-size: 36px;
+        line-height: 48px;
+      }
+      @media only screen and (max-width: 767px) {
+        font-size: 32px;
+        line-height: 42px;
+      }
+      @media only screen and (max-width: 575px) {
+        font-size: 28px;
+        line-height: 36px;
+      }
+    }
+    p {
+      margin-top: 20px;
+      line-height: 36px;
+      @media only screen and (max-width: 1199px) {
+        margin-top: 16px;
+        line-height: 26px;
+      }
+      @media only screen and (max-width: 1199px) {
+        margin-top: 8px;
+        line-height: 20px;
+      }
+    }
+  }
+  .pricingTabs {
+    .priceTabsNav {
+      ul {
+        display: flex;
+        justify-content: center;
+        column-gap: 15px;
+        margin-top: 50px;
+        margin-bottom: 45px;
+        @media only screen and (max-width: 1199px) {
+          margin-top: 40px;
+          margin-bottom: 35px;
+        }
+        li {
+          button {
+            color: #110733;
+            font-size: 16px;
+            line-height: 20px;
+            letter-spacing: -0.34px;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            span {
+              background-color: #129800;
+              color: #fff;
+              border-radius: 5px;
+              padding: 1px 10px;
+              margin-left: 8px;
+              letter-spacing: -0.34px;
+            }
+          }
+        }
+      }
+    }
+    .pricesBlocksWrapper {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+      @media only screen and (max-width: 991px) {
+        justify-content: center;
+        row-gap: 16px;
+      }
+      .priceItem {
+        width: 33.3333%;
+        padding-left: 12px;
+        padding-right: 12px;
+        @media only screen and (max-width: 1199px) {
+          padding-left: 8px;
+          padding-right: 8px;
+        }
+        @media only screen and (max-width: 991px) {
+          width: 50%;
+        }
+        @media only screen and (max-width: 767px) {
+          width: 100%;
+          padding-left: 0;
+          padding-right: 0;
+        }
+        .priceBlock {
+          border: 1px solid #e5e7eb;
+          border-radius: 15px;
+          overflow: hidden;
+          background-color: #fff;
+          .offerText {
+            background: linear-gradient(
+              96.86deg,
+              #96adfe 0.67%,
+              #aa6edf 48.57%,
+              #f35e96 72.53%,
+              #ffb976 84.5%,
+              #ffeee9 96.48%
+            );
+            text-align: center;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            span {
+              color: #fff;
+              text-transform: uppercase;
+              font-size: 14px;
+              line-height: 30px;
+              font-weight: 900;
+              font-family: 'Satoshi-Variable';
+            }
+          }
+          .contentText {
+            padding: 20px 30px;
+            @media only screen and (max-width: 1199px) {
+              padding: 20px;
+            }
+            h6 {
+              display: flex;
+              align-items: center;
+              column-gap: 5px;
+              font-size: 24px;
+              line-height: 24px;
+              color: #09041a;
+              font-weight: 600;
+              margin-bottom: 12px;
+              @media only screen and (max-width: 1199px) {
+                font-size: 20px;
+                line-height: 20px;
+              }
+            }
+            p {
+              font-size: 16px;
+              line-height: 28px;
+              color: #0e0426;
+              font-weight: 400;
+            }
+            h4 {
+              font-size: 35px;
+              line-height: 35px;
+              font-family: 'Satoshi-Variable';
+              font-weight: 700;
+              color: #110733;
+              margin-top: 20px;
+              @media only screen and (max-width: 1199px) {
+                font-size: 30px;
+                line-height: 30px;
+              }
+              span {
+                font-size: 18px;
+                line-height: 30px;
+                font-weight: 500;
+                font-family: 'Satoshi-Variable';
+                color: #6b7280;
+                @media only screen and (max-width: 1199px) {
+                  font-size: 16px;
+                  line-height: 24px;
+                }
+              }
+              .extra {
+                color: #c23f6d;
+              }
+            }
+            .btn-block {
+              border-top: 1px solid #e5e7eb;
+              margin-top: 15px;
+              button {
+                display: block;
+                width: 100%;
+                text-align: center;
+                background-color: #5a00cd;
+                box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.13);
+                border-radius: 5px;
+                color: #fff;
+                font-size: 16px;
+                line-height: 20px;
+                font-weight: 500;
+                letter-spacing: -0.34px;
+                padding: 15px 0;
+                font-family: 'Satoshi-Variable';
+                margin-top: 20px;
+                &:hover {
+                  background-color: rgb(255, 107, 61);
+                }
+              }
+            }
+          }
+        }
+        &:nth-child(2) {
+          .priceBlock {
+            border: 2px solid #5a00cd;
+            h4 {
+              color: #5a00cd;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.pricingPlans .pricingTabs .priceTabsNav ul li.active button,
+.pricingPlans .pricingTabs .priceTabsNav ul li:not(.active) button:hover {
+  background-color: #ebdff9;
+  color: #5a00cd;
+}
+
+/* Free Trial CTA */
+.freeTrialBottomCta {
+  background-color: #f7f3fd;
+  padding-top: 75px;
+  padding-bottom: 75px;
+  position: relative;
+  @media only screen and (max-width: 1199px) {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+  @media only screen and (max-width: 767px) {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  &:before {
+    content: '';
+    background-image: url(../../../static/images/free-cta-before.png);
+    position: absolute;
+    width: 419px;
+    height: 287px;
+    background-size: contain;
+    bottom: 0;
+    left: 0;
+    @media only screen and (max-width: 1199px) {
+      display: none;
+    }
+  }
+  &:after {
+    content: '';
+    background-image: url(../../../static/images/free-cta-after.png);
+    position: absolute;
+    width: 229px;
+    height: 373px;
+    background-size: contain;
+    top: 0;
+    right: 0;
+    @media only screen and (max-width: 1199px) {
+      display: none;
+    }
+  }
+  .textBlock {
+    max-width: 550px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    @media only screen and (max-width: 1399px) {
+      max-width: 480px;
+    }
+    h2 {
+      font-size: 40px;
+      line-height: 52px;
+      @media only screen and (max-width: 1399px) {
+        font-size: 36px;
+        line-height: 48px;
+      }
+      @media only screen and (max-width: 767px) {
+        font-size: 32px;
+        line-height: 42px;
+      }
+      @media only screen and (max-width: 575px) {
+        font-size: 28px;
+        line-height: 36px;
+      }
+    }
+    p {
+      margin-top: 20px;
+      @media only screen and (max-width: 767px) {
+        margin-top: 10px;
+      }
+    }
+    .solidBtn {
+      margin-top: 20px;
+    }
+  }
+}
+
+/* Perfect Tips Tabs */
+.perfectTipsTabs {
+  padding-top: 80px;
+  padding-bottom: 80px;
+  @media only screen and (max-width: 1199px) {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+  @media only screen and (max-width: 767px) {
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+  .tipTabsNav {
+    ul {
+      display: flex;
+      justify-content: center;
+      column-gap: 14px;
+      margin-bottom: 60px;
+      @media only screen and (max-width: 1199px) {
+        margin-bottom: 40px;
+      }
+      @media only screen and (max-width: 767px) {
+        flex-wrap: wrap;
+        column-gap: 0;
+        margin-bottom: 30px;
+      }
+      li {
+        @media only screen and (max-width: 767px) {
+          width: 100%;
+        }
+        a {
+          background-color: transparent;
+          border-color: transparent;
+          width: 188px;
+          text-align: center;
+          height: 44px;
+          border: 0;
+          border-radius: 6px;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          @media only screen and (max-width: 767px) {
+            width: 100%;
+          }
+          span {
+            font-weight: 500;
+            color: #110733;
+            font-size: 16px;
+            line-height: 20px;
+            font-family: 'Satoshi-Variable';
+          }
+        }
+        &.active {
+          a {
+            span {
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+  }
+  .sectionTitle {
+    margin-bottom: 45px;
+    text-align: center;
+    @media only screen and (max-width: 1199px) {
+      margin-bottom: 30px;
+    }
+    @media only screen and (max-width: 767px) {
+      margin-bottom: 20px;
+    }
+    h2 {
+      font-size: 40px;
+      line-height: 52px;
+      @media only screen and (max-width: 1399px) {
+        font-size: 36px;
+        line-height: 48px;
+      }
+      @media only screen and (max-width: 767px) {
+        font-size: 32px;
+        line-height: 42px;
+      }
+      @media only screen and (max-width: 575px) {
+        font-size: 28px;
+        line-height: 36px;
+      }
+    }
+  }
+  .tipTabsContent {
+    .imageTextBlock {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      .imageBlock {
+        width: 50%;
+        @media only screen and (max-width: 991px) {
+          width: 100%;
+        }
+        img {
+          width: 100%;
+        }
+      }
+      .textBlock {
+        width: 50%;
+        padding-left: 48px;
+        @media only screen and (max-width: 991px) {
+          width: 100%;
+          padding-left: 0;
+          padding-top: 20px;
+        }
+        h2 {
+          font-size: 40px;
+          line-height: 52px;
+          font-weight: 500;
+          margin-bottom: 15px;
+          @media only screen and (max-width: 1399px) {
+            font-size: 36px;
+            line-height: 48px;
+          }
+          @media only screen and (max-width: 767px) {
+            font-size: 32px;
+            line-height: 42px;
+          }
+          @media only screen and (max-width: 575px) {
+            font-size: 28px;
+            line-height: 36px;
+          }
+        }
+        ul {
+          margin-top: 25px;
+          li {
+            display: flex;
+            margin-bottom: 8px;
+            .icon {
+              width: 40px;
+              height: 40px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              @media only screen and (max-width: 767px) {
+                width: 24px;
+                height: 24px;
+              }
+              img {
+                width: 16px;
+                @media only screen and (max-width: 767px) {
+                  width: 12px;
+                }
+              }
+            }
+            .text {
+              font-size: 18px;
+              line-height: 30px;
+              font-family: 'Satoshi-Variable';
+              color: #09041a;
+              width: calc(100% - 40px);
+              padding-left: 10px;
+              @media only screen and (max-width: 767px) {
+                font-size: 16px;
+                line-height: 24px;
+                width: calc(100% - 24px);
+              }
+            }
+          }
+        }
+        .solidBtn {
+          margin-top: 25px;
+          margin-left: 40px;
+          @media only screen and (max-width: 991px) {
+            margin-top: 20px;
+          }
+        }
+      }
+    }
+  }
+}
+.perfectTipsTabs .tipTabsNav ul li a:hover,
+.perfectTipsTabs .tipTabsNav ul li.active a {
+  background-color: #ebdff9;
+  border-color: #ebdff9;
+}
+.perfectTipsTabs .tipTabsNav ul li a:hover span,
+.perfectTipsTabs .tipTabsNav ul li.active a span {
+  color: #5a00cd;
+}

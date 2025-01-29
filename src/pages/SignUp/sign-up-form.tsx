@@ -24,6 +24,7 @@ import {
   validatePassword,
 } from '../../utils/custom-validation';
 import { Badge } from '../../components/badge/Badge';
+import { FC, useEffect, useState } from 'react';
 
 const Form = styled.div`
   display: flex;
@@ -58,7 +59,7 @@ interface SignUpFormProps {
   type?: UserTypes;
 }
 
-export const SignUpForm: React.FC<SignUpFormProps> = (props) => {
+export const SignUpForm: FC<SignUpFormProps> = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -74,21 +75,22 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props) => {
     setLastName: setLoginLastName,
   } = useUser();
 
-  const [checkout_session_id, setCheckoutSessionId] =
-    React.useState<string>('');
-  const [confirm_password, setConfirmPassword] = React.useState<string>('');
-  const [email, setEmail] = React.useState<string>(loginEmail);
-  const [field_errors, setFieldErrors] = React.useState<ApiFieldError[]>([]);
-  const [first_name, setFirstName] = React.useState<string>(loginFirstName);
-  const [is_private_user, setIsPrivateUser] = React.useState<boolean>(false);
-  const [last_name, setLastName] = React.useState<string>(loginLastName);
-  const [password, setPassword] = React.useState<string>('');
-  const [password_match, setPasswordMatch] = React.useState<boolean>(false);
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [role_id, setRoleId] = React.useState<number>(0);
-  const [admin_id, setAdminId] = React.useState<number>(0);
-  const [isDisabled, setIsDisabled] = React.useState<boolean>(false);
-  const [verifying, setVerifying] = React.useState<boolean>(false);
+  const [checkout_session_id, setCheckoutSessionId] = useState<string>('');
+  const [confirm_password, setConfirmPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>(loginEmail);
+  const [field_errors, setFieldErrors] = useState<ApiFieldError[]>([]);
+  const [first_name, setFirstName] = useState<string>(loginFirstName);
+  const [is_private_user, setIsPrivateUser] = useState<boolean>(false);
+  const [last_name, setLastName] = useState<string>(loginLastName);
+  const [password, setPassword] = useState<string>('');
+  const [password_match, setPasswordMatch] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [role_id, setRoleId] = useState<number>(0);
+  const [admin_id, setAdminId] = useState<number>(0);
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [verifying, setVerifying] = useState<boolean>(false);
+  const [plan_id, setPlanId] = useState<string>('');
+  const [plan_description, setPlanDescription] = useState<string>('');
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
@@ -136,6 +138,13 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props) => {
       Object.assign(sign_up_params, {
         role_id,
         team_owner_id: admin_id,
+      });
+    }
+    if (plan_id.length > 0) {
+      Object.assign(sign_up_params, {
+        plan_description,
+        plan_ids: [plan_id],
+        start_free_trial: true,
       });
     }
 
@@ -208,7 +217,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props) => {
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const sign_up_form = document.getElementById(
       'sign-up-form'
     ) as HTMLFormElement;
@@ -220,12 +229,12 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props) => {
     }
   }, [props.is_mobile]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setFirstName(loginFirstName);
     setLastName(loginLastName);
   }, [loginFirstName, loginLastName]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (location.search) {
       const params = queryString.parse(location.search);
       if (
@@ -274,15 +283,17 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props) => {
           }
         });
       }
+      setPlanId(params['plan']?.toString() ?? '');
+      setPlanDescription(params['description']?.toString() ?? '');
       const uri = location.toString();
       if (uri.indexOf('?') > 0) {
         const clean_uri = uri.substring(0, uri.indexOf('?'));
         window.history.replaceState({}, document.title, clean_uri);
       }
     }
-  }, [location]);
+  }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const verifyInvitation = () => {
       setVerifying(true);
       postApi({

@@ -1,3 +1,5 @@
+import { onbordingPaths } from '../../types/app';
+import { pathExceptions } from '../../types/app';
 import {
   eraseKaslKey,
   getCustomerKaslKey,
@@ -64,23 +66,9 @@ export const processErrors = (api_error: any) => {
     status === StatusCodes.E_UNAUTHORIZED
   ) {
     eraseKaslKey();
-    const onbordingPaths = [
-      '/ob-board',
-      '/ob-idea',
-      '/ob-tags',
-      '/ob-survey',
-      '/ob-success',
-    ];
-    const excludedPaths = [
-      '/forgot-password',
-      '/pricing',
-      '/reset-password',
-      '/sign-in',
-      '/sign-in/google',
-      '/sign-up',
-    ];
+
     if (
-      ![...excludedPaths, ...onbordingPaths].includes(window.location.pathname)
+      ![...pathExceptions, ...onbordingPaths].includes(window.location.pathname)
     ) {
       if (is_admin) {
         location.href = '/sign-in';

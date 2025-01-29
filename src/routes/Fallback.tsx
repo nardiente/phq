@@ -1,6 +1,8 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import { useEffect } from 'react';
+import { onbordingPaths } from '../types/app';
+import { pathExceptions } from '../types/app';
 
 const Fallback = () => {
   const navigate = useNavigate();
@@ -8,23 +10,6 @@ const Fallback = () => {
   const { pathname, search } = location;
 
   const { isAuthenticated } = useUser();
-
-  const onbordingPaths = [
-    '/ob-board',
-    '/ob-idea',
-    '/ob-tags',
-    '/ob-survey',
-    '/ob-success',
-    '/pricing',
-  ];
-
-  const pathExceptions = [
-    '/forgot-password',
-    '/reset-password',
-    '/sign-in',
-    '/sign-in/google',
-    '/sign-up',
-  ];
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 

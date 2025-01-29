@@ -30,6 +30,7 @@ import PricingPage from '../pages/Pricing';
 import SuccessPage from '../pages/success/success';
 import OnboardingPage from '../pages/onboarding/onboarding';
 import ResetPasswordPage from '../pages/ResetPassword';
+import FreeTrialPage from '../pages/FreeTrialPage';
 
 const AppRoutes = () => {
   return (
@@ -43,6 +44,7 @@ const AppRoutes = () => {
             <Route path="/sign-in/google" element={<SSOVerifyingPage />} />
             <Route path="/sign-up" element={<SignUpPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/free-trial-plans" element={<FreeTrialPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/ob-board" element={<OnboardingPage />} />

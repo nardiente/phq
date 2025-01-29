@@ -7,7 +7,7 @@ import moment from 'moment';
 import { AddYourBoardModal } from '../components/AddYourBoardModal';
 import { SidePanel } from '../components/SidePanel';
 import Footer from '../components/Footer';
-import { PageType } from '../types/app';
+import { onbordingPaths, PageType, pathExceptions } from '../types/app';
 
 const AppRoute = () => {
   const navigate = useNavigate();
@@ -21,23 +21,6 @@ const AppRoute = () => {
   const [remindAddBoard, setRemindAddBoard] = useState<boolean | undefined>();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-
-  const onbordingPaths = [
-    '/ob-board',
-    '/ob-idea',
-    '/ob-tags',
-    '/ob-survey',
-    '/ob-success',
-    '/pricing',
-  ];
-
-  const pathExceptions = [
-    '/forgot-password',
-    '/reset-password',
-    '/sign-in',
-    '/sign-in/google',
-    '/sign-up',
-  ];
 
   const publicPagePaths = ['/upvotes', '/roadmap', '/posts'];
 

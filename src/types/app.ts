@@ -29,4 +29,23 @@ export type PageType =
   | 'posts'
   | 'segments'
   | 'profiles'
-  | 'prioritization';
+  | 'prioritization'
+  | 'free-trial-plans';
+
+export const onbordingPaths = [
+  '/ob-board',
+  '/ob-idea',
+  '/ob-tags',
+  '/ob-survey',
+  '/ob-success',
+  '/pricing',
+];
+
+export const pathExceptions = [
+  '/forgot-password',
+  '/free-trial-plans',
+  '/reset-password',
+  '/sign-in',
+  '/sign-in/google',
+  '/sign-up',
+];
