@@ -33,6 +33,7 @@ export type PageType =
   | 'free-trial-plans';
 
 export const onbordingPaths = [
+  '/free-trial-plans',
   '/ob-board',
   '/ob-idea',
   '/ob-tags',
@@ -43,7 +44,6 @@ export const onbordingPaths = [
 
 export const pathExceptions = [
   '/forgot-password',
-  '/free-trial-plans',
   '/reset-password',
   '/sign-in',
   '/sign-in/google',
