@@ -33,7 +33,7 @@ export const ResetPasswordPage: FC = () => {
     if (getKaslKey()) {
       // has logged in user
       window.location.href =
-        process.env.SYSTEM_TYPE !== 'public' ? '/upvote-admin' : '/';
+        import.meta.env.SYSTEM_TYPE !== 'public' ? '/dashboard' : '/';
     } else {
       // no logged in user
       const containers = document.getElementsByClassName(

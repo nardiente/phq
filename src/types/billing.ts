@@ -96,3 +96,8 @@ export interface Feature {
   growth: string;
   scale: string;
 }
+
+export interface LifetimeDeal {
+  deals: Price[];
+  subscription: Subscription | null;
+}

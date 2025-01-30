@@ -45,10 +45,10 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center gap-2 hover:bg-gray-50 rounded-lg p-2 transition-colors"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-max">
             <>
               <div className="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center">
-                <span className="text-purple-600 text-lg">
+                <span className="text-purple-600 text-lg w-9">
                   <figure
                     className={`image${
                       user?.profile_photo &&

@@ -39,7 +39,7 @@ export const ForgotPasswordPage: React.FC = () => {
     if (getKaslKey() !== null) {
       // has logged in user
       window.location.href =
-        import.meta.env.VITE_SYSTEM_TYPE !== 'public' ? '/upvotes' : '/';
+        import.meta.env.VITE_SYSTEM_TYPE !== 'public' ? '/dashboard' : '/';
     } else {
       // no logged in user
       const containers = document.getElementsByClassName(

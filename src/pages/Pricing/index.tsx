@@ -8,14 +8,8 @@ import { getApi } from '../../utils/api/api';
 import { useState } from 'react';
 import { Feature, Plan } from '../../types/billing';
 import { Header } from '../../components/Header';
-import { getKaslKey } from '../../utils/localStorage';
-import { getSessionToken } from '../../utils/localStorage';
-import { useUser } from '../../contexts/UserContext';
 
 export const PricingPage: React.FC = () => {
-  const { user } = useUser();
-  const { moderation } = user ?? {};
-
   const [plan, setPlan] = useState<Plan>({
     monthly: {
       plans: [
@@ -105,13 +99,6 @@ export const PricingPage: React.FC = () => {
   const [features, setFeatures] = useState<Feature[]>([]);
   const [tabView, setTabView] = useState<string>('monthly');
 
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-  const is_logged_in =
-    getKaslKey() !== null ||
-    (is_public &&
-      moderation?.user_login === true &&
-      getSessionToken() !== null);
-
   useEffect(() => {
     getPlans();
     listFeature();
@@ -136,7 +123,7 @@ export const PricingPage: React.FC = () => {
 
   return (
     <>
-      {!is_logged_in && <Header />}
+      <Header />
       <PricingBanner
         features={features}
         plan={plan}

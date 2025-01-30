@@ -1,11 +1,7 @@
 import { LineChart, RefreshCw } from 'lucide-react';
 import { BoardBanner } from '../components/dashboard/BoardBanner';
-import { useEffect } from 'react';
-import { useUser } from '../contexts/UserContext';
 
 export default function DashboardPage() {
-  const { handleGetUser } = useUser();
-
   const stats = [
     { label: 'Ideas', value: '0', change: '0%' },
     { label: 'Votes', value: '0', change: '0%' },
@@ -29,10 +25,6 @@ export default function DashboardPage() {
       date: '9 Oct',
     },
   ];
-
-  useEffect(() => {
-    handleGetUser();
-  }, []);
 
   return (
     <div className="flex-1 px-8 py-6">

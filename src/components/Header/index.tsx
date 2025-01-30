@@ -23,7 +23,7 @@ import {
   tags_default_background_color,
   tags_default_text_color,
 } from './types';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import queryString from 'query-string';
 import { useUser } from '../../contexts/UserContext';
 import { usePanel } from '../../contexts/PanelContext';
@@ -33,12 +33,16 @@ import { getKaslKey, getSessionToken } from '../../utils/localStorage';
 import { ProjectAppearance } from '../../types/appearance';
 import { ChevronDownIcon } from '../icons/chevron-down.icon';
 import { useFeedback } from '../../contexts/FeedbackContext';
+import { Notifications } from '../Notifications';
+import { UserMenu } from '../UserMenu';
+import { PageType } from '../../types/app';
 
 export const Header: FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const params = useParams<{ post_id?: string }>();
 
-  const { user } = useUser();
+  const { user, isAuthenticated } = useUser();
   const { moderation } = user ?? {};
   const {
     state: { active_tab },
@@ -258,6 +262,10 @@ export const Header: FC = () => {
   if (header_exceptions.includes(location.pathname)) {
     return null;
   }
+
+  const handleNavigation = (page: PageType) => {
+    navigate('/' + page.toString());
+  };
 
   return (
     <nav id="main-nav">
@@ -617,6 +625,17 @@ export const Header: FC = () => {
           </div>
         </div>
       </div>
+      {isAuthenticated() && (
+        <>
+          <Notifications />
+          <UserMenu user={user?.user} onNavigate={handleNavigation} />
+          {!is_public && (
+            <div className="px-2 py-1 bg-[#EEF2FF] text-[#6366F1] text-[12px] font-medium rounded">
+              Admin
+            </div>
+          )}
+        </>
+      )}
     </nav>
   );
 };

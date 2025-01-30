@@ -31,6 +31,7 @@ import SuccessPage from '../pages/success/success';
 import OnboardingPage from '../pages/onboarding/onboarding';
 import ResetPasswordPage from '../pages/ResetPassword';
 import FreeTrialPage from '../pages/FreeTrialPage';
+import { LtdPage } from '../pages/LtdPage';
 
 const AppRoutes = () => {
   return (
@@ -45,6 +46,7 @@ const AppRoutes = () => {
             <Route path="/sign-up" element={<SignUpPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/free-trial-plans" element={<FreeTrialPage />} />
+            <Route path="/lifetime-deal" element={<LtdPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/ob-board" element={<OnboardingPage />} />

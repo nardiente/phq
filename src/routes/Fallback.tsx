@@ -12,6 +12,7 @@ const Fallback = () => {
   const { isAuthenticated } = useUser();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+  const pricingPages = ['/free-trial-plans', '/lifetime-deal', '/pricing'];
 
   useEffect(() => {
     if (
@@ -22,7 +23,7 @@ const Fallback = () => {
       if (isAuthenticated() && pathname === '/sign-in') {
         navigate('/dashboard');
       }
-      if (!isAuthenticated()) {
+      if (!isAuthenticated() && !pricingPages.includes(pathname)) {
         navigate('/sign-in');
       }
     }

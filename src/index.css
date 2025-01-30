@@ -3,6 +3,12 @@
 @import './quill.snow.css';
 @import './appearance-colors.css';
 
+@import './styles/freetrialnew.css';
+@import './styles/ltd.css';
+@import './styles/pcm.css';
+@import './styles/slick-theme.css';
+@import './styles/slick.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -30,10 +30,12 @@ export type PageType =
   | 'segments'
   | 'profiles'
   | 'prioritization'
-  | 'free-trial-plans';
+  | 'free-trial-plans'
+  | 'lifetime-deal';
 
 export const onbordingPaths = [
   '/free-trial-plans',
+  '/lifetime-deal',
   '/ob-board',
   '/ob-idea',
   '/ob-tags',
@@ -44,6 +46,9 @@ export const onbordingPaths = [
 
 export const pathExceptions = [
   '/forgot-password',
+  '/free-trial-plans',
+  '/lifetime-deal',
+  '/pricing',
   '/reset-password',
   '/sign-in',
   '/sign-in/google',
