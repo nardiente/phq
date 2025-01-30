@@ -651,11 +651,11 @@ export default function AppearancePage() {
               <SectionHeader
                 title="Appearance"
                 description={
-                  <p>
+                  <span>
                     Customise the appearance of your Upvotes, Roadmap and
                     What&apos;s New interface to match your brand&apos;s look
                     and feel.
-                  </p>
+                  </span>
                 }
               />
               <div className="flex flex-col gap-6">

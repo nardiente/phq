@@ -495,13 +495,13 @@ export default function ProjectDetailsPage() {
             title="Default Domain Name"
             description={
               <div className="flex flex-col gap-1">
-                <p>
+                <span>
                   Once configured, add this link to your site to display the
                   upvote, roadmap, and what&apos;s new features. We recommend
                   adding it to your main menu or footer.
-                </p>
-                <p>
-                  Click&nbsp;
+                </span>
+                <span>
+                  Click{' '}
                   <a
                     href="https://support.producthq.io/articles/how-to-add-a-board-to-your-site-145e70-32dd7"
                     target="_blank"
@@ -509,9 +509,9 @@ export default function ProjectDetailsPage() {
                     className="text-[#5a00cd] hover:underline"
                   >
                     here
-                  </a>
-                  &nbsp;for instructions on how to set up a default domain name.
-                </p>
+                  </a>{' '}
+                  for instructions on how to set up a default domain name.
+                </span>
               </div>
             }
           />
@@ -542,7 +542,7 @@ export default function ProjectDetailsPage() {
           <SectionHeader
             title="Custom Domain Name"
             description={
-              <p>
+              <span>
                 Click&nbsp;
                 <a
                   href="https://support.producthq.io/articles/how-to-set-up-your-custom-domain-name-145e70-e8cd0"
@@ -552,7 +552,7 @@ export default function ProjectDetailsPage() {
                   here
                 </a>
                 &nbsp;for instructions on how to set up a customer domain name.
-              </p>
+              </span>
             }
           />
           <InputField
@@ -581,10 +581,10 @@ export default function ProjectDetailsPage() {
           <SectionHeader
             title="Hide Date And Time"
             description={
-              <p>
+              <span>
                 Hide the date and time on upvotes, comments, and what&apos;s new
                 posts.
-              </p>
+              </span>
             }
           />
           <div className="custom-input">
@@ -609,11 +609,11 @@ export default function ProjectDetailsPage() {
           <SectionHeader
             title="Modules"
             description={
-              <p>
+              <span>
                 By default, these modules are turned on (purple) which means all
                 features are visible to public view. When the toggles are turned
                 off, the feature is hidden from public view.
-              </p>
+              </span>
             }
           />
           <div className="flex flex-col gap-1.5">
@@ -708,7 +708,9 @@ export default function ProjectDetailsPage() {
                   <SectionHeader
                     title="Specific Person"
                     description={
-                      <p>Grant access to specific people, Invited via Email</p>
+                      <span>
+                        Grant access to specific people, Invited via Email
+                      </span>
                     }
                   />
                   <div className="grid grid-cols-2 gap-4 m-0">
