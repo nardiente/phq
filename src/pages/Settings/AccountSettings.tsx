@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   COMPANY_LOGO_PLACEHOLDER,
@@ -8,26 +8,48 @@ import {
 import { ImageType, User } from '../../types/user';
 import { useUser } from '../../contexts/UserContext';
 import { toast } from 'react-toastify';
-import { eraseKaslKey } from '../../utils/localStorage';
-import { deleteApi } from '../../utils/api/api';
+import { eraseKaslKey, setKaslKey } from '../../utils/localStorage';
+import { deleteApi, putApi } from '../../utils/api/api';
 import { Settings } from '../../components/Settings';
 import SettingsHeader from '../../components/SettingsHeader';
 import Button from '../../components/Button';
 import SettingsContainer from '../../components/SettingsContainer';
 import InputField from '../../components/InputField';
 import SectionHeader from '../../components/SectionHeader';
+import { useUnsavedChanges } from '../../contexts/UnsavedChangesContext';
+import { useApp } from '../../contexts/AppContext';
 
 export function AccountSettings() {
   const navigate = useNavigate();
 
-  const { user, setUser } = useUser();
+  const { api_error, setApiError } = useApp();
+  const { user, setUser, handleGetUser } = useUser();
   const { user: userDetails } = user ?? {};
+  const { setHasUnsavedChanges } = useUnsavedChanges();
 
   const [show_modal, setModal] = useState<boolean>(false);
   const [image_type, setImageType] = useState<string>('');
 
   const [deleteConfirmation, setDeleteConfirmation] = useState('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    handleGetUser();
+  }, []);
+
+  useEffect(() => {
+    if (api_error.length > 0) {
+      toast(api_error, {
+        autoClose: 3000,
+        closeOnClick: true,
+        hideProgressBar: true,
+        icon: false,
+        position: 'bottom-center',
+        theme: 'colored',
+        type: 'error',
+      });
+    }
+  }, [api_error]);
 
   const setCompanyLogo = (company_logo: string) => {
     setUser((prev) => ({ ...prev, user: { ...prev.user, company_logo } }));
@@ -43,9 +65,14 @@ export function AccountSettings() {
       .then((res) => {
         if (res.results.data) {
           eraseKaslKey();
-          toast.success(res.results.message, {
+          toast(res.results.message, {
+            autoClose: 3000,
             closeOnClick: true,
+            hideProgressBar: true,
+            icon: false,
             position: 'bottom-center',
+            theme: 'colored',
+            type: 'success',
           });
           navigate('/sign-in');
         }
@@ -55,15 +82,93 @@ export function AccountSettings() {
       });
   };
 
+  const onSubmit = () => {
+    const {
+      address_line1,
+      address_line2,
+      city,
+      company_name,
+      country,
+      country_code,
+      email: email_address,
+      first_name,
+      last_name,
+      job_title,
+      phone: phone_number,
+      state,
+      zip_code,
+      website_url,
+    } = userDetails ?? {};
+
+    if (
+      first_name &&
+      first_name.length > 0 &&
+      last_name &&
+      last_name.length > 0
+    ) {
+      setIsLoading(true);
+      putApi<User>(`users/me`, {
+        address_line1,
+        address_line2,
+        city,
+        company_name,
+        country,
+        country_code,
+        email: email_address,
+        first_name,
+        last_name,
+        job_title,
+        phone: phone_number,
+        state,
+        zip_code,
+        website_url,
+      })
+        .then((res) => {
+          if (res.results.error) {
+            setApiError(res.results.error);
+          }
+          if (res.results.data) {
+            setUser((prev) => ({ ...prev, user: res.results.data }));
+
+            if (res.headers['kasl-key']) {
+              setKaslKey(res.headers['kasl-key'].toString());
+            }
+
+            toast('Saved', {
+              autoClose: 3000,
+              className: 'bg-[#110733]',
+              closeOnClick: true,
+              hideProgressBar: true,
+              icon: false,
+              position: 'bottom-center',
+              theme: 'dark',
+            });
+          }
+        })
+        .finally(() => {
+          setIsLoading(false);
+          setHasUnsavedChanges(false);
+        });
+    }
+  };
+
   return (
     <Settings>
       <SettingsHeader
         title="Account Settings"
-        primaryButton={<Button text="Update" variant="primary" />}
+        primaryButton={
+          <Button
+            disabled={isLoading}
+            loading={isLoading}
+            onClick={onSubmit}
+            text="Update"
+            variant="primary"
+          />
+        }
         secondaryButton={
           <Button
-            text="Cancel"
             onClick={() => navigate('/dashboard')}
+            text="Cancel"
             variant="secondary"
           />
         }
@@ -78,13 +183,16 @@ export function AccountSettings() {
           <div className="flex items-start gap-4 m-0">
             <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center">
               {userDetails?.profile_photo !== undefined &&
-              userDetails?.profile_photo !== PROFILE_PLACEHOLDER ? (
+              userDetails?.profile_photo !== PROFILE_PLACEHOLDER &&
+              userDetails.profile_photo.length > 0 ? (
                 <img
                   className="is-rounded responsiveImage rounded-full"
                   src={userDetails?.profile_photo}
                 />
               ) : (
-                <span className="text-purple-600 text-2xl">P</span>
+                <span className="text-purple-600 text-2xl">
+                  {userDetails?.first_name?.charAt(0).toUpperCase()}
+                </span>
               )}
             </div>
             <Button
@@ -178,8 +286,9 @@ export function AccountSettings() {
           </div>
           <Button
             className="w-fit text-[13px]"
-            text="Reset password"
             disabled={isLoading}
+            loading={isLoading}
+            text="Reset password"
             variant="secondary"
           />
         </div>
@@ -196,13 +305,16 @@ export function AccountSettings() {
           <div className="flex items-start gap-4 m-0">
             <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center">
               {userDetails?.company_logo !== undefined &&
-              userDetails?.company_logo !== COMPANY_LOGO_PLACEHOLDER ? (
+              userDetails?.company_logo !== COMPANY_LOGO_PLACEHOLDER &&
+              userDetails.company_logo.length > 0 ? (
                 <img
                   className="is-rounded responsiveImage rounded-full"
                   src={userDetails?.company_logo}
                 />
               ) : (
-                <span className="text-purple-600 text-2xl">P</span>
+                <span className="text-purple-600 text-2xl">
+                  {userDetails?.company_name?.charAt(0).toUpperCase()}
+                </span>
               )}
             </div>
             <Button
@@ -384,11 +496,12 @@ export function AccountSettings() {
             variant="default" // You can change this to any variant you want
           />
           <Button
-            text={isLoading ? 'Loading ...' : 'DELETE ACCOUNT'}
-            onClick={handleDeleteAccount}
-            variant="danger" // Assuming you have a 'danger' variant for delete actions
-            className="w-fit px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 disabled:opacity-50 disabled:cursor-not-allowed text-[13px]"
+            className="w-fit px-4 py-2 bg-red-500 text-red-100 rounded-lg hover:bg-red-200 hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-[13px]"
             disabled={deleteConfirmation !== 'DELETE' || isLoading}
+            loading={isLoading}
+            onClick={handleDeleteAccount}
+            text="DELETE ACCOUNT"
+            variant="danger" // Assuming you have a 'danger' variant for delete actions
           />
         </div>
       </SettingsContainer>

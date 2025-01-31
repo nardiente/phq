@@ -40,7 +40,7 @@ export const DisplayUserName = ({
       </div>
       <div className="options">
         {userNames?.map((userName, idx) => (
-          <div key={idx} className="option">
+          <div key={idx} className="option text-[#110733] text-[14px]">
             <a
               className="trigger"
               onClick={() => handleOnChangeUserNameFormat(userName.format)}

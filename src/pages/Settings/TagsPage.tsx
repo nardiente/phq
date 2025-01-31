@@ -9,7 +9,6 @@ import { useUnsavedChanges } from '../../contexts/UnsavedChangesContext';
 import { getApi, postApi } from '../../utils/api/api';
 import { Loader } from 'lucide-react';
 import { Permissions, RbacPermissions } from '../../types/common';
-import Field from '../../components/Field';
 import { ErrorSnackBar } from '../../components/Snackbar';
 import TagList from '../../components/TagList/tag-list';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +17,7 @@ import SettingsHeader from '../../components/SettingsHeader';
 import Button from '../../components/Button';
 import SettingsContainer from '../../components/SettingsContainer';
 import SectionHeader from '../../components/SectionHeader';
+import InputField from '../../components/InputField';
 
 export default function TagsPage() {
   const { t } = useTranslation();
@@ -120,22 +120,21 @@ export default function TagsPage() {
                 />
                 <div className="columns is-mobile is-multiline">
                   <div className="column">
-                    <Field
-                      is_required={false}
-                      class_name="input-enclosed w-full"
-                      id="TagsField"
-                      placeholder="e.g. Tag 1, Tag 2, Tag 3"
-                      value={tag}
-                      name="TagsField"
-                      type="text"
-                      tab_index={1}
-                      onChange={handleOnChangeTag}
+                    <InputField
                       label="Add Tags"
-                      has_error={field_errors.some((x) => x.field === 'tag')}
-                      error_msg={
+                      onChange={handleOnChangeTag}
+                      disabled={!user.permissions.includes(Permissions.TAGS)}
+                      error={
                         field_errors.find((x) => x.field === 'tag')?.message
                       }
+                      placeholder="e.g. Tag 1, Tag 2, Tag 3"
                       readOnly={!user.permissions.includes(Permissions.TAGS)}
+                      value={tag}
+                      variant={
+                        field_errors.some((x) => x.field === 'tag')
+                          ? 'error'
+                          : 'default'
+                      }
                     />
                     <button
                       disabled={

@@ -166,18 +166,12 @@ export default function ProjectDetailsPage() {
     setPortalSubdomainErrorMsg('');
     const value = e.target.value.trim().toLowerCase();
     setPortalSubdomain(value);
-    if (value.length > 0 && !isValidUrl(value + domain)) {
-      setPortalSubdomainErrorMsg('Invalid URL');
-    }
   };
 
   const handleCustomDomainOnChange = (e: any) => {
     setCustomDomainErrorMsg('');
     const value = e.target.value.trim().toLowerCase();
     setCustomDomain(value);
-    if (value.length > 0 && !isValidUrl(value)) {
-      setCustomDomainErrorMsg('Invalid URL');
-    }
   };
 
   const handleHideDatetime = () => {
@@ -311,6 +305,18 @@ export default function ProjectDetailsPage() {
   };
 
   const handleUpdateProject = () => {
+    const isValidCustomDomain = isValidUrl(custom_domain);
+    const isValidPortalSubdomain = isValidUrl(portal_subdomain + domain);
+    if (!isValidCustomDomain) {
+      setCustomDomainErrorMsg('Invalid URL');
+    }
+    if (!isValidPortalSubdomain) {
+      setPortalSubdomainErrorMsg('Invalid URL');
+    }
+    if (!isValidCustomDomain || !isValidPortalSubdomain) {
+      return;
+    }
+
     const is_index_search_engine = !is_private_settings
       ? index_search_engine
       : false;
@@ -335,6 +341,17 @@ export default function ProjectDetailsPage() {
       },
     }).then((res) => {
       setLoading(false);
+      if (res.results.error) {
+        toast(t(res.results.error), {
+          autoClose: 3000,
+          closeOnClick: true,
+          hideProgressBar: true,
+          icon: false,
+          position: 'bottom-center',
+          theme: 'dark',
+          type: 'error',
+        });
+      }
       const errors = res.results?.errors as ApiFieldError[];
       if (errors?.length > 0) {
         errors?.forEach((error) => {
@@ -458,9 +475,10 @@ export default function ProjectDetailsPage() {
         title="Account Settings"
         primaryButton={
           <Button
-            text="Update"
             disabled={loading}
+            loading={loading}
             onClick={handleUpdateProject}
+            text="Update"
             variant="primary"
           />
         }
@@ -481,6 +499,7 @@ export default function ProjectDetailsPage() {
             onChange={handleProjectNameOnChange}
             placeholder="Your project name."
             value={project_name}
+            variant={project_name_error_msg.length > 0 ? 'error' : 'default'}
           />
           <TextAreaInput
             className=""
@@ -536,6 +555,9 @@ export default function ProjectDetailsPage() {
             }}
             placeholder="your-company"
             value={portal_subdomain}
+            variant={
+              portal_subdomain_error_msg.length > 0 ? 'error' : 'default'
+            }
           />
         </div>
         <div className="flex flex-col gap-6">
@@ -575,6 +597,7 @@ export default function ProjectDetailsPage() {
             }}
             placeholder="feedback.yoursite.com"
             value={custom_domain}
+            variant={custom_domain_error_msg.length > 0 ? 'error' : 'default'}
           />
         </div>
         <div className="flex flex-col gap-6">
@@ -796,7 +819,6 @@ export default function ProjectDetailsPage() {
                   />
                   <Button
                     className="w-fit text-[13px]"
-                    text="Invite"
                     disabled={
                       !permissions?.includes(Permissions.PROJECT_DETAILS) ||
                       email.length === 0 ||
@@ -810,7 +832,9 @@ export default function ProjectDetailsPage() {
                       ) ||
                       loadingInvite
                     }
+                    loading={loadingInvite}
                     onClick={handleInvite}
+                    text="Invite"
                     variant="secondary"
                   />
                 </div>

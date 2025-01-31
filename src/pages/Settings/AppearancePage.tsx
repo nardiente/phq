@@ -626,9 +626,10 @@ export default function AppearancePage() {
         title="Account Settings"
         primaryButton={
           <Button
-            text="Update"
             disabled={loading || loading_user}
+            loading={loading || loading_user}
             onClick={handleUpdate}
+            text="Update"
           />
         }
         secondaryButton={
@@ -725,7 +726,7 @@ export default function AppearancePage() {
                     readOnly={
                       !user?.permissions.includes(Permissions.APPEARANCE)
                     }
-                    value="icon_color"
+                    value={icon_color}
                   />
                 </div>
               </div>

@@ -1,4 +1,4 @@
-import React, { HTMLInputTypeAttribute } from 'react';
+import React, { HTMLInputTypeAttribute, useRef } from 'react';
 import Button from './Button';
 
 interface InputFieldProps {
@@ -40,11 +40,17 @@ const InputField: React.FC<InputFieldProps> = ({
     outline: 'border-gray-300 focus:border-blue-500',
   };
 
+  const ref = useRef<HTMLInputElement>(null);
+  if (error.length > 0) {
+    ref.current?.focus();
+  }
+
   return (
     <div className="flex flex-col gap-1.5">
       <label className="block text-[13px] font-medium m-0">{label}</label>
       <div className="flex">
         <input
+          ref={ref}
           type={type}
           value={value}
           onBlur={onBlur}

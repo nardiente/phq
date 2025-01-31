@@ -312,7 +312,7 @@ export const UploadPhoto: React.FC<{
           <button
             type="button"
             onClick={() => handleUpload(props.image_type)}
-            className="button upload_button"
+            className="button upload_button border-white"
             disabled={uploadState.buttonDisabled || uploadState.uploading}
           >
             {t('upload')}

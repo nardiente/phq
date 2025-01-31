@@ -236,9 +236,8 @@ export default function TeamMembersPage() {
   };
 
   const onSubmitEdit = () => {
-    setLoadingInvite(true);
-
     if (first_name.length > 0 && last_name.length > 0) {
+      setLoadingInvite(true);
       putApi<User>(`users/me`, {
         email: team_members.find((team) => team.id === member_id)?.email || '',
         alternate_email: email_address,
@@ -295,8 +294,8 @@ export default function TeamMembersPage() {
   };
 
   const onSubmit = () => {
-    setLoadingInvite(true);
     if (first_name.length > 0 && last_name.length > 0) {
+      setLoadingInvite(true);
       postApi({
         url: 'auth/invite-member',
         payload: {
@@ -488,7 +487,6 @@ export default function TeamMembersPage() {
 
           <Button
             className="w-fit text-[13px]"
-            text={button_name}
             disabled={
               email_address === '' ||
               first_name === '' ||
@@ -499,7 +497,9 @@ export default function TeamMembersPage() {
               last_name_error_msg !== '' ||
               !hasUnsavedChanges
             }
+            loading={loadingInvite}
             onClick={button_name === 'Save' ? onSubmitEdit : onSubmit}
+            text={button_name}
             variant="secondary"
           />
         </div>

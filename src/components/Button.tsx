@@ -1,23 +1,25 @@
 import { FC, ReactNode } from 'react';
 
 interface ButtonProps {
-  text: ReactNode;
-  onClick?: () => void;
-  variant?: 'primary' | 'secondary' | 'danger' | 'outline';
   className?: string;
   disabled?: boolean;
+  loading?: boolean;
+  onClick?: () => void;
+  text: ReactNode;
+  variant?: 'primary' | 'secondary' | 'danger' | 'outline';
 }
 
 const Button: FC<ButtonProps> = ({
-  text,
-  onClick,
-  variant = 'primary',
   className = '',
   disabled = false,
+  loading = false,
+  onClick,
+  text,
+  variant = 'primary',
 }) => {
   const baseStyles = 'px-4 py-2 rounded-lg border';
   const variantStyles = {
-    primary: 'bg-[#FF5C35] hover:bg-[#ff4a1a] text-white',
+    primary: 'bg-[#FF5C35] hover:bg-[#FF6334] text-white',
     secondary: 'bg-gray-100 text-gray-600 hover:bg-gray-200',
     danger: 'bg-red-100 text-red-600 hover:bg-red-200',
     outline: 'border-gray-200 text-gray-600 hover:bg-gray-100',
@@ -29,7 +31,7 @@ const Button: FC<ButtonProps> = ({
       className={`${baseStyles} ${variantStyles[variant]} ${className}`}
       disabled={disabled}
     >
-      {text}
+      {loading ? 'Loading ...' : text}
     </button>
   );
 };

@@ -88,9 +88,10 @@ export default function ModerationPage() {
           title="Account Settings"
           primaryButton={
             <Button
-              text="Update"
               disabled={fetching || loading}
+              loading={fetching || loading}
               onClick={handleUpdate}
+              text="Update"
             />
           }
           secondaryButton={

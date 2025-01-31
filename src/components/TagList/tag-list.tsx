@@ -7,8 +7,14 @@ import { useEffect, useState } from 'react';
 import { ApiFieldError } from '../../utils/api/types';
 import { deleteApi, patchApi } from '../../utils/api/api';
 import { Permissions } from '../../types/common';
-import Field from '../Field';
-import { PencilIcon, Trash } from 'lucide-react';
+import styled from 'styled-components';
+import InputField from '../InputField';
+
+const IconImg = styled.img`
+  vertical-align: middle;
+  margin-bottom: 0.25em;
+  margin-right: 0.5em;
+`;
 
 export const EditableTag: React.FC<Tag> = (props: Tag) => {
   const { t } = useTranslation();
@@ -180,7 +186,7 @@ export const EditableTag: React.FC<Tag> = (props: Tag) => {
               disabled={!user?.permissions.includes(Permissions.TAGS)}
             >
               <span>
-                <PencilIcon width={16} />
+                <IconImg src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/pencil-square.svg" />
               </span>
             </button>
             <button
@@ -192,7 +198,7 @@ export const EditableTag: React.FC<Tag> = (props: Tag) => {
               disabled={!user?.permissions.includes(Permissions.TAGS)}
             >
               <span>
-                <Trash width={16} />
+                <IconImg src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/trash.svg" />
               </span>
             </button>
           </td>
@@ -200,29 +206,20 @@ export const EditableTag: React.FC<Tag> = (props: Tag) => {
       ) : (
         <tr key={`TagEdit${props.id}`}>
           <td>
-            <Field
-              is_required={false}
-              class_name="input-enclosed"
-              id={`Tag${props.id}Name`}
-              value={tag_name}
-              name={`Tag${props.id}NameField`}
-              type="text"
-              tab_index={1}
+            <InputField
+              className="-mt-1.5"
+              label=""
               onChange={handleTagNameOnChange}
-              has_error={field_errors.some((x) => x.field === 'tag')}
-              error_msg={field_errors.find((x) => x.field === 'tag')?.message}
+              error={field_errors.find((x) => x.field === 'tag')?.message}
+              value={tag_name}
             />
           </td>
           <td>
-            <Field
-              is_required={false}
-              class_name="input-enclosed"
-              id={`Tag${props.id}Description`}
-              value={tag_description}
-              name={`Tag${props.id}DescriptionField`}
-              type="text"
-              tab_index={2}
+            <InputField
+              className="-mt-1.5"
+              label=""
               onChange={handleTagDescription}
+              value={tag_description}
             />
           </td>
           <td>

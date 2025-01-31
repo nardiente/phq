@@ -14,7 +14,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 }) => {
   return (
     <div className="flex flex-col gap-2">
-      <h2 className={`text-[16px] font-semibold text-gray-900 ${className}`}>
+      <h2 className={`text-lg font-semibold text-gray-900 ${className}`}>
         {title}
       </h2>
       <SectionDescription text={description} />

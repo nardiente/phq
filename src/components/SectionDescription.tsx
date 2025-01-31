@@ -9,7 +9,7 @@ const SectionDescription: React.FC<SectionDescriptionProps> = ({
   text,
   className,
 }) => {
-  return <p className={`text-[13px] text-gray-600 ${className}`}>{text}</p>;
+  return <p className={`text-base text-gray-600 ${className}`}>{text}</p>;
 };
 
 export default SectionDescription;

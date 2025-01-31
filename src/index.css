@@ -28,6 +28,18 @@
   animation: fade-in 0.2s ease-out;
 }
 
+.custom-theme {
+  background: rgb(147 51 234 / var(--tw-text-opacity, 1)) !important;
+  font-family: 'Satoshi-Variable' !important;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0.005em;
+  color: #ffffff !important;
+  padding-left: 24px;
+}
+
 .is-clickable {
   cursor: pointer;
 }

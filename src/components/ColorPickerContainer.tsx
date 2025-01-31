@@ -13,7 +13,7 @@ export function ColorPicketContainer({
 }) {
   return (
     <div
-      className={`inline-flex items-center h-10 w-full p-2 border border-gray-300 rounded gap-2 ${className}`}
+      className={`inline-flex items-center h-10 w-full p-2 border border-gray-200 rounded gap-2 ${className}`}
       onBlur={onBlur}
       onFocus={onFocus}
     >

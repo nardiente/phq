@@ -57,6 +57,8 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       icon: LayoutDashboard,
       label: 'Dashboard',
       id: 'dashboard',
+      badge: <ComingSoon />,
+      disabled: false,
     },
     { icon: ThumbsUp, label: 'Upvotes', id: 'upvotes' },
     { icon: Map, label: 'Roadmap', id: 'roadmap' },
