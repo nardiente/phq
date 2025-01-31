@@ -66,8 +66,6 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       icon: LayoutTemplate,
       label: 'Widgets',
       id: 'widgets',
-      badge: <ComingSoon />,
-      disabled: false,
     },
     { icon: PieChart, label: 'Segments', id: 'segments', hidden: true },
     { icon: Users, label: 'Customer Profiles', id: 'profiles', hidden: true },

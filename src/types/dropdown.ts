@@ -7,3 +7,16 @@ export interface Option {
   value: string;
   type: string;
 }
+
+export interface SelectOption {
+  value: string;
+  label: string;
+}
+
+export interface SelectDropdownProps {
+  options: SelectOption[];
+  value: SelectOption | null;
+  onChange: (option: SelectOption) => void;
+  containerClass?: string;
+  id?: string;
+}
