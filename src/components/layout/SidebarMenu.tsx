@@ -111,7 +111,12 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       id: 'docs',
       link: 'https://support.producthq.io/',
     },
-    { icon: Heart, label: 'Leave Testimonial', id: 'testimonials' },
+    {
+      icon: Heart,
+      label: 'Leave Testimonial',
+      id: 'testimonials',
+      hidden: true,
+    },
     {
       icon: ThumbsUp,
       label: 'Submit Feature Request',
@@ -293,22 +298,24 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
                     <span className="flex-1 text-left">Settings</span>
                   )}
                 </button>
-                {bottomMenuItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleNavigation(item)}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
-                      activeItem === item.id
-                        ? 'bg-purple-50 text-purple-700'
-                        : 'text-gray-600 hover:bg-gray-50'
-                    }`}
-                  >
-                    <item.icon size={18} />
-                    {isExpanded && (
-                      <span className="flex-1 text-left">{item.label}</span>
-                    )}
-                  </button>
-                ))}
+                {bottomMenuItems
+                  .filter((m) => !m.hidden)
+                  .map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => handleNavigation(item)}
+                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
+                        activeItem === item.id
+                          ? 'bg-purple-50 text-purple-700'
+                          : 'text-gray-600 hover:bg-gray-50'
+                      }`}
+                    >
+                      <item.icon size={18} />
+                      {isExpanded && (
+                        <span className="flex-1 text-left">{item.label}</span>
+                      )}
+                    </button>
+                  ))}
               </>
             )}
           </div>
