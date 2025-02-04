@@ -102,8 +102,10 @@ export default function UpvotesPage() {
       return;
     }
 
-    handleListFeedback(false);
-  }, []);
+    if (permissions !== undefined) {
+      handleListFeedback(false);
+    }
+  }, [permissions]);
 
   const getFeedback = (id: number) => {
     getApi<Feedback>({ url: `feedback/${id}` }).then((res) => {
