@@ -223,7 +223,7 @@ export default function UpvotesPage() {
         {!fetching && (
           <>
             {(ideas.length === 0 ||
-              (is_public && permissions?.length === 0)) && (
+              (is_public && permissions && permissions.length === 0)) && (
               <div
                 style={{
                   display: 'flex',
@@ -241,18 +241,19 @@ export default function UpvotesPage() {
                   }}
                 >
                   <h4>
-                    {!filtering || (is_public && permissions?.length === 0) ? (
+                    {!filtering ||
+                    (is_public && permissions && permissions.length === 0) ? (
                       <div className="container no-upvote-background">
                         <div className="flex items-center justify-center mb-2 sad-face">
                           <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
                         </div>
                         <h3 className="no-upvote-header">
-                          {is_public && permissions?.length === 0
+                          {is_public && permissions && permissions.length === 0
                             ? 'This public board is no longer available. Please contact the admin.'
                             : 'No ideas have been created… yet.'}
                         </h3>
                         {(!is_public ||
-                          (permissions && permissions?.length > 0)) && (
+                          (permissions && permissions.length > 0)) && (
                           <h4 className="no-upvote-sub">
                             Now is a great time to add your first idea.
                           </h4>
@@ -267,7 +268,7 @@ export default function UpvotesPage() {
             )}
             {ideas.length > 0 &&
               (!is_public ||
-                (is_public && permissions && permissions?.length > 0)) && (
+                (is_public && permissions && permissions.length > 0)) && (
                 <div className="upvote-each-list-container">
                   {ideas.find((idea) => idea.pinned) && (
                     <p className="pinned-label">
