@@ -40,7 +40,6 @@ const AppRoutes = () => {
         <Routes>
           <Route element={<AppRoute />}>
             {/* Public Routes */}
-            <Route path="/" element={<LoginPage />} />
             <Route path="/sign-in" element={<LoginPage />} />
             <Route path="/sign-in/google" element={<SSOVerifyingPage />} />
             <Route path="/sign-up" element={<SignUpPage />} />
@@ -83,7 +82,7 @@ const AppRoutes = () => {
           </Route>
 
           {/* Redirect unknown routes */}
-          <Route path="*" element={<DashboardPage />} />
+          <Route path="*" element={<Fallback />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

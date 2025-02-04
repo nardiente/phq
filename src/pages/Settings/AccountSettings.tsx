@@ -59,8 +59,15 @@ export function AccountSettings() {
     setUser((prev) => ({ ...prev, user: { ...prev.user, profile_photo } }));
   };
 
+  const deletePortal = () => {
+    deleteApi({ url: 'ssl', pub: true }).catch((err) =>
+      console.error('delete portal', { err })
+    );
+  };
+
   const handleDeleteAccount = () => {
     setIsLoading(true);
+    deletePortal();
     deleteApi<User>({ url: `users/hard-delete/${userDetails?.id}` })
       .then((res) => {
         if (res.results.data) {
@@ -496,7 +503,7 @@ export function AccountSettings() {
             variant="default" // You can change this to any variant you want
           />
           <Button
-            className="w-fit px-4 py-2 bg-red-500 text-red-100 rounded-lg hover:bg-red-200 hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-[13px]"
+            className="w-fit px-4 py-2 bg-red-500 rounded-lg hover:bg-red-200 hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-[13px]"
             disabled={deleteConfirmation !== 'DELETE' || isLoading}
             loading={isLoading}
             onClick={handleDeleteAccount}

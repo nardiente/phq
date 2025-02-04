@@ -141,10 +141,12 @@ export const putApi = async <Data = any>(
 };
 
 export const deleteApi = async <Data = any>({
+  pub = false,
   url,
   useCustomerKey,
   useSessionToken,
 }: {
+  pub?: boolean;
   url: string;
   useCustomerKey?: boolean;
   useSessionToken?: boolean;
@@ -153,12 +155,15 @@ export const deleteApi = async <Data = any>({
   let headers: ApiResponseHeaders;
 
   try {
-    const response = await Axios.delete(`${api_url}/${url}`, {
-      headers: prepHeaders({
-        useCustomerKey,
-        useSessionToken,
-      }) as unknown as AxiosHeaders,
-    });
+    const response = await Axios.delete(
+      `${pub ? api_public_url : api_url}/${url}`,
+      {
+        headers: prepHeaders({
+          useCustomerKey,
+          useSessionToken,
+        }) as unknown as AxiosHeaders,
+      }
+    );
 
     const res = parseResponse<Data>(response);
     results = res.results;

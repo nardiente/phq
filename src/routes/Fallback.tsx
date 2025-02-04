@@ -9,10 +9,16 @@ const Fallback = () => {
   const location = useLocation();
   const { pathname, search } = location;
 
-  const { isAuthenticated } = useUser();
+  const { user: userDetails, handleGetUser, isAuthenticated } = useUser();
+  const { user } = userDetails ?? {};
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-  const pricingPages = ['/free-trial-plans', '/lifetime-deal', '/pricing'];
+  const unprotectedPages = [
+    '/',
+    '/free-trial-plans',
+    '/lifetime-deal',
+    '/pricing',
+  ];
 
   useEffect(() => {
     if (
@@ -22,12 +28,21 @@ const Fallback = () => {
     ) {
       if (isAuthenticated() && pathname === '/sign-in') {
         navigate('/dashboard');
+        return;
       }
-      if (!isAuthenticated() && !pricingPages.includes(pathname)) {
+      if (!isAuthenticated() && !unprotectedPages.includes(pathname)) {
         navigate('/sign-in');
+        return;
       }
     }
+    handleGetUser();
   }, []);
+
+  useEffect(() => {
+    if (is_public) {
+      navigate('upvotes');
+    }
+  }, [user]);
 
   return (
     <div className="h-screen flex items-center justify-center bg-white">

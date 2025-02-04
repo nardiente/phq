@@ -1,8 +1,12 @@
 import { LineChart, RefreshCw } from 'lucide-react';
 import { BoardBanner } from '../components/dashboard/BoardBanner';
 import { ComingSoonLayout } from '../components/ComingSoonLayout';
+import { useUser } from '../contexts/UserContext';
+import { useEffect } from 'react';
 
 export default function DashboardPage() {
+  const { handleGetUser } = useUser();
+
   const stats = [
     { label: 'Ideas', value: '0', change: '0%' },
     { label: 'Votes', value: '0', change: '0%' },
@@ -26,6 +30,10 @@ export default function DashboardPage() {
       date: '9 Oct',
     },
   ];
+
+  useEffect(() => {
+    handleGetUser();
+  }, []);
 
   return (
     <ComingSoonLayout>

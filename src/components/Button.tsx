@@ -21,7 +21,7 @@ const Button: FC<ButtonProps> = ({
   const variantStyles = {
     primary: 'bg-[#FF5C35] hover:bg-[#FF6334] text-white',
     secondary: 'bg-gray-100 text-gray-600 hover:bg-gray-200',
-    danger: 'bg-red-100 text-red-600 hover:bg-red-200',
+    danger: 'bg-red-100 text-white hover:bg-red-200',
     outline: 'border-gray-200 text-gray-600 hover:bg-gray-100',
   };
 

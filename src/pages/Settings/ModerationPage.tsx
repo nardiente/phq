@@ -11,7 +11,7 @@ import { Settings } from '../../components/Settings';
 import SettingsHeader from '../../components/SettingsHeader';
 import Button from '../../components/Button';
 import SettingsContainer from '../../components/SettingsContainer';
-import { ComingSoonLayout } from '../../components/ComingSoonLayout';
+import SectionHeader from '../../components/SectionHeader';
 
 export default function ModerationPage() {
   const navigate = useNavigate();
@@ -82,58 +82,55 @@ export default function ModerationPage() {
   };
 
   return (
-    <ComingSoonLayout>
-      <Settings>
-        <SettingsHeader
-          title="Account Settings"
-          primaryButton={
-            <Button
-              disabled={fetching || loading}
-              loading={fetching || loading}
-              onClick={handleUpdate}
-              text="Update"
-            />
-          }
-          secondaryButton={
-            <Button
-              text="Cancel"
-              onClick={() => navigate('/dashboard')}
-              variant="secondary"
-            />
-          }
-        />
-        <SettingsContainer>
-          <h2 className="text-[16px] font-semibold text-gray-900">
-            Moderation
-          </h2>
-          <div className="space-y-8">
-            <TurnoffUserLogin
-              enabled={moderation.user_login}
-              onChange={(enabled) =>
-                setModeration((prev) => ({
-                  ...prev,
-                  user_login: enabled,
-                }))
-              }
-            />
+    <Settings>
+      <SettingsHeader
+        title="Account Settings"
+        primaryButton={
+          <Button
+            disabled={fetching || loading}
+            loading={fetching || loading}
+            onClick={handleUpdate}
+            text="Update"
+          />
+        }
+        secondaryButton={
+          <Button
+            text="Cancel"
+            onClick={() => navigate('/dashboard')}
+            variant="secondary"
+          />
+        }
+      />
+      <SettingsContainer>
+        <div className="flex flex-col gap-6">
+          <SectionHeader title="Moderation" />
 
-            <UserFeedbackSettings
-              settings={moderation.moderate_settings}
-              onChange={(key, value) =>
-                setModeration((prev) => ({
-                  ...prev,
-                  moderate_settings: {
-                    ...prev.moderate_settings,
-                    [key]: value,
-                  },
-                }))
-              }
-            />
+          <TurnoffUserLogin
+            enabled={moderation.user_login}
+            onChange={(enabled) =>
+              setModeration((prev) => ({
+                ...prev,
+                user_login: enabled,
+              }))
+            }
+          />
 
-            <FeedbackApprovalSection />
-          </div>
-        </SettingsContainer>
-      </Settings>
-    </ComingSoonLayout>
+          <UserFeedbackSettings
+            settings={moderation.moderate_settings}
+            onChange={(key, value) =>
+              setModeration((prev) => ({
+                ...prev,
+                moderate_settings: {
+                  ...prev.moderate_settings,
+                  [key]: value,
+                },
+              }))
+            }
+          />
+
+          <FeedbackApprovalSection />
+        </div>
+      </SettingsContainer>
+    </Settings>
   );
 }

@@ -22,7 +22,7 @@ const AppRoute = () => {
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
-  const publicPagePaths = ['/upvotes', '/roadmap', '/posts'];
+  const unprotectedPages = ['/upvotes', '/roadmap', '/posts'];
 
   const handleNavigation = useCallback(
     (page: PageType) => {
@@ -33,40 +33,40 @@ const AppRoute = () => {
   );
 
   useEffect(() => {
-    let pageType: PageType = pathname.slice(1) as PageType;
-
     if (!is_public) {
       if (
         ![...pathExceptions, ...onbordingPaths].includes(pathname) ||
         (pathExceptions.includes(pathname) && search.length === 0)
       ) {
         if (pathname.slice(1).length === 0) {
-          pageType = 'dashboard';
+          handleNavigation('dashboard');
         }
         if (showBanner) {
-          pageType = 'billing';
+          handleNavigation('billing');
         }
       }
     } else {
-      if (![...pathExceptions, ...publicPagePaths].includes(pathname)) {
-        pageType = 'upvotes';
+      if (![...pathExceptions, ...unprotectedPages].includes(pathname)) {
+        handleNavigation('upvotes');
       }
     }
-
-    handleNavigation(pageType);
   }, [pathname]);
 
   useEffect(() => {
-    setRemindAddBoard(
-      !is_public &&
-        project !== undefined &&
-        user &&
-        !user.stop_remind_add_board &&
-        (!user.remind_3_days ||
-          (user.remind_3_days &&
-            moment().diff(moment(user.remind_3_days_timestamp), 'minutes') >=
-              4320))
-    );
+    if (!is_public) {
+      setRemindAddBoard(
+        !is_public &&
+          project !== undefined &&
+          user &&
+          !user.stop_remind_add_board &&
+          (!user.remind_3_days ||
+            (user.remind_3_days &&
+              moment().diff(moment(user.remind_3_days_timestamp), 'minutes') >=
+                4320))
+      );
+    } else {
+      handleNavigation('upvotes');
+    }
   }, [user]);
 
   return (

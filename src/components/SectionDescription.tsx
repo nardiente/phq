@@ -7,7 +7,7 @@ interface SectionDescriptionProps {
 
 const SectionDescription: React.FC<SectionDescriptionProps> = ({
   text,
-  className,
+  className = '',
 }) => {
   return <p className={`text-base text-gray-600 ${className}`}>{text}</p>;
 };

@@ -12,10 +12,10 @@ export function FeedbackApprovalSection() {
   }, []);
 
   return (
-    <div className="space-y-6 pt-4">
+    <>
       <FeedbackHeader />
       <FeedbackTabs activeTab={state.activeTab} onTabChange={setActiveTab} />
       <FeedbackContent />
-    </div>
+    </>
   );
 }

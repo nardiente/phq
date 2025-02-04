@@ -18,7 +18,7 @@ function Banner({ onNavigate }: BannerProps) {
   return (
     <div className="w-full h-[60px] bg-white border-b border-gray-200 flex items-center justify-end sticky top-0 z-50 pr-5">
       <div className="flex items-center gap-3">
-        {isAuthenticated() ? (
+        {isAuthenticated() || (is_public && user?.user?.id) ? (
           <>
             <Notifications />
             <UserMenu user={user?.user} onNavigate={onNavigate} />
