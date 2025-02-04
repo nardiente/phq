@@ -23,7 +23,7 @@ export function AccountSettings() {
   const navigate = useNavigate();
 
   const { api_error, setApiError } = useApp();
-  const { user, setUser, handleGetUser } = useUser();
+  const { user, setUser } = useUser();
   const { user: userDetails } = user ?? {};
   const { setHasUnsavedChanges } = useUnsavedChanges();
 
@@ -32,10 +32,6 @@ export function AccountSettings() {
 
   const [deleteConfirmation, setDeleteConfirmation] = useState('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    handleGetUser();
-  }, []);
 
   useEffect(() => {
     if (api_error.length > 0) {

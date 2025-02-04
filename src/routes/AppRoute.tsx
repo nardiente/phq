@@ -14,7 +14,12 @@ const AppRoute = () => {
   const location = useLocation();
   const { pathname, search } = location;
 
-  const { isAuthenticated, user: userDetails, showBanner } = useUser();
+  const {
+    user: userDetails,
+    showBanner,
+    handleGetUser,
+    isAuthenticated,
+  } = useUser();
   const { project, user } = userDetails ?? {};
 
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
@@ -31,6 +36,10 @@ const AppRoute = () => {
     },
     [navigate]
   );
+
+  useEffect(() => {
+    handleGetUser();
+  }, []);
 
   useEffect(() => {
     if (!is_public) {

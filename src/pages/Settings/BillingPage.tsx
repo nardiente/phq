@@ -31,7 +31,7 @@ export default function BillingPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { user, handleGetUser } = useUser();
+  const { user } = useUser();
   const { setHasUnsavedChanges } = useUnsavedChanges();
 
   const [cards, setCards] = useState<Card[]>([]);
@@ -167,7 +167,6 @@ export default function BillingPage() {
     } else {
       handleGetSubscription();
     }
-    handleGetUser();
     handleGetCard();
     handleInvoiceHistory();
     listCountries();
