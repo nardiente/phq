@@ -26,6 +26,9 @@ export const getSessionToken = (): string | null =>
 export const setSessionToken = (key: string): void =>
   localStorage.setItem('session_token', key);
 
+export const eraseSessionToken = (): void =>
+  localStorage.removeItem('session_token');
+
 export const setCustomerKaslKey = (key: string): void =>
   localStorage.setItem('customer-kasl-key', key);
 

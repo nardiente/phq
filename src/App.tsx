@@ -21,7 +21,7 @@ import { usePanel } from './contexts/PanelContext';
 
 const App: FC = () => {
   const { user, showBanner, setShowBanner, setUser } = useUser();
-  const { admin_profile, user: user_profile, moderation } = user ?? {};
+  const { admin_profile, moderation, project, user: user_profile } = user ?? {};
   const {
     state: { socket },
     setSocket,
@@ -34,10 +34,10 @@ const App: FC = () => {
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
-    if (is_public && moderation?.user_login === true) {
-      checkSession();
+    if (is_public && admin_profile) {
+      authenticate();
     }
-  }, [moderation]);
+  }, [admin_profile]);
 
   useEffect(() => {
     checkSubscriptionBanner();
@@ -46,7 +46,7 @@ const App: FC = () => {
 
     if (
       !is_public ||
-      (is_public && user?.admin_profile?.email?.endsWith('@producthq.io'))
+      (is_public && admin_profile?.email?.endsWith('@producthq.io'))
     ) {
       // clickConnect = document.createElement('script')
       // clickConnect.src =
@@ -68,7 +68,7 @@ const App: FC = () => {
       document.head.appendChild(linkIconTag);
     }
 
-    if (is_public && !user?.admin_profile?.email?.endsWith('@producthq.io')) {
+    if (is_public && !admin_profile?.email?.endsWith('@producthq.io')) {
       document.title = '';
       const link = document.querySelector(
         'link[rel~="icon"]'
@@ -78,7 +78,7 @@ const App: FC = () => {
       }
     }
 
-    if (is_public && !user?.project?.is_index_search_engine) {
+    if (is_public && !project?.is_index_search_engine) {
       metaTag = document.createElement('meta');
       metaTag.name = 'robots';
       metaTag.content = 'noindex';
@@ -89,7 +89,7 @@ const App: FC = () => {
     return () => {
       if (
         !is_public ||
-        (is_public && user?.admin_profile?.email?.endsWith('@producthq.io'))
+        (is_public && admin_profile?.email?.endsWith('@producthq.io'))
       ) {
         // document.body.removeChild(clickConnect)
         // Remove clarity cleanup
@@ -97,7 +97,7 @@ const App: FC = () => {
         document.head.removeChild(linkIconTag);
       }
 
-      if (is_public && !user?.admin_profile?.email?.endsWith('@producthq.io')) {
+      if (is_public && !admin_profile?.email?.endsWith('@producthq.io')) {
         document.title = '';
         const link = document.querySelector(
           'link[rel~="icon"]'
@@ -107,11 +107,11 @@ const App: FC = () => {
         }
       }
 
-      if (is_public && !user?.project?.is_index_search_engine) {
+      if (is_public && !project?.is_index_search_engine) {
         document.head.removeChild(metaTag);
       }
     };
-  }, [user]);
+  }, [admin_profile, project]);
 
   useEffect(() => {
     if (
@@ -122,9 +122,18 @@ const App: FC = () => {
     }
   }, [admin_profile, user_profile]);
 
-  const checkSession = async () => {
-    const token = getSessionToken() ?? (await generateToken());
-    setCustomerKaslKey(user?.admin_profile?.kasl_key ?? '');
+  const authenticate = async () => {
+    let token = getSessionToken();
+    if (moderation?.user_login === true && token === null) {
+      token = await generateToken();
+    }
+    if (token !== null) {
+      checkSession(token);
+    }
+  };
+
+  const checkSession = async (token: string) => {
+    setCustomerKaslKey(admin_profile?.kasl_key ?? '');
     setFetching(true);
     postApi<User & { token?: string }>({
       url: 'auth/check-session',

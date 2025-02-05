@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { eraseKaslKey } from '../utils/localStorage';
+import { eraseKaslKey, eraseSessionToken } from '../utils/localStorage';
 import { User, UserTypes } from '../types/user';
 
 interface UserMenuProps {
@@ -10,8 +9,6 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ user, onNavigate }: UserMenuProps) {
-  const navigate = useNavigate();
-
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +32,8 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
 
   const handleLogout = () => {
     eraseKaslKey();
-    navigate(is_public ? '/upvotes' : '/sign-in');
+    eraseSessionToken();
+    window.location.href = is_public ? '/upvotes' : '/sign-in';
   };
 
   return (
