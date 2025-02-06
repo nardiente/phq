@@ -37,7 +37,7 @@ const App: FC = () => {
     if (is_public && admin_profile) {
       authenticate();
     }
-  }, [admin_profile]);
+  }, [admin_profile, moderation]);
 
   useEffect(() => {
     checkSubscriptionBanner();
@@ -123,29 +123,28 @@ const App: FC = () => {
   }, [admin_profile, user_profile]);
 
   const authenticate = async () => {
-    let token = getSessionToken();
-    if (moderation?.user_login === true && token === null) {
-      token = await generateToken();
-    }
-    if (token !== null) {
-      checkSession(token);
-    }
+    const token = getSessionToken();
+    const isNew = moderation?.user_login === true && !token;
+    await checkSession(token ?? (await generateToken()), isNew);
   };
 
-  const checkSession = async (token: string) => {
+  const checkSession = async (token: string, isNew: boolean) => {
     setCustomerKaslKey(admin_profile?.kasl_key ?? '');
     setFetching(true);
-    postApi<User & { token?: string }>({
+    postApi<User>({
       url: 'auth/check-session',
-      payload: { token },
+      payload: { token, isNew },
       useCustomerKey: true,
     })
       .then((res) => {
-        if (res.results.data) {
-          if (res.headers['kasl-key']) {
-            setSessionToken(res.headers['kasl-key'].toString());
+        const {
+          results: { data },
+        } = res;
+        if (data) {
+          if (data.token) {
+            setSessionToken(data.token);
           }
-          setUser((prev) => ({ ...prev, user: res.results.data }));
+          setUser((prev) => ({ ...prev, user: data }));
         }
       })
       .finally(() => setFetching(false));

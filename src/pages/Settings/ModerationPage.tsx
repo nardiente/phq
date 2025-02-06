@@ -88,7 +88,7 @@ export default function ModerationPage() {
         primaryButton={
           <Button
             disabled={fetching || loading}
-            loading={fetching || loading}
+            loading={loading}
             onClick={handleUpdate}
             text="Update"
           />

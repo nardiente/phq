@@ -20,7 +20,7 @@ const AppRoute = () => {
     handleGetUser,
     isAuthenticated,
   } = useUser();
-  const { project, user } = userDetails ?? {};
+  const { admin_profile, project, user } = userDetails ?? {};
 
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
   const [remindAddBoard, setRemindAddBoard] = useState<boolean | undefined>();
@@ -55,11 +55,20 @@ const AppRoute = () => {
         }
       }
     } else {
-      if (![...pathExceptions, ...unprotectedPages].includes(pathname)) {
+      if (
+        ![...pathExceptions, ...unprotectedPages].includes(pathname) &&
+        project
+      ) {
         handleNavigation('upvotes');
       }
     }
   }, [pathname]);
+
+  useEffect(() => {
+    if (is_public && admin_profile && !project) {
+      navigate('/404');
+    }
+  }, [project]);
 
   useEffect(() => {
     if (!is_public) {
@@ -73,7 +82,7 @@ const AppRoute = () => {
               moment().diff(moment(user.remind_3_days_timestamp), 'minutes') >=
                 4320))
       );
-    } else {
+    } else if (project) {
       handleNavigation('upvotes');
     }
   }, [user]);
