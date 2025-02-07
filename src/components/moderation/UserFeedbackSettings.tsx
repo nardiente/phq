@@ -3,7 +3,7 @@ import SectionHeader from '../SectionHeader';
 import { ModerateSettings } from '../../types/moderation';
 
 interface UserFeedbackSettingsProps {
-  settings: ModerateSettings;
+  settings?: ModerateSettings;
   onChange: (key: string, value: boolean) => void;
 }
 
@@ -27,7 +27,7 @@ export function UserFeedbackSettings({
             </p>
           </div>
           <Toggle
-            checked={settings.feedback}
+            checked={settings?.feedback ?? false}
             onChange={(checked) => onChange('feedback', checked)}
           />
         </div>
@@ -40,7 +40,7 @@ export function UserFeedbackSettings({
             </p>
           </div>
           <Toggle
-            checked={settings.votes}
+            checked={settings?.votes ?? false}
             onChange={(checked) => onChange('votes', checked)}
           />
         </div>
@@ -53,7 +53,7 @@ export function UserFeedbackSettings({
             </p>
           </div>
           <Toggle
-            checked={settings.comments}
+            checked={settings?.comments ?? false}
             onChange={(checked) => onChange('comments', checked)}
           />
         </div>

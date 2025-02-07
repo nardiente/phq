@@ -54,6 +54,7 @@ const initialUser: UserContextConfig = {
   subscription: undefined,
   permissions: [],
   rbac_permissions: [],
+  moderation: undefined,
 };
 
 const UserContext = createContext<UserContextType>({
