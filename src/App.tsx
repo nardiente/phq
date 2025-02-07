@@ -74,7 +74,9 @@ const App: FC = () => {
         'link[rel~="icon"]'
       ) as HTMLLinkElement;
       if (link) {
-        link.href = '';
+        link.href = admin_profile?.company_logo
+          ? admin_profile.company_logo
+          : '';
       }
     }
 
