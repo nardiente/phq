@@ -4,6 +4,7 @@ import AppRoutes from './routes/routes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
+  eraseSessionToken,
   getSessionToken,
   setCustomerKaslKey,
   setSessionToken,
@@ -140,8 +141,11 @@ const App: FC = () => {
     })
       .then((res) => {
         const {
-          results: { data },
+          results: { data, error },
         } = res;
+        if (error === 'Session not found.') {
+          eraseSessionToken();
+        }
         if (data) {
           if (data.token) {
             setSessionToken(data.token);

@@ -9,8 +9,13 @@ const Fallback = () => {
   const location = useLocation();
   const { pathname, search } = location;
 
-  const { user: userDetails, handleGetUser, isAuthenticated } = useUser();
-  const { admin_profile, project, user } = userDetails ?? {};
+  const {
+    loaded,
+    user: userDetails,
+    handleGetUser,
+    isAuthenticated,
+  } = useUser();
+  const { project, user } = userDetails ?? {};
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const unprotectedPages = [
@@ -39,10 +44,10 @@ const Fallback = () => {
   }, []);
 
   useEffect(() => {
-    if (is_public && admin_profile && !project) {
+    if (is_public && loaded && !project) {
       navigate('/404');
     }
-  }, [project]);
+  }, [loaded]);
 
   useEffect(() => {
     if (user?.id || is_public) {

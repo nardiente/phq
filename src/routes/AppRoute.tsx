@@ -15,12 +15,13 @@ const AppRoute = () => {
   const { pathname, search } = location;
 
   const {
+    loaded,
     user: userDetails,
     showBanner,
     handleGetUser,
     isAuthenticated,
   } = useUser();
-  const { admin_profile, project, user } = userDetails ?? {};
+  const { project, user } = userDetails ?? {};
 
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
   const [remindAddBoard, setRemindAddBoard] = useState<boolean | undefined>();
@@ -65,10 +66,10 @@ const AppRoute = () => {
   }, [pathname]);
 
   useEffect(() => {
-    if (is_public && admin_profile && !project) {
+    if (is_public && loaded && !project) {
       navigate('/404');
     }
-  }, [project]);
+  }, [loaded]);
 
   useEffect(() => {
     if (!is_public) {
