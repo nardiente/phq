@@ -311,7 +311,7 @@ export function AccountSettings() {
               userDetails?.company_logo !== COMPANY_LOGO_PLACEHOLDER &&
               userDetails.company_logo.length > 0 ? (
                 <img
-                  className="is-rounded responsiveImage rounded-full"
+                  className="is-rounded responsiveImage rounded-full w-16 h-16"
                   src={userDetails?.company_logo}
                 />
               ) : (
