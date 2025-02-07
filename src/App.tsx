@@ -23,6 +23,7 @@ import { usePanel } from './contexts/PanelContext';
 const App: FC = () => {
   const { user, showBanner, setShowBanner, setUser } = useUser();
   const { admin_profile, moderation, project, user: user_profile } = user ?? {};
+  const { company_logo, email, kasl_key } = admin_profile ?? {};
   const {
     state: { socket },
     setSocket,
@@ -45,10 +46,7 @@ const App: FC = () => {
 
     let linkIconTag: any, metaTag: any;
 
-    if (
-      !is_public ||
-      (is_public && admin_profile?.email?.endsWith('@producthq.io'))
-    ) {
+    if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
       // clickConnect = document.createElement('script')
       // clickConnect.src =
       //   'https://s3.amazonaws.com/app.productfeedback.co/scripts/clickConnect.js'
@@ -69,15 +67,13 @@ const App: FC = () => {
       document.head.appendChild(linkIconTag);
     }
 
-    if (is_public && !admin_profile?.email?.endsWith('@producthq.io')) {
+    if (is_public && !email?.endsWith('@producthq.io')) {
       document.title = '';
       const link = document.querySelector(
         'link[rel~="icon"]'
       ) as HTMLLinkElement;
       if (link) {
-        link.href = admin_profile?.company_logo
-          ? admin_profile.company_logo
-          : '';
+        link.href = company_logo && company_logo.length > 0 ? company_logo : '';
       }
     }
 
@@ -90,17 +86,14 @@ const App: FC = () => {
     }
 
     return () => {
-      if (
-        !is_public ||
-        (is_public && admin_profile?.email?.endsWith('@producthq.io'))
-      ) {
+      if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
         // document.body.removeChild(clickConnect)
         // Remove clarity cleanup
         // document.body.removeChild(clarity)
         document.head.removeChild(linkIconTag);
       }
 
-      if (is_public && !admin_profile?.email?.endsWith('@producthq.io')) {
+      if (is_public && !email?.endsWith('@producthq.io')) {
         document.title = '';
         const link = document.querySelector(
           'link[rel~="icon"]'
@@ -132,7 +125,7 @@ const App: FC = () => {
   };
 
   const checkSession = async (token: string, isNew: boolean) => {
-    setCustomerKaslKey(admin_profile?.kasl_key ?? '');
+    setCustomerKaslKey(kasl_key ?? '');
     setFetching(true);
     postApi<User>({
       url: 'auth/check-session',
