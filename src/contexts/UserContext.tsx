@@ -44,6 +44,8 @@ interface UserContextType {
   showBanner: boolean;
   setShowBanner: Dispatch<React.SetStateAction<boolean>>;
   isAuthenticated: () => boolean;
+  loaded: boolean;
+  setLoaded: Dispatch<SetStateAction<boolean>>;
 }
 
 const initialUser: UserContextConfig = {
@@ -75,6 +77,8 @@ const UserContext = createContext<UserContextType>({
   setUser: () => {},
   showBanner: false,
   isAuthenticated: () => false,
+  loaded: false,
+  setLoaded: () => {},
 });
 
 interface UserProviderProps {
@@ -90,6 +94,7 @@ export function UserProvider({ children }: UserProviderProps) {
   const [last_name, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [loading_social, setLoadingSocial] = useState<boolean>(false);
+  const [loaded, setLoaded] = useState<boolean>(false);
 
   const handleGetUser = async () => {
     setFetching(true);
@@ -106,7 +111,10 @@ export function UserProvider({ children }: UserProviderProps) {
           setUser(result);
         }
       })
-      .finally(() => setFetching(false));
+      .finally(() => {
+        setFetching(false);
+        setLoaded(true);
+      });
   };
 
   const isAuthenticated = (): boolean => {
@@ -134,6 +142,8 @@ export function UserProvider({ children }: UserProviderProps) {
         showBanner,
         setShowBanner,
         isAuthenticated,
+        loaded,
+        setLoaded,
       }}
     >
       {children}

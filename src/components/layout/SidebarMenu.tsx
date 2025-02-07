@@ -196,7 +196,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
                       </figure>
                     ) : (
                       <span className="text-purple-600 font-medium text-lg">
-                        company_info?.company_name?.toUpperCase().charAt(0)
+                        {company_info?.company_name?.toUpperCase().charAt(0)}
                       </span>
                     )}
                   </>
