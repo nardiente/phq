@@ -93,7 +93,7 @@ const AppRoute = () => {
       {isAuthenticated() || (!isAuthenticated() && is_public) ? (
         <>
           <div className="min-h-screen bg-[#fafafa] flex">
-            {!pathExceptions.includes(pathname) && (
+            {!pathExceptions.includes(pathname) && !is_public && (
               <SidebarMenu
                 activeItem={
                   currentPage === 'settings' ? 'account' : currentPage
@@ -103,7 +103,10 @@ const AppRoute = () => {
             )}
             <div className="flex-1">
               {!pathExceptions.includes(pathname) && (
-                <Banner onNavigate={handleNavigation} />
+                <Banner
+                  activeItem={currentPage}
+                  onNavigate={handleNavigation}
+                />
               )}
               <Outlet />
               <AddYourBoardModal open={remindAddBoard ?? false} />

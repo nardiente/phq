@@ -33,7 +33,7 @@ interface SidebarMenuProps {
   onNavigate: (page: PageType) => void;
 }
 
-interface MenuItem {
+export interface MenuItem {
   id: string;
   label: string;
   icon: LucideIcon;

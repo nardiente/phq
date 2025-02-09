@@ -2,6 +2,7 @@ import './styles.css';
 import * as React from 'react';
 import { WhatsNewFilterProps } from './types';
 import { DropdownWhatsNew } from '../DropDownWhatsNew';
+import { Check } from 'lucide-react';
 
 export const WhatsNewFilter: React.FC<WhatsNewFilterProps> = (props) => {
   const [active_change_types, setActiveChangeTypes] = React.useState<number[]>(
@@ -27,7 +28,7 @@ export const WhatsNewFilter: React.FC<WhatsNewFilterProps> = (props) => {
               {props.change_types.map((change_type, idx) => (
                 <span
                   key={idx}
-                  className="dropdown-item is-clickable drop-down-font"
+                  className="is-clickable hover:bg-[#f1f1f6] flex items-center gap-[8px] text-[14px] p-[8px] w-full font-satoshi font-medium"
                   onClick={() => {
                     let copy_active_change_types = active_change_types;
                     if (
@@ -73,7 +74,7 @@ export const WhatsNewFilter: React.FC<WhatsNewFilterProps> = (props) => {
                     }`}
                   >
                     <figure className="image is-16x16">
-                      <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/check.svg" />
+                      <Check className="text-[#110733]" size={16} />
                     </figure>
                   </span>
                 </span>

@@ -121,14 +121,15 @@ export default function UpvotesPage() {
   };
 
   const handleGetStatus = () => {
-    getApi<Roadmap[]>({ url: `roadmaps?domain=${window.location.host}` }).then(
-      (res) => {
-        if (res.results.data) {
-          const data = res.results.data;
-          setRoadmaps(data);
-        }
+    getApi<Roadmap[]>({
+      url: 'roadmaps',
+      params: { domain: window.location.host },
+    }).then((res) => {
+      if (res.results.data) {
+        const data = res.results.data;
+        setRoadmaps(data);
       }
-    );
+    });
   };
 
   const handleListTag = () => {
