@@ -177,7 +177,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
                     {props.roadmaps.map((roadmap, idx) => (
                       <span
                         key={idx}
-                        className="dropdown-item is-clickable drop-down-font"
+                        className="dropdown-item is-clickable drop-down-font text-[#110733]"
                         onClick={() =>
                           onFilterStatus(
                             roadmap.name === filters.status
@@ -185,9 +185,6 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
                               : roadmap.name
                           )
                         }
-                        style={{
-                          color: roadmap.font_color,
-                        }}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -244,7 +241,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
                     {tags.map((tag, idx) => (
                       <span
                         key={idx}
-                        className="dropdown-item is-clickable drop-down-font"
+                        className="dropdown-item is-clickable drop-down-font text-[#110733]"
                         onClick={() => {
                           let copy_active_tags = filters.tags;
                           if (
