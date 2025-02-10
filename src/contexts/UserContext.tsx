@@ -118,7 +118,7 @@ export function UserProvider({ children }: UserProviderProps) {
   };
 
   const isAuthenticated = (): boolean => {
-    return getKaslKey() !== null;
+    return getKaslKey() !== undefined;
   };
 
   return (

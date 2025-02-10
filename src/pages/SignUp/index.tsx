@@ -34,7 +34,7 @@ export const SignUpPage = () => {
         : UserTypes.CUSTOMER
     );
 
-    if (getKaslKey() !== null) {
+    if (getKaslKey() !== undefined) {
       // has logged in user
       window.location.href =
         import.meta.env.VITE_SYSTEM_TYPE !== 'public' ? '/upvotes' : '/';

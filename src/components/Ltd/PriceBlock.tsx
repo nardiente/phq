@@ -18,7 +18,7 @@ interface Props {
 export default function PriceBlock({ lifetimeDeal }: Props) {
   const { t } = useTranslation();
 
-  const is_logged_in = getKaslKey() !== null;
+  const is_logged_in = getKaslKey() !== undefined;
 
   const [priceData, setPriceData] = useState<any[]>([]);
   const [subscription, setSubsciption] = useState<Subscription | null>(
