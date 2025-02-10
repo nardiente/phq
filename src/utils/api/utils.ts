@@ -17,13 +17,13 @@ export const prepHeaders = (params?: {
     {
       Authorization: getKaslKey() ?? '',
     };
-  if (getKaslKey() !== null) {
+  if (getKaslKey() !== undefined) {
     headers['kasl-key'] = getKaslKey() ?? '';
   }
-  if (useCustomerKey && getCustomerKaslKey() !== null) {
+  if (useCustomerKey && getCustomerKaslKey() !== undefined) {
     headers['kasl-key'] = getCustomerKaslKey() ?? '';
   }
-  if (useSessionToken && getSessionToken() !== null) {
+  if (useSessionToken && getSessionToken() !== undefined) {
     headers['kasl-key'] = getSessionToken() ?? '';
   }
   return headers;

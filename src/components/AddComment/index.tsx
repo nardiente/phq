@@ -114,8 +114,8 @@ const AddComment = () => {
   }
 
   const is_logged_in =
-    getKaslKey() !== null ||
-    (getSessionToken() !== null &&
+    getKaslKey() !== undefined ||
+    (getSessionToken() !== undefined &&
       is_public &&
       user?.moderation?.user_login === true);
 

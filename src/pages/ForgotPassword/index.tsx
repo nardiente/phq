@@ -36,7 +36,7 @@ export const ForgotPasswordPage: React.FC = () => {
         : UserTypes.CUSTOMER
     );
 
-    if (getKaslKey() !== null) {
+    if (getKaslKey() !== undefined) {
       // has logged in user
       window.location.href =
         import.meta.env.VITE_SYSTEM_TYPE !== 'public' ? '/dashboard' : '/';
@@ -110,7 +110,7 @@ export const ForgotPasswordPage: React.FC = () => {
     }
   }, [screen_width]);
 
-  return getKaslKey() !== null ? null : (
+  return getKaslKey() !== undefined ? null : (
     <section className="hero" id="ForgotPasswordPage">
       <div className="hero is-fullheight">
         <div className={`hero-body${is_mobile ? ' mobile' : ''}`}>

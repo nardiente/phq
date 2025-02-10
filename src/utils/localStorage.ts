@@ -1,9 +1,9 @@
-export const getKaslKey = (): string | null =>
+export const getKaslKey = (): string | undefined =>
   localStorage.getItem(
     import.meta.env.VITE_SYSTEM_TYPE === 'public'
       ? 'public-kasl-key'
       : 'kasl-key'
-  );
+  ) ?? undefined;
 
 export const setKaslKey = (key: string): void =>
   localStorage.setItem(
@@ -20,8 +20,8 @@ export const eraseKaslKey = (): void =>
       : 'kasl-key'
   );
 
-export const getSessionToken = (): string | null =>
-  localStorage.getItem('session_token');
+export const getSessionToken = (): string | undefined =>
+  localStorage.getItem('session_token') ?? undefined;
 
 export const setSessionToken = (key: string): void =>
   localStorage.setItem('session_token', key);
@@ -32,8 +32,8 @@ export const eraseSessionToken = (): void =>
 export const setCustomerKaslKey = (key: string): void =>
   localStorage.setItem('customer-kasl-key', key);
 
-export const getCustomerKaslKey = (): string | null =>
-  localStorage.getItem('customer-kasl-key');
+export const getCustomerKaslKey = (): string | undefined =>
+  localStorage.getItem('customer-kasl-key') ?? undefined;
 
 export const setModerateUserLogin = (key: string): void =>
   localStorage.setItem('moderate-user-login', key);
@@ -41,5 +41,5 @@ export const setModerateUserLogin = (key: string): void =>
 export const getModerateUserLogin = (): boolean =>
   localStorage.getItem('moderate-user-login')?.toString() === 'true';
 
-export const getPartneroPartner = (): string | null =>
-  localStorage.getItem('partnero_partner');
+export const getPartneroPartner = (): string | undefined =>
+  localStorage.getItem('partnero_partner') ?? undefined;

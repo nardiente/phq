@@ -233,7 +233,7 @@ export const LoginForm = (props: LoginFormProps) => {
     };
 
     if (is_public) {
-      payload = { ...payload, token: getSessionToken() ?? undefined };
+      payload = { ...payload, token: getSessionToken() };
     }
 
     postApi<

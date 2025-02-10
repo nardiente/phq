@@ -26,7 +26,7 @@ export default function PricingBanner({
   const [number_ideas, setNumberIdeas] = useState<number>(0);
   const [subscribing, setSubscribing] = useState(false);
 
-  const is_logged_in = getKaslKey() !== null;
+  const is_logged_in = getKaslKey() !== undefined;
 
   useEffect(() => {
     setFetching(

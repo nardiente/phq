@@ -112,7 +112,7 @@ export const Comment = ({
     idea = selectedIdea ?? undefined;
   }
 
-  const is_logged_in = getKaslKey() !== null;
+  const is_logged_in = getKaslKey() !== undefined;
   const is_draft = comment.draft;
   const [currentComment, setCurrentComment] = useState(comment);
   const [lineHeight, setLightHeight] = useState(0);

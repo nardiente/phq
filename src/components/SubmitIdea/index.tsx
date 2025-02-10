@@ -46,8 +46,8 @@ export const SubmitIdea = () => {
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const is_logged_in =
-    getKaslKey() !== null ||
-    (getSessionToken() !== null &&
+    getKaslKey() !== undefined ||
+    (getSessionToken() !== undefined &&
       is_public &&
       moderation?.user_login === true);
 

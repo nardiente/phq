@@ -24,7 +24,7 @@ export const LoginPage = () => {
   React.useEffect(() => {
     setType(isPublicSite ? UserTypes.USER : UserTypes.CUSTOMER);
 
-    const isLoggedIn = getKaslKey() !== null;
+    const isLoggedIn = getKaslKey() !== undefined;
     setIsLoggedIn(isLoggedIn);
 
     if (isLoggedIn) {
