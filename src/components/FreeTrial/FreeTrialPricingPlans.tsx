@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { Plan, Price } from '../../types/billing';
-import { useNavigate } from 'react-router-dom';
 
 export default function FreeTrialPricingPlans({ plan }: { plan?: Plan }) {
-  const navigate = useNavigate();
   const [tabView, setTabView] = useState<string>('monthly');
 
   const handleSignUpRedirect = (subscribe_plan: Price) => {
     const description = subscribe_plan.product.name;
-    navigate(`/sign-up?plan=${subscribe_plan.id}&description=${description}`);
+    window.location.href = `https://app.producthq.io/sign-up?plan=${subscribe_plan.id}&description=${description}`;
   };
 
   return (
