@@ -104,7 +104,7 @@ export const ResetPasswordPage: FC = () => {
     }
   }, [screen_width]);
 
-  return getKaslKey() ? null : (
+  return getKaslKey() ? undefined : (
     <section className="hero" id="ResetPasswordPage">
       <div className="hero is-fullheight">
         <div className={`hero-body${is_mobile ? ' mobile' : ''}`}>

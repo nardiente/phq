@@ -91,7 +91,7 @@ export const SignUpPage = () => {
     }
   }, [screen_width]);
 
-  return getKaslKey() === null ? (
+  return getKaslKey() === undefined ? (
     <section id="SignUpPage">
       {/* <div className="hero is-fullheight">
         <div className={`hero-body${is_mobile ? ' mobile' : ''}`}>
