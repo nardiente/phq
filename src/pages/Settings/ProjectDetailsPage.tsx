@@ -584,6 +584,7 @@ export default function ProjectDetailsPage() {
                   href="https://support.producthq.io/articles/how-to-set-up-your-custom-domain-name-145e70-e8cd0"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="text-[#5a00cd] hover:underline"
                 >
                   here
                 </a>
