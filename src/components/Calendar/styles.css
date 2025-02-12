@@ -15,10 +15,6 @@
     line-height: 18.9px;
   }
 
-  div {
-    width: 100%;
-  }
-
   div .date-trigger {
     display: flex;
     background: transparent;
@@ -33,7 +29,7 @@
     color: #6b7280;
     margin-top: 10px;
     width: 100%;
-    padding: 14px 16px 14px 0;
+    padding: 14px 16px 14px 47px;
     height: 48px;
     text-align: left;
   }
