@@ -44,15 +44,9 @@ const App: FC = () => {
   useEffect(() => {
     checkSubscriptionBanner();
 
-    let linkIconTag: any, metaTag: any;
+    let gistScript: any, linkIconTag: any, metaTag: any;
 
     if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
-      // clickConnect = document.createElement('script')
-      // clickConnect.src =
-      //   'https://s3.amazonaws.com/app.productfeedback.co/scripts/clickConnect.js'
-      // clickConnect.async = true
-      // document.body.appendChild(clickConnect)
-
       // Remove clarity script
       // clarity = document.createElement('script')
       // clarity.src =
@@ -65,6 +59,11 @@ const App: FC = () => {
       linkIconTag.type = 'image/svg+xml';
       linkIconTag.href = '/favicon.ico';
       document.head.appendChild(linkIconTag);
+
+      gistScript = document.createElement('script');
+      gistScript.src =
+        'https://s3.amazonaws.com/app.productfeedback.co/scripts/gist.js';
+      document.head.appendChild(gistScript);
     }
 
     if (is_public && !email?.endsWith('@producthq.io')) {
@@ -87,10 +86,10 @@ const App: FC = () => {
 
     return () => {
       if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
-        // document.body.removeChild(clickConnect)
         // Remove clarity cleanup
         // document.body.removeChild(clarity)
         document.head.removeChild(linkIconTag);
+        document.head.removeChild(gistScript);
       }
 
       if (is_public && !email?.endsWith('@producthq.io')) {
