@@ -13,7 +13,7 @@ const AddTopicsOnboarding = () => {
 
   const [, /* field_errors */ setFieldErrors] = useState<ApiFieldError[]>([]);
   const [tag, setTag] = useState<string>('');
-  const [tags, setTags] = useState<string[]>(['Bug', 'Report', 'Feature']);
+  const [tags, setTags] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [active_status, setActiveStatus] = useState<string>('Select status');
   const [loading, setLoading] = useState<boolean>(false);
@@ -74,6 +74,25 @@ const AddTopicsOnboarding = () => {
           type="text"
           tab_index={1}
           label="Setup to 3 tags related to this idea (optional)"
+          onBlur={() => {
+            if (tag.trim().length > 0) {
+              if (tags.length >= 3) {
+                setError('Only three tags are allowed.');
+                return;
+              }
+              const tagList = tag.split(',');
+              if (tagList.length > 3) {
+                setError('Only three tags are allowed.');
+                return;
+              }
+              tagList.forEach((tagName) => {
+                if (!tags.includes(tagName) && tags.length < 3) {
+                  tags.push(tagName);
+                }
+              });
+              setTag('');
+            }
+          }}
           onChange={(e) => {
             setTag(e.target.value);
             setError(null);

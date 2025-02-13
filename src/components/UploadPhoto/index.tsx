@@ -1,6 +1,6 @@
 import * as React from 'react';
 import heic2any from 'heic2any';
-import FadeLoader from 'react-spinners/FadeLoader';
+import { Loader } from 'lucide-react';
 import Tiff from 'tiff.js';
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { postApi } from '../../utils/api/api';
@@ -235,6 +235,11 @@ export const UploadPhoto: React.FC<{
 
   return (
     <Modal isOpen={props.show_modal}>
+      {uploadState.uploading && (
+        <div className="absolute flex items-center justify-center h-32 mt-8 pt-8">
+          <Loader />
+        </div>
+      )}
       <ModalHeader>
         <span style={{ float: 'right', fontSize: 'x-large' }}>
           <label onClick={() => resetUploadState()}>
@@ -261,21 +266,6 @@ export const UploadPhoto: React.FC<{
             {imageErrorMsg}
           </span>
         )}
-        <FadeLoader
-          loading={uploadState.uploading}
-          cssOverride={{
-            display: 'flex',
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            opacity: '80%',
-            width: '30px',
-            height: '30px',
-          }}
-          color={'gray'}
-          height={15}
-          width={5}
-        />
         <input
           id="input-file-upload"
           ref={inputRef as React.LegacyRef<HTMLInputElement>}
@@ -312,10 +302,10 @@ export const UploadPhoto: React.FC<{
           <button
             type="button"
             onClick={() => handleUpload(props.image_type)}
-            className="button upload_button border-white"
+            className="button upload_button w-max"
             disabled={uploadState.buttonDisabled || uploadState.uploading}
           >
-            {t('upload')}
+            {uploadState.uploading ? 'Loading...' : t('upload')}
           </button>
         </div>
       </ModalBody>

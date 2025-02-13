@@ -3,6 +3,7 @@ import { FC, useEffect } from 'react';
 import AppRoutes from './routes/routes';
 import { ToastContainer } from 'react-toastify';
 import {
+  eraseSessionToken,
   getSessionToken,
   setCustomerKaslKey,
   setSessionToken,
@@ -19,8 +20,9 @@ import { Permissions } from './types/common';
 import { usePanel } from './contexts/PanelContext';
 
 const App: FC = () => {
-  const { user, showBanner, handleGetUser, setShowBanner, setUser } = useUser();
-  const { admin_profile, user: user_profile, moderation } = user ?? {};
+  const { user, showBanner, setShowBanner, setUser } = useUser();
+  const { admin_profile, moderation, project, user: user_profile } = user ?? {};
+  const { company_logo, email, kasl_key } = admin_profile ?? {};
   const {
     state: { socket },
     setSocket,
@@ -33,30 +35,17 @@ const App: FC = () => {
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
-    handleGetUser();
-  }, []);
-
-  useEffect(() => {
-    if (is_public && moderation?.user_login === true) {
-      checkSession();
+    if (is_public && admin_profile) {
+      authenticate();
     }
-  }, [moderation]);
+  }, [admin_profile, moderation]);
 
   useEffect(() => {
     checkSubscriptionBanner();
 
-    let linkIconTag: any, metaTag: any;
+    let gistScript: any, linkIconTag: any, metaTag: any;
 
-    if (
-      !is_public ||
-      (is_public && user?.admin_profile?.email?.endsWith('@producthq.io'))
-    ) {
-      // clickConnect = document.createElement('script')
-      // clickConnect.src =
-      //   'https://s3.amazonaws.com/app.productfeedback.co/scripts/clickConnect.js'
-      // clickConnect.async = true
-      // document.body.appendChild(clickConnect)
-
+    if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
       // Remove clarity script
       // clarity = document.createElement('script')
       // clarity.src =
@@ -69,19 +58,24 @@ const App: FC = () => {
       linkIconTag.type = 'image/svg+xml';
       linkIconTag.href = '/favicon.ico';
       document.head.appendChild(linkIconTag);
+
+      gistScript = document.createElement('script');
+      gistScript.src =
+        'https://s3.amazonaws.com/app.productfeedback.co/scripts/gist.js';
+      document.head.appendChild(gistScript);
     }
 
-    if (is_public && !user?.admin_profile?.email?.endsWith('@producthq.io')) {
+    if (is_public) {
       document.title = '';
       const link = document.querySelector(
         'link[rel~="icon"]'
       ) as HTMLLinkElement;
       if (link) {
-        link.href = '';
+        link.href = company_logo && company_logo.length > 0 ? company_logo : '';
       }
     }
 
-    if (is_public && !user?.project?.is_index_search_engine) {
+    if (is_public && !project?.is_index_search_engine) {
       metaTag = document.createElement('meta');
       metaTag.name = 'robots';
       metaTag.content = 'noindex';
@@ -90,17 +84,14 @@ const App: FC = () => {
     }
 
     return () => {
-      if (
-        !is_public ||
-        (is_public && user?.admin_profile?.email?.endsWith('@producthq.io'))
-      ) {
-        // document.body.removeChild(clickConnect)
+      if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
         // Remove clarity cleanup
         // document.body.removeChild(clarity)
         document.head.removeChild(linkIconTag);
+        document.head.removeChild(gistScript);
       }
 
-      if (is_public && !user?.admin_profile?.email?.endsWith('@producthq.io')) {
+      if (is_public && !email?.endsWith('@producthq.io')) {
         document.title = '';
         const link = document.querySelector(
           'link[rel~="icon"]'
@@ -110,11 +101,11 @@ const App: FC = () => {
         }
       }
 
-      if (is_public && !user?.project?.is_index_search_engine) {
+      if (is_public && !project?.is_index_search_engine) {
         document.head.removeChild(metaTag);
       }
     };
-  }, [user]);
+  }, [admin_profile, project]);
 
   useEffect(() => {
     if (
@@ -125,21 +116,32 @@ const App: FC = () => {
     }
   }, [admin_profile, user_profile]);
 
-  const checkSession = async () => {
-    const token = getSessionToken() ?? (await generateToken());
-    setCustomerKaslKey(user?.admin_profile?.kasl_key ?? '');
+  const authenticate = async () => {
+    const token = getSessionToken();
+    const isNew = moderation?.user_login === true && !token;
+    await checkSession(token ?? (await generateToken()), isNew);
+  };
+
+  const checkSession = async (token: string, isNew: boolean) => {
+    setCustomerKaslKey(kasl_key ?? '');
     setFetching(true);
-    postApi<User & { token?: string }>({
+    postApi<User>({
       url: 'auth/check-session',
-      payload: { token },
+      payload: { token, isNew },
       useCustomerKey: true,
     })
       .then((res) => {
-        if (res.results.data) {
-          if (res.headers['kasl-key']) {
-            setSessionToken(res.headers['kasl-key'].toString());
+        const {
+          results: { data, error },
+        } = res;
+        if (error === 'Session not found.') {
+          eraseSessionToken();
+        }
+        if (data) {
+          if (data.token) {
+            setSessionToken(data.token);
           }
-          setUser((prev) => ({ ...prev, user: res.results.data }));
+          setUser((prev) => ({ ...prev, user: data }));
         }
       })
       .finally(() => setFetching(false));

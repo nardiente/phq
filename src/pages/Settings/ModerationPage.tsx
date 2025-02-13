@@ -11,7 +11,8 @@ import { Settings } from '../../components/Settings';
 import SettingsHeader from '../../components/SettingsHeader';
 import Button from '../../components/Button';
 import SettingsContainer from '../../components/SettingsContainer';
-import { ComingSoonLayout } from '../../components/ComingSoonLayout';
+import SectionHeader from '../../components/SectionHeader';
+import { useUser } from '../../contexts/UserContext';
 
 export default function ModerationPage() {
   const navigate = useNavigate();
@@ -19,10 +20,8 @@ export default function ModerationPage() {
   const {
     state: { socket },
   } = useSocket();
-
-  const [fetching, setFetching] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [moderation, setModeration] = useState<Moderation>({
+  const { user, setUser } = useUser();
+  const { moderation } = user ?? {
     id: 0,
     moderate_settings: {
       feedback: true,
@@ -32,7 +31,10 @@ export default function ModerationPage() {
     user_feedback: true,
     user_login: false,
     user_id: 0,
-  });
+  };
+
+  const [fetching, setFetching] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => getModeration(), []);
 
@@ -41,7 +43,7 @@ export default function ModerationPage() {
     getApi<{ message: string; data: Moderation }>({ url: 'users/moderation' })
       .then((res) => {
         if (res.results.data) {
-          setModeration(res.results.data.data);
+          setUser((prev) => ({ ...prev, moderation: res.results.data?.data }));
         }
       })
       .finally(() => setFetching(false));
@@ -82,58 +84,68 @@ export default function ModerationPage() {
   };
 
   return (
-    <ComingSoonLayout>
-      <Settings>
-        <SettingsHeader
-          title="Account Settings"
-          primaryButton={
-            <Button
-              disabled={fetching || loading}
-              loading={fetching || loading}
-              onClick={handleUpdate}
-              text="Update"
-            />
-          }
-          secondaryButton={
-            <Button
-              text="Cancel"
-              onClick={() => navigate('/dashboard')}
-              variant="secondary"
-            />
-          }
-        />
-        <SettingsContainer>
-          <h2 className="text-[16px] font-semibold text-gray-900">
-            Moderation
-          </h2>
-          <div className="space-y-8">
-            <TurnoffUserLogin
-              enabled={moderation.user_login}
-              onChange={(enabled) =>
-                setModeration((prev) => ({
-                  ...prev,
-                  user_login: enabled,
-                }))
-              }
-            />
+    <Settings>
+      <SettingsHeader
+        title="Account Settings"
+        primaryButton={
+          <Button
+            disabled={fetching || loading}
+            loading={loading}
+            onClick={handleUpdate}
+            text="Update"
+          />
+        }
+        secondaryButton={
+          <Button
+            text="Cancel"
+            onClick={() => navigate('/dashboard')}
+            variant="secondary"
+          />
+        }
+      />
+      <SettingsContainer>
+        <div className="flex flex-col gap-6">
+          <SectionHeader title="Moderation" />
 
-            <UserFeedbackSettings
-              settings={moderation.moderate_settings}
-              onChange={(key, value) =>
-                setModeration((prev) => ({
-                  ...prev,
-                  moderate_settings: {
-                    ...prev.moderate_settings,
-                    [key]: value,
-                  },
-                }))
-              }
-            />
+          <TurnoffUserLogin
+            enabled={moderation?.user_login ?? false}
+            onChange={(enabled) =>
+              setUser((prev) => {
+                if (prev.moderation) {
+                  return {
+                    ...prev,
+                    moderation: { ...prev.moderation, user_login: enabled },
+                  };
+                }
+                return prev;
+              })
+            }
+          />
 
-            <FeedbackApprovalSection />
-          </div>
-        </SettingsContainer>
-      </Settings>
-    </ComingSoonLayout>
+          <UserFeedbackSettings
+            settings={moderation?.moderate_settings}
+            onChange={(key, value) =>
+              setUser((prev) => {
+                if (prev.moderation) {
+                  prev = {
+                    ...prev,
+                    moderation: {
+                      ...prev.moderation,
+                      moderate_settings: {
+                        ...prev.moderation.moderate_settings,
+                        [key]: value,
+                      },
+                    },
+                  };
+                }
+                return prev;
+              })
+            }
+          />
+
+          <FeedbackApprovalSection />
+        </div>
+      </SettingsContainer>
+    </Settings>
   );
 }

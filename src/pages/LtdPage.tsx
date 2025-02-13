@@ -56,7 +56,7 @@ export const LtdPage: React.FC = () => {
 
   useEffect(() => {
     if (import.meta.env.SYSTEM_TYPE === 'public') {
-      navigate('/');
+      navigate('/upvotes');
       return;
     }
     getApi<LifetimeDeal>({ url: 'billing/lifetime-deals' }).then((res) => {

@@ -179,7 +179,7 @@
 
 .drop-down-font {
   align-items: center;
-  color: #110733 !important;
+  color: #110733;
   display: flex !important;
   flex-direction: row;
   font-family: 'Satoshi-Variable';

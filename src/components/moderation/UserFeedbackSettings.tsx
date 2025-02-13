@@ -1,9 +1,9 @@
 import { Toggle } from '../ui/Toggle';
-import { SectionHeader } from '../ui/SectionHeader';
+import SectionHeader from '../SectionHeader';
 import { ModerateSettings } from '../../types/moderation';
 
 interface UserFeedbackSettingsProps {
-  settings: ModerateSettings;
+  settings?: ModerateSettings;
   onChange: (key: string, value: boolean) => void;
 }
 
@@ -12,13 +12,13 @@ export function UserFeedbackSettings({
   onChange,
 }: UserFeedbackSettingsProps) {
   return (
-    <div className="space-y-4">
+    <>
       <SectionHeader
         title="Do not allow user feedback"
         description="If the toggle is turned on, users will not be able to provide the respective feedback e.g. ideas, votes, or comments. Only your team will be able to do so."
       />
 
-      <div className="space-y-4">
+      <div className="ml-4">
         <div className="flex items-center justify-between py-4 border-t border-gray-100">
           <div>
             <h3 className="text-[14px] font-medium text-gray-900">Ideas</h3>
@@ -27,7 +27,7 @@ export function UserFeedbackSettings({
             </p>
           </div>
           <Toggle
-            checked={settings.feedback}
+            checked={settings?.feedback ?? false}
             onChange={(checked) => onChange('feedback', checked)}
           />
         </div>
@@ -40,7 +40,7 @@ export function UserFeedbackSettings({
             </p>
           </div>
           <Toggle
-            checked={settings.votes}
+            checked={settings?.votes ?? false}
             onChange={(checked) => onChange('votes', checked)}
           />
         </div>
@@ -53,11 +53,11 @@ export function UserFeedbackSettings({
             </p>
           </div>
           <Toggle
-            checked={settings.comments}
+            checked={settings?.comments ?? false}
             onChange={(checked) => onChange('comments', checked)}
           />
         </div>
       </div>
-    </div>
+    </>
   );
 }

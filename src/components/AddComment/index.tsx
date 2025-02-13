@@ -14,7 +14,7 @@ import { usePanel } from '../../contexts/PanelContext';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
 import { ApiFieldError } from '../../utils/api/types';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FeedbackComment } from '../../types/feedback';
 import { UserTypes } from '../../types/user';
 import { Permissions, RbacPermissions } from '../../types/common';
@@ -88,6 +88,8 @@ const modules = {
 };
 
 const AddComment = () => {
+  const quillRef = useRef<ReactQuill>(null);
+
   const { user } = useUser();
   const {
     state: { comment_id, mentioned_users, panel_loading },
@@ -112,8 +114,8 @@ const AddComment = () => {
   }
 
   const is_logged_in =
-    getKaslKey() !== null ||
-    (getSessionToken() !== null &&
+    getKaslKey() !== undefined ||
+    (getSessionToken() !== undefined &&
       is_public &&
       user?.moderation?.user_login === true);
 
@@ -361,6 +363,7 @@ const AddComment = () => {
         >
           <div onPaste={(event) => onPaste(event)}>
             <ReactQuill
+              ref={quillRef}
               theme="snow"
               className="quill-wrapper word-break"
               modules={modules}

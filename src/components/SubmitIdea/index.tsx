@@ -46,8 +46,8 @@ export const SubmitIdea = () => {
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const is_logged_in =
-    getKaslKey() !== null ||
-    (getSessionToken() !== null &&
+    getKaslKey() !== undefined ||
+    (getSessionToken() !== undefined &&
       is_public &&
       moderation?.user_login === true);
 
@@ -62,9 +62,9 @@ export const SubmitIdea = () => {
   const [description, setDescription] = useState('');
   const [disabled_button, setDisabledButton] = useState<boolean>(true);
   const [email, setEmail] = useState<string | undefined>('');
-  const [estimated_release_date, setEstimatedReleaseDate] = useState<Date>(
-    new Date()
-  );
+  const [estimated_release_date, setEstimatedReleaseDate] = useState<
+    Date | undefined
+  >();
   const [title, setTitle] = useState('');
   const [first_name, setFirstName] = useState<string | undefined>('');
   const [last_name, setLastName] = useState<string | undefined>('');
@@ -99,7 +99,7 @@ export const SubmitIdea = () => {
       setEstimatedReleaseDate(
         idea?.estimated_release_date
           ? new Date(idea?.estimated_release_date)
-          : new Date()
+          : undefined
       );
     }
   }, [idea]);
@@ -119,7 +119,7 @@ export const SubmitIdea = () => {
         setEstimatedReleaseDate(
           idea?.estimated_release_date
             ? new Date(idea?.estimated_release_date)
-            : new Date()
+            : undefined
         );
       }
     }
@@ -181,7 +181,7 @@ export const SubmitIdea = () => {
       description: description.replace(/<[^>]+>/g, '').trim(),
       domain: window.location.host,
       email,
-      estimated_release_date: estimated_release_date.toString(),
+      estimated_release_date: estimated_release_date?.toString(),
       first_name,
       last_name,
       password,
@@ -285,7 +285,7 @@ export const SubmitIdea = () => {
     putApi<Feedback>(`feedback/${idea?.id}`, {
       title,
       description: description.replace(/<[^>]+>/g, '').trim(),
-      estimated_release_date: estimated_release_date.toString(),
+      estimated_release_date: estimated_release_date?.toString(),
       status: active_status,
       tags: selected_tags.map((selected_tag) => selected_tag?.tag).join(','),
     }).then(async (res) => {

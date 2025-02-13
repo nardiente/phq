@@ -88,6 +88,8 @@ export const Comment = ({
   parentComment?: FeedbackComment;
   handleGetComments: () => void;
 }) => {
+  const quillRef = useRef<ReactQuill>(null);
+
   const { user } = useUser();
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const {
@@ -110,7 +112,7 @@ export const Comment = ({
     idea = selectedIdea ?? undefined;
   }
 
-  const is_logged_in = getKaslKey() !== null;
+  const is_logged_in = getKaslKey() !== undefined;
   const is_draft = comment.draft;
   const [currentComment, setCurrentComment] = useState(comment);
   const [lineHeight, setLightHeight] = useState(0);
@@ -527,6 +529,7 @@ export const Comment = ({
               {(is_admin || !currentComment.hidden) &&
                 !currentComment.deleted && (
                   <ReactQuill
+                    ref={quillRef}
                     className="quill-wrapper word-break"
                     modules={modules}
                     theme="snow"
@@ -672,6 +675,7 @@ export const Comment = ({
             ></textarea>
           ) : ( */}
           <ReactQuill
+            ref={quillRef}
             theme="snow"
             className="quill-wrapper word-break"
             modules={modules}

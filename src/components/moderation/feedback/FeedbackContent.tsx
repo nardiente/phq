@@ -1,5 +1,5 @@
 import { FeedbackList } from '../FeedbackList';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Loader } from 'lucide-react';
 import { useFeedback } from '../../../contexts/FeedbackContext';
 import { useRejectFeedback } from '../../../hooks/useRejectFeedback';
 import { RejectFeedbackModal } from '../RejectFeedbackModal';
@@ -16,8 +16,8 @@ export function FeedbackContent() {
 
   if (loading) {
     return (
-      <div className="text-center py-8">
-        <p className="text-gray-500">Loading...</p>
+      <div className="flex items-center justify-center py-8">
+        <Loader />
       </div>
     );
   }

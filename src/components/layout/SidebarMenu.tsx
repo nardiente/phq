@@ -36,7 +36,7 @@ interface SidebarMenuProps {
   onNavigate: (page: PageType) => void;
 }
 
-interface MenuItem {
+export interface MenuItem {
   id: string;
   label: string;
   icon: LucideIcon;
@@ -81,13 +81,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
     { icon: User, label: 'Account Details', id: 'account' },
     { icon: Settings2, label: 'Project Details', id: 'project' },
     { icon: Paintbrush, label: 'Appearance', id: 'appearance' },
-    {
-      icon: MessageSquare,
-      label: 'Moderation',
-      id: 'moderation',
-      badge: <ComingSoon />,
-      disabled: false,
-    },
+    { icon: MessageSquare, label: 'Moderation', id: 'moderation' },
     { icon: Users2, label: 'Team Members', id: 'team' },
     { icon: CreditCard, label: 'Billing and Invoicing', id: 'billing' },
     { icon: Tag, label: 'Tags', id: 'tags' },
@@ -206,8 +200,9 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
             {company_info?.company_name && (
               <>
                 <div className="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center">
-                  <span className="text-purple-600 font-medium text-lg">
-                    <>
+                  <>
+                    {company_info?.company_logo &&
+                    company_info?.company_logo.length > 0 ? (
                       <figure
                         className={`is-clickable ${
                           company_info?.company_logo?.length &&
@@ -232,18 +227,17 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
                           onNavigate('dashboard');
                         }}
                       >
-                        {company_info?.company_logo &&
-                        company_info?.company_logo.length > 0 ? (
-                          <img
-                            className="rounded-full"
-                            src={company_info?.company_logo}
-                          />
-                        ) : (
-                          company_info?.company_name?.toUpperCase().charAt(0)
-                        )}
+                        <img
+                          className="w-9 h-9 rounded-full"
+                          src={company_info?.company_logo}
+                        />
                       </figure>
-                    </>
-                  </span>
+                    ) : (
+                      <span className="text-purple-600 font-medium text-lg">
+                        {company_info?.company_name?.toUpperCase().charAt(0)}
+                      </span>
+                    )}
+                  </>
                 </div>
                 {isExpanded && (
                   <span className="ml-3 font-medium text-gray-900">

@@ -7,7 +7,7 @@ interface FeedbackTabsProps {
 
 export function FeedbackTabs({ activeTab, onTabChange }: FeedbackTabsProps) {
   return (
-    <div className="flex gap-4 mb-6">
+    <div className="flex gap-4 mt-4">
       <TabButton
         active={activeTab === 'ideas'}
         onClick={() => onTabChange('ideas')}

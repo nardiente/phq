@@ -34,7 +34,7 @@ export const SignUpPage = () => {
         : UserTypes.CUSTOMER
     );
 
-    if (getKaslKey() !== null) {
+    if (getKaslKey() !== undefined) {
       // has logged in user
       window.location.href =
         import.meta.env.VITE_SYSTEM_TYPE !== 'public' ? '/upvotes' : '/';
@@ -91,7 +91,7 @@ export const SignUpPage = () => {
     }
   }, [screen_width]);
 
-  return getKaslKey() === null ? (
+  return getKaslKey() === undefined ? (
     <section id="SignUpPage">
       {/* <div className="hero is-fullheight">
         <div className={`hero-body${is_mobile ? ' mobile' : ''}`}>

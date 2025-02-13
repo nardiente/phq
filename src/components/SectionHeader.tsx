@@ -10,7 +10,7 @@ interface SectionHeaderProps {
 const SectionHeader: React.FC<SectionHeaderProps> = ({
   title,
   description,
-  className,
+  className = '',
 }) => {
   return (
     <div className="flex flex-col gap-2">

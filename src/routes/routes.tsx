@@ -31,6 +31,7 @@ import OnboardingPage from '../pages/onboarding/onboarding';
 import ResetPasswordPage from '../pages/ResetPassword';
 import FreeTrialPage from '../pages/FreeTrialPage';
 import { LtdPage } from '../pages/LtdPage';
+import NotFoundPage from '../pages/NotFoundPage';
 import { pathExceptions } from '../types/app';
 import TestFetch from '../pages/TestFetch';
 
@@ -46,9 +47,9 @@ const AppRoutes = () => {
           <Route element={<AppRoute />}>
             {/* Add test route early in the list */}
             <Route path="/test" element={<TestFetch />} />
-            
+
             {/* Public Routes */}
-            <Route path="/" element={<LoginPage />} />
+            <Route path="/" element={<Fallback />} />
             <Route path="/sign-in" element={<LoginPage />} />
             <Route path="/sign-in/google" element={<SSOVerifyingPage />} />
             <Route path="/sign-up" element={<SignUpPage />} />
@@ -91,7 +92,7 @@ const AppRoutes = () => {
           </Route>
 
           {/* Redirect unknown routes */}
-          <Route path="*" element={<DashboardPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

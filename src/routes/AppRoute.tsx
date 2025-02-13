@@ -14,7 +14,13 @@ const AppRoute = () => {
   const location = useLocation();
   const { pathname, search } = location;
 
-  const { isAuthenticated, user: userDetails, showBanner } = useUser();
+  const {
+    loaded,
+    user: userDetails,
+    showBanner,
+    handleGetUser,
+    isAuthenticated,
+  } = useUser();
   const { project, user } = userDetails ?? {};
 
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
@@ -22,7 +28,7 @@ const AppRoute = () => {
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
-  const publicPagePaths = ['/upvotes', '/roadmap', '/posts'];
+  const unprotectedPages = ['/upvotes', '/roadmap', '/posts'];
 
   const handleNavigation = useCallback(
     (page: PageType) => {
@@ -33,40 +39,53 @@ const AppRoute = () => {
   );
 
   useEffect(() => {
-    let pageType: PageType = pathname.slice(1) as PageType;
+    handleGetUser();
+  }, []);
 
+  useEffect(() => {
     if (!is_public) {
       if (
         ![...pathExceptions, ...onbordingPaths].includes(pathname) ||
         (pathExceptions.includes(pathname) && search.length === 0)
       ) {
         if (pathname.slice(1).length === 0) {
-          pageType = 'dashboard';
+          handleNavigation('dashboard');
         }
         if (showBanner) {
-          pageType = 'billing';
+          handleNavigation('billing');
         }
       }
     } else {
-      if (![...pathExceptions, ...publicPagePaths].includes(pathname)) {
-        pageType = 'upvotes';
+      if (
+        ![...pathExceptions, ...unprotectedPages].includes(pathname) &&
+        project
+      ) {
+        handleNavigation('upvotes');
       }
     }
-
-    handleNavigation(pageType);
   }, [pathname]);
 
   useEffect(() => {
-    setRemindAddBoard(
-      !is_public &&
-        project !== undefined &&
-        user &&
-        !user.stop_remind_add_board &&
-        (!user.remind_3_days ||
-          (user.remind_3_days &&
-            moment().diff(moment(user.remind_3_days_timestamp), 'minutes') >=
-              4320))
-    );
+    if (is_public && loaded && !project) {
+      navigate('/404');
+    }
+  }, [loaded]);
+
+  useEffect(() => {
+    if (!is_public) {
+      setRemindAddBoard(
+        !is_public &&
+          project !== undefined &&
+          user &&
+          !user.stop_remind_add_board &&
+          (!user.remind_3_days ||
+            (user.remind_3_days &&
+              moment().diff(moment(user.remind_3_days_timestamp), 'minutes') >=
+                4320))
+      );
+    } else if (project) {
+      handleNavigation('upvotes');
+    }
   }, [user]);
 
   return (
@@ -74,7 +93,7 @@ const AppRoute = () => {
       {isAuthenticated() || (!isAuthenticated() && is_public) ? (
         <>
           <div className="min-h-screen bg-[#fafafa] flex">
-            {!pathExceptions.includes(pathname) && (
+            {!pathExceptions.includes(pathname) && !is_public && (
               <SidebarMenu
                 activeItem={
                   currentPage === 'settings' ? 'account' : currentPage
@@ -84,7 +103,10 @@ const AppRoute = () => {
             )}
             <div className="flex-1">
               {!pathExceptions.includes(pathname) && (
-                <Banner onNavigate={handleNavigation} />
+                <Banner
+                  activeItem={currentPage}
+                  onNavigate={handleNavigation}
+                />
               )}
               <Outlet />
               <AddYourBoardModal open={remindAddBoard ?? false} />

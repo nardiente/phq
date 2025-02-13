@@ -27,13 +27,14 @@ export default function ProjectDetailsPage() {
   const navigate = useNavigate();
 
   const { user, setUser } = useUser();
-  const { permissions } = user ?? {};
+  const { permissions, project } = user ?? {};
   const { setHasUnsavedChanges } = useUnsavedChanges();
 
-  const [project, setProject] = useState<Project>();
-  const [custom_domain, setCustomDomain] = useState('');
+  const [custom_domain, setCustomDomain] = useState(
+    project?.custom_domain ?? ''
+  );
   const [custom_domain_error_msg, setCustomDomainErrorMsg] = useState('');
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState(project?.description ?? '');
   const [description_error_msg, setDescriptionErrorMsg] = useState('');
   const [email, setEmail] = useState('');
   const [fetching, setFetching] = useState<boolean>(false);
@@ -41,23 +42,37 @@ export default function ProjectDetailsPage() {
     useState<boolean>(false);
   const [field_errors, setApiFieldErrors] = useState<ApiFieldError[]>([]);
   const [first_name, setFirstName] = useState('');
-  const [hide_datetime, setHideDatetime] = useState<boolean>(false);
-  const [id, setId] = useState(0);
-  const [index_search_engine, setIndexSearchEngine] = useState(false);
-  const [is_private_settings, setIsPrivateSettings] = useState<boolean>(false);
+  const [hide_datetime, setHideDatetime] = useState<boolean>(
+    project?.hide_datetime ?? false
+  );
+  const [id, setId] = useState(project?.id ?? 0);
+  const [index_search_engine, setIndexSearchEngine] = useState(
+    project?.is_index_search_engine ?? false
+  );
+  const [is_private_settings, setIsPrivateSettings] = useState<boolean>(
+    project?.is_public_settings ?? false
+  );
   const [last_name, setLastName] = useState('');
   const [loadingInvite, setLoadingInvite] = useState<boolean>(false);
-  const [module_roadmap, setModuleRoadmap] = useState(false);
-  const [module_upvotes, setModuleUpvotes] = useState(false);
-  const [module_whats_new, setModuleWhatsNew] = useState(false);
-  const [portal_subdomain, setPortalSubdomain] = useState('');
+  const [module_roadmap, setModuleRoadmap] = useState(
+    project?.is_visible_roadmap ?? false
+  );
+  const [module_upvotes, setModuleUpvotes] = useState(
+    project?.is_visible_upvotes ?? false
+  );
+  const [module_whats_new, setModuleWhatsNew] = useState(
+    project?.is_visible_whats_new ?? false
+  );
+  const [portal_subdomain, setPortalSubdomain] = useState(
+    project?.portal_subdomain ?? ''
+  );
   const [portal_subdomain_error_msg, setPortalSubdomainErrorMsg] = useState('');
   const [private_user_id, setPrivateUserId] = useState(0);
   const [private_users, setPrivateUsers] = useState<User[]>([]);
   const [modalStates, setModalStates] = useState(
     private_users.map(() => false)
   );
-  const [project_name, setProjectName] = useState('');
+  const [project_name, setProjectName] = useState(project?.name ?? '');
   const [project_name_error_msg, setProjectNameErrorMsg] = useState('');
   const [loading, setLoading] = useState<boolean>(false);
   const [selected_private_user_name, setSelectedPrivateUserName] =
@@ -117,7 +132,10 @@ export default function ProjectDetailsPage() {
         setFetching(false);
         if (res.results.data) {
           const data = res.results.data;
-          setProject(data);
+          setUser((prev) => ({
+            ...prev,
+            project: data,
+          }));
           setCustomDomain(data.custom_domain || '');
           setDescription(data.description || '');
           setHideDatetime(data.hide_datetime || false);
@@ -403,15 +421,11 @@ export default function ProjectDetailsPage() {
         const data = res.results.data as Project;
         setUser((prev) => ({
           ...prev,
-          user: {
-            ...prev.user,
-            project: {
-              ...data,
-              custom_domain: custom_domain.trim().toLowerCase(),
-            },
+          project: {
+            ...data,
+            custom_domain: custom_domain.trim().toLowerCase(),
           },
         }));
-        setProject(data);
         setId(data?.id || 0);
 
         toast('Updated', {
@@ -522,7 +536,7 @@ export default function ProjectDetailsPage() {
                 <span>
                   Click{' '}
                   <a
-                    href="https://support.producthq.io/articles/how-to-add-a-board-to-your-site-145e70-32dd7"
+                    href="https://support.producthq.io/en/article/9-how-to-add-a-board-to-your-site"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#5a00cd] hover:underline"
@@ -567,9 +581,10 @@ export default function ProjectDetailsPage() {
               <span>
                 Click&nbsp;
                 <a
-                  href="https://support.producthq.io/articles/how-to-set-up-your-custom-domain-name-145e70-e8cd0"
+                  href="https://support.producthq.io/en/article/10-how-to-set-up-your-custom-domain-name"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="text-[#5a00cd] hover:underline"
                 >
                   here
                 </a>

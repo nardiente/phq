@@ -1,4 +1,3 @@
-import * as React from 'react';
 import styled from 'styled-components';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { UIButton } from '../../components/UIButton';
@@ -7,7 +6,6 @@ import { toast } from 'react-toastify';
 import queryString from 'query-string';
 import {
   getPartneroPartner,
-  getSessionToken,
   setKaslKey,
   setSessionToken,
 } from '../../utils/localStorage';
@@ -59,7 +57,7 @@ interface SignUpFormProps {
   type?: UserTypes;
 }
 
-export const SignUpForm: FC<SignUpFormProps> = (props) => {
+export const SignUpForm: FC<SignUpFormProps> = ({ is_mobile, type }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -108,14 +106,14 @@ export const SignUpForm: FC<SignUpFormProps> = (props) => {
 
   const signUp = async () => {
     setLoading(true);
-    const url =
-      props.type === UserTypes.USER ? 'auth/sign-up' : 'auth/admin/sign-up';
+    const url = type === UserTypes.USER ? 'auth/sign-up' : 'auth/admin/sign-up';
     const sign_up_params = {
       first_name,
       last_name,
       email,
       password,
       confirm_password,
+      token: await generateToken(),
     };
     if (checkout_session_id.length > 0) {
       Object.assign(sign_up_params, {
@@ -123,18 +121,14 @@ export const SignUpForm: FC<SignUpFormProps> = (props) => {
         partnero_partner: getPartneroPartner(),
       });
     }
-    if (props.type === UserTypes.USER) {
+    if (type === UserTypes.USER) {
       Object.assign(sign_up_params, {
         type: UserTypes.USER,
         page: 'upvote',
         domain: window.location.host,
         is_private_user,
-        token: await generateToken(),
       });
-      if (getSessionToken() === null) {
-        setSessionToken(await generateToken());
-      }
-    } else if (props.type === UserTypes.CUSTOMER) {
+    } else if (type === UserTypes.CUSTOMER) {
       Object.assign(sign_up_params, {
         role_id,
         team_owner_id: admin_id,
@@ -170,14 +164,14 @@ export const SignUpForm: FC<SignUpFormProps> = (props) => {
       }
       setLoading(false);
       if (res.results.data && res.headers['kasl-key']) {
-        if (res.headers['token']) {
-          setSessionToken(res.headers['token'].toString());
+        if (res.results.data.token) {
+          setSessionToken(res.results.data.token);
         }
         clearFields();
         if (is_public) {
           setKaslKey(res.headers['kasl-key'].toString());
           await handleGetUser();
-          navigate('/dashboard');
+          navigate('/upvotes');
         } else {
           localStorage.removeItem('onboarding_page');
           localStorage.removeItem('onboarding_token');
@@ -222,12 +216,12 @@ export const SignUpForm: FC<SignUpFormProps> = (props) => {
       'sign-up-form'
     ) as HTMLFormElement;
     if (sign_up_form) {
-      sign_up_form.style.paddingLeft = props.is_mobile ? '25px' : '0';
-      sign_up_form.style.paddingRight = props.is_mobile ? '25px' : '0';
-      sign_up_form.style.paddingBottom = props.is_mobile ? '0' : '80px';
-      sign_up_form.style.width = props.is_mobile ? '100%' : '400px';
+      sign_up_form.style.paddingLeft = is_mobile ? '25px' : '0';
+      sign_up_form.style.paddingRight = is_mobile ? '25px' : '0';
+      sign_up_form.style.paddingBottom = is_mobile ? '0' : '80px';
+      sign_up_form.style.width = is_mobile ? '100%' : '400px';
     }
-  }, [props.is_mobile]);
+  }, [is_mobile]);
 
   useEffect(() => {
     setFirstName(loginFirstName);
@@ -375,7 +369,7 @@ export const SignUpForm: FC<SignUpFormProps> = (props) => {
           label="First Name"
           onBlur={(e) => {
             let error;
-            if (props.type === UserTypes.USER) {
+            if (type === UserTypes.USER) {
               const validationResult = validateFullName(e.target.value);
               if (validationResult != null) {
                 error = {
@@ -418,7 +412,7 @@ export const SignUpForm: FC<SignUpFormProps> = (props) => {
           label="Last Name"
           onBlur={(e) => {
             let error;
-            if (props.type === UserTypes.USER) {
+            if (type === UserTypes.USER) {
               const validationResult = validateFullName(e.target.value);
               if (validationResult != null) {
                 error = {

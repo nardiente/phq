@@ -17,7 +17,6 @@ import { ChevronRightIcon } from '../../components/icons/chevron-right.icon';
 import { User, UserTypes } from '../../types/user';
 import { Subscription } from '../../types/billing';
 import { OnboardingPages, OnboardingUrls } from '../../types/onboarding';
-import { generateToken } from '../../utils/token';
 import { Project } from '../../types/project';
 import { useUser } from '../../contexts/UserContext';
 import queryString from 'query-string';
@@ -221,36 +220,57 @@ export const LoginForm = (props: LoginFormProps) => {
 
   const handleSocialLogin = async (email: string, domain?: string) => {
     setLoginLoadingSocial(true);
+
+    let payload: {
+      email: string;
+      domain?: string;
+      token?: string;
+      type: UserTypes;
+    } = {
+      email,
+      domain,
+      type: is_public ? UserTypes.USER : UserTypes.CUSTOMER,
+    };
+
     if (is_public) {
-      const sessionToken = getSessionToken();
-      if (sessionToken === undefined) {
-        setSessionToken(await generateToken());
-      }
+      payload = { ...payload, token: getSessionToken() };
     }
+
     postApi<
       User & {
         project?: Project;
         subscription: Subscription & { trial_end: number | string | null };
       }
-    >({
-      url: 'auth/login-social',
-      payload: {
-        email,
-        domain,
-        type: is_public ? UserTypes.USER : UserTypes.CUSTOMER,
-      },
-      useSessionToken: is_public,
-    }).then(async (res) => {
-      setLoginLoadingSocial(false);
-      if (res.results.error) {
-        const message = res.results.error;
-        if (message === 'error.invalid_credentials') {
-          setLoginEmail(email);
-          navigate('/sign-up');
-          return;
-        }
-        if (message === 'error.email.unverified') {
-          toast(t('success.email_verification'), {
+    >({ url: 'auth/login-social', payload })
+      .then(async (res) => {
+        const {
+          headers,
+          results: { data, error },
+        } = res;
+        const { onboarding_done, onboarding_page, subscription, token } =
+          data ?? {};
+        if (error) {
+          const message = error;
+          if (message === 'error.invalid_credentials') {
+            setLoginEmail(email);
+            navigate('/sign-up');
+            return;
+          }
+          if (message === 'error.email.unverified') {
+            toast(t('success.email_verification'), {
+              position: 'bottom-center',
+              autoClose: 3000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'dark',
+              className: 'custom-theme',
+            });
+            return;
+          }
+          toast(t(message), {
             position: 'bottom-center',
             autoClose: 3000,
             hideProgressBar: true,
@@ -261,64 +281,47 @@ export const LoginForm = (props: LoginFormProps) => {
             theme: 'dark',
             className: 'custom-theme',
           });
-          return;
         }
-        toast(t(message), {
-          position: 'bottom-center',
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'dark',
-          className: 'custom-theme',
-        });
-      }
-      if (res.results.data && res.headers['kasl-key'] && !res.results.error) {
-        if (res.headers['token']) {
-          setSessionToken(res.headers['token'].toString());
-        }
-        clearMsgs();
-        if (is_public) {
-          setKaslKey(res.headers['kasl-key'].toString());
-          await handleGetUser();
-          navigate('/dashboard');
-        } else {
-          localStorage.removeItem('onboarding_page');
-          localStorage.removeItem('onboarding_token');
-          const result: User & {
-            project?: Project;
-            subscription: Subscription & { trial_end: number | string | null };
-          } = res.results.data;
-          if (result.onboarding_done === undefined || result.onboarding_done) {
-            setKaslKey(res.headers['kasl-key'].toString());
+        if (data && headers['kasl-key'] && !error) {
+          if (token) {
+            setSessionToken(token);
+          }
+          clearMsgs();
+          if (is_public) {
+            setKaslKey(headers['kasl-key'].toString());
             await handleGetUser();
-            const subscription = result.subscription;
-            if (
-              subscription &&
-              subscription.status === 'canceled' &&
-              subscription.trial_end
-            ) {
-              navigate('/billing');
+            navigate('/dashboard');
+          } else {
+            localStorage.removeItem('onboarding_page');
+            localStorage.removeItem('onboarding_token');
+            if (onboarding_done === undefined || onboarding_done) {
+              setKaslKey(headers['kasl-key'].toString());
+              await handleGetUser();
+              if (
+                subscription &&
+                subscription.status === 'canceled' &&
+                subscription.trial_end
+              ) {
+                navigate('/billing');
+                return;
+              }
+              navigate('/dashboard');
               return;
             }
-            navigate('/dashboard');
-            return;
+            localStorage.setItem('onboarding_page', onboarding_page ?? '');
+            localStorage.setItem(
+              'onboarding_token',
+              headers['kasl-key'].toString()
+            );
+            navigate(
+              OnboardingUrls[
+                localStorage.getItem('onboarding_page') as OnboardingPages
+              ]
+            );
           }
-          localStorage.setItem('onboarding_page', result.onboarding_page ?? '');
-          localStorage.setItem(
-            'onboarding_token',
-            res.headers['kasl-key'].toString()
-          );
-          navigate(
-            OnboardingUrls[
-              localStorage.getItem('onboarding_page') as OnboardingPages
-            ]
-          );
         }
-      }
-    });
+      })
+      .finally(() => setLoginLoadingSocial(false));
   };
 
   const loginGoogle = async () => {
@@ -345,10 +348,8 @@ export const LoginForm = (props: LoginFormProps) => {
     if (is_public) {
       Object.assign(login_params, {
         domain: window.location.host,
+        token: getSessionToken(),
       });
-      if (getSessionToken() === null) {
-        setSessionToken(await generateToken());
-      }
     }
     postApi<
       User & {
@@ -358,7 +359,6 @@ export const LoginForm = (props: LoginFormProps) => {
     >({
       url: 'auth/login',
       payload: login_params,
-      useSessionToken: is_public,
     }).then(async (res) => {
       setLoading(false);
       if (res.results.errors) {
@@ -431,9 +431,6 @@ export const LoginForm = (props: LoginFormProps) => {
             break;
         }
       }
-      if (res.headers['token']) {
-        setSessionToken(res.headers['token'].toString());
-      }
       if (res.headers['kasl-key'] && !res.results.error && res.results.data) {
         clearMsgs();
         localStorage.removeItem('onboarding_page');
@@ -442,6 +439,9 @@ export const LoginForm = (props: LoginFormProps) => {
           project?: Project;
           subscription: Subscription & { trial_end: number | string | null };
         } = res.results.data;
+        if (result.token) {
+          setSessionToken(result.token);
+        }
         if (result.onboarding_done === undefined || result.onboarding_done) {
           setKaslKey(res.headers['kasl-key'].toString());
           await handleGetUser();

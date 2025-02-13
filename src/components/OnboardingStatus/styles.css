@@ -29,6 +29,8 @@
       letter-spacing: 0.005em;
       min-width: 100%;
       width: 100%;
+      padding-top: 9px;
+      padding-bottom: 9px;
 
       .for-dropdown {
         color: #09041a;

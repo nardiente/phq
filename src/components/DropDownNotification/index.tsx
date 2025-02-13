@@ -135,8 +135,8 @@ export const DropDownNotification = (props: {
     if (
       !is_public ||
       (is_public &&
-        (getKaslKey() !== null ||
-          (moderation?.user_login === true && getSessionToken() !== null)))
+        (getKaslKey() !== undefined ||
+          (moderation?.user_login === true && getSessionToken() !== undefined)))
     ) {
       getNotifications(seeMore);
     }

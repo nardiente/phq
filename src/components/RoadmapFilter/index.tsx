@@ -48,7 +48,7 @@ export const RoadmapFilter = () => {
               {tags.map((tag, idx) => (
                 <span
                   key={idx}
-                  className="dropdown-item is-clickable drop-down-font"
+                  className="dropdown-item is-clickable drop-down-font text-[#110733]"
                   onClick={() => {
                     let copy_active_tags = filterTags;
                     if (
@@ -112,7 +112,7 @@ export const RoadmapFilter = () => {
       container_class="right-filter"
       content_class="dropdown-content"
       content_container_class="dropdown-menu"
-      label_class="right-drop-down-button"
+      label_class="right-drop-down-button border-transparent"
     />
   );
 };

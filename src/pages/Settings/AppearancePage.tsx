@@ -19,20 +19,28 @@ export default function AppearancePage() {
   const navigate = useNavigate();
 
   const { setHasUnsavedChanges } = useUnsavedChanges();
-  const { user } = useUser();
+  const { user, setUser } = useUser();
+  const { appearance } = user ?? {};
 
-  const [appearance, setAppearance] = useState<ProjectAppearance>();
-  const [active_link_color, setActiveLinkColor] = useState('');
+  const [active_link_color, setActiveLinkColor] = useState(
+    appearance?.active_link_color ?? ''
+  );
   const [active_link_color_valid_hex, setActiveLinkColorValidHex] =
     useState(true);
-  const [appearance_id, setAppearanceId] = useState(0);
-  const [background_color, setBackgroundColor] = useState('');
+  const [appearance_id, setAppearanceId] = useState(appearance?.id ?? 0);
+  const [background_color, setBackgroundColor] = useState(
+    appearance?.background_color ?? ''
+  );
   const [background_color_valid_hex, setBackgroundColorValidHex] =
     useState(true);
-  const [button_text_color, setButtonTextColor] = useState('');
+  const [button_text_color, setButtonTextColor] = useState(
+    appearance?.button_text_color ?? ''
+  );
   const [button_text_color_valid_hex, setButtonTextColorValidHex] =
     useState(true);
-  const [default_text_color, setDefaultTextColor] = useState('');
+  const [default_text_color, setDefaultTextColor] = useState(
+    appearance?.default_text_color ?? ''
+  );
   const [default_text_color_valid_hex, setDefaultTextColorValidHex] =
     useState(true);
   const [focus_al_container, setFocusALContainer] = useState('');
@@ -54,70 +62,97 @@ export default function AppearancePage() {
   const [focus_tt_container, setFocusTTContainer] = useState('');
   const [focus_tdb_container, setFocusTDBContainer] = useState('');
   const [focus_tdt_container, setFocusTDTContainer] = useState('');
-  const [icon_color, setIconColor] = useState('');
+  const [icon_color, setIconColor] = useState(appearance?.icon_color ?? '');
   const [icon_color_valid_hex, setIconColorValidHex] = useState(true);
-  const [primary_button_border, setPrimaryButtonBorder] = useState('');
+  const [primary_button_border, setPrimaryButtonBorder] = useState(
+    appearance?.primary_button_border ?? ''
+  );
   const [primary_button_border_valid_hex, setPrimaryButtonBorderValidHex] =
     useState(true);
-  const [primary_button_color, setPrimaryButtonColor] = useState('');
+  const [primary_button_color, setPrimaryButtonColor] = useState(
+    appearance?.primary_button_color ?? ''
+  );
   const [primary_button_color_valid_hex, setPrimaryButtonColorValidHex] =
     useState(true);
-  const [sign_in_button_color, setInButtonColor] = useState('');
+  const [sign_in_button_color, setInButtonColor] = useState(
+    appearance?.sign_in_button_color ?? ''
+  );
   const [sign_in_button_color_valid_hex, setInButtonColorValidHex] =
     useState(true);
-  const [sign_in_button_border_color, setInButtonBorderColor] = useState('');
+  const [sign_in_button_border_color, setInButtonBorderColor] = useState(
+    appearance?.sign_in_button_border_color ?? ''
+  );
   const [
     sign_in_button_border_color_valid_hex,
     setInButtonBorderColorValidHex,
   ] = useState(true);
-  const [sign_in_button_hover_color, setInButtonHoverColor] = useState('');
+  const [sign_in_button_hover_color, setInButtonHoverColor] = useState(
+    appearance?.sign_in_button_hover_color ?? ''
+  );
   const [sign_in_button_hover_color_valid_hex, setInButtonHoverColorValidHex] =
     useState(true);
-  const [sign_in_button_text_color, setInButtonTextColor] = useState('');
+  const [sign_in_button_text_color, setInButtonTextColor] = useState(
+    appearance?.sign_in_button_text_color ?? ''
+  );
   const [sign_in_button_text_color_valid_hex, setInButtonTextColorValidHex] =
     useState(true);
-  const [sign_in_button_text_hover_color, setInButtonTextHoverColor] =
-    useState('');
+  const [sign_in_button_text_hover_color, setInButtonTextHoverColor] = useState(
+    appearance?.sign_in_button_text_hover_color ?? ''
+  );
   const [
     sign_in_button_text_hover_color_valid_hex,
     setInButtonTextHoverColorValidHex,
   ] = useState(true);
-  const [sign_up_button_color, setUpButtonColor] = useState('');
+  const [sign_up_button_color, setUpButtonColor] = useState(
+    appearance?.sign_up_button_color ?? ''
+  );
   const [sign_up_button_color_valid_hex, setUpButtonColorValidHex] =
     useState(true);
-  const [sign_up_button_border_color, setUpButtonBorderColor] = useState('');
+  const [sign_up_button_border_color, setUpButtonBorderColor] = useState(
+    appearance?.sign_up_button_border_color ?? ''
+  );
   const [
     sign_up_button_border_color_valid_hex,
     setUpButtonBorderColorValidHex,
   ] = useState(true);
-  const [sign_up_button_hover_color, setUpButtonHoverColor] = useState('');
+  const [sign_up_button_hover_color, setUpButtonHoverColor] = useState(
+    appearance?.sign_up_button_hover_color ?? ''
+  );
   const [sign_up_button_hover_color_valid_hex, setUpButtonHoverColorValidHex] =
     useState(true);
-  const [sign_up_button_text_color, setUpButtonTextColor] = useState('');
+  const [sign_up_button_text_color, setUpButtonTextColor] = useState(
+    appearance?.sign_up_button_text_color ?? ''
+  );
   const [sign_up_button_text_color_valid_hex, setUpButtonTextColorValidHex] =
     useState(true);
-  const [sign_up_button_text_hover_color, setUpButtonTextHoverColor] =
-    useState('');
+  const [sign_up_button_text_hover_color, setUpButtonTextHoverColor] = useState(
+    appearance?.sign_up_button_text_hover_color ?? ''
+  );
   const [
     sign_up_button_text_hover_color_valid_hex,
     setUpButtonTextHoverColorValidHex,
   ] = useState(true);
-  const [tags_active_background_color, setTagsActiveBackgroundColor] =
-    useState('');
+  const [tags_active_background_color, setTagsActiveBackgroundColor] = useState(
+    appearance?.tags_active_background_color ?? ''
+  );
   const [
     tags_active_background_color_valid_hex,
     setTagsActiveBackgroundColorValidHex,
   ] = useState(true);
-  const [tags_active_text_color, setTagsActiveTextColor] = useState('');
+  const [tags_active_text_color, setTagsActiveTextColor] = useState(
+    appearance?.tags_active_text_color ?? ''
+  );
   const [tags_active_text_color_valid_hex, setTagsActiveTextColorValidHex] =
     useState(true);
   const [tags_default_background_color, setTagsDefaultBackgroundColor] =
-    useState('');
+    useState(appearance?.tags_default_background_color ?? '');
   const [
     tags_default_background_color_valid_hex,
     setTagsDefaultBackgroundColorValidHex,
   ] = useState(true);
-  const [tags_default_text_color, setTagsDefaultTextColor] = useState('');
+  const [tags_default_text_color, setTagsDefaultTextColor] = useState(
+    appearance?.tags_default_text_color ?? ''
+  );
   const [tags_default_text_color_valid_hex, setTagsDefaultTextColorValidHex] =
     useState(true);
   const [user_name_display_format, setUserNameDisplayFormat] =
@@ -217,7 +252,7 @@ export default function AppearancePage() {
       url: 'projects/appearance',
     }).then((appearance) => {
       const data = appearance.results.data;
-      setAppearance(data);
+      setUser((prev) => ({ ...prev, appearance: data }));
       setActiveLinkColor(data?.active_link_color || '#913187');
       setAppearanceId(data?.id || appearance_id);
       setBackgroundColor(data?.background_color || '#ffffff');
@@ -584,7 +619,7 @@ export default function AppearancePage() {
     }).then((res) => {
       const data = res.results.data as ProjectAppearance;
 
-      setAppearance(data);
+      setUser((prev) => ({ ...prev, appearance: data }));
       setAppearanceId(data?.id || appearance_id);
 
       if (data) {
