@@ -102,7 +102,7 @@
     line-height: 19px;
     margin-top: 20px;
     padding: 8px 12px;
-    width: 70px;
+    border-color: transparent;
     outline: none;
   }
 }
