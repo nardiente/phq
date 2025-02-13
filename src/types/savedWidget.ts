@@ -4,6 +4,7 @@ export type WidgetStatus = 'draft' | 'published';
 
 export interface SavedWidget {
   id?: number;
+  user_id?: number;
   name: string;
   config: WidgetConfig;
   status: WidgetStatus;
