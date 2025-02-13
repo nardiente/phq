@@ -13,13 +13,11 @@ import {
   Users2,
   CreditCard,
   Mail,
-  BookOpen,
   Zap,
   ThumbsUp,
   ChevronLeft,
   ChevronRight,
   Paintbrush,
-  Heart,
   LayoutTemplate,
   PieChart,
   Users,
@@ -110,24 +108,27 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
     {
       id: 'documentation',
       label: 'Documentation',
-      icon: FileText
+      icon: FileText,
+      link: 'https://support.producthq.io/',
     },
     {
       id: 'testimonials',
       label: 'Share your feedback',
-      icon: React.forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>((props, ref) => (
-        <svg 
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          className="text-gray-700"
-        >
-          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-        </svg>
-      )),
+      icon: React.forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(
+        () => (
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="text-gray-700"
+          >
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+          </svg>
+        )
+      ),
     },
     {
       icon: ThumbsUp,
@@ -140,7 +141,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       label: 'Our Roadmap',
       id: 'our-roadmap',
       link: 'https://feedback.producthq.io/roadmap',
-    }
+    },
   ];
 
   useEffect(() => {
@@ -326,7 +327,11 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
                   .map((item) => (
                     <button
                       key={item.id}
-                      onClick={() => item.id === 'settings' ? toggleSettings() : handleNavigation(item)}
+                      onClick={() =>
+                        item.id === 'settings'
+                          ? toggleSettings()
+                          : handleNavigation(item)
+                      }
                       className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
                         activeItem === item.id
                           ? 'bg-purple-50 text-purple-700'
