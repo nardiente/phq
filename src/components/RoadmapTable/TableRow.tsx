@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Info } from 'lucide-react';
+import { RoadmapItem } from '../../types/roadmap';
 import EffortIndicator from '../EffortIndicator';
 import StatusBadge from '../StatusBadge';
 import { usePanel } from '../../contexts/PanelContext';
@@ -34,9 +35,6 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
   const impactRef = useRef<HTMLDivElement>(null);
   const confidenceRef = useRef<HTMLDivElement>(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
-  const [saveStatus, setSaveStatus] = useState<
-    'saved' | 'saving' | 'error' | null
-  >(null);
 
   const calculateScore = (updatedItem: Feedback) => {
     const reach = updatedItem.reach || 0;
@@ -68,17 +66,11 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
   }, []);
 
   const impactOptions = [
-    { value: Impacts.MASSIVE, label: Impact[Impacts.MASSIVE] },
-    { value: Impacts.HIGH, label: Impact[Impacts.HIGH] },
-    { value: Impacts.MEDIUM, label: Impact[Impacts.MEDIUM] },
-    { value: Impacts.LOW, label: Impact[Impacts.LOW] },
-    { value: Impacts.MINIMAL, label: Impact[Impacts.MINIMAL] },
-  ];
-
-  const confidenceOptions = [
-    { label: Confidence[Confidences.LOW], value: Confidences.LOW },
-    { label: Confidence[Confidences.MEDIUM], value: Confidences.MEDIUM },
-    { label: Confidence[Confidences.HIGH], value: Confidences.HIGH },
+    { value: 3, label: 'massive' },
+    { value: 2, label: 'high' },
+    { value: 1, label: 'medium' },
+    { value: 0.5, label: 'low' },
+    { value: 0.25, label: 'minimal' },
   ];
 
   const calculateDropdownPosition = (ref: React.RefObject<HTMLDivElement>) => {
@@ -91,114 +83,32 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
     };
   };
 
-  const defaultImpact =
-    impactOptions.find((option) => option.label === Impact[Impacts.MEDIUM])
-      ?.value || 1;
-  const defaultConfidence = Confidence[Confidences.LOW];
+  const defaultImpact = impactOptions.find(option => option.label === 'medium')?.value || 1;
 
-  const scoreStyle: React.CSSProperties = {
+  console.log('item.impact:', item.impact);
+  console.log('impactOptions:', impactOptions);
+  console.log('defaultImpact:', defaultImpact);
+
+  const capitalize = (str: string) => {
+    return str.replace(/\w\S*/g, function(txt){
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  }
+
+  const scoreStyle = {
     color: '#5a00cd',
     fontSize: '1.1em',
     verticalAlign: 'middle',
-    textAlign: 'center' as const,
-  };
-
-  const saveItemToServer = async (updatedItem: Feedback) => {
-    const {
-      title,
-      description,
-      estimated_release_date,
-      status,
-      tags,
-      reach,
-      impact,
-      confidence,
-      effort,
-      score,
-    } = updatedItem;
-    setSaveStatus('saving');
-    putApi<Feedback>(`feedback/${updatedItem.id}`, {
-      title,
-      description,
-      estimated_release_date,
-      status: status?.name ?? 'Under Review',
-      tags,
-      reach,
-      impact,
-      confidence,
-      effort,
-      score,
-    })
-      .then((res) => {
-        if (res.results.error || res.results.errors) {
-          setSaveStatus('error');
-        }
-        if (res.results.data) {
-          updateIdea(res.results.data);
-          setSaveStatus('saved');
-          socket?.emit('message', {
-            action: 'updateIdea',
-            data: { user_id: user?.user?.id, projectId: user?.project?.id },
-          });
-        }
-      })
-      .catch(() => setSaveStatus('error'))
-      .finally(() => setTimeout(() => setSaveStatus(null), 2000));
-  };
-
-  const handleItemUpdate = (updatedItem: Feedback) => {
-    onItemChange(updatedItem);
-    saveItemToServer(updatedItem);
-  };
-
-  const handleNameClick = () => {
-    setSelectedIdea(item);
-    setActivePage('add_comment');
-    setIsOpen(true);
+    textAlign: 'center'
   };
 
   return (
     <tr className="border-b last:border-b-0">
-      <td
-        className="py-4 px-4 text-gray-700 text-sm"
-        style={{ width: '300px', verticalAlign: 'middle' }}
-      >
-        <div className="flex items-center gap-2">
-          <span
-            className="cursor-pointer hover:text-purple-600"
-            onClick={handleNameClick}
-          >
-            {item.title}
-          </span>
-          {saveStatus && (
-            <span
-              className={`px-2 py-0.5 text-xs rounded-full ${
-                saveStatus === 'saving'
-                  ? 'bg-blue-50 text-blue-700'
-                  : saveStatus === 'saved'
-                    ? 'bg-green-50 text-green-700'
-                    : 'bg-red-50 text-red-700'
-              }`}
-            >
-              {saveStatus === 'saving'
-                ? 'Saving'
-                : saveStatus === 'saved'
-                  ? 'Saved'
-                  : 'Error'}
-            </span>
-          )}
-        </div>
+      <td className="py-2 px-3 text-gray-700 text-sm" style={{width: '300px', verticalAlign: 'middle'}}>{item.name}</td>
+      <td className="py-2 px-3 text-gray-700 w-32 text-sm" style={{verticalAlign: 'middle'}}>
+        <StatusBadge status={item.status} />
       </td>
-      <td
-        className="py-4 px-4 text-gray-700 w-32 text-sm"
-        style={{ verticalAlign: 'middle' }}
-      >
-        <StatusBadge status={item.status?.name.toString() ?? ''} />
-      </td>
-      <td
-        className="py-4 px-4 text-gray-700 w-24 text-sm"
-        style={{ verticalAlign: 'middle' }}
-      >
+      <td className="py-2 px-3 text-gray-700 w-24 text-sm" style={{verticalAlign: 'middle'}}>
         <input
           type="text"
           inputMode="numeric"
@@ -212,43 +122,36 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
               onItemChange(updatedItem);
             }
           }}
-          onKeyDown={(e) => {
-            if (e.code.includes('Enter')) {
-              handleItemUpdate(item);
-            }
-          }}
           className="w-full p-1 border rounded-lg text-gray-700 text-sm"
         />
       </td>
-      <td
-        className="py-4 px-4 text-gray-700 relative text-sm"
-        style={{ verticalAlign: 'middle', width: '130px' }}
-      >
-        <div className="relative border rounded-lg" ref={impactRef}>
+      <td className="py-2 px-3 text-gray-700 relative w-32 text-sm" style={{verticalAlign: 'middle'}}>
+        <div className="relative" ref={impactRef}>
           <button
             onClick={() => {
               const position = calculateDropdownPosition(impactRef);
               setDropdownPosition(position);
               setIsImpactOpen(!isImpactOpen);
             }}
-            className="w-full p-1 flex items-center justify-between text-gray-700 text-sm"
+            className="w-full p-1 border rounded-lg flex items-center justify-between text-gray-700 text-sm"
           >
             <span>
-              {impactOptions.find(
-                (option) =>
-                  option.value ===
-                  (item.impact === undefined ? defaultImpact : item.impact)
-              )?.value +
-                ' ' +
-                impactOptions.find(
-                  (option) =>
-                    option.value ===
-                    (item.impact === undefined ? defaultImpact : item.impact)
-                )?.label || Impact[Impacts.MEDIUM]}
+              {impactOptions.find((option) => option.value === item.impact)?.value + " " + capitalize(impactOptions.find((option) => option.value === item.impact)?.label || 'medium') }
             </span>
             <ChevronDown className="w-5 h-5" />
           </button>
           {isImpactOpen && (
+            <div
+              style={{
+                position: 'fixed',
+                top: dropdownPosition.top,
+                left: dropdownPosition.left,
+                zIndex: 9999,
+                width: '144px',
+              }}
+              className="mt-1 w-full bg-white rounded-lg shadow-lg border"
+            >
+              {impactOptions.map((option) => (
             <div
               style={{
                 position: 'fixed',
@@ -269,32 +172,26 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
                     setIsImpactOpen(false);
                   }}
                   className="w-full px-2 py-1 text-left hover:bg-gray-50 text-gray-700 text-sm"
+                  className="w-full px-2 py-1 text-left hover:bg-gray-50 text-gray-700 text-sm"
                 >
-                  {option.value + ' ' + option.label}
+                  {option.value + " " + capitalize(option.label)}
                 </button>
               ))}
             </div>
           )}
         </div>
       </td>
-      <td
-        className="py-4 px-4 text-gray-700 relative text-sm"
-        style={{ verticalAlign: 'middle', width: '160px' }}
-      >
-        <div className="relative border rounded-lg w-full" ref={confidenceRef}>
+      <td className="py-2 px-3 text-gray-700 relative w-32 text-sm" style={{verticalAlign: 'middle'}}>
+        <div className="relative" ref={confidenceRef}>
           <button
             onClick={() => {
               const position = calculateDropdownPosition(confidenceRef);
               setDropdownPosition(position);
               setIsConfidenceOpen(!isConfidenceOpen);
             }}
-            className="w-full p-1 flex items-center justify-between text-gray-700 text-sm"
+            className="w-full p-1 border rounded-lg flex items-center justify-between text-gray-700 text-sm"
           >
-            <span>
-              {item.confidence === undefined
-                ? defaultConfidence
-                : Confidence[item.confidence]}
-            </span>
+            <span>{item.confidence.replace(/-/g, '')}</span>
             <ChevronDown className="w-5 h-5" />
           </button>
           {isConfidenceOpen && (
@@ -304,11 +201,11 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
                 top: dropdownPosition.top,
                 left: dropdownPosition.left,
                 zIndex: 9999,
-                width: '160px',
+                width: '144px',
               }}
               className="mt-1 w-full bg-white rounded-lg shadow-lg border"
             >
-              {confidenceOptions.map((option) => (
+              {['50% - Low', '80% - Medium', '100% - High'].map((option) => (
                 <button
                   key={option.value}
                   onClick={() => {
@@ -318,18 +215,16 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
                     setIsConfidenceOpen(false);
                   }}
                   className="w-full px-2 py-1 text-left hover:bg-gray-50 text-gray-700 text-sm"
+                  className="w-full px-2 py-1 text-left hover:bg-gray-50 text-gray-700 text-sm"
                 >
-                  {option.label}
+                  {option.replace(/-/g, '')}
                 </button>
               ))}
             </div>
           )}
         </div>
       </td>
-      <td
-        className="py-4 px-4 text-gray-700 w-24 text-sm"
-        style={{ verticalAlign: 'middle' }}
-      >
+      <td className="py-2 px-3 text-gray-700 w-24 text-sm" style={{verticalAlign: 'middle'}}>
         <EffortIndicator
           level={Efforts.indexOf(item.effort ?? 1) + 1}
           onChange={(level) => {
@@ -340,9 +235,7 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
           }}
         />
       </td>
-      <td className="py-4 px-4 text-sm w-16" style={scoreStyle}>
-        {item.score}
-      </td>
+      <td className="py-2 px-3 text-sm w-16" style={scoreStyle}>{item.score}</td>
     </tr>
   );
 };

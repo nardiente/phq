@@ -22,78 +22,28 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   };
 
   return (
-    <thead
-      className="top-0 sticky text-gray-900 text-base cursor-pointer bg-gray-50"
-      style={{ zIndex: 10 }}
-    >
-      <tr>
-        <th
-          className="border p-4 text-gray-900 text-base cursor-pointer hover:bg-gray-50"
-          style={{ verticalAlign: 'middle' }}
-          onClick={() =>
-            onSort(
-              'name',
-              currentSortColumn === 'name'
-                ? currentSortOrder === 'asc'
-                  ? 'desc'
-                  : 'asc'
-                : 'asc'
-            )
-          }
-        >
-          <div className="flex items-center justify-between">
-            <span>Idea Name</span>
-            {renderSortIcon('name')}
-          </div>
+    <thead>
+      <tr className="border-b ">
+        <th className="py-2 px-3 text-left text-md text-gray-700 text-sm align-middle">
+          Idea Name
         </th>
-        <th
-          className="border p-4 text-gray-900 text-base"
-          style={{ verticalAlign: 'middle' }}
-        >
+        <th className="py-2 px-3 text-left text-md text-gray-700 w-32 text-sm align-middle">
           Status
         </th>
-        <th
-          className="border p-4 text-gray-900 text-base"
-          style={{ verticalAlign: 'middle' }}
-        >
+        <th className="py-2 px-3 text-left text-md text-gray-700 w-24 text-sm align-middle">
           Reach
         </th>
-        <th
-          className="border p-4 text-gray-900 text-base"
-          style={{ verticalAlign: 'middle', width: '130px' }}
-        >
+        <th className="py-2 px-3 text-left text-md text-gray-700 w-32 text-sm align-middle">
           Impact
         </th>
-        <th
-          className="border p-4 text-gray-900 text-base"
-          style={{ verticalAlign: 'middle', width: '160px' }}
-        >
+        <th className="py-2 px-3 text-left text-md text-gray-700 w-32 text-sm align-middle">
           Confidence
         </th>
-        <th
-          className="border p-4 text-gray-900 text-base"
-          style={{ verticalAlign: 'middle' }}
-        >
+        <th className="py-2 px-3 text-left text-md text-gray-700 w-24 text-sm align-middle">
           Effort
         </th>
-        <th
-          className="border p-4 text-gray-900 text-base cursor-pointer hover:bg-gray-50"
-          style={{ verticalAlign: 'middle' }}
-          onClick={() =>
-            onSort(
-              'score',
-              currentSortColumn === 'score'
-                ? currentSortOrder === 'asc'
-                  ? 'desc'
-                  : 'asc'
-                : 'asc'
-            )
-          }
-        >
-          <div className="flex items-center justify-between">
-            <span>Score</span>
-            {renderSortIcon('score')}
-          </div>
+        <th className="py-2 px-3 text-left text-md text-gray-700 w-16 text-sm align-middle">
+          Score
         </th>
       </tr>
     </thead>
