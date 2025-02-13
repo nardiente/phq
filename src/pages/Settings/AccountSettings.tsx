@@ -305,30 +305,33 @@ export function AccountSettings() {
           />
 
           {/* Company Logo */}
-          <div className="flex items-start gap-4 m-0">
-            <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center">
-              {userDetails?.company_logo !== undefined &&
-              userDetails?.company_logo !== COMPANY_LOGO_PLACEHOLDER &&
-              userDetails.company_logo.length > 0 ? (
-                <img
-                  className="is-rounded responsiveImage rounded-full w-16 h-16"
-                  src={userDetails?.company_logo}
-                />
-              ) : (
-                <span className="text-purple-600 text-2xl">
-                  {userDetails?.company_name?.charAt(0).toUpperCase()}
-                </span>
-              )}
+          <div className="grid grid-cols-2 gap-4 m-0">
+            <div></div>
+            <div className="flex items-start gap-4 m-0">
+              <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center">
+                {userDetails?.company_logo !== undefined &&
+                userDetails?.company_logo !== COMPANY_LOGO_PLACEHOLDER &&
+                userDetails.company_logo.length > 0 ? (
+                  <img
+                    className="is-rounded responsiveImage rounded-full w-16 h-16"
+                    src={userDetails?.company_logo}
+                  />
+                ) : (
+                  <span className="text-purple-600 text-2xl">
+                    {userDetails?.company_name?.charAt(0).toUpperCase()}
+                  </span>
+                )}
+              </div>
+              <Button
+                className="w-fit text-[13px]"
+                text="Upload"
+                onClick={() => {
+                  setImageType(ImageType.COMPANY_LOGO);
+                  setModal((prev) => !prev);
+                }}
+                variant="secondary"
+              />
             </div>
-            <Button
-              className="w-fit text-[13px]"
-              text="Upload"
-              onClick={() => {
-                setImageType(ImageType.COMPANY_LOGO);
-                setModal((prev) => !prev);
-              }}
-              variant="secondary"
-            />
           </div>
 
           {/* Company Name and Website */}
