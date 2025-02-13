@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import WidgetsSidebar from '../components/WidgetsSidebar';
 import { WidgetConfig } from '../types/widget';
 import { useNavigate, useParams } from 'react-router-dom';
-import { generateId } from '../utils/generateId';
 import { NewWidgetPreview } from '../components/WidgetPreview/NewWidgetPreview';
+import { getApi, postApi, putApi } from '../utils/api/api';
+import { SavedWidget } from '../types/savedWidget';
 
 export default function WidgetsPage() {
   const [widgetConfig, setWidgetConfig] = useState<WidgetConfig>({
@@ -17,18 +18,18 @@ export default function WidgetsPage() {
       height: '600px',
       position: 'Right',
       preventScroll: false,
-      hideCloseButton: false
-    }
+      hideCloseButton: false,
+    },
   });
-  const [activeSection, setActiveSection] = useState<string | null>('widget-type');
-  const [editingWidgetId, setEditingWidgetId] = useState<string | null>(null);
-  const [isPreviewVisible, setIsPreviewVisible] = useState(false);
+  const [, setActiveSection] = useState<string | null>('widget-type');
+  const [editingWidgetId, setEditingWidgetId] = useState<number>();
+  // const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
   const handleConfigUpdate = (newConfig: WidgetConfig) => {
     console.log('WidgetsPage config update:', {
-      appearance: newConfig.appearance
+      appearance: newConfig.appearance,
     });
     setWidgetConfig(newConfig);
   };
@@ -36,21 +37,20 @@ export default function WidgetsPage() {
   useEffect(() => {
     const loadWidget = async (widgetId: string) => {
       console.log('Loading widget with ID:', widgetId);
-      try {
-        const response = await fetch(`http://localhost:3001/widgets/${widgetId}`);
-        if (!response.ok) {
-          throw new Error('Failed to load widget');
+      getApi<SavedWidget>({ url: `widgets/${widgetId}` }).then((res) => {
+        const {
+          results: { data },
+        } = res;
+
+        if (data) {
+          console.log('Widget data:', data);
+          setEditingWidgetId(data.id);
+          setWidgetConfig({
+            name: data.name,
+            ...data.config,
+          });
         }
-        const data = await response.json();
-        console.log('Widget data:', data);
-        setEditingWidgetId(data.id);
-        setWidgetConfig({
-          name: data.name,
-          ...data.config
-        });
-      } catch (error) {
-        console.error('Error loading widget:', error);
-      }
+      });
     };
 
     console.log('ID parameter:', id);
@@ -60,32 +60,28 @@ export default function WidgetsPage() {
   }, [id]);
 
   const handleSave = async () => {
-    try {
-      const widgetData = {
-        id: editingWidgetId || generateId(), // Use existing ID if editing
-        name: widgetConfig.name,
-        config: widgetConfig,
-        status: 'draft',
-        lastUpdated: new Date().toISOString()
-      };
+    const widgetData: SavedWidget = {
+      id: editingWidgetId,
+      name: widgetConfig.name ?? '',
+      config: widgetConfig,
+      status: 'draft',
+      createdAt: new Date().toISOString(),
+      lastUpdated: new Date().toISOString(),
+    };
 
-      const endpoint = editingWidgetId 
-        ? `http://localhost:3001/widgets/${editingWidgetId}`
-        : 'http://localhost:3001/widgets';
-
-      const response = await fetch(endpoint, {
-        method: editingWidgetId ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(widgetData)
+    if (editingWidgetId) {
+      delete widgetData.id;
+      putApi(`widgets/${editingWidgetId}`, widgetData).then((res) => {
+        if (res.results.data) {
+          navigate('/widgets');
+        }
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to save widget');
-      }
-
-      navigate('/widgets');
-    } catch (error) {
-      console.error('Error saving widget:', error);
+    } else {
+      postApi({ url: 'widgets', payload: widgetData }).then((res) => {
+        if (res.results.data) {
+          navigate('/widgets');
+        }
+      });
     }
   };
 

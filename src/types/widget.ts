@@ -1,13 +1,13 @@
 export interface WidgetAppearance {
   title?: string;
   description?: string;
-  placement?: string;
+  placement?: 'Top left' | 'Top right' | 'Bottom left' | 'Bottom right';
   offset?: string;
   width: string;
-  height: string;
+  height?: string;
   preventScroll?: boolean;
   hideCloseButton?: boolean;
-  position?: string;
+  position?: 'Left' | 'Right';
   backgroundColor?: string;
   textColor?: 'Light' | 'Dark';
 }
@@ -23,19 +23,7 @@ export interface WidgetConfig {
   iconColor?: 'Light' | 'Dark';
   backgroundColor?: string;
   notificationType?: 'Count' | 'Dot' | 'None';
-  appearance: {
-    title?: string;
-    description?: string;
-    placement?: 'Top left' | 'Top right' | 'Bottom left' | 'Bottom right';
-    offset?: string;
-    width: string;
-    height?: string;
-    preventScroll?: boolean;
-    hideCloseButton?: boolean;
-    position?: 'Left' | 'Right';
-    textColor?: 'Light' | 'Dark';
-    backgroundColor?: string;
-  };
+  appearance: WidgetAppearance;
   sections?: {
     ideas: boolean;
     roadmap: boolean;
@@ -46,6 +34,7 @@ export interface WidgetConfig {
     location: string;
     delay: number;
     hostnames?: string[];
+    devices?: string;
   };
   matchAllElements?: boolean;
   cssSelector?: string;
@@ -78,7 +67,7 @@ export const defaultWidgetConfig: WidgetConfig = {
   sections: {
     ideas: true,
     roadmap: true,
-    announcements: true
+    announcements: true,
   },
   targeting: {
     timing: 'Immediately',

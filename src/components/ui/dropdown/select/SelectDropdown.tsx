@@ -2,9 +2,57 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDownIcon } from '../../../icons/chevron-down.icon';
 
 interface SelectDropdownProps {
-  options: Array<{ value: string; label: string }>;
+  options: {
+    value:
+      | 'Top left'
+      | 'Top right'
+      | 'Bottom left'
+      | 'Bottom right'
+      | 'Tab'
+      | 'Floating'
+      | 'Right'
+      | 'Left'
+      | 'Bolt'
+      | 'Roadmap'
+      | 'WhatsNew'
+      | 'Idea'
+      | 'Light'
+      | 'Dark'
+      | 'Modal'
+      | 'Popover'
+      | 'Sidebar'
+      | 'Embed'
+      | 'Count'
+      | 'Dot'
+      | 'None';
+    label: string;
+  }[];
   value: { value: string; label: string } | null;
-  onChange: (option: { value: string; label: string }) => void;
+  onChange: (option: {
+    value:
+      | 'Top left'
+      | 'Top right'
+      | 'Bottom left'
+      | 'Bottom right'
+      | 'Tab'
+      | 'Floating'
+      | 'Right'
+      | 'Left'
+      | 'Bolt'
+      | 'Roadmap'
+      | 'WhatsNew'
+      | 'Idea'
+      | 'Light'
+      | 'Dark'
+      | 'Modal'
+      | 'Popover'
+      | 'Sidebar'
+      | 'Embed'
+      | 'Count'
+      | 'Dot'
+      | 'None';
+    label: string;
+  }) => void;
   containerClass?: string;
 }
 

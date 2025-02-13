@@ -1,13 +1,16 @@
 import axios from 'axios';
 import { SavedWidget } from '../types/savedWidget';
 
-const API_URL = 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_API_HOST;
 
 export const widgetService = {
   // Get all widgets
   async getAllWidgets(): Promise<SavedWidget[]> {
     try {
-      console.log('🚀 WidgetService: Starting fetch from:', `${API_URL}/widgets`);
+      console.log(
+        '🚀 WidgetService: Starting fetch from:',
+        `${API_URL}/widgets`
+      );
       const response = await axios.get(`${API_URL}/widgets`);
       console.log('📡 WidgetService: Response status:', response.status);
       console.log('📦 WidgetService: Raw data:', response.data);
@@ -36,7 +39,10 @@ export const widgetService = {
   },
 
   // Update widget status
-  async updateWidgetStatus(id: string, status: 'draft' | 'published'): Promise<SavedWidget | undefined> {
+  async updateWidgetStatus(
+    id: string,
+    status: 'draft' | 'published'
+  ): Promise<SavedWidget | undefined> {
     const widget = await this.getWidget(id);
     if (widget) {
       const response = await axios.patch(`${API_URL}/widgets/${id}`, {
@@ -46,5 +52,5 @@ export const widgetService = {
       return response.data;
     }
     return undefined;
-  }
+  },
 };
