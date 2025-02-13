@@ -606,7 +606,8 @@ export function RoadmapPage() {
                                         );
                                       })}
                                     {roadmap.upvotes?.filter(
-                                      (upvote) => !upvote.draft
+                                      (upvote) =>
+                                        !upvote.draft && !upvote.hide_on_roadmap
                                     ).length === 0 && (
                                       <div className="empty-message">Empty</div>
                                     )}
