@@ -6,8 +6,15 @@ interface FloatingLauncherProps {
   onClick?: () => void;
 }
 
-export const FloatingLauncher: React.FC<FloatingLauncherProps> = ({ config, onClick }) => {
-  const position = config.launcherPosition === 'Bottom left' ? 'left-4' : 'right-4';
+export const FloatingLauncher = ({ config, onClick }: FloatingLauncherProps) => {
+  // Validate required props
+  if (!config || !onClick) {
+    console.warn('FloatingLauncher: Missing required props');
+    return null;
+  }
+
+  const position = config.launcherPosition === 'Left' ? 'bottom-left' : 'bottom-right';
+  const positionClass = position === 'bottom-left' ? 'left-4' : 'right-4';
   const iconColor = config.iconColor === 'Dark' ? '#1F2937' : '#FFFFFF';
   
   const getIcon = () => {
@@ -53,13 +60,29 @@ export const FloatingLauncher: React.FC<FloatingLauncherProps> = ({ config, onCl
     );
   };
 
+  const handleClick = (e: React.MouseEvent) => {
+    try {
+      e.stopPropagation();
+      console.group('=== FloatingLauncher Click ===');
+      console.log('1. Click event triggered');
+      console.log('2. Current config:', config);
+      onClick();
+      console.log('3. onClick handler called');
+      console.groupEnd();
+    } catch (error) {
+      console.error('Error in FloatingLauncher click:', error);
+    }
+  };
+
   return (
-    <div className={`absolute bottom-4 ${position} flex items-center justify-center`}>
+    <div className={`absolute bottom-4 ${positionClass} flex items-center justify-center`}>
       <div className="relative">
         <button
-          onClick={onClick}
+          onClick={handleClick}
           className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-opacity"
-          style={{ backgroundColor: config.backgroundColor || '#ef567c' }}
+          style={{
+            backgroundColor: config.backgroundColor || '#ff6334'
+          }}
         >
           {getIcon()}
         </button>
@@ -67,4 +90,4 @@ export const FloatingLauncher: React.FC<FloatingLauncherProps> = ({ config, onCl
       </div>
     </div>
   );
-}; 
+};

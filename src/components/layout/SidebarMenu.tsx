@@ -1,4 +1,5 @@
-import { ReactNode, useEffect, useState } from 'react';
+import React from 'react';
+import { ReactNode, useEffect, useState, useRef } from 'react';
 import {
   LayoutDashboard,
   MessageSquare,
@@ -12,17 +13,17 @@ import {
   Users2,
   CreditCard,
   Mail,
-  BookOpen,
   Zap,
   ThumbsUp,
   ChevronLeft,
   ChevronRight,
   Paintbrush,
-  Heart,
   LayoutTemplate,
   PieChart,
   Users,
   LucideIcon,
+  FileText,
+  ListOrdered,
 } from 'lucide-react';
 import { PageType } from '../../types/app';
 import { useUser } from '../../contexts/UserContext';
@@ -48,6 +49,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
 
   const [isExpanded, setIsExpanded] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const company_info = is_public ? user?.admin_profile : user?.user;
@@ -63,7 +65,6 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
     { icon: ThumbsUp, label: 'Upvotes', id: 'upvotes' },
     { icon: Map, label: 'Roadmap', id: 'roadmap' },
     { icon: Zap, label: "What's New", id: 'posts' },
-    { icon: Zap, label: "What's New", id: 'boost', hidden: true },
     {
       icon: LayoutTemplate,
       label: 'Widgets',
@@ -71,7 +72,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
     },
     { icon: PieChart, label: 'Segments', id: 'segments', hidden: true },
     { icon: Users, label: 'Customer Profiles', id: 'profiles', hidden: true },
-    { icon: Map, label: 'Prioritization', id: 'prioritization', hidden: true },
+    { icon: ListOrdered, label: 'Prioritization', id: 'prioritization' },
   ];
 
   const settingsMenuItems: MenuItem[] = [
@@ -100,16 +101,34 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
 
   const bottomMenuItems: MenuItem[] = [
     {
-      icon: BookOpen,
+      id: 'settings',
+      label: 'Settings',
+      icon: Settings,
+    },
+    {
+      id: 'documentation',
       label: 'Documentation',
-      id: 'docs',
+      icon: FileText,
       link: 'https://support.producthq.io/',
     },
     {
-      icon: Heart,
-      label: 'Leave Testimonial',
       id: 'testimonials',
-      hidden: true,
+      label: 'Share your feedback',
+      icon: React.forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(
+        () => (
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="text-gray-700"
+          >
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+          </svg>
+        )
+      ),
     },
     {
       icon: ThumbsUp,
@@ -133,6 +152,25 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
     );
   }, [activeItem]);
 
+  // Handle click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowSettings(false);
+      }
+    };
+
+    // Only add listener if menu is open
+    if (showSettings) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    // Cleanup
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showSettings]);
+
   const handleNavigation = (item: MenuItem) => {
     if (item.link && item.link.length > 0) {
       window.open(item.link, '_blank');
@@ -155,6 +193,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
       className={`bg-white border-r border-gray-200 transition-all duration-300 mr-[5px] ${
         isExpanded ? 'w-max' : 'w-16'
       }`}
+      ref={menuRef}
     >
       <div className="sticky top-0 flex flex-col h-screen">
         <div className="flex items-center justify-between h-[60px] px-4 border-b border-gray-200 min-h-[60px]">
@@ -283,21 +322,16 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
           <div className="space-y-1">
             {!showSettings && (
               <>
-                <button
-                  onClick={toggleSettings}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50"
-                >
-                  <Settings size={18} />
-                  {isExpanded && (
-                    <span className="flex-1 text-left">Settings</span>
-                  )}
-                </button>
                 {bottomMenuItems
                   .filter((m) => !m.hidden)
                   .map((item) => (
                     <button
                       key={item.id}
-                      onClick={() => handleNavigation(item)}
+                      onClick={() =>
+                        item.id === 'settings'
+                          ? toggleSettings()
+                          : handleNavigation(item)
+                      }
                       className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
                         activeItem === item.id
                           ? 'bg-purple-50 text-purple-700'

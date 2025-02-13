@@ -1,0 +1,28 @@
+import { Link } from 'react-router-dom';
+
+const Widgets = () => {
+  return (
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <h1 className="text-2xl font-bold">Widgets</h1>
+          <p className="text-gray-600">Create a widget to get more eyeballs on your posts.</p>
+        </div>
+        <Link 
+          to="/widgets/page"
+          className="bg-[#FF6B3D] hover:bg-[#ff825c] text-white px-4 py-2 rounded-md flex items-center gap-2"
+        >
+          <span>+</span> Create New
+        </Link>
+      </div>
+
+      <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)]">
+        <span className="text-4xl mb-4">😕</span>
+        <h2 className="text-lg font-medium mb-2">You don't have any widgets created yet.</h2>
+        <p className="text-gray-500">Now is a great time to add your first entry!</p>
+      </div>
+    </div>
+  );
+};
+
+export default Widgets; 

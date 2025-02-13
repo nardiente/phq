@@ -2,28 +2,120 @@ import React, { useState, useEffect, useRef, ReactNode } from 'react';
 import { Checkbox } from './Checkbox';
 import { ChevronDownIcon } from './icons/chevron-down.icon';
 import { HexColorPicker } from 'react-colorful';
-import { WidgetConfig } from '../types/widget';
-import { SelectOption } from '../types/dropdown';
+import { defaultWidgetConfig } from '../types/widget';
+import type { WidgetConfig, WidgetAppearance } from '../types/widget';
+import type { SelectOption } from '../types/dropdown';
 import { SelectDropdown } from './ui/dropdown/select/SelectDropdown';
-import { WidgetSectionsForm } from './widgets/WidgetSectionsForm';
-import { WidgetTargetingForm } from './widgets/WidgetTargetingForm';
+import { WidgetTargetingForm } from './WidgetPreview/widgets/WidgetTargetingForm';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { FormField } from './ui/FormField';
+import { Toggle } from './ui/Toggle';
 
+// Constants with proper type definitions
+const WIDGET_TYPE_OPTIONS: SelectOption[] = [
+  { value: 'Modal', label: 'Modal' },
+  { value: 'Popover', label: 'Popover' },
+  { value: 'Sidebar', label: 'Sidebar' },
+  { value: 'Embed', label: 'Embed' },
+] as const;
+
+const LAUNCHER_POSITION_OPTIONS: SelectOption[] = [
+  { value: 'Right', label: 'Right' },
+  { value: 'Left', label: 'Left' },
+] as const;
+
+const FLOATING_POSITION_OPTIONS: SelectOption[] = [
+  { value: 'Right', label: 'Bottom right' },
+  { value: 'Left', label: 'Bottom left' },
+] as const;
+
+const ICON_OPTIONS: SelectOption[] = [
+  { value: 'Bolt', label: 'Bolt' },
+  { value: 'Roadmap', label: 'Roadmap' },
+  { value: 'WhatsNew', label: "What's new" },
+  { value: 'Idea', label: 'Idea' },
+];
+
+const TEXT_COLOR_OPTIONS: SelectOption[] = [
+  { value: 'Light', label: 'Light' },
+  { value: 'Dark', label: 'Dark' },
+];
+
+const COUNT_OPTIONS: SelectOption[] = [
+  { value: 'Count', label: 'Count' },
+  { value: 'Dot', label: 'Dot' },
+  { value: 'None', label: 'None' },
+];
+
+const LAUNCHER_TYPE_OPTIONS: { value: 'Tab' | 'Floating'; label: string }[] = [
+  { value: 'Tab', label: 'Tab' },
+  { value: 'Floating', label: 'Floating' },
+];
+
+const PLACEMENT_OPTIONS: {
+  value: 'Top left' | 'Top right' | 'Bottom left' | 'Bottom right';
+  label: string;
+}[] = [
+  { value: 'Bottom right', label: 'Bottom right' },
+  { value: 'Bottom left', label: 'Bottom left' },
+  { value: 'Top right', label: 'Top right' },
+  { value: 'Top left', label: 'Top left' },
+];
+
+const POSITION_OPTIONS: { value: 'Right' | 'Left'; label: string }[] = [
+  { value: 'Right', label: 'Right' },
+  { value: 'Left', label: 'Left' },
+];
+
+// ===============================
+// Types & Interfaces
+// ===============================
 interface WidgetsSidebarProps {
   config: WidgetConfig;
-  onConfigUpdate: (
-    section: keyof WidgetConfig,
-    updates: Partial<WidgetConfig[keyof WidgetConfig]>
-  ) => void;
+  onConfigUpdate: (newConfig: WidgetConfig) => void;
+  onSave: () => void;
   onClose: () => void;
   onSectionChange: (section: string | null) => void;
 }
 
-const getEmbedCode = (config: WidgetConfig) => {
-  return `<!-- ProductHQ Widget -->
-<div 
-  data-producthq-widget="${config.widgetId || 'YOUR_WIDGET_ID'}"
-></div>
-<!-- End ProductHQ Widget -->`;
+type ColorScheme = 'Light' | 'Dark';
+
+// ===============================
+// Utility Components
+// ===============================
+const ColorPicker: React.FC<{
+  color: string;
+  onChange: (color: string) => void;
+}> = ({ color, onChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const popover = useRef<HTMLDivElement>(null);
+
+  useClickOutside(popover, () => setIsOpen(false));
+
+  return (
+    <div className="relative">
+      <div className="flex items-center gap-2 p-2 border rounded-md">
+        <div
+          className="w-5 h-5 rounded-full cursor-pointer"
+          style={{ backgroundColor: color }}
+          onClick={() => setIsOpen(!isOpen)}
+        />
+        <input
+          type="text"
+          value={color}
+          onChange={(e) => onChange(e.target.value)}
+          className="flex-1 focus:outline-none"
+        />
+      </div>
+
+      {isOpen && (
+        <div ref={popover} className="absolute z-10 mt-2">
+          <HexColorPicker color={color} onChange={onChange} />
+        </div>
+      )}
+    </div>
+  );
 };
 
 const useClickOutside = (
@@ -48,151 +140,326 @@ const useClickOutside = (
   }, [ref, handler]);
 };
 
-const ColorPicker = ({
-  color,
-  onChange,
-}: {
-  color: string;
-  onChange: (color: string) => void;
-}) => {
-  const popover = useRef<HTMLDivElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
-
-  useClickOutside(popover, () => setIsOpen(false));
-
-  return (
-    <div className="relative">
-      <div className="flex items-center space-x-2 px-3 py-2 border border-gray-300 rounded-md w-full">
-        <div
-          className="w-5 h-5 rounded-full cursor-pointer"
-          style={{ backgroundColor: color || '#ef567c' }}
-          onClick={() => setIsOpen(!isOpen)}
-        />
-        <input
-          type="text"
-          value={color || ''}
-          onChange={(e) => onChange(e.target.value)}
-          className="flex-1 focus:outline-none text-sm"
-          placeholder="#ef567c"
-        />
-      </div>
-
-      {isOpen && (
-        <div ref={popover} className="absolute z-10 mt-2">
-          <div className="shadow-lg rounded-lg p-3 bg-white border border-gray-200">
-            <HexColorPicker color={color || '#ef567c'} onChange={onChange} />
-          </div>
-        </div>
-      )}
-    </div>
-  );
+const getEmbedCode = (config: WidgetConfig) => {
+  return `<!-- ProductHQ Widget -->
+<div data-producthq-widget="${config.id || 'YOUR_WIDGET_ID'}"></div>
+<!-- End ProductHQ Widget -->`;
 };
 
+// ===============================
+// Main Component
+// ===============================
 export default function WidgetsSidebar({
   config,
   onConfigUpdate,
+  onSave,
   onClose,
   onSectionChange,
 }: WidgetsSidebarProps) {
-  const [activeSection, setActiveSection] = useState<string | null>(
-    'widget-type'
-  );
+  // ===============================
+  // State & Refs
+  // ===============================
+  const [activeSection, setActiveSection] = useState<string | null>('launcher');
   const [isEditing, setIsEditing] = useState(false);
-  const [widgetName, setWidgetName] = useState('My first widget');
-  // const [showColorPicker, setShowColorPicker] = useState(false);
+  const [widgetName, setWidgetName] = useState(config.name || '');
+  const navigate = useNavigate();
 
-  // Define all options at the top
-  const widgetTypeOptions: SelectOption[] = [
-    { value: 'Popover', label: 'Popover' },
-    { value: 'Modal', label: 'Modal' },
-    { value: 'Sidebar', label: 'Sidebar' },
-    { value: 'Embed', label: 'Embed' },
-  ];
+  useEffect(() => {
+    setWidgetName(config.name || '');
+  }, [config.name]);
 
-  const positionOptions: SelectOption[] = [
-    { value: 'Right', label: 'Right' },
-    { value: 'Left', label: 'Left' },
-  ];
+  // ===============================
+  // Handlers
+  // ===============================
+  const handleConfigUpdate = (field: keyof WidgetConfig, value: any) => {
+    console.group('=== Config Update ===');
+    console.log('Field being updated:', field);
+    console.log('Current value:', config[field]);
+    console.log('New value:', value);
+    console.log('Full config before:', config);
 
-  // const textColorOptions = [
-  //   { value: 'Light', label: 'Light' },
-  //   { value: 'Dark', label: 'Dark' },
-  // ];
+    onConfigUpdate({
+      ...config,
+      [field]: value,
+    });
 
-  // const notificationOptions = [
-  //   { value: 'Count', label: 'Count' },
-  //   { value: 'Dot', label: 'Dot' },
-  //   { value: 'None', label: 'None' },
-  // ];
-
-  // const launcherTypeOptions = [
-  //   { value: 'Floating', label: 'Floating' },
-  //   { value: 'Tab', label: 'Tab' },
-  // ];
-
-  const iconOptions = [
-    { value: 'Bolt', label: 'Bolt' },
-    { value: 'Roadmap', label: 'Roadmap' },
-    { value: 'WhatsNew', label: "What's new" },
-    { value: 'Idea', label: 'Idea' },
-  ];
-
-  const handleInputChange = (field: keyof WidgetConfig, value: any) => {
-    console.log('Updating field:', field, 'with value:', value);
-
-    if (field === 'launcherType') {
-      // Update the launcher type first
-      onConfigUpdate('launcherType', value);
-
-      // Then update the related fields separately
-      if (value === 'Tab') {
-        onConfigUpdate('launcherIcon', undefined);
-        onConfigUpdate('iconColor', 'Light');
-        onConfigUpdate('launcherText', "What's new");
-        onConfigUpdate('appearance', {
-          ...config.appearance,
-          textColor: 'Light',
-        });
-      } else {
-        onConfigUpdate('launcherText', undefined);
-        onConfigUpdate('launcherIcon', 'Bolt');
-        onConfigUpdate('iconColor', 'Light');
-      }
-    } else {
-      // For other property updates
-      onConfigUpdate(field, value);
-    }
+    console.log('Full config after:', {
+      ...config,
+      [field]: value,
+    });
+    console.groupEnd();
   };
 
-  const handleNestedChange = (
-    parentKey: keyof WidgetConfig,
-    updates: Partial<WidgetConfig[keyof WidgetConfig]>
-  ) => {
-    const parentConfig = config[parentKey];
+  const handleAppearanceUpdate = (updates: Partial<WidgetAppearance>) => {
+    console.group('=== Placement Update ===');
+    console.log('Current config:', config);
+    console.log('Updates:', updates);
 
-    // Check if parentConfig is an object before spreading
-    if (typeof parentConfig === 'object' && parentConfig !== null) {
-      onConfigUpdate(parentKey, {
-        ...parentConfig,
-        ...(updates as object),
-      });
-    } else {
-      // Handle the case where parentConfig is not an object
-      onConfigUpdate(parentKey, updates);
-    }
+    onConfigUpdate({
+      ...config,
+      appearance: {
+        ...config.appearance,
+        ...updates,
+        placement: updates.placement,
+      },
+    });
+
+    console.log('New config:', {
+      ...config,
+      appearance: {
+        ...config.appearance,
+        ...updates,
+        placement: updates.placement,
+      },
+    });
+    console.groupEnd();
   };
 
   const handleSectionChange = (sectionId: string | null) => {
     setActiveSection(sectionId);
-    onSectionChange(sectionId);
+    if (typeof onSectionChange === 'function') {
+      onSectionChange(sectionId);
+    }
+  };
+  const handleCancel = () => {
+    if (typeof onConfigUpdate === 'function') {
+      onConfigUpdate({
+        ...defaultWidgetConfig,
+        widgetType: config.widgetType,
+        launcherType: config.launcherType,
+      });
+    }
+    setWidgetName(config.name || '');
+    setActiveSection('launcher');
+  };
+  const handleSectionToggle = (section: string, enabled: boolean) => {
+    const sections = config.sections;
+    onConfigUpdate({
+      ...config,
+      sections: {
+        ideas: sections?.ideas ?? true,
+        roadmap: sections?.roadmap ?? true,
+        announcements: sections?.announcements ?? true,
+        [section]: enabled,
+      },
+    });
   };
 
+  // ===============================
+  // Section Definitions
+  // ===============================
   const sections: {
     id: string;
     label: string;
     content: ReactNode;
     visible?: boolean;
   }[] = [
+    {
+      id: 'launcher',
+      label: 'Launcher type',
+      visible: true,
+      content: (
+        <>
+          {config.widgetType !== 'Embed' && (
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-900">
+                Launcher type
+              </label>
+              <p className="text-sm text-gray-500 mb-2">
+                Choose how users will open your widget
+              </p>
+              <SelectDropdown
+                options={LAUNCHER_TYPE_OPTIONS}
+                value={
+                  config.launcherType
+                    ? { value: config.launcherType, label: config.launcherType }
+                    : null
+                }
+                onChange={(option) => {
+                  console.group('=== Launcher Type Change ===');
+                  console.log('Before - Full config:', config);
+                  console.log('Changing to:', option.value);
+                  handleConfigUpdate('launcherType', option.value);
+                  console.log('After - Full config:', config);
+                  console.groupEnd();
+                }}
+                containerClass="w-full bg-white border border-gray-300 rounded-md"
+              />
+            </div>
+          )}
+
+          {config.launcherType === 'Floating' && (
+            <>
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-900">
+                  Position
+                </label>
+                <p className="text-sm text-gray-500 mb-2">
+                  Where the launcher appears on the page
+                </p>
+                <SelectDropdown
+                  options={FLOATING_POSITION_OPTIONS}
+                  value={
+                    config.launcherPosition
+                      ? {
+                          value: config.launcherPosition,
+                          label:
+                            config.launcherPosition === 'Right'
+                              ? 'Bottom right'
+                              : 'Bottom left',
+                        }
+                      : null
+                  }
+                  onChange={(option) => {
+                    handleConfigUpdate('launcherPosition', option.value);
+                  }}
+                  containerClass="w-full bg-white border border-gray-300 rounded-md"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-900">
+                  Icon
+                </label>
+                <p className="text-sm text-gray-500 mb-2">
+                  Choose an icon for your launcher
+                </p>
+                <SelectDropdown
+                  options={ICON_OPTIONS}
+                  value={
+                    ICON_OPTIONS.find(
+                      (opt) => opt.value === (config.launcherIcon || 'Bolt')
+                    ) || ICON_OPTIONS[0]
+                  }
+                  onChange={(option) =>
+                    handleConfigUpdate('launcherIcon', option.value)
+                  }
+                  containerClass="w-full bg-white border border-gray-300 rounded-md"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-900">
+                  Icon color
+                </label>
+                <SelectDropdown
+                  options={[
+                    { value: 'Light', label: 'Light' },
+                    { value: 'Dark', label: 'Dark' },
+                  ]}
+                  value={
+                    TEXT_COLOR_OPTIONS.find(
+                      (opt) => opt.value === (config.iconColor || 'Light')
+                    ) || TEXT_COLOR_OPTIONS[0]
+                  }
+                  onChange={(option) =>
+                    handleConfigUpdate('iconColor', option.value)
+                  }
+                  containerClass="w-full bg-white border border-gray-300 rounded-md"
+                />
+              </div>
+            </>
+          )}
+
+          {config.launcherType === 'Tab' && (
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Text
+                </label>
+                <p className="text-sm text-gray-500 mb-2">
+                  The text that appears on the tab
+                </p>
+                <input
+                  type="text"
+                  value={config.launcherText || ''}
+                  onChange={(e) =>
+                    handleConfigUpdate('launcherText', e.target.value)
+                  }
+                  placeholder="What's new"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Position
+                </label>
+                <p className="text-sm text-gray-500 mb-2">
+                  Where the tab appears on the page
+                </p>
+                <SelectDropdown
+                  options={LAUNCHER_POSITION_OPTIONS}
+                  value={
+                    config.launcherPosition
+                      ? {
+                          value: config.launcherPosition,
+                          label: config.launcherPosition,
+                        }
+                      : null
+                  }
+                  onChange={(option) =>
+                    handleConfigUpdate('launcherPosition', option.value)
+                  }
+                  containerClass="w-full bg-white border border-gray-300 rounded-md"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Background color
+                </label>
+                <ColorPicker
+                  color={config.backgroundColor || '#ff6334'}
+                  onChange={(color) =>
+                    handleConfigUpdate('backgroundColor', color)
+                  }
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Text color
+                </label>
+                <SelectDropdown
+                  options={TEXT_COLOR_OPTIONS}
+                  value={
+                    config.iconColor
+                      ? { value: config.iconColor, label: config.iconColor }
+                      : null
+                  }
+                  onChange={(option) =>
+                    handleConfigUpdate('iconColor', option.value)
+                  }
+                  containerClass="w-full bg-white border border-gray-300 rounded-md"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Count
+                </label>
+                <SelectDropdown
+                  options={COUNT_OPTIONS}
+                  value={
+                    config.notificationType
+                      ? {
+                          value: config.notificationType,
+                          label: config.notificationType,
+                        }
+                      : null
+                  }
+                  onChange={(option) =>
+                    handleConfigUpdate('notificationType', option.value)
+                  }
+                  containerClass="w-full bg-white border border-gray-300 rounded-md"
+                />
+              </div>
+            </div>
+          )}
+        </>
+      ),
+    },
     {
       id: 'widget-type',
       label: 'Widget type',
@@ -203,14 +470,14 @@ export default function WidgetsSidebar({
               Widget type
             </label>
             <SelectDropdown
-              options={widgetTypeOptions}
+              options={WIDGET_TYPE_OPTIONS}
               value={
-                widgetTypeOptions.find(
+                WIDGET_TYPE_OPTIONS.find(
                   (opt) => opt.value === config.widgetType
                 ) || null
               }
               onChange={(option) =>
-                handleInputChange('widgetType', option.value)
+                handleConfigUpdate('widgetType', option.value)
               }
               containerClass="w-full bg-white border border-gray-300 rounded-md"
             />
@@ -264,27 +531,23 @@ export default function WidgetsSidebar({
                 <label className="block text-sm font-semibold text-gray-900">
                   Placement
                 </label>
-                <p className="text-sm text-gray-500 mb-2">
-                  The position of the popover relative to the launcher
-                </p>
                 <SelectDropdown
-                  options={[
-                    { value: 'Top left', label: 'Top left' },
-                    { value: 'Top right', label: 'Top right' },
-                    { value: 'Bottom left', label: 'Bottom left' },
-                    { value: 'Bottom right', label: 'Bottom right' },
-                  ]}
+                  options={PLACEMENT_OPTIONS}
                   value={
-                    config.appearance.placement
+                    config.appearance?.placement
                       ? {
                           value: config.appearance.placement,
                           label: config.appearance.placement,
                         }
-                      : null
+                      : { value: 'Bottom right', label: 'Bottom right' }
                   }
                   onChange={(option) => {
-                    handleInputChange('appearance', {
-                      placement: option.value,
+                    handleAppearanceUpdate({
+                      placement: option.value as
+                        | 'Top left'
+                        | 'Top right'
+                        | 'Bottom left'
+                        | 'Bottom right',
                     });
                   }}
                   containerClass="w-full bg-white border border-gray-300 rounded-md"
@@ -295,29 +558,43 @@ export default function WidgetsSidebar({
                 <label className="block text-sm font-semibold text-gray-900">
                   Offset
                 </label>
-                <p className="text-sm text-gray-500 mb-2">
-                  The distance between the widget popover and launcher (in
-                  pixels)
-                </p>
                 <input
                   type="text"
-                  value={config.appearance.offset?.replace('px', '')}
+                  value={config.appearance?.offset?.replace('px', '')}
                   onChange={(e) => {
                     const inputValue = e.target.value;
                     if (inputValue === '' || inputValue.match(/^\d+$/)) {
-                      handleInputChange('appearance', {
+                      handleAppearanceUpdate({
+                        ...config.appearance,
                         offset: `${inputValue}px`,
                       });
                     }
                   }}
                   placeholder="e.g., 16"
-                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi
-                    ${config.appearance.offset ? 'text-gray-900' : 'text-gray-400'}`}
+                  className={`w-full px-4 py-2 border ${
+                    parseInt(
+                      config.appearance?.offset?.replace('px', '') || '16'
+                    ) < 5 ||
+                    parseInt(
+                      config.appearance?.offset?.replace('px', '') || '16'
+                    ) > 64
+                      ? 'border-red-500'
+                      : 'border-gray-300'
+                  } rounded-md`}
                 />
                 <p
-                  className={`text-xs ${parseInt(config.appearance.offset || '0') < 5 || parseInt(config.appearance.offset || '0') > 32 ? 'text-red-500' : 'text-gray-500'}`}
+                  className={`text-xs ${
+                    parseInt(
+                      config.appearance?.offset?.replace('px', '') || '16'
+                    ) < 5 ||
+                    parseInt(
+                      config.appearance?.offset?.replace('px', '') || '16'
+                    ) > 64
+                      ? 'text-red-500'
+                      : 'text-gray-500'
+                  }`}
                 >
-                  Min: 5px, Max: 32px
+                  Min: 5px, Max: 64px
                 </p>
               </div>
 
@@ -330,23 +607,19 @@ export default function WidgetsSidebar({
                 </p>
                 <input
                   type="text"
-                  value={config.appearance.width.replace(/[^\d]/g, '') || ''}
+                  value={config.appearance?.width?.replace(/[^\d]/g, '') || ''}
                   onChange={(e) => {
                     const inputValue = e.target.value;
-                    // Allow any number input
                     if (/^\d*$/.test(inputValue)) {
-                      handleInputChange('appearance', {
-                        ...config.appearance,
-                        width: `${inputValue}px`,
+                      handleAppearanceUpdate({
+                        width: inputValue ? `${inputValue}px` : '450px',
                       });
                     }
                   }}
                   onBlur={(e) => {
                     const value = parseInt(e.target.value || '450');
-                    // On blur, if the value is valid, update it
                     if (value >= 300 && value <= 800) {
-                      handleInputChange('appearance', {
-                        ...config.appearance,
+                      handleAppearanceUpdate({
                         width: `${value}px`,
                       });
                     }
@@ -355,7 +628,7 @@ export default function WidgetsSidebar({
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi"
                 />
                 <p
-                  className={`text-xs ${parseInt(config.appearance.width.replace(/[^\d]/g, '') || '0') < 300 || parseInt(config.appearance.width.replace(/[^\d]/g, '') || '0') > 800 ? 'text-red-500' : 'text-gray-500'}`}
+                  className={`text-xs ${parseInt(config.appearance?.width?.replace(/[^\d]/g, '') || '0') < 300 || parseInt(config.appearance?.width?.replace(/[^\d]/g, '') || '0') > 800 ? 'text-red-500' : 'text-gray-500'}`}
                 >
                   Min: 300px, Max: 800px
                 </p>
@@ -373,26 +646,25 @@ export default function WidgetsSidebar({
                   value={config.appearance.height?.replace(/[^\d]/g, '') || ''}
                   onChange={(e) => {
                     const inputValue = e.target.value;
-                    // Allow any number input
-                    if (/^\d*$/.test(inputValue)) {
-                      handleInputChange('appearance', {
+                    if (inputValue === '' || inputValue.match(/^\d+$/)) {
+                      handleAppearanceUpdate({
                         ...config.appearance,
-                        height: `${inputValue}px`,
+                        height: inputValue ? `${inputValue}px` : undefined,
                       });
                     }
                   }}
                   onBlur={(e) => {
                     const value = parseInt(e.target.value || '600');
-                    // On blur, if the value is valid, update it
                     if (value >= 400 && value <= 800) {
-                      handleInputChange('appearance', {
+                      handleAppearanceUpdate({
                         ...config.appearance,
                         height: `${value}px`,
                       });
                     }
                   }}
-                  placeholder="600"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi"
+                  placeholder="e.g., 500"
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi
+                    ${config.appearance.height ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p
                   className={`text-xs ${parseInt(config.appearance.height?.replace(/[^\d]/g, '') || '0') < 400 || parseInt(config.appearance.height?.replace(/[^\d]/g, '') || '0') > 800 ? 'text-red-500' : 'text-gray-500'}`}
@@ -401,20 +673,27 @@ export default function WidgetsSidebar({
                 </p>
               </div>
 
-              <div className="space-y-3 pt-2">
+              <div className="space-y-4">
                 <Checkbox
-                  checked={config.hideCloseButton ?? false}
-                  label={
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-700 font-satoshi">
-                        Hide close button
-                      </span>
-                      <span className="text-xs text-gray-500">ⓘ</span>
-                    </div>
-                  }
-                  setChecked={(value) =>
-                    handleInputChange('hideCloseButton', value)
-                  }
+                  checked={config.appearance?.hideCloseButton || false}
+                  onChange={(checked) => {
+                    handleAppearanceUpdate({
+                      ...config.appearance,
+                      hideCloseButton: checked,
+                    });
+                  }}
+                  label="Hide close button"
+                />
+
+                <Checkbox
+                  checked={config.appearance?.preventScroll || false}
+                  onChange={(checked) => {
+                    handleAppearanceUpdate({
+                      ...config.appearance,
+                      preventScroll: checked,
+                    });
+                  }}
+                  label="Prevent window scroll"
                 />
               </div>
             </>
@@ -430,15 +709,19 @@ export default function WidgetsSidebar({
                   The position of the sidebar
                 </p>
                 <SelectDropdown
-                  id="position-dropdown"
-                  options={positionOptions}
+                  options={POSITION_OPTIONS}
                   value={
-                    positionOptions.find(
-                      (opt) => opt.value === config.appearance.position
-                    ) || null
+                    config.appearance?.position
+                      ? {
+                          value: config.appearance.position,
+                          label: config.appearance.position,
+                        }
+                      : null
                   }
                   onChange={(option) =>
-                    handleInputChange('appearance', { position: option.value })
+                    handleAppearanceUpdate({
+                      position: option.value as 'Left' | 'Right',
+                    })
                   }
                   containerClass="w-full bg-white border border-gray-300 rounded-md"
                 />
@@ -456,9 +739,8 @@ export default function WidgetsSidebar({
                   value={config.appearance.width.replace(/[^\d]/g, '')}
                   onChange={(e) => {
                     const inputValue = e.target.value;
-                    // Allow any number input
                     if (/^\d*$/.test(inputValue)) {
-                      handleInputChange('appearance', {
+                      handleAppearanceUpdate({
                         ...config.appearance,
                         width: `${inputValue}px`,
                       });
@@ -466,9 +748,8 @@ export default function WidgetsSidebar({
                   }}
                   onBlur={(e) => {
                     const value = parseInt(e.target.value || '450');
-                    // On blur, if the value is valid, update it
                     if (value >= 300 && value <= 800) {
-                      handleInputChange('appearance', {
+                      handleAppearanceUpdate({
                         ...config.appearance,
                         width: `${value}px`,
                       });
@@ -484,35 +765,27 @@ export default function WidgetsSidebar({
                 </p>
               </div>
 
-              <div className="space-y-3 pt-2">
+              <div className="space-y-4">
                 <Checkbox
-                  checked={config.preventScroll ?? false}
-                  label={
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-700 font-satoshi">
-                        Prevent window scroll
-                      </span>
-                      <span className="text-xs text-gray-500">ⓘ</span>
-                    </div>
-                  }
-                  setChecked={(value) =>
-                    handleInputChange('preventScroll', value)
-                  }
+                  checked={config.appearance?.preventScroll || false}
+                  onChange={(checked) => {
+                    handleAppearanceUpdate({
+                      ...config.appearance,
+                      preventScroll: checked,
+                    });
+                  }}
+                  label="Prevent window scroll"
                 />
 
                 <Checkbox
-                  checked={config.hideCloseButton ?? false}
-                  label={
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-700 font-satoshi">
-                        Hide close button
-                      </span>
-                      <span className="text-xs text-gray-500">ⓘ</span>
-                    </div>
-                  }
-                  setChecked={(value) =>
-                    handleInputChange('hideCloseButton', value)
-                  }
+                  checked={config.appearance?.hideCloseButton || false}
+                  onChange={(checked) => {
+                    handleAppearanceUpdate({
+                      ...config.appearance,
+                      hideCloseButton: checked,
+                    });
+                  }}
+                  label="Hide close button"
                 />
               </div>
             </>
@@ -529,21 +802,21 @@ export default function WidgetsSidebar({
                 </p>
                 <input
                   type="text"
-                  value={config.appearance.width.replace('px', '')}
+                  value={config.appearance?.width?.replace(/[^\d]/g, '') || ''}
                   onChange={(e) => {
                     const inputValue = e.target.value;
-                    if (inputValue === '' || inputValue.match(/^\d+$/)) {
-                      handleInputChange('appearance', {
-                        width: `${inputValue}px`,
+                    if (/^\d*$/.test(inputValue)) {
+                      handleAppearanceUpdate({
+                        width: inputValue ? `${inputValue}px` : '450px',
                       });
                     }
                   }}
-                  placeholder="e.g., 640"
+                  placeholder="e.g., 450"
                   className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi
-                    ${config.appearance.width ? 'text-gray-900' : 'text-gray-400'}`}
+                    ${config.appearance?.width ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p
-                  className={`text-xs ${parseInt(config.appearance.width) < 300 || parseInt(config.appearance.width) > 800 ? 'text-red-500' : 'text-gray-500'}`}
+                  className={`text-xs ${parseInt(config.appearance?.width?.replace(/[^\d]/g, '') || '0') < 300 || parseInt(config.appearance?.width?.replace(/[^\d]/g, '') || '0') > 800 ? 'text-red-500' : 'text-gray-500'}`}
                 >
                   Min: 300px, Max: 800px
                 </p>
@@ -558,12 +831,22 @@ export default function WidgetsSidebar({
                 </p>
                 <input
                   type="text"
-                  value={config.appearance.height?.replace('px', '')}
+                  value={config.appearance.height?.replace(/[^\d]/g, '') || ''}
                   onChange={(e) => {
                     const inputValue = e.target.value;
                     if (inputValue === '' || inputValue.match(/^\d+$/)) {
-                      handleInputChange('appearance', {
-                        height: `${inputValue}px`,
+                      handleAppearanceUpdate({
+                        ...config.appearance,
+                        height: inputValue ? `${inputValue}px` : undefined,
+                      });
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const value = parseInt(e.target.value || '600');
+                    if (value >= 400 && value <= 800) {
+                      handleAppearanceUpdate({
+                        ...config.appearance,
+                        height: `${value}px`,
                       });
                     }
                   }}
@@ -578,194 +861,27 @@ export default function WidgetsSidebar({
                 </p>
               </div>
 
-              <div className="space-y-3 pt-2">
+              <div className="space-y-4">
                 <Checkbox
-                  checked={config.preventScroll ?? false}
-                  label={
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-700 font-satoshi">
-                        Prevent window scroll
-                      </span>
-                      <span className="text-xs text-gray-500">ⓘ</span>
-                    </div>
-                  }
-                  setChecked={(value) =>
-                    handleInputChange('preventScroll', value)
-                  }
+                  checked={config.appearance?.preventScroll || false}
+                  onChange={(checked) => {
+                    handleAppearanceUpdate({
+                      ...config.appearance,
+                      preventScroll: checked,
+                    });
+                  }}
+                  label="Prevent window scroll"
                 />
 
                 <Checkbox
-                  checked={config.hideCloseButton ?? false}
-                  label={
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-700 font-satoshi">
-                        Hide close button
-                      </span>
-                      <span className="text-xs text-gray-500">ⓘ</span>
-                    </div>
-                  }
-                  setChecked={(value) =>
-                    handleInputChange('hideCloseButton', value)
-                  }
-                />
-              </div>
-            </>
-          )}
-        </div>
-      ),
-    },
-    {
-      id: 'launcher',
-      label: 'Launcher type',
-      content: (
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <label className="block text-sm font-semibold text-gray-900">
-              Launcher type
-            </label>
-            <SelectDropdown
-              options={[
-                { value: 'Floating', label: 'Floating' },
-                { value: 'Tab', label: 'Tab' },
-              ]}
-              value={
-                config.launcherType
-                  ? { value: config.launcherType, label: config.launcherType }
-                  : null
-              }
-              onChange={(option) =>
-                handleInputChange('launcherType', option.value)
-              }
-              containerClass="w-full bg-white border border-gray-300 rounded-md"
-            />
-          </div>
-
-          {config.launcherType === 'Floating' && (
-            <>
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-900">
-                  Icon
-                </label>
-                <SelectDropdown
-                  options={iconOptions}
-                  value={
-                    config.launcherIcon
-                      ? {
-                          value: config.launcherIcon,
-                          label: config.launcherIcon,
-                        }
-                      : { value: 'Bolt', label: 'Bolt' }
-                  }
-                  onChange={(option) =>
-                    handleInputChange('launcherIcon', option.value)
-                  }
-                  containerClass="w-full bg-white border border-gray-300 rounded-md"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-900">
-                  Icon color
-                </label>
-                <SelectDropdown
-                  options={[
-                    { value: 'Light', label: 'Light' },
-                    { value: 'Dark', label: 'Dark' },
-                  ]}
-                  value={
-                    config.iconColor
-                      ? { value: config.iconColor, label: config.iconColor }
-                      : null
-                  }
-                  onChange={(option) =>
-                    handleInputChange('iconColor', option.value)
-                  }
-                  containerClass="w-full bg-white border border-gray-300 rounded-md"
-                />
-              </div>
-            </>
-          )}
-
-          {config.launcherType === 'Tab' && (
-            <>
-              <div className="space-y-2 p-4 bg-gray-50 rounded-lg mb-4">
-                <label className="block text-sm font-semibold text-gray-900">
-                  Text
-                </label>
-                <p className="text-sm text-gray-500 mb-2">
-                  The text that appears on the tab
-                </p>
-                <input
-                  type="text"
-                  value={config.launcherText || ''}
-                  onChange={(e) =>
-                    handleInputChange('launcherText', e.target.value)
-                  }
-                  placeholder="What's new"
-                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 text-sm"
-                />
-              </div>
-
-              <div className="space-y-2 p-4 bg-gray-50 rounded-lg mb-4">
-                <label className="block text-sm font-semibold text-gray-900">
-                  Text color
-                </label>
-                <p className="text-sm text-gray-500 mb-2">
-                  Choose how the tab text appears
-                </p>
-                <SelectDropdown
-                  options={[
-                    { value: 'Light', label: 'Light' },
-                    { value: 'Dark', label: 'Dark' },
-                  ]}
-                  value={
-                    config.iconColor
-                      ? { value: config.iconColor, label: config.iconColor }
-                      : null
-                  }
-                  onChange={(option) =>
-                    handleInputChange('iconColor', option.value)
-                  }
-                  containerClass="w-full bg-white border border-gray-300 rounded-md"
-                />
-              </div>
-
-              <div className="space-y-2 p-4 bg-gray-50 rounded-lg mb-4">
-                <label className="block text-sm font-semibold text-gray-900">
-                  Position
-                </label>
-                <p className="text-sm text-gray-500 mb-2">
-                  Where the tab appears on the page
-                </p>
-                <SelectDropdown
-                  options={positionOptions}
-                  value={
-                    config.launcherPosition
-                      ? {
-                          value: config.launcherPosition,
-                          label: config.launcherPosition,
-                        }
-                      : null
-                  }
-                  onChange={(option) =>
-                    handleInputChange('launcherPosition', option.value)
-                  }
-                  containerClass="w-full bg-white border border-gray-300 rounded-md"
-                />
-              </div>
-
-              <div className="space-y-2 p-4 bg-gray-50 rounded-lg mb-4">
-                <label className="block text-sm font-semibold text-gray-900">
-                  Background color
-                </label>
-                <p className="text-sm text-gray-500 mb-2">
-                  The color of the tab
-                </p>
-                <ColorPicker
-                  color={config.backgroundColor || '#5a00cd'}
-                  onChange={(color) =>
-                    handleInputChange('backgroundColor', color)
-                  }
+                  checked={config.appearance?.hideCloseButton || false}
+                  onChange={(checked) => {
+                    handleAppearanceUpdate({
+                      ...config.appearance,
+                      hideCloseButton: checked,
+                    });
+                  }}
+                  label="Hide close button"
                 />
               </div>
             </>
@@ -777,101 +893,77 @@ export default function WidgetsSidebar({
       id: 'appearance',
       label: 'Appearance',
       content: (
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <h3 className="text-base font-medium text-gray-900">
-              Fine tune your Widgets look and feel
-            </h3>
-          </div>
+        <div className="space-y-6">
+          <h3 className="text-base font-medium text-gray-900">
+            Fine tune your Widgets look and feel
+          </h3>
 
-          <div className="space-y-2">
-            <label className="block text-sm font-semibold text-gray-900">
-              Title
-            </label>
-            <p className="text-sm text-gray-500">
-              The title that appears at the top of your widget
-            </p>
-            <input
-              type="text"
-              value={config.appearance.title || ''}
-              onChange={(e) =>
-                handleInputChange('appearance', { title: e.target.value })
-              }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none text-sm"
-              placeholder="Widget Title"
-            />
-          </div>
+          {config.widgetType !== 'Embed' && (
+            <>
+              <FormField
+                label="Widget Title"
+                description="The title shown at the top of your widget"
+              >
+                <input
+                  type="text"
+                  value={config.appearance.title || ''}
+                  onChange={(e) =>
+                    handleAppearanceUpdate({
+                      title: e.target.value || undefined,
+                    })
+                  }
+                  placeholder="Widget Title"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500"
+                />
+              </FormField>
 
-          <div className="space-y-2">
-            <label className="block space-y-1">
-              <span className="block text-sm font-semibold text-gray-900">
-                Description
-              </span>
-              <span className="block text-sm text-gray-500">
-                A brief description of your widget's purpose
-              </span>
-            </label>
-            <input
-              type="text"
-              value={config.appearance.description || ''}
-              onChange={(e) =>
-                handleInputChange('appearance', { description: e.target.value })
-              }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none text-sm"
-              placeholder="Widget Description"
-            />
-          </div>
+              <FormField
+                label="Description"
+                description="A brief description of your widget"
+              >
+                <input
+                  type="text"
+                  value={config.appearance.description || ''}
+                  onChange={(e) =>
+                    handleAppearanceUpdate({
+                      description: e.target.value || undefined,
+                    })
+                  }
+                  placeholder="Suggest a feature, read through our Roadmap and check out our latest feature releases."
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500"
+                />
+              </FormField>
+            </>
+          )}
 
-          {/* Theme option will be added in a future update
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Theme</label>
-            <SelectDropdown
-              options={[
-                { value: 'Inherit from company', label: 'Inherit from company' },
-                { value: 'Custom', label: 'Custom' }
-              ]}
-              value={config.appearance.theme ? { value: config.appearance.theme, label: config.appearance.theme } : null}
-              onChange={(option) => handleInputChange('appearance', { theme: option.value })}
-              containerClass="w-full"
-            />
-          </div>
-          */}
-
-          <div className="space-y-2">
-            <label className="block text-sm font-semibold text-gray-900">
-              Header background color
-            </label>
+          <FormField label="Background color">
             <ColorPicker
-              color={config.appearance.backgroundColor}
+              color={config.appearance.backgroundColor || '#ff6334'}
               onChange={(color) =>
-                handleInputChange('appearance', { backgroundColor: color })
+                handleAppearanceUpdate({ backgroundColor: color })
               }
             />
-          </div>
+          </FormField>
 
-          <div className="space-y-2">
-            <label className="block text-sm font-semibold text-gray-900">
-              Header text color
-            </label>
+          <FormField label="Text color">
             <SelectDropdown
-              options={[
-                { value: 'Light', label: 'Light' },
-                { value: 'Dark', label: 'Dark' },
-              ]}
+              options={TEXT_COLOR_OPTIONS}
               value={
-                config.appearance.textColor
+                config.appearance?.textColor
                   ? {
-                      value: config.appearance.textColor,
+                      value: config.appearance.textColor as ColorScheme,
                       label: config.appearance.textColor,
                     }
                   : null
               }
               onChange={(option) =>
-                handleInputChange('appearance', { textColor: option.value })
+                handleAppearanceUpdate({
+                  textColor: option.value as ColorScheme,
+                })
               }
               containerClass="w-full bg-white border border-gray-300 rounded-md"
             />
-          </div>
+          </FormField>
         </div>
       ),
     },
@@ -879,41 +971,87 @@ export default function WidgetsSidebar({
       id: 'sections',
       label: 'Sections',
       content: (
-        <WidgetSectionsForm formState={config} onChange={handleNestedChange} />
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <span>Ideas</span>
+            <Toggle
+              checked={config.sections?.ideas ?? true}
+              onChange={(enabled) => handleSectionToggle('ideas', enabled)}
+              activeColor="#5a00cd"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Roadmap</span>
+            <Toggle
+              checked={config.sections?.roadmap ?? true}
+              onChange={(enabled) => handleSectionToggle('roadmap', enabled)}
+              activeColor="#5a00cd"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span>What's New</span>
+            <Toggle
+              checked={config.sections?.announcements ?? true}
+              onChange={(enabled) =>
+                handleSectionToggle('announcements', enabled)
+              }
+              activeColor="#5a00cd"
+            />
+          </div>
+        </div>
       ),
     },
     {
       id: 'targeting',
       label: 'Targeting',
       content: (
-        <WidgetTargetingForm formState={config} onChange={handleNestedChange} />
+        <WidgetTargetingForm
+          formState={config}
+          onChange={(field, value) =>
+            handleAppearanceUpdate({ [field]: value })
+          }
+        />
       ),
     },
-    /* Advanced section will be added in a future update
-    {
-      id: 'advanced',
-      label: 'Advanced',
-      content: <WidgetAdvancedForm formState={config} onChange={handleNestedChange} />
-    }
-    */
   ];
 
+  // ===============================
+  // Render
+  // ===============================
   return (
-    <div className="h-screen overflow-y-auto w-full">
-      {/* Header */}
+    <div className="h-screen flex flex-col">
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
           {isEditing ? (
             <input
               type="text"
               value={widgetName}
-              onChange={(e) => setWidgetName(e.target.value)}
-              onBlur={() => setIsEditing(false)}
+              onChange={(e) => {
+                setWidgetName(e.target.value);
+                handleConfigUpdate('name', e.target.value);
+              }}
+              onFocus={() => {
+                setWidgetName('');
+                handleConfigUpdate('name', '');
+              }}
+              onBlur={(e) => {
+                if (!e.target.value) {
+                  setWidgetName('My first widget');
+                  handleConfigUpdate('name', 'My first widget');
+                }
+                setIsEditing(false);
+              }}
               autoFocus
               className="flex-1 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi"
             />
           ) : (
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => navigate('/widgets')}
+                className="p-1 hover:bg-gray-100 rounded-md text-gray-600"
+              >
+                <ArrowLeft size={18} />
+              </button>
               <span className="text-lg font-medium text-gray-900">
                 {widgetName}
               </span>
@@ -953,32 +1091,56 @@ export default function WidgetsSidebar({
         </div>
       </div>
 
-      {/* Rest of the sidebar content */}
-      {sections
-        .filter((section) => section.visible === undefined || section.visible)
-        .map((section) => (
-          <div key={section.id}>
-            <button
-              onClick={() =>
-                handleSectionChange(
-                  activeSection === section.id ? null : section.id
-                )
-              }
-              className="w-full flex justify-between items-center p-4 bg-white hover:bg-purple-50 border-0 border-b border-gray-200 cursor-pointer text-lg font-medium text-gray-900 font-satoshi"
-            >
-              {section.label}
-              <ChevronDownIcon
-                className={`w-4 h-4 transition-transform text-gray-500 ${activeSection === section.id ? 'rotate-180' : ''}`}
-              />
-            </button>
+      <div className="flex-1 overflow-y-auto">
+        {sections
+          .filter((section) => section.visible === undefined || section.visible)
+          .map((section) => (
+            <div key={section.id}>
+              <button
+                onClick={() =>
+                  handleSectionChange(
+                    activeSection === section.id ? null : section.id
+                  )
+                }
+                className={`w-full flex justify-between items-center p-4 border-0 border-b border-gray-200 cursor-pointer text-lg font-medium text-gray-900 ${
+                  activeSection === section.id
+                    ? 'bg-purple-50'
+                    : 'bg-white hover:bg-purple-50'
+                }`}
+              >
+                {section.label}
+                <ChevronDownIcon
+                  className={`w-4 h-4 transition-transform text-gray-500 ${
+                    activeSection === section.id ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
 
-            {activeSection === section.id && (
-              <div className="p-4 bg-white border-b border-gray-200">
-                {section.content}
-              </div>
-            )}
-          </div>
-        ))}
+              {activeSection === section.id && (
+                <div className="p-4 bg-white border-b border-gray-200 space-y-6">
+                  {section.content}
+                </div>
+              )}
+            </div>
+          ))}
+      </div>
+
+      <div className="border-t border-gray-200 p-4 bg-white">
+        <div className="flex gap-3">
+          <button
+            onClick={handleCancel}
+            className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onSave}
+            className="flex-1 px-4 py-2 text-sm font-medium text-white bg-[#FF6334] rounded-md hover:bg-[#e5592f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF6334]"
+          >
+            Save
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

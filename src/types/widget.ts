@@ -1,79 +1,74 @@
+export interface WidgetAppearance {
+  title?: string;
+  description?: string;
+  placement?: 'Top left' | 'Top right' | 'Bottom left' | 'Bottom right';
+  offset?: string;
+  width: string;
+  height?: string;
+  preventScroll?: boolean;
+  hideCloseButton?: boolean;
+  position?: 'Left' | 'Right';
+  backgroundColor?: string;
+  textColor?: 'Light' | 'Dark';
+}
+
 export interface WidgetConfig {
-  widgetId?: string;
+  id?: string;
+  name?: string;
   widgetType: 'Popover' | 'Modal' | 'Sidebar' | 'Embed';
+  launcherType: 'Tab' | 'Floating';
+  launcherPosition: 'Left' | 'Right';
+  launcherIcon?: 'Bolt' | 'Roadmap' | 'WhatsNew' | 'Idea';
+  launcherText?: string;
+  iconColor?: 'Light' | 'Dark';
+  backgroundColor?: string;
+  notificationType?: 'Count' | 'Dot' | 'None';
+  appearance: WidgetAppearance;
   sections?: {
     ideas: boolean;
     roadmap: boolean;
     announcements: boolean;
   };
-  appearance: {
-    title?: string;
-    description?: string;
-    position?: 'Left' | 'Right';
-    placement?: 'Top left' | 'Top right' | 'Bottom left' | 'Bottom right';
-    width: string;
-    height?: string;
-    offset?: string;
-    backgroundColor: string;
-    textColor: 'Light' | 'Dark';
-    showCompanyLogo?: boolean;
-    theme?: string;
-  };
-  launcherType: 'Floating' | 'Tab';
-
-  // Launcher properties
-  cssSelector?: string;
-  matchAllElements?: boolean;
-  launcherText?: string;
-  launcherPosition: 'Left' | 'Right';
-  launcherIcon?: string;
-  iconColor: 'Light' | 'Dark';
-  backgroundColor: string;
-  notificationType?: 'Count' | 'Dot' | 'None';
-
-  // Widget behavior
-  preventScroll?: boolean;
-  hideCloseButton?: boolean;
-
   targeting?: {
     timing: string;
     location: string;
     delay: number;
+    hostnames?: string[];
+    devices?: string;
   };
+  matchAllElements?: boolean;
+  cssSelector?: string;
   advanced?: {
     openInNewWindow: boolean;
     hideBranding: boolean;
     mediaQuery: string;
-    hostnames: string[];
   };
 }
 
 export const defaultWidgetConfig: WidgetConfig = {
-  widgetType: 'Popover',
+  name: 'My first widget',
+  widgetType: 'Sidebar',
+  launcherType: 'Tab',
+  launcherPosition: 'Right',
+  launcherText: "What's new",
+  launcherIcon: 'Bolt',
+  iconColor: 'Light',
+  backgroundColor: '#ff6334',
+  notificationType: 'None',
+  appearance: {
+    width: '450px',
+    height: '600px',
+    offset: '16px',
+    position: 'Right',
+    backgroundColor: '#ff6334',
+    textColor: 'Light',
+    placement: 'Bottom right',
+  },
   sections: {
     ideas: true,
     roadmap: true,
     announcements: true,
   },
-  appearance: {
-    title: 'The title for your Widget...',
-    description:
-      'Suggest a feature, read through our Roadmap and check out our latest feature releases.',
-    position: 'Right',
-    width: '450px',
-    backgroundColor: '#f9fafb',
-    textColor: 'Light',
-    showCompanyLogo: true,
-    theme: 'Inherit from company',
-  },
-  launcherType: 'Floating',
-  launcherPosition: 'Right',
-  iconColor: 'Light',
-  backgroundColor: '#5a00cd',
-  notificationType: 'Count',
-  preventScroll: false,
-  hideCloseButton: false,
-
   targeting: {
     timing: 'Immediately',
     location: 'All pages',
@@ -83,6 +78,5 @@ export const defaultWidgetConfig: WidgetConfig = {
     openInNewWindow: false,
     hideBranding: false,
     mediaQuery: '',
-    hostnames: [],
   },
 };

@@ -1,20 +1,39 @@
+import React from 'react';
+
 interface ToggleProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
   disabled?: boolean;
+  activeColor?: string;
 }
 
-export function Toggle({ checked, onChange, disabled = false }: ToggleProps) {
+export function Toggle({ checked, onChange, disabled = false, activeColor = '#5a00cd' }: ToggleProps) {
+  const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.checked);
+  };
+
   return (
     <label className="relative inline-flex items-center cursor-pointer">
       <input
         type="checkbox"
         checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
+        onChange={handleToggle}
         disabled={disabled}
-        className="sr-only peer"
+        className="sr-only"
       />
-      <div className="w-[43px] h-[23px] bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-[19px] after:w-[19px] after:transition-all peer-checked:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed"></div>
+      <span
+        className={`w-[43px] h-[23px] rounded-full transition-colors duration-200 ${
+          checked ? `bg-[${activeColor}]` : 'bg-gray-200'
+        } ${
+          disabled ? 'opacity-50 cursor-not-allowed' : ''
+        } inline-block relative`}
+      >
+        <span
+          className={`absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-[19px] w-[19px] transition-transform duration-200 ${
+            checked ? 'translate-x-[20px]' : ''
+          }`}
+        />
+      </span>
     </label>
   );
 }

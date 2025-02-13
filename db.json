@@ -1,0 +1,115 @@
+{
+  "widgets": [
+    {
+      "id": "34c846719441",
+      "name": "My first widget",
+      "config": {
+        "name": "My first widget",
+        "widgetType": "Sidebar",
+        "launcherType": "Tab",
+        "launcherPosition": "Left",
+        "launcherText": "What's new",
+        "launcherIcon": "Bolt",
+        "iconColor": "Dark",
+        "backgroundColor": "#efff33",
+        "notificationType": "Count",
+        "appearance": {
+          "width": "450px",
+          "height": "600px",
+          "offset": "16px",
+          "position": "Right",
+          "backgroundColor": "#ff6334",
+          "textColor": "Light",
+          "placement": "Bottom right",
+          "preventScroll": false,
+          "hideCloseButton": false
+        },
+        "sections": {
+          "ideas": true,
+          "roadmap": true,
+          "announcements": true
+        },
+        "targeting": {
+          "timing": "Immediately",
+          "location": "All pages",
+          "delay": 0
+        },
+        "advanced": {
+          "openInNewWindow": false,
+          "hideBranding": false,
+          "mediaQuery": ""
+        }
+      },
+      "status": "draft",
+      "lastUpdated": "2025-02-07T09:04:21.874Z"
+    },
+    {
+      "id": "9f0a7b8a0da7",
+      "name": "W1",
+      "config": {
+        "name": "W1",
+        "widgetType": "Modal",
+        "launcherType": "Tab",
+        "launcherPosition": "Right",
+        "backgroundColor": "#fff733",
+        "appearance": {
+          "width": "450px",
+          "height": "600px",
+          "preventScroll": false,
+          "hideCloseButton": false,
+          "backgroundColor": "#ffde33"
+        },
+        "notificationType": "Count",
+        "iconColor": "Dark",
+        "sections": {
+          "announcements": true,
+          "roadmap": true,
+          "ideas": true
+        }
+      },
+      "status": "draft",
+      "lastUpdated": "2025-02-08T07:39:45.972Z"
+    },
+    {
+      "id": "0820d74a37a5",
+      "name": "My first widget",
+      "config": {
+        "name": "My first widget",
+        "widgetType": "Modal",
+        "launcherType": "Tab",
+        "launcherPosition": "Right",
+        "launcherText": "What's new",
+        "launcherIcon": "Bolt",
+        "iconColor": "Light",
+        "backgroundColor": "#ff6334",
+        "notificationType": "None",
+        "appearance": {
+          "width": "450px",
+          "height": "600px",
+          "offset": "16px",
+          "position": "Right",
+          "backgroundColor": "#ff6334",
+          "textColor": "Light",
+          "placement": "Bottom right"
+        },
+        "sections": {
+          "ideas": true,
+          "roadmap": true,
+          "announcements": true
+        },
+        "targeting": {
+          "timing": "Immediately",
+          "location": "All pages",
+          "delay": 0
+        },
+        "advanced": {
+          "openInNewWindow": false,
+          "hideBranding": false,
+          "mediaQuery": ""
+        }
+      },
+      "status": "draft",
+      "lastUpdated": "2025-02-12T11:06:58.135Z"
+    }
+  ]
+}

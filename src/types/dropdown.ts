@@ -9,7 +9,22 @@ export interface Option {
 }
 
 export interface SelectOption {
-  value: string;
+  value:
+    | 'Right'
+    | 'Left'
+    | 'Bolt'
+    | 'Roadmap'
+    | 'WhatsNew'
+    | 'Idea'
+    | 'Light'
+    | 'Dark'
+    | 'Modal'
+    | 'Popover'
+    | 'Sidebar'
+    | 'Embed'
+    | 'Count'
+    | 'Dot'
+    | 'None';
   label: string;
 }
 

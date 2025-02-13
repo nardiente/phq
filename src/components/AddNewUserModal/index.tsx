@@ -259,7 +259,7 @@ export const AddNewUserModal = ({ open, title, onClose }: Props) => {
             />
             <Checkbox
               checked={hasPermission}
-              setChecked={setHasPermission}
+              onChange={setHasPermission}
               label={"I have permission to add this person's details"}
             />
           </div>

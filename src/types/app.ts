@@ -2,8 +2,6 @@ export type PageType =
   | 'home'
   | 'settings'
   | 'account'
-  | 'boost'
-  | 'create-boost'
   | 'project'
   | 'appearance'
   | 'moderation'

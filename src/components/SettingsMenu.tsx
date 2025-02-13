@@ -29,9 +29,9 @@ export function SettingsMenu({ activeItem, onSelect }: SettingsMenuProps) {
     },
     {
       icon: Zap,
-      label: 'Boost',
-      isActive: activeItem === 'boost',
-      onClick: () => onSelect('home'),
+      label: 'Widgets',
+      isActive: activeItem === 'widgets',
+      onClick: () => onSelect('widgets'),
     },
     { icon: MessageSquare, label: 'Moderation', badge: 'COMING SOON' },
     { icon: Mail, label: 'Emails', badge: 'COMING SOON' },

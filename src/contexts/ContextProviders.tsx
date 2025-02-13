@@ -7,7 +7,6 @@ import { UnsavedChangesProvider } from './UnsavedChangesContext';
 import { FeedbackProvider } from './FeedbackContext';
 import { SocketProvider } from './SocketContext';
 import { PanelProvider } from './PanelContext';
-import { BoostProvider } from './BoostContext';
 import { OnboardingProvider } from './OnboardingContext';
 import { AppProvider } from './AppContext';
 
@@ -26,9 +25,7 @@ const ContextProviders: React.FC<ContextProvidersProps> = ({ children }) => {
                 <UserNotificationProvider>
                   <DropdownProvider>
                     <UnsavedChangesProvider>
-                      <BoostProvider>
-                        <UserProvider>{children}</UserProvider>
-                      </BoostProvider>
+                      <UserProvider>{children}</UserProvider>
                     </UnsavedChangesProvider>
                   </DropdownProvider>
                 </UserNotificationProvider>

@@ -1,70 +1,59 @@
 import React from 'react';
 import { WidgetConfig } from '../../types/widget';
+import { UI_TEXT } from '../../constants/uiText';
+import { getSectionVisibility, getBackgroundColor, getTextColor } from '../../utils/configHelpers';
+import { mockIdeas } from '../../data/mockData';
 
 interface WidgetContentProps {
   config: WidgetConfig;
 }
 
 // Shared mock data
-export const mockIdeas = [
-  {
-    votes: 5,
-    title: '[Start here] Welcome to ProductHQ 🚀',
-    description:
-      'Welcome to ProductHQ, your new Feedback, Roadmap and Announcements tool. Read through a few of these...',
-    author: 'Tres@P',
-    date: '14 Mar, 2024',
-    status: 'In Review',
-  },
-  // ... rest of the ideas array
-];
-
 export const WidgetContent: React.FC<WidgetContentProps> = ({ config }) => {
-  return (
-    <div className="h-full bg-white">
-      {/* Header */}
-      <div
-        className="p-4 border-b border-gray-200"
-        style={{
-          backgroundColor: config.appearance.backgroundColor || '#f9fafb',
-          color:
-            config.appearance.textColor === 'Light' ? '#ffffff' : '#111827',
-        }}
-      >
-        {/* Header content */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            {config.appearance.showCompanyLogo && (
-              <div className="w-8 h-8 bg-[#FF6334] rounded-md flex items-center justify-center text-white font-medium">
-                M
-              </div>
-            )}
-            <span
-              className={
-                config.appearance.textColor === 'Light'
-                  ? 'text-white'
-                  : 'text-gray-900'
-              }
-            >
-              {config.appearance.title || 'Widget Title'}
-            </span>
-          </div>
-        </div>
-        <p
-          className={
-            config.appearance.textColor === 'Light'
-              ? 'text-white'
-              : 'text-gray-900'
-          }
-        >
-          {config.appearance.description || 'Widget Description'}
-        </p>
-      </div>
+  // Add debug logging
+  console.log('Config in WidgetContent:', {
+    backgroundColor: config.appearance.backgroundColor,
+    rawConfig: config
+  });
 
-      {/* Widget Interface */}
-      <WidgetInterface config={config} />
-    </div>
-  );
+  // Validate required props
+  if (!config) {
+    console.warn('WidgetContent: Missing required config');
+    return null;
+  }
+
+  // Validate required config properties
+  if (!config.sections) {
+    console.warn('WidgetContent: Missing sections configuration');
+    return null;
+  }
+
+  const handleError = (error: Error) => {
+    console.error('Error in WidgetContent:', error);
+    // Could add error boundary or fallback UI here
+  };
+
+  try {
+    return (
+      <div className="widget-content">
+        <header 
+          className="p-4"
+          style={{ backgroundColor: getBackgroundColor(config) }}
+        >
+          <h1 className={getTextColor(config)}>
+            {config.appearance.title || UI_TEXT.WIDGET_HEADERS.DEFAULT_TITLE}
+          </h1>
+          <p className={getTextColor(config)}>
+            {config.appearance.description || UI_TEXT.WIDGET_HEADERS.DEFAULT_DESCRIPTION}
+          </p>
+        </header>
+        <WidgetInterface config={config} />
+      </div>
+    );
+  } catch (error) {
+    handleError(error as Error);
+    return null;
+  }
 };
 
 // Separate component for the main interface
@@ -75,7 +64,36 @@ const WidgetInterface: React.FC<WidgetContentProps> = ({ config }) => {
       <WidgetTabs config={config} />
 
       {/* Content */}
-      {config.sections?.ideas !== false && <IdeasContent />}
+      <div className="flex-1 overflow-auto">
+        <div className="p-4">
+          {/* Only show Ideas section for now since it's fully implemented */}
+          {config.sections?.ideas && (
+            <div className="ideas-section">
+              <IdeasHeader />
+              <div className="space-y-4">
+                {mockIdeas.map((idea, index) => (
+                  <div key={index} className="flex gap-4">
+                    <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center text-xl">
+                      {idea.votes}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-medium mb-1">{idea.title}</h3>
+                      <p className="text-gray-600 text-sm mb-2">{idea.description}</p>
+                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <span>{idea.author}</span>
+                        <span>{idea.date}</span>
+                        <span className="px-2 py-1 bg-gray-100 rounded text-xs">
+                          {idea.status}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </>
   );
 };
@@ -84,16 +102,20 @@ const WidgetInterface: React.FC<WidgetContentProps> = ({ config }) => {
 const WidgetTabs = ({ config }: WidgetContentProps) => (
   <div className="border-b border-gray-200">
     <div className="flex">
-      {config.sections?.ideas !== false && (
+      {getSectionVisibility(config, 'ideas') && (
         <button className="px-4 py-2 text-[#FF6334] border-b-2 border-[#FF6334] font-medium">
-          Ideas
+          {UI_TEXT.WIDGET_SECTIONS.IDEAS}
         </button>
       )}
-      {config.sections?.roadmap !== false && (
-        <button className="px-4 py-2 text-gray-600">Roadmap</button>
+      {getSectionVisibility(config, 'roadmap') && (
+        <button className="px-4 py-2 text-gray-600">
+          {UI_TEXT.WIDGET_SECTIONS.ROADMAP}
+        </button>
       )}
-      {config.sections?.announcements !== false && (
-        <button className="px-4 py-2 text-gray-600">What's New</button>
+      {getSectionVisibility(config, 'announcements') && (
+        <button className="px-4 py-2 text-gray-600">
+          {UI_TEXT.WIDGET_SECTIONS.WHATS_NEW}
+        </button>
       )}
     </div>
   </div>

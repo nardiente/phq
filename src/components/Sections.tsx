@@ -1,23 +1,23 @@
 import { useState, useEffect } from 'react';
 import Section from './Section';
-import { BoostTypeForm } from './boost/BoostTypeForm';
-import { LauncherTypeForm } from './boost/LauncherTypeForm';
-import { AppearanceForm } from './boost/AppearanceForm';
-import { CreateBoostModal } from './boost/CreateBoostModal';
-import { useBoost } from '../contexts/BoostContext';
-import { defaultConfig } from '../contexts/BoostContext';
+import { WidgetTypeForm } from './WidgetPreview/widgets/WidgetTypeForm';
+import { LauncherTypeForm } from './WidgetPreview/widgets/LauncherTypeForm';
+import { AppearanceForm } from './WidgetPreview/widgets/AppearanceForm';
+import { CreateWidgetModal } from './WidgetPreview/widgets/CreateWidgetModal';
+import { useWidget } from '../contexts/WidgetContext';
+import { defaultConfig } from '../contexts/WidgetContext';
 
 interface SectionsProps {
   initialConfig?: typeof defaultConfig;
-  onCreateBoost?: () => void;
+  onCreateWidget?: () => void;
 }
 
 export default function Sections({
   initialConfig,
-  onCreateBoost,
+  onCreateWidget,
 }: SectionsProps) {
   const [expandedSections, setExpandedSections] = useState<number[]>([1]);
-  const { updateCurrentBoostConfig, addBoost } = useBoost();
+  const { updateWidgetConfig } = useWidget();
   const [config, setConfig] = useState(initialConfig || defaultConfig);
   const [isCreated, setIsCreated] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -31,7 +31,7 @@ export default function Sections({
   const handleConfigUpdate = (updates: Partial<typeof config>) => {
     const newConfig = { ...config, ...updates };
     setConfig(newConfig);
-    updateCurrentBoostConfig(newConfig);
+    updateWidgetConfig(newConfig);
   };
 
   const handleCreateWidget = () => {
@@ -39,11 +39,10 @@ export default function Sections({
   };
 
   const handleSaveWidget = (name: string) => {
-    addBoost(name, config);
     setIsCreated(true);
     setShowCreateModal(false);
-    if (onCreateBoost) {
-      onCreateBoost();
+    if (onCreateWidget) {
+      onCreateWidget();
     }
   };
 
@@ -63,7 +62,7 @@ export default function Sections({
         subtitle={`${config.type} • ${config.position || ''} • Width:${config.width}px • Height:${config.height}px`}
         isExpanded={expandedSections.includes(1)}
         onToggle={() => toggleSection(1)}
-        details={<BoostTypeForm config={config} onSave={handleConfigUpdate} />}
+        details={<WidgetTypeForm config={config} onSave={handleConfigUpdate} />}
         hasInternalButtons={false}
       />
       <Section
@@ -105,7 +104,7 @@ export default function Sections({
       />
 
       {showCreateModal && (
-        <CreateBoostModal
+        <CreateWidgetModal
           onClose={() => setShowCreateModal(false)}
           onSave={handleSaveWidget}
         />
