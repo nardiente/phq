@@ -66,7 +66,7 @@ const App: FC = () => {
       document.head.appendChild(gistScript);
     }
 
-    if (is_public && !email?.endsWith('@producthq.io')) {
+    if (is_public) {
       document.title = '';
       const link = document.querySelector(
         'link[rel~="icon"]'
