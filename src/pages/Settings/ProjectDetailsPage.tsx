@@ -536,7 +536,7 @@ export default function ProjectDetailsPage() {
                 <span>
                   Click{' '}
                   <a
-                    href="https://support.producthq.io/articles/how-to-add-a-board-to-your-site-145e70-32dd7"
+                    href="https://support.producthq.io/en/article/9-how-to-add-a-board-to-your-site"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#5a00cd] hover:underline"
@@ -581,7 +581,7 @@ export default function ProjectDetailsPage() {
               <span>
                 Click&nbsp;
                 <a
-                  href="https://support.producthq.io/articles/how-to-set-up-your-custom-domain-name-145e70-e8cd0"
+                  href="https://support.producthq.io/en/article/10-how-to-set-up-your-custom-domain-name"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#5a00cd] hover:underline"
