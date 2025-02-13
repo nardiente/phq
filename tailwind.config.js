@@ -4,7 +4,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        textarea: '#e5e7eb'
+        textarea: '#e5e7eb',
+        purple: {
+          50: '#f5f3ff', // Light purple
+        },
       }
     },
   },

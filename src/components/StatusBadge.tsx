@@ -1,8 +1,9 @@
 interface StatusBadgeProps {
-  status: 'Under Review' | 'Planned' | 'Completed' | 'In Progress';
+  status: 'Under Review' | 'Planned' | 'Completed' | 'In Progress' | string;
+  className?: string;
 }
 
-const StatusBadge = ({ status }: StatusBadgeProps) => {
+const StatusBadge = ({ status, className }: StatusBadgeProps) => {
   const getStatusColor = () => {
     switch (status) {
       case 'Under Review':
@@ -20,7 +21,7 @@ const StatusBadge = ({ status }: StatusBadgeProps) => {
 
   return (
     <span
-      className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${getStatusColor()}`}
+      className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${getStatusColor()} ${className || ''}`}
     >
       <span
         className="w-1.5 h-1.5 rounded-full mr-1.5"

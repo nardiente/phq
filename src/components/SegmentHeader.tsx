@@ -32,6 +32,8 @@ const SegmentHeader = ({
   currentSegment,
   hasUnsavedFilters,
 }: SegmentHeaderProps) => {
+  console.log('Saved segments in SegmentHeader:', savedSegments);
+  console.log('onSelectSegment in SegmentHeader:', onSelectSegment);
   const segmentDropdownRef = useRef<HTMLDivElement>(null);
   const saveOptionsDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -95,9 +97,9 @@ const SegmentHeader = ({
           </button>
 
           {saveOptionsVisible && (
-            <div className="absolute top-full left-0 mt-1 w-48 bg-white border rounded-md shadow-lg z-50">
+            <div className="absolute top-full left-0 mt-1 w-full bg-white border rounded-md shadow-lg z-50">
               <button
-                className="w-full px-4 py-2 text-left hover:bg-gray-50"
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700"
                 onClick={() => {
                   if (onUpdateSegment) {
                     onUpdateSegment(currentSegment.id, currentSegment.name);
@@ -108,7 +110,7 @@ const SegmentHeader = ({
                 Save Changes
               </button>
               <button
-                className="w-full px-4 py-2 text-left hover:bg-gray-50"
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700"
                 onClick={() => {
                   setIsModalOpen(true);
                   setSaveOptionsVisible(false);
@@ -134,102 +136,106 @@ const SegmentHeader = ({
     );
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    onSearch(e.target.value);
+  };
+
   return (
-    <div className="flex justify-between items-center p-6">
-      <div className="flex items-center gap-4">
-        <h1 className="text-2xl font-semibold">Segments</h1>
+    <div>
+      <div className="flex justify-between items-center p-6">
+        <div className="flex items-center gap-4">
+          <h1 className="text-2xl font-semibold">Segments</h1>
 
-        <div className="relative" ref={segmentDropdownRef}>
-          <button
-            className="px-4 py-2 bg-white border rounded flex items-center justify-between min-w-[300px]"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          >
-            <span className="text-gray-700">
-              {currentSegment ? currentSegment.name : 'Saved Segments'}
-            </span>
-            {isDropdownOpen ? (
-              <ChevronUp className="h-4 w-4 ml-2 text-gray-500" />
-            ) : (
-              <ChevronDown className="h-4 w-4 ml-2 text-gray-500" />
-            )}
-          </button>
+          <div className="relative border border-gray-300 rounded" ref={segmentDropdownRef}>
+            <button
+              className="px-4 py-2 bg-white border rounded flex items-center justify-between min-w-[300px]"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              <span className="text-gray-700">
+                {currentSegment ? currentSegment.name : 'Saved Segments'}
+              </span>
+              {isDropdownOpen ? (
+                <ChevronUp className="h-4 w-4 ml-2 text-gray-500" />
+              ) : (
+                <ChevronDown className="h-4 w-4 ml-2 text-gray-500" />
+              )}
+            </button>
 
-          {isDropdownOpen && (
-            <div className="absolute top-full left-0 w-[300px] mt-1 bg-white border rounded-md shadow-lg overflow-hidden z-50">
-              {savedSegments.map((segment) => (
-                <div
-                  key={segment.id}
-                  className="flex items-center justify-between px-4 py-2 hover:bg-gray-50"
-                >
-                  <button
-                    className="flex-grow text-left"
+            {isDropdownOpen && (
+              <div className="absolute top-full left-0 w-[300px] mt-1 bg-white border rounded-md shadow-lg overflow-hidden z-50">
+                {savedSegments.map((segment) => (
+                  console.log('Segment:', segment),
+                  <div
+                    key={segment.id}
+                    className="flex items-center justify-between px-4 py-2 hover:bg-gray-50"
                     onClick={() => {
-                      onSelectSegment?.(segment);
+                      const selectedSegment = segment[0] ? segment[0] : segment;
+                      onSelectSegment?.(selectedSegment);
                       setIsDropdownOpen(false);
                     }}
                   >
-                    {segment.name}
-                  </button>
-                  <button
-                    onClick={(e) => handleDeleteClick(segment, e)}
-                    className="text-gray-400 hover:text-red-500 ml-2"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              ))}
-              {savedSegments.length === 0 && (
-                <div className="px-4 py-2 text-gray-500">No saved segments</div>
-              )}
-            </div>
-          )}
+                    <div className="flex-grow text-left text-gray-700">
+                      {segment[0] ? segment[0].name : segment.name}
+                    </div>
+                    <button
+                      onClick={(e) => handleDeleteClick(segment, e)}
+                      className="text-gray-400 hover:text-red-500 ml-2"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+                {savedSegments.length === 0 && (
+                  <div className="px-4 py-2 text-gray-500">No saved segments</div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="relative" ref={saveOptionsDropdownRef}>
+            {renderSaveButton()}
+          </div>
         </div>
 
-        <div className="relative" ref={saveOptionsDropdownRef}>
-          {renderSaveButton()}
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search"
+            className="pl-3 pr-10 py-2 border rounded w-[300px] focus:outline-none focus:border-purple-500"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+            <Search className="h-4 w-4 text-gray-400" />
+          </div>
         </div>
-      </div>
 
-      <div className="relative">
-        <input
-          type="text"
-          placeholder="Search"
-          className="pl-3 pr-10 py-2 border rounded w-[300px] focus:outline-none focus:border-purple-500"
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            onSearch(e.target.value);
+        <SaveSegmentModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={
+            currentSegment && !hasUnsavedFilters
+              ? onSaveAsNewSegment
+              : onSaveSegment
+          }
+          title={
+            currentSegment && !hasUnsavedFilters
+              ? 'Save as New Segment'
+              : 'Save Segment'
+          }
+        />
+
+        <DeleteConfirmationModal
+          isOpen={deleteModal.isOpen}
+          segmentName={deleteModal.segmentName}
+          onClose={() => setDeleteModal((prev) => ({ ...prev, isOpen: false }))}
+          onConfirm={() => {
+            onDeleteSegment?.(deleteModal.segmentId);
+            setDeleteModal((prev) => ({ ...prev, isOpen: false }));
           }}
         />
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-          <Search className="h-4 w-4 text-gray-400" />
-        </div>
       </div>
-
-      <SaveSegmentModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={
-          currentSegment && !hasUnsavedFilters
-            ? onSaveAsNewSegment
-            : onSaveSegment
-        }
-        title={
-          currentSegment && !hasUnsavedFilters
-            ? 'Save as New Segment'
-            : 'Save Segment'
-        }
-      />
-
-      <DeleteConfirmationModal
-        isOpen={deleteModal.isOpen}
-        segmentName={deleteModal.segmentName}
-        onClose={() => setDeleteModal((prev) => ({ ...prev, isOpen: false }))}
-        onConfirm={() => {
-          onDeleteSegment?.(deleteModal.segmentId);
-          setDeleteModal((prev) => ({ ...prev, isOpen: false }));
-        }}
-      />
     </div>
   );
 };

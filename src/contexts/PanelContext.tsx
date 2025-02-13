@@ -14,6 +14,7 @@ interface State {
   commentIdToDelete?: number;
   mentioned_users: any[];
   active_tab: string;
+  activeItem: any;
 }
 
 const initialState: State = {
@@ -25,6 +26,7 @@ const initialState: State = {
   panel_loading: false,
   mentioned_users: [],
   active_tab: '',
+  activeItem: null,
 };
 
 enum ActionTypes {
@@ -39,6 +41,7 @@ enum ActionTypes {
   SET_PANEL_COMMENT_ID_TO_DELETE = 'SET_PANEL_COMMENT_ID_TO_DELETE',
   SET_MENTIONED_USERS = 'SET_MENTIONED_USERS',
   ADD_MENTIONED_USERS = 'ADD_MENTIONED_USERS',
+  SET_ACTIVE_ITEM = 'SET_ACTIVE_ITEM',
 }
 
 type PanelAction =
@@ -55,7 +58,8 @@ type PanelAction =
     }
   | { type: ActionTypes.SET_MENTIONED_USERS; payload: any }
   | { type: ActionTypes.ADD_MENTIONED_USERS; payload: any }
-  | { type: 'SET_ACTIVE_TAB'; payload: string };
+  | { type: 'SET_ACTIVE_TAB'; payload: string }
+  | { type: ActionTypes.SET_ACTIVE_ITEM; payload: any };
 
 function panelReducer(state: State, action: PanelAction): State {
   switch (action.type) {
@@ -114,6 +118,11 @@ function panelReducer(state: State, action: PanelAction): State {
         ...state,
         active_tab: action.payload,
       };
+    case ActionTypes.SET_ACTIVE_ITEM:
+      return {
+        ...state,
+        activeItem: action.payload,
+      };
     default:
       return state;
   }
@@ -132,6 +141,7 @@ interface PanelContextType {
   setMentionedUser: (value: any) => Promise<void>;
   addMentionedUser: (value: any) => Promise<void>;
   setActiveTab: (active_tab: string) => Promise<void>;
+  setActiveItem: (value: any) => Promise<void>;
 }
 
 const PanelContext = createContext<PanelContextType | undefined>(undefined);
@@ -186,6 +196,10 @@ export function PanelProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_ACTIVE_TAB', payload: active_tab });
   };
 
+  const setActiveItem = async (value: any) => {
+    dispatch({ type: ActionTypes.SET_ACTIVE_ITEM, payload: value });
+  };
+
   const value = useMemo(
     () => ({
       state,
@@ -200,6 +214,7 @@ export function PanelProvider({ children }: { children: ReactNode }) {
       setMentionedUser,
       addMentionedUser,
       setActiveTab,
+      setActiveItem,
     }),
     [state]
   );

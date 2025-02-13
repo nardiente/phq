@@ -4,6 +4,7 @@ interface EffortIndicatorProps {
   level: number;
   maxLevel?: number;
   onChange?: (level: number) => void;
+  className?: string;
 }
 
 const EFFORT_VALUES = [
@@ -18,11 +19,12 @@ const EffortIndicator = ({
   level,
   maxLevel = 5,
   onChange,
+  className,
 }: EffortIndicatorProps) => {
   const [hoverLevel, setHoverLevel] = useState<number | null>(null);
 
   return (
-    <div className="flex gap-1">
+    <div className={`flex gap-1 ${className || ''}`}>
       {Array.from({ length: maxLevel }).map((_, index) => (
         <button
           key={index}
@@ -35,6 +37,8 @@ const EffortIndicator = ({
               : 'bg-gray-200'
           }`}
           title={`${EFFORT_VALUES[index].value} (${EFFORT_VALUES[index].label})`}
+          aria-label={`Set effort to ${EFFORT_VALUES[index].label}`}
+          aria-pressed={index < level}
         />
       ))}
     </div>

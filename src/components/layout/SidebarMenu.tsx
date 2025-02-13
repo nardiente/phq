@@ -43,6 +43,7 @@ export interface MenuItem {
   badge?: ReactNode;
   disabled?: boolean;
   hidden?: boolean;
+  opacity?: number;
 }
 
 export function SidebarMenu({
@@ -64,8 +65,9 @@ export function SidebarMenu({
       icon: LayoutDashboard,
       label: 'Dashboard',
       id: 'dashboard',
-      badge: <ComingSoon />,
       disabled: false,
+      badge: <ComingSoon />,
+      opacity: 0.5,
     },
     { icon: ThumbsUp, label: 'Upvotes', id: 'upvotes' },
     { icon: Map, label: 'Roadmap', id: 'roadmap' },
@@ -75,14 +77,9 @@ export function SidebarMenu({
       label: 'Widgets',
       id: 'widgets',
     },
-    { icon: PieChart, label: 'Segments', id: 'segments', hidden: true },
+    { icon: ListOrdered, label: 'Prioritization', id: 'prioritization' },
+    { icon: PieChart, label: 'Segments', id: 'segments', hidden: false },
     { icon: Users, label: 'Customer Profiles', id: 'profiles', hidden: true },
-    {
-      icon: ListOrdered,
-      label: 'Prioritization',
-      id: 'prioritization',
-      hidden: true,
-    },
   ];
 
   const settingsMenuItems: MenuItem[] = [

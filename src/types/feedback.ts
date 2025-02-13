@@ -27,7 +27,42 @@ export interface Feedback {
   estimated_release_date?: string;
   pinned?: boolean;
   customer_id?: number;
+  reach?: number;
+  impact?: Impacts;
+  confidence?: Confidences;
+  effort?: number;
+  score?: number;
 }
+
+export enum Confidences {
+  LOW = 50,
+  MEDIUM = 80,
+  HIGH = 100,
+}
+
+export const Confidence = {
+  [Confidences.LOW]: '50% - Low',
+  [Confidences.MEDIUM]: '80% - Medium',
+  [Confidences.HIGH]: '100% - High',
+};
+
+export const Efforts = [1, 3, 5, 8, 13];
+
+export enum Impacts {
+  MASSIVE = 3,
+  HIGH = 2,
+  MEDIUM = 1,
+  LOW = 0.5,
+  MINIMAL = 0.25,
+}
+
+export const Impact = {
+  [Impacts.MASSIVE]: 'Massive',
+  [Impacts.HIGH]: 'High',
+  [Impacts.MEDIUM]: 'Medium',
+  [Impacts.LOW]: 'Low',
+  [Impacts.MINIMAL]: 'Minimal',
+};
 
 export interface FeedbackComment {
   author: {
