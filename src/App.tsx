@@ -2,7 +2,6 @@ import { useUser } from './contexts/UserContext';
 import { FC, useEffect } from 'react';
 import AppRoutes from './routes/routes';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import {
   getSessionToken,
   setCustomerKaslKey,

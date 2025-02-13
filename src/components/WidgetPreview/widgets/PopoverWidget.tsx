@@ -1,112 +1,34 @@
-import React from 'react';
 import { WidgetConfig } from '../../../types/widget';
 import { WidgetContent } from '../WidgetContent';
 
-interface PopoverWidgetProps {
-  config: WidgetConfig;
-  overflowClass: string;
-}
+export const PopoverWidget = ({ config }: { config: WidgetConfig }) => {
+  if (!config?.appearance) {
+    return null;
+  }
 
-export const PopoverWidget: React.FC<PopoverWidgetProps> = ({
-  config,
-  overflowClass,
-}) => {
-  const { appearance } = config;
-
-  const getValidWidth = (width: string) => {
-    const num = parseInt(width?.replace(/[^\d]/g, '') || '450');
-    if (num >= 300 && num <= 800) {
-      return `${num}px`;
-    }
-    const currentNum = parseInt(
-      appearance.width?.replace(/[^\d]/g, '') || '450'
-    );
-    if (currentNum >= 300 && currentNum <= 800) {
-      return `${currentNum}px`;
-    }
-    return '450px';
-  };
-
-  const getValidHeight = (height: string | undefined) => {
-    const num = parseInt(height?.replace(/[^\d]/g, '') || '600');
-    if (num >= 400 && num <= 800) {
-      return `${num}px`;
-    }
-    const currentNum = parseInt(
-      appearance.height?.replace(/[^\d]/g, '') || '600'
-    );
-    if (currentNum >= 400 && currentNum <= 800) {
-      return `${currentNum}px`;
-    }
-    return '600px';
-  };
-
-  // const getValidOffset = (offset: string | undefined) => {
-  //   const num = parseInt(offset?.replace(/[^\d]/g, '') || '20');
-  //   if (num >= 10 && num <= 100) {
-  //     return `${num}px`;
-  //   }
-  //   const currentNum = parseInt(
-  //     appearance.offset?.replace(/[^\d]/g, '') || '20'
-  //   );
-  //   if (currentNum >= 10 && currentNum <= 100) {
-  //     return `${currentNum}px`;
-  //   }
-  //   return '20px';
-  // };
-
-  // Remove offset from getPlacementClasses
-  const getPlacementClasses = () => {
-    switch (appearance.placement) {
-      case 'Top left':
-        return 'items-start justify-start p-8';
-      case 'Top right':
-        return 'items-start justify-end p-8';
-      case 'Bottom left':
-        return 'items-end justify-start p-8';
-      case 'Bottom right':
-        return 'items-end justify-end p-8';
-      default:
-        return 'items-center justify-center';
-    }
+  const placementClasses = {
+    'Bottom right': 'fixed bottom-0 right-0 mb-24 mr-24',
+    'Bottom left': 'fixed bottom-0 left-0 mb-24 ml-24',
+    'Top right': 'fixed top-0 right-0 mt-24 mr-24',
+    'Top left': 'fixed top-0 left-0 mt-24 ml-24'
   };
 
   return (
-    <div
-      className={`absolute inset-0 flex bg-gray-100 ${getPlacementClasses()}`}
+    <div 
+      className="bg-white rounded-lg shadow-lg"
+      style={{
+        width: config.appearance.width || '450px',
+        height: config.appearance.height || '600px',
+      }}
     >
-      <div
-        className={`bg-white rounded-lg shadow-xl ${overflowClass}`}
-        style={{
-          width: getValidWidth(appearance.width || '450px'),
-          height: getValidHeight(appearance.height),
-          margin: getOffsetStyle(appearance.placement, appearance.offset),
-        }}
-      >
-        <WidgetContent config={config} />
-      </div>
+      <WidgetContent config={config} />
+      {!config.appearance.hideCloseButton && (
+        <button className="absolute top-4 right-4">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      )}
     </div>
   );
-};
-
-// Update getOffsetStyle to handle the offset correctly
-const getOffsetStyle = (
-  placement: string | undefined,
-  offset: string | undefined
-) => {
-  const validOffset = parseInt(offset?.replace(/[^\d]/g, '') || '16');
-  const offsetValue = Math.min(Math.max(validOffset, 5), 32);
-
-  switch (placement) {
-    case 'Top left':
-      return `${offsetValue}px 0 0 ${offsetValue}px`;
-    case 'Top right':
-      return `${offsetValue}px ${offsetValue}px 0 0`;
-    case 'Bottom left':
-      return `0 0 ${offsetValue}px ${offsetValue}px`;
-    case 'Bottom right':
-      return `0 ${offsetValue}px ${offsetValue}px 0`;
-    default:
-      return '0';
-  }
 };

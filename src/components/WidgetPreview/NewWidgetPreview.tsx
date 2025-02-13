@@ -23,19 +23,29 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
   // Single config with defaults
   const configWithDefaults = {
     ...config,
-    sections: config.sections ?? {  // Use nullish coalescing
+    sections: config.sections ?? {
       ideas: true,
       roadmap: true,
       announcements: true
     },
     appearance: {
-      width: '450px',
-      height: '600px',
+      // Start with user's appearance settings
       ...config.appearance,
-      position: config.launcherPosition || 'Right',
-      placement: config.appearance?.placement
+      // Only set defaults if values are missing
+      width: config.appearance?.width || '450px',
+      height: config.appearance?.height || '600px',
+      position: config.appearance?.position || config.launcherPosition || 'Right',
+      placement: config.appearance?.placement || 'Bottom right',
     }
   };
+
+  // Add debug log
+  console.group('=== Config Update Debug ===');
+  console.log('Original config:', config);
+  console.log('Original placement:', config.appearance?.placement);
+  console.log('Config with defaults:', configWithDefaults);
+  console.log('Final placement:', configWithDefaults.appearance.placement);
+  console.groupEnd();
 
   // Add more specific debug logging
   console.group('=== Sections Debug ===');
@@ -47,16 +57,18 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
   // Simple widget content wrapper with close button
   const WidgetContainer = ({ children }: { children: React.ReactNode }) => (
     <div 
-      className={`relative bg-white rounded-lg shadow-xl ${
-        config.appearance?.preventScroll ? 'overflow-hidden' : 'overflow-auto'
-      }`}
+      className="relative rounded-lg shadow-xl overflow-hidden"
       style={{ 
         height: config.widgetType === 'Sidebar' ? '100%' : configWithDefaults.appearance.height,
         width: configWithDefaults.appearance.width,
-        maxWidth: config.widgetType === 'Sidebar' ? 'calc(100vw - 64px)' : undefined
+        maxWidth: config.widgetType === 'Sidebar' ? 'calc(100vw - 64px)' : undefined,
       }}
     >
-      {children}
+      {/* Main content */}
+      <div className="bg-white">
+        {children}
+      </div>
+
       {!config.appearance?.hideCloseButton && (
         <button 
           onClick={() => setIsVisible(false)}
@@ -71,11 +83,7 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
   );
 
   return (
-    <div className="flex-1 relative border-4 border-blue-500 rounded-lg p-4 overflow-hidden">
-      <div className="absolute top-0 left-0 bg-blue-500 text-white text-xs px-2 py-1 rounded-br">
-        New Preview
-      </div>
-
+    <div className="flex-1 relative">
       {/* Launcher */}
       {config.launcherType === 'Tab' && (
         <TabLauncher config={configWithDefaults} onClick={() => setIsVisible(!isVisible)} />
@@ -109,11 +117,35 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
               <WidgetContent config={configWithDefaults} />
             </WidgetContainer>
           </div>
+        ) : config.widgetType === 'Popover' ? (
+          <div className={`
+            absolute
+            ${config.appearance?.placement === 'Top left' ? 'top-0 left-0' : ''}
+            ${config.appearance?.placement === 'Top right' ? 'top-0 right-0' : ''}
+            ${config.appearance?.placement === 'Bottom left' ? 'bottom-0 left-0' : ''}
+            ${config.appearance?.placement === 'Bottom right' ? 'bottom-0 right-0' : 'bottom-0 right-0'}
+          `}
+          style={{ 
+            margin: config.appearance?.offset || '64px',
+            width: config.appearance?.width,
+            height: config.appearance?.height
+          }}>
+            <WidgetContainer>
+              <WidgetContent config={configWithDefaults} />
+            </WidgetContainer>
+          </div>
         ) : (
           // Popover: Positioned
-          <div className={`absolute ${config.appearance?.placement === 'Top' ? 'top-4' : 'bottom-4'} ${
-            config.appearance?.placement?.includes('left') ? 'left-4' : 'right-4'
-          }`}>
+          <div className={`
+            absolute 
+            ${config.appearance?.placement?.includes('Top') ? 'top-0' : 'bottom-0'}
+            ${config.appearance?.placement?.includes('left') ? 'left-0' : 'right-0'}
+            pointer-events-auto
+          `}
+            style={{
+              margin: config.appearance?.offset || '64px'
+            }}
+          >
             <WidgetContainer>
               <WidgetContent config={configWithDefaults} />
             </WidgetContainer>

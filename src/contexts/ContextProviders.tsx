@@ -1,44 +1,26 @@
 import { ReactNode } from 'react';
 import { UserProvider } from './UserContext';
-import { DropdownProvider } from './DropdownContext';
-import { UserNotificationProvider } from './UserNotificationContext';
-import { WhatsNewProvider } from './WhatsNewContext';
-import { UnsavedChangesProvider } from './UnsavedChangesContext';
-import { FeedbackProvider } from './FeedbackContext';
 import { SocketProvider } from './SocketContext';
+import { FeedbackProvider } from './FeedbackContext';
+import { UserNotificationProvider } from './UserNotificationContext';
 import { PanelProvider } from './PanelContext';
-import { BoostProvider } from './BoostContext';
-import { OnboardingProvider } from './OnboardingContext';
-import { AppProvider } from './AppContext';
 
-type ContextProvidersProps = {
+interface ContextProvidersProps {
   children: ReactNode;
-};
+}
 
-const ContextProviders: React.FC<ContextProvidersProps> = ({ children }) => {
+export default function ContextProviders({ children }: ContextProvidersProps) {
   return (
-    <AppProvider>
-      <OnboardingProvider>
-        <SocketProvider>
-          <PanelProvider>
-            <FeedbackProvider>
-              <WhatsNewProvider>
-                <UserNotificationProvider>
-                  <DropdownProvider>
-                    <UnsavedChangesProvider>
-                      <BoostProvider>
-                        <UserProvider>{children}</UserProvider>
-                      </BoostProvider>
-                    </UnsavedChangesProvider>
-                  </DropdownProvider>
-                </UserNotificationProvider>
-              </WhatsNewProvider>
-            </FeedbackProvider>
-          </PanelProvider>
-        </SocketProvider>
-      </OnboardingProvider>
-    </AppProvider>
+    <UserProvider>
+      <SocketProvider>
+        <FeedbackProvider>
+          <UserNotificationProvider>
+            <PanelProvider>
+              {children}
+            </PanelProvider>
+          </UserNotificationProvider>
+        </FeedbackProvider>
+      </SocketProvider>
+    </UserProvider>
   );
-};
-
-export default ContextProviders;
+} 

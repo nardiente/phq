@@ -4,8 +4,6 @@ import SignUpPage from '../pages/SignUp';
 import AppRoute from './AppRoute';
 import DashboardPage from '../pages/DashboardPage';
 import { AccountSettings } from '../pages/Settings/AccountSettings';
-import BoostPage from '../pages/BoostPage';
-import CreateBoostPage from '../pages/CreateBoostPage';
 import ProjectDetailsPage from '../pages/Settings/ProjectDetailsPage';
 import AppearancePage from '../pages/Settings/AppearancePage';
 import ModerationPage from '../pages/Settings/ModerationPage';
@@ -16,6 +14,7 @@ import BillingPage from '../pages/Settings/BillingPage';
 import ImportIdeasPage from '../pages/ImportIdeasPage';
 import TestimonialsPage from '../pages/TestimonialsPage';
 import WidgetsPage from '../pages/WidgetsPage';
+import WidgetsView from '../pages/widgets.tsx';
 import { SSOVerifyingPage } from '../components/SSOVerifying';
 import ForgotPasswordPage from '../pages/ForgotPassword';
 import UpvotesPage from '../pages/Upvotes/UpvotesPage';
@@ -32,13 +31,22 @@ import OnboardingPage from '../pages/onboarding/onboarding';
 import ResetPasswordPage from '../pages/ResetPassword';
 import FreeTrialPage from '../pages/FreeTrialPage';
 import { LtdPage } from '../pages/LtdPage';
+import { pathExceptions } from '../types/app';
+import TestFetch from '../pages/TestFetch';
+
+// Add /test to exceptions at the top of the file
+pathExceptions.push('/test');
 
 const AppRoutes = () => {
+  console.log('Routes mounting, pathExceptions:', pathExceptions);
   return (
     <BrowserRouter>
       <Suspense fallback={<Fallback />}>
         <Routes>
           <Route element={<AppRoute />}>
+            {/* Add test route early in the list */}
+            <Route path="/test" element={<TestFetch />} />
+            
             {/* Public Routes */}
             <Route path="/" element={<LoginPage />} />
             <Route path="/sign-in" element={<LoginPage />} />
@@ -61,9 +69,9 @@ const AppRoutes = () => {
             <Route path="/upvotes" element={<UpvotesPage />} />
             <Route path="/roadmap" element={<RoadmapPage />} />
             <Route path="/posts" element={<WhatsNewPage />} />
-            <Route path="/boost" element={<BoostPage />} />
-            <Route path="/create-boost" element={<CreateBoostPage />} />
-            <Route path="/widgets" element={<WidgetsPage />} />
+            <Route path="/widgets" element={<WidgetsView />} />
+            <Route path="/widgets/page" element={<WidgetsPage />} />
+            <Route path="/widgets/page/:id" element={<WidgetsPage />} />
             <Route path="/segments" element={<SegmentsPage />} />
             <Route path="/profiles" element={<UserProfilesPage />} />
             <Route path="/prioritization" element={<PrioritizationPage />} />
