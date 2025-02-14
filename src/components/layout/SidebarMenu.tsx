@@ -69,7 +69,7 @@ export function SidebarMenu({
     },
     { icon: ThumbsUp, label: 'Upvotes', id: 'upvotes' },
     { icon: Map, label: 'Roadmap', id: 'roadmap' },
-    { icon: Zap, label: "What's New", id: 'posts' },
+    { icon: Zap, label: "What's New", id: 'whatsnew' },
     {
       icon: LayoutTemplate,
       label: 'Widgets',

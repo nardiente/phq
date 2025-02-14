@@ -78,31 +78,31 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
               <Fragment>
                 <span
                   onClick={() => onSort('Newest')}
-                  className="dropdown-item is-clickable drop-down-font"
+                  className="dropdown-item is-clickable drop-down-font text-[#110733]"
                 >
                   Newest
                 </span>
                 <span
                   onClick={() => onSort('Trending')}
-                  className="dropdown-item is-clickable drop-down-font"
+                  className="dropdown-item is-clickable drop-down-font text-[#110733]"
                 >
                   Trending
                 </span>
                 <span
                   onClick={() => onSort('Oldest')}
-                  className="dropdown-item is-clickable drop-down-font"
+                  className="dropdown-item is-clickable drop-down-font text-[#110733]"
                 >
                   Oldest
                 </span>
                 <span
                   onClick={() => onSort('Most Comments')}
-                  className="dropdown-item is-clickable drop-down-font"
+                  className="dropdown-item is-clickable drop-down-font text-[#110733]"
                 >
                   Most Comments
                 </span>
                 <span
                   onClick={() => onSort('Most Votes')}
-                  className="dropdown-item is-clickable drop-down-font"
+                  className="dropdown-item is-clickable drop-down-font text-[#110733]"
                 >
                   Most Votes
                 </span>

@@ -85,7 +85,7 @@ export const Header: FC = () => {
     '/tracking',
     '/tags',
     '/upvotes',
-    '/posts',
+    '/whatsnew',
   ];
 
   const main = document.getElementById('main') as HTMLElement;

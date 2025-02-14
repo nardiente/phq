@@ -30,8 +30,6 @@ const AppRoute = () => {
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
-  const unprotectedPages = ['/upvotes', '/roadmap', '/posts'];
-
   const handleNavigation = useCallback(
     (page: PageType) => {
       setCurrentPage(page);
@@ -59,10 +57,7 @@ const AppRoute = () => {
         }
       }
     } else {
-      if (
-        ![...pathExceptions, ...unprotectedPages].includes(pathname) &&
-        project
-      ) {
+      if (pathname.slice(1).length === 0 && project) {
         handleNavigation('upvotes');
       }
     }
@@ -86,8 +81,6 @@ const AppRoute = () => {
               moment().diff(moment(user.remind_3_days_timestamp), 'minutes') >=
                 4320))
       );
-    } else if (project) {
-      handleNavigation('upvotes');
     }
   }, [user]);
 

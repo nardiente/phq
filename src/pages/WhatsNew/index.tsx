@@ -89,7 +89,7 @@ export const WhatsNewPage = () => {
   };
 
   useEffect(() => {
-    setActiveTab('/posts');
+    setActiveTab('/whatsnew');
     listWhatsNew([]);
   }, []);
 

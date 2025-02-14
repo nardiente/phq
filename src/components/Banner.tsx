@@ -23,7 +23,7 @@ function Banner({ activeItem, onNavigate }: BannerProps) {
   const publicViewMenuItems: MenuItem[] = [
     { icon: ThumbsUp, label: 'Upvotes', id: 'upvotes' },
     { icon: Map, label: 'Roadmap', id: 'roadmap' },
-    { icon: Zap, label: "What's New", id: 'posts' },
+    { icon: Zap, label: "What's New", id: 'whatsnew' },
   ];
 
   return (

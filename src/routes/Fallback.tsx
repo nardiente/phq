@@ -39,6 +39,8 @@ const Fallback = () => {
         navigate('/sign-in');
         return;
       }
+    } else if (pathname.slice(1).length === 0 && project) {
+      navigate('/upvotes');
     }
     handleGetUser();
   }, []);
@@ -50,8 +52,8 @@ const Fallback = () => {
   }, [loaded]);
 
   useEffect(() => {
-    if (user?.id || is_public) {
-      navigate(is_public ? '/upvotes' : '/dashboard');
+    if (is_public && pathname.slice(1).length === 0) {
+      navigate('/upvotes');
     }
   }, [user]);
 

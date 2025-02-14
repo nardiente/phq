@@ -68,7 +68,7 @@ const AppRoutes = () => {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/upvotes" element={<UpvotesPage />} />
             <Route path="/roadmap" element={<RoadmapPage />} />
-            <Route path="/posts" element={<WhatsNewPage />} />
+            <Route path="/whatsnew" element={<WhatsNewPage />} />
             <Route path="/widgets" element={<WidgetsView />} />
             <Route path="/widgets/page" element={<WidgetsPage />} />
             <Route path="/widgets/page/:id" element={<WidgetsPage />} />

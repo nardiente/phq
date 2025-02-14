@@ -24,7 +24,7 @@ export type PageType =
   | 'submit-feature'
   | 'our-roadmap'
   | 'pricing'
-  | 'posts'
+  | 'whatsnew'
   | 'segments'
   | 'profiles'
   | 'prioritization'
