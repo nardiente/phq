@@ -23,7 +23,9 @@ const AppRoute = () => {
   } = useUser();
   const { project, user } = userDetails ?? {};
 
-  const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
+  const [currentPage, setCurrentPage] = useState<PageType>(
+    pathname.slice(1) as PageType
+  );
   const [remindAddBoard, setRemindAddBoard] = useState<boolean | undefined>();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';

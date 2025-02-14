@@ -39,7 +39,6 @@ import TestFetch from '../pages/TestFetch';
 pathExceptions.push('/test');
 
 const AppRoutes = () => {
-  console.log('Routes mounting, pathExceptions:', pathExceptions);
   return (
     <BrowserRouter>
       <Suspense fallback={<Fallback />}>
@@ -63,9 +62,9 @@ const AppRoutes = () => {
             <Route path="/ob-tags" element={<OnboardingPage />} />
             <Route path="/ob-survey" element={<OnboardingPage />} />
             <Route path="/ob-success" element={<OnboardingPage />} />
+            <Route path="/success" element={<SuccessPage />} />
 
             {/* Protected Route */}
-            <Route path="/success" element={<SuccessPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/upvotes" element={<UpvotesPage />} />
             <Route path="/roadmap" element={<RoadmapPage />} />
