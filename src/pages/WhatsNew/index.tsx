@@ -159,13 +159,13 @@ export const WhatsNewPage = () => {
                 <FadeLoader height={5} width={2} radius={2} margin={-10} />
               </div>
             )}
-          <div id="WhatsNew">
+          <div id="WhatsNew" className="py-8">
             {posts && (
               <Fragment>
                 {(posts.length === 0 ||
                   (is_public && permissions?.length === 0)) &&
                   !fetching && (
-                    <div className="container no-whatsnew-background flex flex-col items-center">
+                    <div className="flex flex-col items-center">
                       {statusFilter.length === 0 ||
                       (is_public && permissions?.length === 0) ? (
                         <>

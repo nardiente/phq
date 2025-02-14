@@ -1,7 +1,7 @@
 @import '../../appearance-colors.css';
 
 #UpVoteList {
-  height: calc(100vh - 215px);
+  height: calc(100vh - 241px);
   overflow: auto;
 
   align-items: center;
