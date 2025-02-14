@@ -148,25 +148,6 @@ export function SidebarMenu({
     );
   }, [activeItem]);
 
-  // Handle click outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setShowSettings(false);
-      }
-    };
-
-    // Only add listener if menu is open
-    if (showSettings) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    // Cleanup
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showSettings]);
-
   const handleNavigation = (item: MenuItem) => {
     if (item.link && item.link.length > 0) {
       setCurrentPage?.(item.id as PageType);

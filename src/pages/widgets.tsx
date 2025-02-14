@@ -4,16 +4,20 @@ import type { SavedWidget, WidgetStatus } from '../types/savedWidget';
 import WidgetDeleteModal from '../components/WidgetPreview/widgets/WidgetDeleteModal';
 import { GetCodeModal } from '../components/WidgetPreview/widgets/GetCodeModal';
 import { deleteApi, getApi, putApi } from '../utils/api/api';
+import { Loader } from 'lucide-react';
 
 export default function Widgets() {
-  const [widgets, setWidgets] = useState<SavedWidget[]>([]);
   const navigate = useNavigate();
+
+  const [fetching, setFetching] = useState<boolean>(false);
+  const [widgets, setWidgets] = useState<SavedWidget[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [widgetToDelete, setWidgetToDelete] = useState<number>();
   const [openDropdownId, setOpenDropdownId] = useState<number>();
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const [isGetCodeModalOpen, setIsGetCodeModalOpen] = useState(false);
   const [selectedWidgetKey, setSelectedWidgetKey] = useState('');
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     loadWidgets();
@@ -39,11 +43,14 @@ export default function Widgets() {
   }, [openDropdownId]);
 
   const loadWidgets = async () => {
-    getApi<SavedWidget[]>({ url: 'widgets' }).then((res) => {
-      if (res.results.data) {
-        setWidgets(res.results.data);
-      }
-    });
+    setFetching(true);
+    getApi<SavedWidget[]>({ url: 'widgets' })
+      .then((res) => {
+        if (res.results.data) {
+          setWidgets(res.results.data);
+        }
+      })
+      .finally(() => setFetching(false));
   };
 
   const handleDeleteClick = (id: number, e: React.MouseEvent) => {
@@ -106,15 +113,23 @@ export default function Widgets() {
       </div>
 
       {widgets.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)]">
-          <span className="text-5xl">😊</span>
-          <h3 className="mt-4 text-lg font-medium text-gray-900">
-            You don't have any widgets created yet.
-          </h3>
-          <p className="mt-1 text-sm text-gray-500">
-            Now is a great time to add your first entry!
-          </p>
-        </div>
+        <>
+          {fetching ? (
+            <div className="flex items-center justify-center">
+              <Loader />
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)]">
+              <span className="text-5xl">😊</span>
+              <h3 className="mt-4 text-lg font-medium text-gray-900">
+                You don't have any widgets created yet.
+              </h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Now is a great time to add your first entry!
+              </p>
+            </div>
+          )}
+        </>
       ) : (
         <div className="mt-8">
           <div className="overflow-visible shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">

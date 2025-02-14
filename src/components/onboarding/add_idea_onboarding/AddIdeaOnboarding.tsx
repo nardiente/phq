@@ -114,7 +114,6 @@ const AddIdeaOnboarding = () => {
       </div>
       <div style={{ marginBottom: '16px' }}>
         <UIField
-          class_name="border-textarea"
           id="DescriptionField"
           placeholder="We need a better, cheaper, and more secure way to receive customer payments."
           value={description}

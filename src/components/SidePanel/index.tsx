@@ -7,6 +7,7 @@ import AddComment from '../AddComment';
 import SuccessMessage from '../SuccessMessage';
 import DeleteConfirmation from '../DeleteConfirmation';
 import './styles.css';
+import { useEffect } from 'react';
 
 export const SidePanel = () => {
   const {
@@ -15,6 +16,20 @@ export const SidePanel = () => {
     setIsOpen,
   } = usePanel();
   const { setSelectedIdea } = useFeedback();
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [setIsOpen]);
 
   return (
     <SlidingPanel
