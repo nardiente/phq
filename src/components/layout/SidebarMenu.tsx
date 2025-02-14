@@ -1,4 +1,3 @@
-import React from 'react';
 import { ReactNode, useEffect, useState, useRef } from 'react';
 import {
   LayoutDashboard,
@@ -24,6 +23,7 @@ import {
   LucideIcon,
   FileText,
   ListOrdered,
+  Heart,
 } from 'lucide-react';
 import { PageType } from '../../types/app';
 import { useUser } from '../../contexts/UserContext';
@@ -32,6 +32,7 @@ import { ComingSoon } from '../ComingSoon';
 interface SidebarMenuProps {
   activeItem: string;
   onNavigate: (page: PageType) => void;
+  setCurrentPage?: (value: PageType) => void;
 }
 
 export interface MenuItem {
@@ -44,7 +45,11 @@ export interface MenuItem {
   hidden?: boolean;
 }
 
-export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
+export function SidebarMenu({
+  activeItem,
+  onNavigate,
+  setCurrentPage,
+}: SidebarMenuProps) {
   const { user } = useUser();
 
   const [isExpanded, setIsExpanded] = useState(true);
@@ -119,21 +124,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
     {
       id: 'testimonials',
       label: 'Share your feedback',
-      icon: React.forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(
-        () => (
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            className="text-gray-700"
-          >
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-          </svg>
-        )
-      ),
+      icon: Heart,
     },
     {
       icon: ThumbsUp,
@@ -178,6 +169,7 @@ export function SidebarMenu({ activeItem, onNavigate }: SidebarMenuProps) {
 
   const handleNavigation = (item: MenuItem) => {
     if (item.link && item.link.length > 0) {
+      setCurrentPage?.(item.id as PageType);
       window.open(item.link, '_blank');
       return;
     }

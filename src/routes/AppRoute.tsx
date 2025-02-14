@@ -45,6 +45,7 @@ const AppRoute = () => {
   }, []);
 
   useEffect(() => {
+    setCurrentPage(pathname.slice(1) as PageType);
     if (!is_public) {
       if (
         ![...pathExceptions, ...onbordingPaths].includes(pathname) ||
@@ -101,6 +102,7 @@ const AppRoute = () => {
                   currentPage === 'settings' ? 'account' : currentPage
                 }
                 onNavigate={handleNavigation}
+                setCurrentPage={setCurrentPage}
               />
             )}
             <div className="flex-1">
