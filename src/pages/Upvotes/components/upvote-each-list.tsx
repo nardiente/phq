@@ -148,7 +148,7 @@ export const UpVoteEachList = ({
         </div> */}
         {props.estimated_release_date && (
           <>
-            <hr />
+            <hr className="p-0" />
             <div className="release-date-container">
               <div className="content">
                 <Calendar4RangeIcon size={10} />

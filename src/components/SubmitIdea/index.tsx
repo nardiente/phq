@@ -442,6 +442,7 @@ export const SubmitIdea = () => {
         />
         <UIField
           id="DescriptionField"
+          class_name="border-textarea"
           onChangeArea={(e) => setDescription(e.target.value)}
           placeholder="Explain in simple terms how your idea will help you, who it is for, and how it works."
           type="textarea"

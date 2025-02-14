@@ -12,9 +12,6 @@ export default function Widgets() {
   const [widgetToDelete, setWidgetToDelete] = useState<number>();
   const [openDropdownId, setOpenDropdownId] = useState<number>();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [publishedWidgets, setPublishedWidgets] = useState<Set<number>>(
-    new Set()
-  );
   const [isGetCodeModalOpen, setIsGetCodeModalOpen] = useState(false);
   const [selectedWidgetKey, setSelectedWidgetKey] = useState('');
 
@@ -72,15 +69,9 @@ export default function Widgets() {
     putApi(`widgets/${id}`, { status })
       .then((res) => {
         if (res.results.data) {
-          setPublishedWidgets((prev) => {
-            const newSet = new Set(prev);
-            if (newSet.has(id)) {
-              newSet.delete(id);
-            } else {
-              newSet.add(id);
-            }
-            return newSet;
-          });
+          setWidgets((prev) =>
+            prev.map((w) => (w.id === id ? { ...w, status } : w))
+          );
         }
       })
       .finally(() => setOpenDropdownId(undefined));
@@ -162,7 +153,7 @@ export default function Widgets() {
                         className="flex items-center gap-2"
                       >
                         {widget.name}
-                        {publishedWidgets.has(widget.id ?? 0) && (
+                        {widget.status === 'published' && (
                           <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
                             Published
                           </span>
@@ -357,13 +348,13 @@ export default function Widgets() {
                               onClick={() =>
                                 handlePublish(
                                   widget.id ?? 0,
-                                  publishedWidgets.has(widget.id ?? 0)
+                                  widget.status === 'published'
                                     ? 'draft'
                                     : 'published'
                                 )
                               }
                             >
-                              {publishedWidgets.has(widget.id ?? 0)
+                              {widget.status === 'published'
                                 ? 'Unpublish'
                                 : 'Publish'}
                             </button>
