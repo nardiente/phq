@@ -43,11 +43,10 @@ const SaveSegmentModal: React.FC<SaveSegmentModalProps> = ({
 
         <input
           type="text"
-          placeholder="Enter segment name"
-          className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-purple-200 focus:border-purple-300"
+          placeholder="Segment Name"
+          className="w-full p-2 border rounded focus:outline-none focus:border-purple-500 text-gray-700"
           value={segmentName}
           onChange={(e) => setSegmentName(e.target.value)}
-          autoFocus
         />
 
         <div className="flex justify-end space-x-2 mt-6">
