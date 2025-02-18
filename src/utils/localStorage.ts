@@ -43,3 +43,12 @@ export const getModerateUserLogin = (): boolean =>
 
 export const getPartneroPartner = (): string | undefined =>
   localStorage.getItem('partnero_partner') ?? undefined;
+
+export const setOnboardingToken = (key: string): void =>
+  localStorage.setItem('onboarding_token', key);
+
+export const getOnboardingToken = (): string | undefined =>
+  localStorage.getItem('onboarding_token') ?? undefined;
+
+export const eraseOnboardingToken = (): void =>
+  localStorage.removeItem('onboarding_token');

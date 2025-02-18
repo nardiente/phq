@@ -5,8 +5,10 @@ import { UIField } from '../../components/UIField';
 import { toast } from 'react-toastify';
 import queryString from 'query-string';
 import {
+  eraseOnboardingToken,
   getPartneroPartner,
   setKaslKey,
+  setOnboardingToken,
   setSessionToken,
 } from '../../utils/localStorage';
 import { generateToken } from '../../utils/token';
@@ -174,7 +176,7 @@ export const SignUpForm: FC<SignUpFormProps> = ({ is_mobile, type }) => {
           navigate('/upvotes');
         } else {
           localStorage.removeItem('onboarding_page');
-          localStorage.removeItem('onboarding_token');
+          eraseOnboardingToken();
           localStorage.removeItem('reloaded');
           const result: User & {
             subscription: Subscription & { trial_end: number | string | null };
@@ -198,10 +200,7 @@ export const SignUpForm: FC<SignUpFormProps> = ({ is_mobile, type }) => {
             'onboarding_page',
             result.onboarding_page ?? OnboardingPages.WELCOME
           );
-          localStorage.setItem(
-            'onboarding_token',
-            res.headers['kasl-key'].toString()
-          );
+          setOnboardingToken(res.headers['kasl-key'].toString());
           localStorage.setItem('first_name', result.first_name ?? '');
           navigate(
             OnboardingUrls[result.onboarding_page ?? OnboardingPages.WELCOME]

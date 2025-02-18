@@ -11,6 +11,7 @@ import WelcomeOnboarding from '../../components/onboarding/welcome_onboarding/We
 import AddTopicsOnboarding from '../../components/onboarding/add_topics_onboarding/AddTopicsOnboarding';
 import { Success } from '../../components/onboarding/success/Success';
 import { Testimonials } from '../../components/Testimonials';
+import { getOnboardingToken } from '../../utils/localStorage';
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const OnboardingPage = () => {
     if (
       import.meta.env.VITE_SYSTEM_TYPE === 'public' ||
       localStorage.getItem('onboarding_page') == null ||
-      localStorage.getItem('onboarding_token') == null
+      getOnboardingToken() === undefined
     ) {
       navigate('/dashboard');
       return;
@@ -41,7 +42,7 @@ const OnboardingPage = () => {
       return;
     }
     setActivePage(localStorage.getItem('onboarding_page') as OnboardingPages);
-    setToken(localStorage.getItem('onboarding_token') ?? '');
+    setToken(getOnboardingToken() ?? '');
     navigate(
       OnboardingUrls[localStorage.getItem('onboarding_page') as OnboardingPages]
     );

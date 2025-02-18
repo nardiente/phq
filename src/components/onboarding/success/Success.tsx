@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import './styles.css';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../../contexts/UserContext';
-import { setKaslKey } from '../../../utils/localStorage';
+import {
+  eraseOnboardingToken,
+  getOnboardingToken,
+  setKaslKey,
+} from '../../../utils/localStorage';
 import { postApi } from '../../../utils/api/api';
 
 export const Success = () => {
@@ -16,7 +20,7 @@ export const Success = () => {
     postApi({
       url: 'users/onboarding/survey',
       payload: {
-        token: localStorage.getItem('onboarding_token') ?? '',
+        token: getOnboardingToken() ?? '',
       },
     });
   }, []);
@@ -26,13 +30,13 @@ export const Success = () => {
     postApi({
       url: 'users/onboarding/success',
       payload: {
-        token: localStorage.getItem('onboarding_token') ?? '',
+        token: getOnboardingToken() ?? '',
       },
     })
       .then(async () => {
-        setKaslKey(localStorage.getItem('onboarding_token') ?? '');
+        setKaslKey(getOnboardingToken() ?? '');
         localStorage.removeItem('onboarding_page');
-        localStorage.removeItem('onboarding_token');
+        eraseOnboardingToken();
         await handleGetUser();
         navigate('/dashboard');
       })

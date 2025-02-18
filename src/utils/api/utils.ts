@@ -4,6 +4,7 @@ import {
   eraseKaslKey,
   getCustomerKaslKey,
   getKaslKey,
+  getOnboardingToken,
   getSessionToken,
 } from '../localStorage';
 import { ApiResponseBody, ApiResponseHeaders, StatusCodes } from './types';
@@ -11,8 +12,9 @@ import { ApiResponseBody, ApiResponseHeaders, StatusCodes } from './types';
 export const prepHeaders = (params?: {
   useCustomerKey?: boolean;
   useSessionToken?: boolean;
+  useOnboardingToken?: boolean;
 }) => {
-  const { useCustomerKey, useSessionToken } = params ?? {};
+  const { useCustomerKey, useSessionToken, useOnboardingToken } = params ?? {};
   const headers: { Authorization: string | void; 'kasl-key'?: string | void } =
     {
       Authorization: getKaslKey() ?? '',
@@ -25,6 +27,9 @@ export const prepHeaders = (params?: {
   }
   if (useSessionToken && getSessionToken() !== undefined) {
     headers['kasl-key'] = getSessionToken() ?? '';
+  }
+  if (useOnboardingToken && getOnboardingToken() !== undefined) {
+    headers['kasl-key'] = getOnboardingToken() ?? '';
   }
   return headers;
 };

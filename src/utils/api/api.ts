@@ -56,12 +56,14 @@ export const postApi = async <Data = any>({
   pub,
   useCustomerKey,
   useSessionToken,
+  useOnboardingToken,
 }: {
   url: string;
   payload?: Payload | SavedWidget;
   pub?: boolean;
   useCustomerKey?: boolean;
   useSessionToken?: boolean;
+  useOnboardingToken?: boolean;
 }) => {
   let results: ApiResponseBody<Data> = {};
   let headers: ApiResponseHeaders;
@@ -74,6 +76,7 @@ export const postApi = async <Data = any>({
         headers: prepHeaders({
           useCustomerKey,
           useSessionToken,
+          useOnboardingToken,
         }) as unknown as AxiosHeaders,
       }
     );

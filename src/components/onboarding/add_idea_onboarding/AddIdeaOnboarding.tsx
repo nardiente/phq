@@ -54,7 +54,7 @@ const AddIdeaOnboarding = () => {
   //       setKaslKey(token)
   //       await handleGetUser()
   //       localStorage.removeItem('onboarding_page')
-  //       localStorage.removeItem('onboarding_token')
+  //       eraseOnboardingToken()
   //       navigate(OnboardingUrls[OnboardingPages.SUCCESS])
   //     }
   //   })

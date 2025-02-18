@@ -1,8 +1,10 @@
 import { getApi, postApi } from '../../utils/api/api';
 import { ApiFieldError } from '../../utils/api/types';
 import {
+  eraseOnboardingToken,
   getSessionToken,
   setKaslKey,
+  setOnboardingToken,
   setSessionToken,
 } from '../../utils/localStorage';
 import * as React from 'react';
@@ -119,20 +121,14 @@ export const LoginForm = (props: LoginFormProps) => {
 
               if (isInvitedMember) {
                 localStorage.setItem('onboarding_page', 'add_idea');
-                localStorage.setItem(
-                  'onboarding_token',
-                  res.headers['kasl-key'].toString()
-                );
+                setOnboardingToken(res.headers['kasl-key'].toString());
                 setKaslKey(res.headers['kasl-key'].toString());
                 await handleGetUser();
                 navigate('/upvotes');
                 return;
               } else {
                 localStorage.setItem('onboarding_page', 'welcome');
-                localStorage.setItem(
-                  'onboarding_token',
-                  res.headers['kasl-key'].toString()
-                );
+                setOnboardingToken(res.headers['kasl-key'].toString());
                 navigate(
                   OnboardingUrls[
                     localStorage.getItem('onboarding_page') as OnboardingPages
@@ -293,7 +289,7 @@ export const LoginForm = (props: LoginFormProps) => {
             navigate('/dashboard');
           } else {
             localStorage.removeItem('onboarding_page');
-            localStorage.removeItem('onboarding_token');
+            eraseOnboardingToken();
             if (onboarding_done === undefined || onboarding_done) {
               setKaslKey(headers['kasl-key'].toString());
               await handleGetUser();
@@ -309,10 +305,7 @@ export const LoginForm = (props: LoginFormProps) => {
               return;
             }
             localStorage.setItem('onboarding_page', onboarding_page ?? '');
-            localStorage.setItem(
-              'onboarding_token',
-              headers['kasl-key'].toString()
-            );
+            setOnboardingToken(headers['kasl-key'].toString());
             navigate(
               OnboardingUrls[
                 localStorage.getItem('onboarding_page') as OnboardingPages
@@ -434,7 +427,7 @@ export const LoginForm = (props: LoginFormProps) => {
       if (res.headers['kasl-key'] && !res.results.error && res.results.data) {
         clearMsgs();
         localStorage.removeItem('onboarding_page');
-        localStorage.removeItem('onboarding_token');
+        eraseOnboardingToken();
         const result: User & {
           project?: Project;
           subscription: Subscription & { trial_end: number | string | null };
@@ -462,10 +455,7 @@ export const LoginForm = (props: LoginFormProps) => {
           return;
         }
         localStorage.setItem('onboarding_page', result.onboarding_page ?? '');
-        localStorage.setItem(
-          'onboarding_token',
-          res.headers['kasl-key'].toString()
-        );
+        setOnboardingToken(res.headers['kasl-key'].toString());
         navigate(
           OnboardingUrls[
             localStorage.getItem('onboarding_page') as OnboardingPages

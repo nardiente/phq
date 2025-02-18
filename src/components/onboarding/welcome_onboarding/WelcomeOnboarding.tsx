@@ -26,6 +26,64 @@ const WelcomeOnboarding = () => {
   const [portal_subdomain, setPortalSubdomain] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
+  const handleSslCert = () => {
+    setLoading(true);
+    postApi({
+      url: 'ssl',
+      pub: true,
+      useOnboardingToken: true,
+    })
+      .then((res) => {
+        setLoading(false);
+        const errors = res.results?.errors as ApiFieldError[];
+        if (errors?.length > 0) {
+          errors?.forEach((error) => {
+            switch (error.field) {
+              case 'custom_domain':
+              case 'domain':
+                setFieldErrors((prev) => {
+                  prev = prev.filter((p) => p.field !== 'portal_subdomain');
+                  return [
+                    ...prev,
+                    { field: 'portal_subdomain', message: error.message },
+                  ];
+                });
+                if (error.message.includes('already used')) {
+                  setFieldErrors((prev) => {
+                    prev = prev.filter((p) => p.field !== 'portal_subdomain');
+                    return [
+                      ...prev,
+                      {
+                        field: 'portal_subdomain',
+                        message:
+                          'The url is not unique. Please choose a different url.',
+                      },
+                    ];
+                  });
+                }
+                if (error.message.includes('.invalid')) {
+                  setFieldErrors((prev) => {
+                    prev = prev.filter((p) => p.field !== 'portal_subdomain');
+                    return [
+                      ...prev,
+                      { field: 'portal_subdomain', message: 'Invalid URL' },
+                    ];
+                  });
+                }
+                break;
+              default:
+                break;
+            }
+          });
+          return;
+        }
+        localStorage.setItem('onboarding_page', OnboardingPages.ADD_IDEA);
+        setActivePage(OnboardingPages.ADD_IDEA);
+        navigate(OnboardingUrls[OnboardingPages.ADD_IDEA]);
+      })
+      .catch(() => setLoading(false));
+  };
+
   const handleSubmit = () => {
     setLoading(true);
     postApi({
@@ -41,9 +99,7 @@ const WelcomeOnboarding = () => {
         setFieldErrors(res.results.errors);
       }
       if (res.results.data) {
-        localStorage.setItem('onboarding_page', OnboardingPages.ADD_IDEA);
-        setActivePage(OnboardingPages.ADD_IDEA);
-        navigate(OnboardingUrls[OnboardingPages.ADD_IDEA]);
+        handleSslCert();
       }
     });
   };

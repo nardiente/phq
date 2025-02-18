@@ -5,6 +5,7 @@ import { postApi } from '../../../utils/api/api';
 import { ApiFieldError } from '../../../utils/api/types';
 import { UIField } from '../../UIField';
 import { OnboardingStatus } from '../../OnboardingStatus';
+import { setOnboardingToken } from '../../../utils/localStorage';
 
 const AddTopicsOnboarding = () => {
   const {
@@ -33,7 +34,7 @@ const AddTopicsOnboarding = () => {
         setFieldErrors(res.results.errors);
       }
       if (res.results.data) {
-        localStorage.setItem('onboarding_token', token);
+        setOnboardingToken(token);
         window.location.href = import.meta.env.VITE_SURVEY_FORM_URL ?? '';
       }
     });
@@ -52,7 +53,7 @@ const AddTopicsOnboarding = () => {
   //       setKaslKey(token)
   //       await handleGetUser()
   //       localStorage.removeItem('onboarding_page')
-  //       localStorage.removeItem('onboarding_token')
+  //       eraseOnboardingToken()
   //       history.push(OnboardingUrls[OnboardingPages.SUCCESS])
   //     }
   //   })
