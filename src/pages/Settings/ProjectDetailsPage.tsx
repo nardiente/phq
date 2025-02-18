@@ -113,6 +113,14 @@ export default function ProjectDetailsPage() {
     index_search_engine,
   ]);
 
+  const clearFieldErrors = () => {
+    setCustomDomainErrorMsg('');
+    setDescriptionErrorMsg('');
+    setApiFieldErrors([]);
+    setPortalSubdomainErrorMsg('');
+    setProjectNameErrorMsg('');
+  };
+
   const handleGetPrivateUsers = () => {
     setFetchingPrivateUsers(true);
     getApi<User[]>({ url: 'projects/private-users' })
@@ -177,7 +185,10 @@ export default function ProjectDetailsPage() {
       'i' // validate fragment locator
     );
 
-    return !!urlPattern.test(urlString);
+    return (
+      urlString.length === 0 ||
+      (urlString.length > 0 && !!urlPattern.test(urlString))
+    );
   };
 
   const handlePortalSubdomainOnChange = (e: any) => {
@@ -323,6 +334,7 @@ export default function ProjectDetailsPage() {
   };
 
   const handleUpdateProject = () => {
+    clearFieldErrors();
     const isValidCustomDomain = isValidUrl(custom_domain);
     const isValidPortalSubdomain = isValidUrl(portal_subdomain + domain);
     if (!isValidCustomDomain) {
