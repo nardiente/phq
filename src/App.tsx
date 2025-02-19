@@ -15,6 +15,7 @@ import { User } from './types/user';
 import { Permissions } from './types/common';
 import { usePanel } from './contexts/PanelContext';
 import './index.css'; // or whatever the name of your main CSS file is
+import DesignSystem from './pages/DesignSystem';
 
 const App: FC = () => {
   const { user, showBanner, setFetching, setShowBanner, setUser } = useUser();

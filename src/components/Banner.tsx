@@ -88,7 +88,7 @@ function Banner({ activeItem, onNavigate }: BannerProps) {
                     ? 'bg-purple-50 text-purple-700'
                     : item.disabled
                       ? 'opacity-50 cursor-not-allowed'
-                      : 'text-gray-600 hover:bg-gray-50'
+                      : 'text-[#4b5563] hover:bg-gray-50'
                 }`}
                 disabled={item.disabled && item.id !== 'widgets'}
               >

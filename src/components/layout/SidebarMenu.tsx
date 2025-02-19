@@ -24,6 +24,7 @@ import {
   FileText,
   ListOrdered,
   Heart,
+  Palette,
 } from 'lucide-react';
 import { PageType } from '../../types/app';
 import { useUser } from '../../contexts/UserContext';
@@ -45,6 +46,9 @@ export interface MenuItem {
   disabled?: boolean;
   hidden?: boolean;
   opacity?: number;
+  href?: string;
+  position?: string;
+  divider?: boolean;
 }
 
 export function SidebarMenu({
@@ -135,6 +139,15 @@ export function SidebarMenu({
     },
   ];
 
+  const designSystemItem: MenuItem = {
+    id: 'design',
+    label: 'Design System',
+    icon: Palette,
+    href: '/design',
+    position: 'bottom',
+    divider: true,
+  };
+
   useEffect(() => {
     setShowSettings(
       settingsMenuItems
@@ -149,6 +162,12 @@ export function SidebarMenu({
       window.open(item.link, '_blank');
       return;
     }
+
+    if (item.href) {
+      window.location.href = item.href;
+      return;
+    }
+
     onNavigate(item.id as PageType);
   };
 
@@ -241,7 +260,7 @@ export function SidebarMenu({
           {showSettings && (
             <button
               onClick={toggleSettings}
-              className="w-full flex items-center gap-3 px-3 py-2 mb-3 rounded-lg text-sm text-gray-600 hover:bg-gray-50"
+              className="w-full flex items-center gap-3 px-3 py-2 mb-3 rounded-lg text-sm text-[#4b5563] hover:bg-gray-50"
             >
               <ArrowLeft size={18} />
               {isExpanded && (
@@ -259,9 +278,7 @@ export function SidebarMenu({
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
                     activeItem === item.id
                       ? 'bg-purple-50 text-purple-700'
-                      : item.disabled
-                        ? 'opacity-50 cursor-not-allowed'
-                        : 'text-gray-600 hover:bg-gray-50'
+                      : 'text-[#4b5563] hover:bg-gray-50'
                   }`}
                   disabled={item.disabled && item.id !== 'widgets'}
                 >
@@ -309,7 +326,7 @@ export function SidebarMenu({
                       className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
                         activeItem === item.id
                           ? 'bg-purple-50 text-purple-700'
-                          : 'text-gray-600 hover:bg-gray-50'
+                          : 'text-[#4b5563] hover:bg-gray-50'
                       }`}
                     >
                       <item.icon size={18} />
@@ -318,6 +335,22 @@ export function SidebarMenu({
                       )}
                     </button>
                   ))}
+                <button
+                  key={designSystemItem.id}
+                  onClick={() => handleNavigation(designSystemItem)}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
+                    activeItem === designSystemItem.id
+                      ? 'bg-purple-50 text-purple-700'
+                      : 'text-[#4b5563] hover:bg-gray-50'
+                  }`}
+                >
+                  <Palette className="w-5 h-5" />
+                  {isExpanded && (
+                    <span className="flex-1 text-left">
+                      {designSystemItem.label}
+                    </span>
+                  )}
+                </button>
               </>
             )}
           </div>

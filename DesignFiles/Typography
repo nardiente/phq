@@ -1,0 +1,628 @@
+{
+  "textStyles": {
+    "Badge-For Small Size": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "10px",
+      "lineHeight": "16px",
+      "letterSpacing": "0.5%"
+    },
+    "Input-Large Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "20px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "Input-Large Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "20px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "Input-Medium Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "15px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "Input-Default Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "15px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "Input-Small Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "14px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "Input-Small Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "14px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "Input-XSmall Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "12px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "9XL-Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "128px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "9XL-Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "128px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "9XL-Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "128px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "9XL-Regular": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "128px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "9XL-Light": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 300,
+      "fontSize": "128px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "8XL-Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "96px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "8XL-Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "96px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "8XL-Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "96px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "8XL-Regular": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "96px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "8XL-Light": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 300,
+      "fontSize": "96px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "7XL-Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "72px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "7XL-Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "72px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "7XL-Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "72px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "7XL-Regular": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "72px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "7XL-Light": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 300,
+      "fontSize": "72px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "6XL-Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "60px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "6XL-Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "60px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "6XL-Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "60px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "6XL-Regular": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "60px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "6XL-Light": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 300,
+      "fontSize": "60px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "5XL-Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "48px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "5XL-Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "48px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "5XL-Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "48px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "5XL-Regular": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "48px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "5XL-Light": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 300,
+      "fontSize": "48px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "4XL-Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "36px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "4XL-Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "36px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "4XL-Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "36px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "4XL-Regular": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "36px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "4XL-Light": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 300,
+      "fontSize": "36px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "3XL-Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "30px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "3XL-Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "30px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "3XL-Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "30px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "3XL-Regular": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "30px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "3XL-Light": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 300,
+      "fontSize": "30px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "2XL-Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "24px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "2XL-Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "24px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "2XL-Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "24px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "2XL-Regular": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "24px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "2XL-Light": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 300,
+      "fontSize": "24px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "XL-Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "20px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "XL-Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "20px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "XL-Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "20px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "XL-Regular": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "20px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "XL-Light": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 300,
+      "fontSize": "20px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "LG-Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "18px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "LG-Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "18px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "LG-Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "18px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "LG-Regular": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "18px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "LG-Light": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 300,
+      "fontSize": "18px",
+      "lineHeight": "auto",
+      "letterSpacing": "0.5%"
+    },
+    "Base-Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "16px",
+      "lineHeight": "24px",
+      "letterSpacing": "0.5%"
+    },
+    "Base-Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "16px",
+      "lineHeight": "24px",
+      "letterSpacing": "0.5%"
+    },
+    "Base-Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "16px",
+      "lineHeight": "24px",
+      "letterSpacing": "0.5%"
+    },
+    "Base-Regular": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "16px",
+      "lineHeight": "24px",
+      "letterSpacing": "0.5%"
+    },
+    "Base-Light": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 300,
+      "fontSize": "16px",
+      "lineHeight": "24px",
+      "letterSpacing": "0.5%"
+    },
+    "SM-Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "letterSpacing": "0.5%"
+    },
+    "SM-Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "letterSpacing": "0.5%"
+    },
+    "SM-Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "letterSpacing": "0.5%"
+    },
+    "SM-Regular": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "letterSpacing": "0.5%"
+    },
+    "SM-Light": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 300,
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "letterSpacing": "0.5%"
+    },
+    "XS-Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "12px",
+      "lineHeight": "16px",
+      "letterSpacing": "0.5%"
+    },
+    "XS-Semi Bold": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "12px",
+      "lineHeight": "16px",
+      "letterSpacing": "0.5%"
+    },
+    "XS-Medium": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 500,
+      "fontSize": "12px",
+      "lineHeight": "16px",
+      "letterSpacing": "0.5%"
+    },
+    "XS-Regular": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "12px",
+      "lineHeight": "16px",
+      "letterSpacing": "0.5%"
+    },
+    "XS-Light": {
+      "fontFamily": "Satoshi Variable",
+      "textDecoration": "none",
+      "fontWeight": 300,
+      "fontSize": "12px",
+      "lineHeight": "16px",
+      "letterSpacing": "0.5%"
+    },
+    "typography-Body": {
+      "fontFamily": "Roboto",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "16px",
+      "lineHeight": "110.00000238418579%",
+      "letterSpacing": "0%"
+    },
+    "typography-H1-Bold": {
+      "fontFamily": "Inter",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "48.82899856567383px",
+      "lineHeight": "110.00000238418579%",
+      "letterSpacing": "-5%"
+    },
+    "typography-H1-Regular": {
+      "fontFamily": "Inter",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "48.82899856567383px",
+      "lineHeight": "110.00000238418579%",
+      "letterSpacing": "-5%"
+    },
+    "typography-H2-Bold": {
+      "fontFamily": "Inter",
+      "textDecoration": "none",
+      "fontWeight": 700,
+      "fontSize": "39.0629997253418px",
+      "lineHeight": "110.00000238418579%",
+      "letterSpacing": "-5%"
+    },
+    "typography-H2-Regular": {
+      "fontFamily": "Inter",
+      "textDecoration": "none",
+      "fontWeight": 400,
+      "fontSize": "39.0629997253418px",
+      "lineHeight": "110.00000238418579%",
+      "letterSpacing": "-5%"
+    }
+  }
+}

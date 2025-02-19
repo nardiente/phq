@@ -1,0 +1,13 @@
+{
+  "source": ["tokens/**/*.json"],
+  "platforms": {
+    "tailwind": {
+      "transformGroup": "tailwind",
+      "files": [{
+        "destination": "tailwind.config.js",
+        "format": "javascript/module",
+        "filter": "validToken"
+      }]
+    }
+  }
+} 

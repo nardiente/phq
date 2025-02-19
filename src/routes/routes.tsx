@@ -31,7 +31,8 @@ import { LtdPage } from '../pages/LtdPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import { pathExceptions } from '../types/app';
 import TestFetch from '../pages/TestFetch';
-import WhatsNewPost from '../pages/WhatsNewPost/index.tsx';
+import DesignSystem from '../pages/DesignSystem';
+import MainLayout from '../layouts/MainLayout';
 
 // Add /test to exceptions at the top of the file
 pathExceptions.push('/test');
@@ -86,6 +87,9 @@ const AppRoutes = () => {
             <Route path="/import" element={<ImportIdeasPage />} />
 
             <Route path="/testimonials" element={<TestimonialsPage />} />
+
+            {/* New route */}
+            <Route path="/design" element={<DesignSystem />} />
           </Route>
 
           {/* Redirect unknown routes */}
