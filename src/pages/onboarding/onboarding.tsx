@@ -1,6 +1,5 @@
 import './styles.css';
 import { useNavigate } from 'react-router-dom';
-import Video from './video';
 import { OnboardingPages, OnboardingUrls } from '../../types/onboarding';
 import { useEffect } from 'react';
 import { useOnboarding } from '../../contexts/OnboardingContext';
@@ -65,30 +64,33 @@ const OnboardingPage = () => {
               {activePage === OnboardingPages.SUCCESS && <Success />}
             </div>
           </div>
-          <div className="right">
+          <div
+            className={activePage === OnboardingPages.SUCCESS ? 'right' : ''}
+          >
             {activePage === OnboardingPages.SUCCESS ? (
               <Testimonials />
             ) : (
-              <div className="right-container">
-                {activePage === OnboardingPages.WELCOME && (
-                  <Video
-                    src="https://s3.amazonaws.com/app.productfeedback.co/videos/onboarding/Let's+set+up+your+board.mp4"
-                    poster="../../../static/images/lets-set-up-your-board.png"
-                  />
-                )}
-                {activePage === OnboardingPages.ADD_IDEA && (
-                  <Video
-                    src="https://s3.amazonaws.com/app.productfeedback.co/videos/onboarding/Add+your+first+idea.mp4"
-                    poster="../../../static/images/add-your-first-idea.png"
-                  />
-                )}
-                {activePage === OnboardingPages.ADD_TOPICS && (
-                  <Video
-                    src="https://s3.amazonaws.com/app.productfeedback.co/videos/onboarding/Add+tags+to+your+idea.mp4"
-                    poster="../../../static/images/add-tags-to-your-idea.png"
-                  />
-                )}
-              </div>
+              // <div className="right-container">
+              //   {activePage === OnboardingPages.WELCOME && (
+              //     <Video
+              //       src="https://s3.amazonaws.com/app.productfeedback.co/videos/onboarding/Let's+set+up+your+board.mp4"
+              //       poster="../../../static/images/lets-set-up-your-board.png"
+              //     />
+              //   )}
+              //   {activePage === OnboardingPages.ADD_IDEA && (
+              //     <Video
+              //       src="https://s3.amazonaws.com/app.productfeedback.co/videos/onboarding/Add+your+first+idea.mp4"
+              //       poster="../../../static/images/add-your-first-idea.png"
+              //     />
+              //   )}
+              //   {activePage === OnboardingPages.ADD_TOPICS && (
+              //     <Video
+              //       src="https://s3.amazonaws.com/app.productfeedback.co/videos/onboarding/Add+tags+to+your+idea.mp4"
+              //       poster="../../../static/images/add-tags-to-your-idea.png"
+              //     />
+              //   )}
+              // </div>
+              <></>
             )}
           </div>
         </div>
