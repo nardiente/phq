@@ -1,206 +1,148 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import React, { useState } from 'react';
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  getSortedRowModel,
+  SortingState,
+  ColumnOrderState,
+} from '@tanstack/react-table';
+import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 
 interface SimpleUserListProps {
   users: any[];
   selectedAttributes: { [key: string]: boolean };
+  filters: { [key: string]: any };
 }
 
 const SimpleUserList: React.FC<SimpleUserListProps> = ({
   users = [],
   selectedAttributes = {},
 }) => {
-  const attributesToShow = useMemo(() => {
-    return Object.keys(selectedAttributes).filter(
-      (key) => selectedAttributes[key]
-    );
-  }, [selectedAttributes]);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
 
-  const [columnWidths, setColumnWidths] = useState<Record<string, number>>({});
-  const tableRef = useRef<HTMLTableElement>(null);
-  const [isResizing, setIsResizing] = useState(false);
-  const [resizingColumn, setResizingColumn] = useState<string | null>(null);
-  const [startX, setStartX] = useState(0);
-  const [sortBy, setSortBy] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const [mouseDown, setMouseDown] = useState(false);
-
-  useEffect(() => {
-    if (!tableRef.current) return;
-
-    const calculateColumnWidths = () => {
-      const headerCells = Array.from(
-        tableRef.current.querySelectorAll('thead th')
-      ) as HTMLTableCellElement[];
-      const bodyRows = Array.from(
-        tableRef.current.querySelectorAll('tbody tr')
-      ) as HTMLTableRowElement[];
-
-      const newColumnWidths: Record<string, number> = {};
-
-      attributesToShow.forEach((attribute, index) => {
-        let maxWidth = headerCells[index].offsetWidth;
-
-        bodyRows.forEach((row) => {
-          const cell = row.cells[index] as HTMLTableCellElement;
-          maxWidth = Math.max(maxWidth, cell.offsetWidth);
-        });
-
-        newColumnWidths[attribute] = maxWidth;
-      });
-
-      setColumnWidths(newColumnWidths);
-    };
-
-    calculateColumnWidths();
-    window.addEventListener('resize', calculateColumnWidths);
-
-    return () => {
-      window.removeEventListener('resize', calculateColumnWidths);
-    };
-  }, [attributesToShow, users]);
-
-  const handleResizeStart = (event: React.MouseEvent, column: string) => {
-    setIsResizing(true);
-    setResizingColumn(column);
-    setStartX(event.clientX);
-    setMouseDown(true);
-  };
-
-  const handleMouseMove = (event: React.MouseEvent) => {
-    if (!isResizing || !resizingColumn) return;
-
-    const newWidth = columnWidths[resizingColumn] + event.clientX - startX;
-    setColumnWidths({ ...columnWidths, [resizingColumn]: newWidth });
-    setStartX(event.clientX);
-  };
-
-  const handleResizeEnd = () => {
-    setIsResizing(false);
-    setResizingColumn(null);
-    setMouseDown(false);
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousemove', handleMouseMove as any);
-    document.addEventListener('mouseup', handleResizeEnd);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove as any);
-      document.removeEventListener('mouseup', handleResizeEnd);
-    };
-  }, [isResizing, columnWidths]);
-
-  const handleSort = (attribute: string) => {
-    if (isResizing || mouseDown) {
-      return;
-    }
-
-    if (sortBy === attribute) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortBy(attribute);
-      setSortOrder('asc');
-    }
-  };
-
-  const sortedUsers = useMemo(() => {
-    if (!sortBy) return users;
-
-    return [...users].sort((a, b) => {
-      const valueA = a[sortBy];
-      const valueB = b[sortBy];
-
-      if (valueA === valueB) return 0;
-
-      if (sortOrder === 'asc') {
-        return valueA > valueB ? 1 : -1;
-      } else {
-        return valueA < valueB ? 1 : -1;
-      }
-    });
-  }, [users, sortBy, sortOrder]);
-
-  console.log('Attributes to show:', attributesToShow);
-
-  const columns = useMemo(
+  const columns = React.useMemo(
     () =>
-      attributesToShow.map((attribute) => ({
-        key: attribute,
-        title: attribute,
-        sortable: true,
-        width: columnWidths[attribute] || 150,
-      })),
-    [attributesToShow, columnWidths]
-  );
+      Object.keys(selectedAttributes)
+        .filter((key) => selectedAttributes[key])
+        .map((key) => ({
+          id: key,
+          accessorKey: key,
+          header: ({ column }: any) => {
+            return (
+              <div
+                className="flex items-center space-x-2 cursor-grab active:cursor-grabbing"
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData('text/plain', column.id);
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const droppedColumnId = e.dataTransfer.getData('text/plain');
+                  const newColumnOrder = [...table.getState().columnOrder];
+                  const draggedIdx = newColumnOrder.indexOf(droppedColumnId);
+                  const droppedIdx = newColumnOrder.indexOf(column.id);
 
-  return (
-    <div style={{ overflowX: 'auto', width: '100%', paddingLeft: '10px' }}>
-      <table style={{ width: 'auto', tableLayout: 'auto', minWidth: '1024px' }} ref={tableRef}>
-        <thead>
-          <tr>
-            {columns.map((column) => (
-              <th
-                key={column.key}
-                style={{
-                  padding: '0.5rem',
-                  borderBottom: '1px solid #ddd',
-                  textAlign: 'left',
-                  fontWeight: 'bold',
-                  fontSize: '0.875rem',
-                  color: '#4a5568',
-                  position: 'relative',
-                  cursor: 'pointer',
-                  width: column.width,
+                  if (draggedIdx !== -1 && droppedIdx !== -1) {
+                    newColumnOrder.splice(draggedIdx, 1);
+                    newColumnOrder.splice(droppedIdx, 0, droppedColumnId);
+                    setColumnOrder(newColumnOrder);
+                  }
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center' }} onClick={() => handleSort(column.key)}>
-                  <span>{column.title}</span>
-                  {sortBy === column.key && sortOrder === 'asc' && (
-                    <ArrowUp className="w-4 h-4 ml-1" />
+                <span>{key}</span>
+                <button
+                  onClick={() => column.toggleSorting()}
+                  className="ml-2 text-gray-400 hover:text-gray-600"
+                >
+                  {column.getIsSorted() === 'asc' ? (
+                    <ArrowUp className="h-4 w-4" />
+                  ) : column.getIsSorted() === 'desc' ? (
+                    <ArrowDown className="h-4 w-4" />
+                  ) : (
+                    <ArrowUpDown className="h-4 w-4" />
                   )}
-                  {sortBy === column.key && sortOrder === 'desc' && (
-                    <ArrowDown className="w-4 h-4 ml-1" />
-                  )}
-                </div>
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    right: 0,
-                    width: '5px',
-                    height: '100%',
-                    background: 'rgba(0, 0, 0, 0.1)',
-                    cursor: 'col-resize',
-                  }}
-                  onMouseDown={(event) => handleResizeStart(event, column.key)}
-                />
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {sortedUsers.map((user, index) => {
-            console.log('User:', user);
-            return (
-              <tr key={index}>
-                {columns.map((column) => (
-                  <td
-                    key={column.key}
-                    style={{
-                      padding: '0.5rem',
-                      borderBottom: '1px solid #ddd',
-                      whiteSpace: 'normal',
-                      fontFamily: 'sans-serif',
-                      color: '#718096',
-                    }}
-                  >
-                    {String(user[column.key])}
-                  </td>
-                ))}
-              </tr>
+                </button>
+              </div>
             );
-          })}
+          },
+        })),
+    [selectedAttributes]
+  );
+
+  const table = useReactTable({
+    data: users,
+    columns,
+    state: { sorting, columnOrder },
+    onSortingChange: setSorting,
+    onColumnOrderChange: setColumnOrder,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    enableColumnResizing: true,
+    columnResizeMode: 'onChange',
+  });
+
+  React.useEffect(() => {
+    if (columnOrder.length === 0 && columns.length > 0) {
+      setColumnOrder(columns.map((col) => col.id));
+    }
+  }, [columns, columnOrder.length]);
+
+  if (!users || users.length === 0) return null;
+
+  return (
+    <div className="mt-4 overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th
+                  key={header.id}
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider relative h-14"
+                  style={{ width: header.getSize() }}
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  <div
+                    onMouseDown={header.getResizeHandler()}
+                    onTouchStart={header.getResizeHandler()}
+                    className={`absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none ${
+                      header.column.getIsResizing()
+                        ? 'bg-blue-500'
+                        : 'bg-gray-200'
+                    }`}
+                  />
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {table.getRowModel().rows.map((row) => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <td
+                  key={cell.id}
+                  className="px-6 whitespace-nowrap text-sm text-gray-500 h-14 pt-4"
+                  style={{ width: cell.column.getSize() }}
+                >
+                  {flexRender(
+                    cell.column.columnDef.cell,
+                    cell.getContext()
+                  ) || <span>&nbsp;</span>}
+                </td>
+              ))}
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

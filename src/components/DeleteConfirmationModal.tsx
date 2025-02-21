@@ -16,14 +16,13 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   onClose,
   onConfirm,
 }) => {
-  console.log('DeleteConfirmationModal is rendering');
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-[400px]">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Delete segment</h2>
+          <h2 className="text-xl font-semibold">{title}</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
@@ -33,7 +32,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
         </div>
 
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete this saved segment?
+          Are you sure you want to delete "{itemName}"?
         </p>
 
         <div className="flex justify-end space-x-2">

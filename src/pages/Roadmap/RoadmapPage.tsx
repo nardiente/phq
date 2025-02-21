@@ -71,11 +71,7 @@ export function RoadmapPage() {
   const handleListTag = () => {
     getApi<Tag[]>({
       url: 'tags',
-      params: is_public
-        ? {
-            domain: window.location.host,
-          }
-        : undefined,
+      params: is_public ? { domain: window.location.host } : undefined,
       useCustomerKey: moderation?.user_login === true && is_public,
     }).then((res) => {
       if (res.results.data) {
@@ -92,10 +88,7 @@ export function RoadmapPage() {
     setFetching(true);
     getApi<Roadmap[]>({
       url,
-      params: {
-        tags: filterTag.join(','),
-        title,
-      },
+      params: { tags: filterTag.join(','), title },
       useSessionToken: is_public && moderation?.user_login === true,
     })
       .then((res) => {
@@ -213,9 +206,7 @@ export function RoadmapPage() {
           ?.filter((roadmap) => roadmap.id !== 0)
           .map((roadmap) => roadmap.id);
         setDragging(true);
-        putApi<Roadmap[]>('roadmaps/re-sort', {
-          ids,
-        }).then((res) => {
+        putApi<Roadmap[]>('roadmaps/re-sort', { ids }).then((res) => {
           if (res.results.data) {
             setRoadmaps(handleFilterRoadmaps(res.results.data));
           }
@@ -318,12 +309,7 @@ export function RoadmapPage() {
 
   const handleAddColumn = () => {
     setLoading(true);
-    postApi({
-      url: 'roadmaps',
-      payload: {
-        name: columnName,
-      },
-    }).then((res) => {
+    postApi({ url: 'roadmaps', payload: { name: columnName } }).then((res) => {
       setLoading(false);
       if (res.results.data) {
         addRoadmap(res.results.data);
@@ -401,39 +387,33 @@ export function RoadmapPage() {
         )}
       <div id="RoadmapPublicView">
         <div className="pt-8 px-6 columns max-w-[1600px]">
-          {!fetching &&
-            (roadmaps === undefined ||
-              roadmaps.every(
-                (roadmap) => !roadmap.upvotes || roadmap.upvotes.length === 0
-              )) && (
-              <>
-                <div className="container no-roadmap-background">
-                  {filterTag.length === 0 && title.length === 0 ? (
-                    <>
-                      <div className="flex justify-center mb-2 sad-face">
-                        <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
-                      </div>
-                      <h3 className="no-roadmap-header">
-                        {is_public && permissions && permissions.length === 0
-                          ? 'This public board is no longer available. Please contact the admin.'
-                          : 'No upvotes have been created… yet.'}
-                      </h3>
-                      {!is_public && permissions && permissions.length > 0 && (
-                        <h4 className="no-roadmap-sub">
-                          Now is a great time to add your first entry!
-                        </h4>
-                      )}
-                    </>
-                  ) : (
-                    'Crickets and tumbleweeds. Please try again.'
-                  )}
-                </div>
-              </>
-            )}
+          {!fetching && (!roadmaps || roadmaps.length === 0) && (
+            <>
+              <div className="container no-roadmap-background">
+                {filterTag.length === 0 && title.length === 0 ? (
+                  <>
+                    <div className="flex justify-center mb-2 sad-face">
+                      <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
+                    </div>
+                    <h3 className="no-roadmap-header">
+                      {is_public && permissions && permissions.length === 0
+                        ? 'This public board is no longer available. Please contact the admin.'
+                        : 'No upvotes have been created… yet.'}
+                    </h3>
+                    {!is_public && permissions && permissions.length > 0 && (
+                      <h4 className="no-roadmap-sub">
+                        Now is a great time to add your first entry!
+                      </h4>
+                    )}
+                  </>
+                ) : (
+                  'Crickets and tumbleweeds. Please try again.'
+                )}
+              </div>
+            </>
+          )}
           {roadmaps &&
-            roadmaps.some(
-              (roadmap) => roadmap.upvotes && roadmap.upvotes.length > 0
-            ) &&
+            roadmaps.length > 0 &&
             (!is_public ||
               (is_public && permissions && permissions.length > 0)) && (
               <DragDropContext onDragEnd={onDragEnd}>

@@ -19,7 +19,6 @@ import { generateToken } from './utils/token';
 import { User } from './types/user';
 import { Permissions } from './types/common';
 import { usePanel } from './contexts/PanelContext';
-import './index.css'; // or whatever the name of your main CSS file is
 
 const App: FC = () => {
   const { user, showBanner, setShowBanner, setUser } = useUser();
@@ -240,11 +239,7 @@ const App: FC = () => {
   const handleListTag = () => {
     getApi<Tag[]>({
       url: 'tags',
-      params: is_public
-        ? {
-            domain: window.location.host,
-          }
-        : undefined,
+      params: is_public ? { domain: window.location.host } : undefined,
       useCustomerKey: is_public && moderation?.user_login === true,
     }).then((res) => {
       if (res.results.data) {
