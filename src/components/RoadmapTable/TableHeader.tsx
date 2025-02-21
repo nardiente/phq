@@ -22,7 +22,10 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   };
 
   return (
-    <thead>
+    <thead
+      className="top-0 sticky text-gray-900 text-base cursor-pointer bg-gray-50"
+      style={{ zIndex: 10 }}
+    >
       <tr>
         <th
           className="border p-4 text-gray-900 text-base cursor-pointer hover:bg-gray-50"

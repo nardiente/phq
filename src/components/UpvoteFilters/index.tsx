@@ -14,12 +14,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
   const [title, setTitle] = useState<string>(filters.title);
 
   const handleUpvoteSearch = () => {
-    setFilter(
-      Object.assign(filters, {
-        filtering: true,
-        title,
-      })
-    );
+    setFilter(Object.assign(filters, { filtering: true, title }));
   };
 
   const handleUpvoteSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,46 +26,25 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
       e.target.value.length === 0
     ) {
       setFilter(
-        Object.assign(filters, {
-          filtering: true,
-          title: e.target.value,
-        })
+        Object.assign(filters, { filtering: true, title: e.target.value })
       );
     }
   };
 
   const onFilterStatus = (status: string) => {
-    setFilter(
-      Object.assign(filters, {
-        filtering: true,
-        status,
-        title,
-      })
-    );
+    setFilter(Object.assign(filters, { filtering: true, status, title }));
   };
 
   const onFilterTags = (tags: string[]) => {
-    setFilter(
-      Object.assign(filters, {
-        filtering: true,
-        tags,
-        title,
-      })
-    );
+    setFilter(Object.assign(filters, { filtering: true, tags, title }));
   };
 
   const onSort = (sort: string) => {
-    setFilter(
-      Object.assign(filters, {
-        filtering: true,
-        sort,
-        title,
-      })
-    );
+    setFilter(Object.assign(filters, { filtering: true, sort, title }));
   };
 
   return (
-    <div id="UpvoteFilter" className="mt-4">
+    <div id="UpvoteFilter">
       <div className="upvote-container">
         <div className="sort">
           <Dropdown

@@ -5,6 +5,9 @@ import WidgetDeleteModal from '../components/WidgetPreview/widgets/WidgetDeleteM
 import { GetCodeModal } from '../components/WidgetPreview/widgets/GetCodeModal';
 import { deleteApi, getApi, putApi } from '../utils/api/api';
 import { Loader } from 'lucide-react';
+import { Settings } from '../components/Settings';
+import SettingsHeader from '../components/SettingsHeader';
+import Button from '../components/Button';
 
 export default function Widgets() {
   const navigate = useNavigate();
@@ -85,32 +88,32 @@ export default function Widgets() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-8 py-12">
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <h1 className="text-2xl font-semibold">Widgets</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Create and manage your widgets.
-          </p>
-        </div>
-        <div className="flex gap-4">
-          <button
+    <Settings>
+      <SettingsHeader
+        title="Widgets"
+        description="Create and manage your widgets."
+        secondaryButton={
+          <Button
+            text="Get Code"
+            className="text-sm text-white bg-[#5a00cd]"
             onClick={() => {
               setIsGetCodeModalOpen(true);
               setSelectedWidgetKey('your-widget-key'); // We'll need the actual key here
             }}
-            className="inline-flex items-center px-4 py-2 text-sm text-white bg-[#5a00cd] rounded-md"
-          >
-            Get Code
-          </button>
-          <button
+            variant="custom"
+          />
+        }
+        primaryButton={
+          <Button
+            text={
+              <>
+                <span className="mr-2">+</span> Create New
+              </>
+            }
             onClick={() => navigate('/widgets/page')}
-            className="inline-flex items-center px-4 py-2 text-sm text-white bg-[#FF6334] rounded-md"
-          >
-            <span className="mr-2">+</span> Create New
-          </button>
-        </div>
-      </div>
+          />
+        }
+      />
 
       {widgets.length === 0 ? (
         <>
@@ -131,7 +134,7 @@ export default function Widgets() {
           )}
         </>
       ) : (
-        <div className="mt-8">
+        <div>
           <div className="overflow-visible shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
             <table className="min-w-full divide-y divide-gray-300">
               <thead className="bg-gray-50">
@@ -402,6 +405,6 @@ export default function Widgets() {
         onClose={() => setIsGetCodeModalOpen(false)}
         widgetKey={selectedWidgetKey}
       />
-    </div>
+    </Settings>
   );
 }

@@ -9,11 +9,14 @@ import { Permissions } from '../../types/common';
 import { FadeLoader } from 'react-spinners';
 import { useLocation } from 'react-router-dom';
 import { usePanel } from '../../contexts/PanelContext';
-import { PageHeader } from '../../components/PageHeader';
 import { UpvoteFilters } from '../../components/UpvoteFilters';
 import { UpVoteEachList } from './components/upvote-each-list';
 import queryString from 'query-string';
 import { useWhatsNew } from '../../contexts/WhatsNewContext';
+import { Settings } from '../../components/Settings';
+import SettingsHeader from '../../components/SettingsHeader';
+import Button from '../../components/Button';
+import { Plus } from 'lucide-react';
 
 export default function UpvotesPage() {
   const location = useLocation();
@@ -129,17 +132,26 @@ export default function UpvotesPage() {
   }, [tags]);
 
   return (
-    <>
-      <PageHeader
-        buttonLabel="New Idea"
-        header="Upvotes"
-        showButtonIcon={true}
-        disabled={
-          (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
-          permissions?.length === 0
+    <Settings>
+      <SettingsHeader
+        title="Upvotes"
+        filter={<UpvoteFilters roadmaps={roadmaps ?? []} />}
+        primaryButton={
+          <Button
+            text={
+              <>
+                <Plus size={16} />
+                New Idea
+              </>
+            }
+            disabled={
+              (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
+              permissions?.length === 0
+            }
+            onClick={() => setIsOpen(true)}
+          />
         }
       />
-      <UpvoteFilters roadmaps={roadmaps ?? []} />
       <div id="UpVoteList">
         {loading && ideas.length === 0 && (
           <div style={{ paddingTop: '50px' }}>
@@ -216,6 +228,6 @@ export default function UpvotesPage() {
             </div>
           )}
       </div>
-    </>
+    </Settings>
   );
 }

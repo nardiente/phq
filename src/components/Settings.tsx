@@ -1,9 +1,15 @@
 import { ReactNode } from 'react';
 
-export const Settings = ({ children }: { children: ReactNode }) => {
+export const Settings = ({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) => {
   return (
-    <div className="bg-[#fafafa]">
-      <div className="flex flex-col gap-8 py-8 px-6">{children}</div>
+    <div className={`flex-1 px-8 ${className !== 'pb-0' ? 'py-6' : 'pt-6'}`}>
+      {children}
     </div>
   );
 };

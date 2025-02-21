@@ -1,7 +1,6 @@
 import './styles.css';
 import { getApi } from '../../utils/api/api';
-import { PageHeader } from '../../components/PageHeader';
-import { Image, WhatsNew } from '../../types/whats-new';
+import { ChangeType, Image, WhatsNew } from '../../types/whats-new';
 import { FadeLoader } from 'react-spinners';
 import { Permissions } from '../../types/common';
 import { useUser } from '../../contexts/UserContext';
@@ -10,6 +9,11 @@ import { useWhatsNew } from '../../contexts/WhatsNewContext';
 import { usePanel } from '../../contexts/PanelContext';
 import PostItem from '../../components/whats_new/post/PostItem';
 import AddPostForm from '../../components/whats_new/add_post_form/AddPostForm';
+import { Settings } from '../../components/Settings';
+import SettingsHeader from '../../components/SettingsHeader';
+import { WhatsNewFilter } from '../../components/WhatsNewFilter';
+import Button from '../../components/Button';
+import { Plus } from 'lucide-react';
 
 export const WhatsNewPage = () => {
   const { user } = useUser();
@@ -21,6 +25,7 @@ export const WhatsNewPage = () => {
   } = useWhatsNew();
   const { setActiveTab } = usePanel();
 
+  const [change_types, setChangeTypes] = useState<ChangeType[]>([]);
   const [fetching, setFetching] = useState<boolean>(true);
   const [statusFilter, setStatusFilter] = useState<number[]>([]);
   const [whats_new, setWhatsNew] = useState<WhatsNew>();
@@ -31,6 +36,15 @@ export const WhatsNewPage = () => {
   );
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+
+  const listChangeType = () => {
+    getApi<ChangeType[]>({ url: 'whatsnew/change-types' }).then((res) => {
+      if (res.results.data) {
+        const data = res.results.data;
+        setChangeTypes(data);
+      }
+    });
+  };
 
   const retrieveWhatsNew = (id?: number) => {
     getApi<WhatsNew>({
@@ -57,9 +71,7 @@ export const WhatsNewPage = () => {
     setFetching(true);
     getApi<WhatsNew[]>({
       url,
-      params: {
-        change_type_id: filters.join(','),
-      },
+      params: { change_type_id: filters.join(',') },
     }).then((res) => {
       setFetching(false);
       if (res.results.data) {
@@ -83,7 +95,7 @@ export const WhatsNewPage = () => {
     });
   };
 
-  const openPostForm = (post: WhatsNew) => {
+  const openPostForm = (post?: WhatsNew) => {
     setShowAddForm(true);
     setSelectedPost(post);
   };
@@ -91,6 +103,7 @@ export const WhatsNewPage = () => {
   useEffect(() => {
     setActiveTab('/whatsnew');
     listWhatsNew([]);
+    listChangeType();
   }, []);
 
   useEffect(() => {
@@ -142,14 +155,40 @@ export const WhatsNewPage = () => {
   return (
     <Fragment>
       {!showAddForm ? (
-        <>
-          <PageHeader
-            header="What's New"
-            listWhatsNew={listWhatsNew}
-            openPostForm={openPostForm}
-            disabled={
-              !permissions?.includes(Permissions.ADD_POST) ||
-              permissions?.length === 0
+        <Settings className="pb-0">
+          <SettingsHeader
+            title="What's New"
+            filter={
+              <div
+                className={`w-[${!is_public ? '8' : '9'}0%] flex justify-end`}
+              >
+                <div className="field is-grouped">
+                  <WhatsNewFilter
+                    listChangeType={listChangeType}
+                    change_types={change_types}
+                    listWhatsNew={listWhatsNew}
+                  />
+                </div>
+              </div>
+            }
+            primaryButton={
+              !is_public ? (
+                <Button
+                  text={
+                    <>
+                      <Plus size={16} />
+                      New Post
+                    </>
+                  }
+                  disabled={
+                    !permissions?.includes(Permissions.ADD_POST) ||
+                    permissions?.length === 0
+                  }
+                  onClick={() => openPostForm(undefined)}
+                />
+              ) : (
+                <></>
+              )
             }
           />
           {(!posts ||
@@ -220,7 +259,7 @@ export const WhatsNewPage = () => {
               </Fragment>
             )}
           </div>
-        </>
+        </Settings>
       ) : (
         <AddPostForm
           post={selectedPost}

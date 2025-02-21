@@ -34,9 +34,7 @@ const modules = {
   ],
   imageResize: {
     parchment: Quill.import('parchment'),
-    toolbarStyles: {
-      display: 'none',
-    },
+    toolbarStyles: { display: 'none' },
   },
 };
 
@@ -76,16 +74,14 @@ const AddPostForm = ({
 
   const [field_errors, setFieldErrors] = useState<ApiFieldError[]>([]);
   const [changeTypes, setChangeTypes] = useState<ChangeType[]>([]);
-  const [title, setTitle] = useState<string>(post ? post.title : '');
+  const [title, setTitle] = useState<string>(post?.title ?? '');
   const [selectedChangeTypes, setSelectedChangeTypes] = useState<ChangeType[]>(
-    post ? post.change_types : []
+    post?.change_types ?? []
   );
   const [description, setDescription] = useState<string>(
-    post ? post.formatted_description : ''
+    post?.formatted_description ?? ''
   );
-  const [images, setImages] = useState<Image[]>(
-    post ? (post.images ?? []) : []
-  );
+  const [images, setImages] = useState<Image[]>(post?.images ?? []);
   const [image_uploaded, setImageUploaded] = useState<string>('');
   const [publish_on, setPublishOn] = useState<Date>(
     post && post.scheduled_date ? new Date(post.scheduled_date) : new Date()
@@ -99,9 +95,7 @@ const AddPostForm = ({
   const [enable_button, setEnableButton] = useState<boolean>(false);
 
   const listChangeType = () => {
-    getApi<ChangeType[]>({
-      url: 'whatsnew/change-types',
-    }).then((res) => {
+    getApi<ChangeType[]>({ url: 'whatsnew/change-types' }).then((res) => {
       if (res.results.data) {
         const data = res.results.data;
         setChangeTypes(data);

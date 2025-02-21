@@ -397,9 +397,18 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   };
 
   const handleGetStatus = () => {
+    const url = is_public
+      ? `roadmaps/upvotes/${window.location.host}`
+      : 'roadmaps/upvotes';
+
+    const {
+      filters: { tags, title },
+    } = state;
+
     getApi<Roadmap[]>({
-      url: 'roadmaps',
-      params: { domain: window.location.host },
+      url,
+      params: { tags: tags.join(','), title },
+      useSessionToken: is_public && moderation?.user_login === true,
     }).then((res) => {
       if (res.results.data) {
         const data = res.results.data;

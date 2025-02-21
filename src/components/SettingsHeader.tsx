@@ -2,18 +2,28 @@ import React, { ReactNode } from 'react';
 
 interface SettingsHeaderProps {
   title: string;
+  description?: string;
+  filter?: ReactNode;
   secondaryButton?: ReactNode;
   primaryButton?: ReactNode;
 }
 
 const SettingsHeader: React.FC<SettingsHeaderProps> = ({
   title,
+  description,
+  filter,
   secondaryButton,
   primaryButton,
 }) => {
   return (
-    <div className="flex items-center justify-between">
-      <h1 className="text-[28px] font-semibold text-gray-900">{title}</h1>
+    <div className="flex items-center justify-between mb-8">
+      <div>
+        <h1 className="text-[28px] font-semibold text-gray-900 leading-none">
+          {title}
+        </h1>
+        <p className="mt-1 text-sm text-gray-500">{description}</p>
+      </div>
+      {filter}
       <div className="flex gap-3">
         {secondaryButton}
         {primaryButton}

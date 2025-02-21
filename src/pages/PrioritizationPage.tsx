@@ -4,6 +4,9 @@ import RoadmapTable from '../components/RoadmapTable';
 import { usePanel } from '../contexts/PanelContext';
 import { useFeedback } from '../contexts/FeedbackContext';
 import { useEffect } from 'react';
+import { Settings } from '../components/Settings';
+import SettingsHeader from '../components/SettingsHeader';
+import Button from '../components/Button';
 
 const PrioritizationPage = () => {
   const {
@@ -23,26 +26,26 @@ const PrioritizationPage = () => {
   };
 
   return (
-    <div className="flex-1 px-8 py-6">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-[28px] font-semibold text-gray-900">
-          Prioritization
-        </h1>
-        <button
-          onClick={() => {
-            setActivePage('add_idea');
-            setIsOpen(true);
-          }}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg text-white hover:opacity-90"
-          style={{ backgroundColor: '#ff6334' }}
-        >
-          <Plus size={16} />
-          Add New Idea
-        </button>
-      </div>
-
+    <Settings>
+      <SettingsHeader
+        title="Prioritization"
+        primaryButton={
+          <Button
+            text={
+              <>
+                <Plus size={16} />
+                Add New Idea
+              </>
+            }
+            onClick={() => {
+              setActivePage('add_idea');
+              setIsOpen(true);
+            }}
+          />
+        }
+      />
       <RoadmapTable items={ideas} onItemsChange={handleItemsChange} />
-    </div>
+    </Settings>
   );
 };
 

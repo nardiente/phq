@@ -8,7 +8,6 @@ import {
 } from 'react-beautiful-dnd';
 import { UpvoteComponent } from './UpvoteComponent';
 import { getApi, postApi, putApi } from '../../utils/api/api';
-import { PageHeader } from '../../components/PageHeader';
 import { Feedback, FeedbackTag } from '../../types/feedback';
 import { FadeLoader } from 'react-spinners';
 import ColumnInput from '../../components/ui/column_input/ColumnInput';
@@ -24,12 +23,18 @@ import { useSocket } from '../../contexts/SocketContext';
 import { usePanel } from '../../contexts/PanelContext';
 import { getKaslKey } from '../../utils/localStorage';
 import { useEffect, useState } from 'react';
+import { Settings } from '../../components/Settings';
+import SettingsHeader from '../../components/SettingsHeader';
+import { RoadmapFilter } from '../../components/RoadmapFilter';
+import Button from '../../components/Button';
+import { Plus } from 'lucide-react';
 
 export function RoadmapPage() {
   const { user } = useUser();
   const { moderation, permissions, rbac_permissions } = user ?? {};
   const {
     state: { filter, roadmaps, selectedIdea, tags },
+    setFilterTitle,
     addRoadmap,
     setRoadmaps,
     setSelectedIdea,
@@ -368,14 +373,53 @@ export function RoadmapPage() {
   }, [socketTags]);
 
   return (
-    <>
-      <PageHeader
-        buttonLabel="New Idea"
-        header="Roadmap"
-        showButtonIcon={true}
-        disabled={
-          (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
-          permissions?.length === 0
+    <Settings className="pb-0">
+      <SettingsHeader
+        title="Roadmap"
+        filter={
+          <div className="flex gap-8">
+            <div id="RoadmapFilter" className="search">
+              <div className="control has-icons-right input-field">
+                <input
+                  id="search-field"
+                  className="input border-t-0 border-r-0 border-l-0 rounded-none border-[#c5c5da] bg-transparent text-[#3d3d5e] p-2 shadow-none"
+                  onChange={(e) => setFilterTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.keyCode === 13) {
+                      setFilterTitle(title);
+                    }
+                  }}
+                  placeholder="Search ideas"
+                  type="text"
+                  value={title}
+                />
+                <span className="icon is-right">
+                  <figure className="image is-16x16">
+                    <img
+                      onClick={() => setFilterTitle(title)}
+                      src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/search.svg"
+                    />
+                  </figure>
+                </span>
+              </div>
+            </div>
+            <RoadmapFilter />
+          </div>
+        }
+        primaryButton={
+          <Button
+            text={
+              <>
+                <Plus size={16} />
+                New Idea
+              </>
+            }
+            disabled={
+              (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
+              permissions?.length === 0
+            }
+            onClick={() => setIsOpen(true)}
+          />
         }
       />
       {fetching &&
@@ -386,7 +430,7 @@ export function RoadmapPage() {
           </div>
         )}
       <div id="RoadmapPublicView">
-        <div className="pt-8 px-6 columns max-w-[1600px]">
+        <div className="pt-8 w-[75vw]">
           {!fetching && (!roadmaps || roadmaps.length === 0) && (
             <>
               <div className="container no-roadmap-background">
@@ -628,6 +672,6 @@ export function RoadmapPage() {
           false
         }
       />
-    </>
+    </Settings>
   );
 }

@@ -38,7 +38,7 @@ const RoadmapTable = ({ items, onItemsChange }: RoadmapTableProps) => {
   }, [items]);
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto" style={{ height: 'calc(100vh - 252px)' }}>
       <table className="min-w-full divide-y divide-gray-300">
         <TableHeader
           onSort={handleSort}

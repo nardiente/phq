@@ -6,7 +6,7 @@ interface ButtonProps {
   loading?: boolean;
   onClick?: () => void;
   text: ReactNode;
-  variant?: 'primary' | 'secondary' | 'danger' | 'outline';
+  variant?: 'primary' | 'secondary' | 'danger' | 'outline' | 'custom';
 }
 
 const Button: FC<ButtonProps> = ({
@@ -17,12 +17,14 @@ const Button: FC<ButtonProps> = ({
   text,
   variant = 'primary',
 }) => {
-  const baseStyles = 'px-4 py-2 rounded-lg border';
+  const baseStyles =
+    'flex items-center gap-2 px-4 py-2 rounded-lg hover:opacity-90';
   const variantStyles = {
-    primary: 'bg-[#FF5C35] hover:bg-[#FF6334] text-white',
+    primary: 'bg-[#ff6334] text-white',
     secondary: 'bg-gray-100 text-gray-600 hover:bg-gray-200',
     danger: 'bg-red-100 text-white hover:bg-red-200',
     outline: 'border-gray-200 text-gray-600 hover:bg-gray-100',
+    custom: '',
   };
 
   return (

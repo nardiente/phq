@@ -66,6 +66,7 @@
 
 #UpvoteFilter .upvote-container .search {
   flex: 1;
+  width: 630px;
 }
 
 #UpvoteFilter .upvote-container .search .input-field .input {
@@ -178,10 +179,5 @@
   #UpvoteFilter {
     display: flex;
     justify-content: center;
-    padding-bottom: 30px;
-  }
-
-  #UpvoteFilter .upvote-container {
-    width: 704px;
   }
 }
