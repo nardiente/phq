@@ -12,6 +12,7 @@ import {
   Impacts,
 } from '../../types/feedback';
 import { useFeedback } from '../../contexts/FeedbackContext';
+import { putApi } from '../../utils/api/api';
 
 interface TableRowProps {
   item: Feedback;
@@ -101,10 +102,42 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
   };
 
   const saveItemToServer = async (updatedItem: Feedback) => {
+    const {
+      title,
+      description,
+      estimated_release_date,
+      status,
+      tags,
+      reach,
+      impact,
+      confidence,
+      effort,
+      score,
+    } = updatedItem;
     setSaveStatus('saving');
-    updateIdea(updatedItem);
-    setSaveStatus('saved');
-    setTimeout(() => setSaveStatus(null), 2000);
+    putApi<Feedback>(`feedback/${updatedItem.id}`, {
+      title,
+      description,
+      estimated_release_date,
+      status: status?.name ?? 'Under Review',
+      tags,
+      reach,
+      impact,
+      confidence,
+      effort,
+      score,
+    })
+      .then((res) => {
+        if (res.results.error || res.results.errors) {
+          setSaveStatus('error');
+        }
+        if (res.results.data) {
+          updateIdea(res.results.data);
+          setSaveStatus('saved');
+        }
+      })
+      .catch(() => setSaveStatus('error'))
+      .finally(() => setTimeout(() => setSaveStatus(null), 2000));
   };
 
   const handleItemUpdate = (updatedItem: Feedback) => {
@@ -170,7 +203,12 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
             if (value === '' || !isNaN(numericValue)) {
               const updatedItem = { ...item, reach: numericValue };
               updatedItem.score = calculateScore(updatedItem);
-              handleItemUpdate(updatedItem);
+              onItemChange(updatedItem);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.code.includes('Enter')) {
+              handleItemUpdate(item);
             }
           }}
           className="w-full p-1 border rounded-lg text-gray-700 text-sm"
