@@ -1,39 +1,56 @@
-import { FC, ReactNode } from 'react';
+import React from 'react';
+
+type ButtonState = 'default' | 'hover' | 'focus' | 'disabled';
+type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'soft' | 'link' | 'white';
 
 interface ButtonProps {
+  children: React.ReactNode;
+  variant?: ButtonVariant;
+  state?: ButtonState;
   className?: string;
-  disabled?: boolean;
-  loading?: boolean;
-  onClick?: () => void;
-  text: ReactNode;
-  variant?: 'primary' | 'secondary' | 'danger' | 'outline' | 'custom';
 }
 
-const Button: FC<ButtonProps> = ({
+const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = 'solid',
+  state = 'default',
   className = '',
-  disabled = false,
-  loading = false,
-  onClick,
-  text,
-  variant = 'primary',
 }) => {
-  const baseStyles =
-    'flex items-center gap-2 px-4 py-2 rounded-lg hover:opacity-90';
-  const variantStyles = {
-    primary: 'bg-[#ff6334] text-white',
-    secondary: 'bg-gray-100 text-gray-600 hover:bg-gray-200',
-    danger: 'bg-red-100 text-white hover:bg-red-200',
-    outline: 'border-gray-200 text-gray-600 hover:bg-gray-100',
-    custom: '',
+  const baseStyles = 'flex gap-0 items-start relative bg-transparent';
+
+  const getVariantStyles = (variant: ButtonVariant, state: ButtonState) => {
+    const styles = {
+      solid: {
+        default: 'bg-[#5a00cd] text-white',
+        hover: 'bg-[#44009a] text-white',
+        focus: 'bg-[#5a00cd] text-white',
+        disabled: 'bg-[#d6bff3] text-white',
+      },
+      outline: 'border border-[#5a00cd] text-[#5a00cd]',
+      ghost: 'text-[#5a00cd] font-bold',
+      soft: 'bg-[#ebdff9] text-[#5a00cd] font-bold',
+      link: 'text-[#5a00cd]',
+      white:
+        'bg-white border border-gray-200 text-[#09041a] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]',
+    };
+
+    if (variant === 'solid') {
+      return styles.solid[state];
+    }
+    return styles[variant];
   };
 
   return (
-    <button
-      onClick={onClick}
-      className={`${baseStyles} ${variantStyles[variant]} ${className}`}
-      disabled={disabled}
-    >
-      {loading ? 'Loading ...' : text}
+    <button className={baseStyles}>
+      <div
+        className={`overflow-hidden rounded-md px-5 py-[14px] flex gap-2.5 justify-center items-center relative ${getVariantStyles(variant, state)} ${className}`}
+      >
+        <p className="text-[15px] leading-[18px] tracking-[0.005em] text-center">
+          <span className="text-[15px] tracking-[0.005em] font-medium">
+            {children}
+          </span>
+        </p>
+      </div>
     </button>
   );
 };

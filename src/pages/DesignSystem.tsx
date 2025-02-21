@@ -1,11 +1,9 @@
 import React from 'react';
-import DesignPage from '../components/DesignPage';
+import DesignPage from '../components/design/DesignPage';
 
 const DesignSystem = () => {
   return (
-    <div>
-      <DesignPage />
-    </div>
+    <DesignPage />
   );
 };
 
