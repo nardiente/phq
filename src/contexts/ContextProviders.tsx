@@ -10,9 +10,7 @@ import { PanelProvider } from './PanelContext';
 import { OnboardingProvider } from './OnboardingContext';
 import { AppProvider } from './AppContext';
 
-type ContextProvidersProps = {
-  children: ReactNode;
-};
+type ContextProvidersProps = { children: ReactNode };
 
 const ContextProviders: React.FC<ContextProvidersProps> = ({ children }) => {
   return (
@@ -20,17 +18,19 @@ const ContextProviders: React.FC<ContextProvidersProps> = ({ children }) => {
       <OnboardingProvider>
         <SocketProvider>
           <PanelProvider>
-            <FeedbackProvider>
-              <WhatsNewProvider>
-                <UserNotificationProvider>
-                  <DropdownProvider>
-                    <UnsavedChangesProvider>
-                      <UserProvider>{children}</UserProvider>
-                    </UnsavedChangesProvider>
-                  </DropdownProvider>
-                </UserNotificationProvider>
-              </WhatsNewProvider>
-            </FeedbackProvider>
+            <UserProvider>
+              <FeedbackProvider>
+                <WhatsNewProvider>
+                  <UserNotificationProvider>
+                    <DropdownProvider>
+                      <UnsavedChangesProvider>
+                        {children}
+                      </UnsavedChangesProvider>
+                    </DropdownProvider>
+                  </UserNotificationProvider>
+                </WhatsNewProvider>
+              </FeedbackProvider>
+            </UserProvider>
           </PanelProvider>
         </SocketProvider>
       </OnboardingProvider>

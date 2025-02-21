@@ -19,9 +19,9 @@ interface TableRowProps {
 }
 
 const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
-  const { setIsOpen, setActivePage, setActiveItem } = usePanel();
-  const { updateIdea } = useFeedback();
-  console.log('TableRow component is rendering');
+  const { setIsOpen, setActivePage } = usePanel();
+  const { setSelectedIdea, updateIdea } = useFeedback();
+
   const [isImpactOpen, setIsImpactOpen] = useState(false);
   const [isConfidenceOpen, setIsConfidenceOpen] = useState(false);
   const impactRef = useRef<HTMLDivElement>(null);
@@ -113,8 +113,8 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
   };
 
   const handleNameClick = () => {
-    setActiveItem(item);
-    setActivePage('edit_idea');
+    setSelectedIdea(item);
+    setActivePage('add_comment');
     setIsOpen(true);
   };
 
@@ -168,10 +168,7 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
             const value = e.target.value;
             const numericValue = value === '' ? 0 : parseInt(value);
             if (value === '' || !isNaN(numericValue)) {
-              const updatedItem = {
-                ...item,
-                reach: numericValue,
-              };
+              const updatedItem = { ...item, reach: numericValue };
               updatedItem.score = calculateScore(updatedItem);
               handleItemUpdate(updatedItem);
             }
@@ -222,10 +219,7 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
                 <button
                   key={option.value}
                   onClick={() => {
-                    const updatedItem = {
-                      ...item,
-                      impact: option.value,
-                    };
+                    const updatedItem = { ...item, impact: option.value };
                     updatedItem.score = calculateScore(updatedItem);
                     handleItemUpdate(updatedItem);
                     setIsImpactOpen(false);
@@ -274,10 +268,7 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
                 <button
                   key={option.value}
                   onClick={() => {
-                    const updatedItem = {
-                      ...item,
-                      confidence: option.value,
-                    };
+                    const updatedItem = { ...item, confidence: option.value };
                     updatedItem.score = calculateScore(updatedItem);
                     handleItemUpdate(updatedItem);
                     setIsConfidenceOpen(false);
@@ -299,10 +290,7 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
           level={Efforts.indexOf(item.effort ?? 1) + 1}
           onChange={(level) => {
             const effortValue = Efforts[level - 1];
-            const updatedItem = {
-              ...item,
-              effort: effortValue,
-            };
+            const updatedItem = { ...item, effort: effortValue };
             updatedItem.score = calculateScore(updatedItem);
             handleItemUpdate(updatedItem);
           }}

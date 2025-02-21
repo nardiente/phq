@@ -3,14 +3,20 @@ import { Plus } from 'lucide-react';
 import RoadmapTable from '../components/RoadmapTable';
 import { usePanel } from '../contexts/PanelContext';
 import { useFeedback } from '../contexts/FeedbackContext';
+import { useEffect } from 'react';
 
 const PrioritizationPage = () => {
   const {
     state: { ideas },
+    handleListFeedback,
     updateIdea,
   } = useFeedback();
 
   const { setIsOpen, setActivePage } = usePanel();
+
+  useEffect(() => {
+    handleListFeedback(false);
+  }, []);
 
   const handleItemsChange = async (item: Feedback) => {
     updateIdea(item);

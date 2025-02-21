@@ -1,14 +1,13 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useUser } from '../../contexts/UserContext';
-import { Feedback, Tag } from '../../types/feedback';
+import { Feedback } from '../../types/feedback';
 import { getApi, postApi } from '../../utils/api/api';
-import { Roadmap } from '../../types/roadmap';
 import { setKaslKey } from '../../utils/localStorage';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
 import { Permissions } from '../../types/common';
 import { FadeLoader } from 'react-spinners';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { usePanel } from '../../contexts/PanelContext';
 import { PageHeader } from '../../components/PageHeader';
 import { UpvoteFilters } from '../../components/UpvoteFilters';
@@ -17,21 +16,20 @@ import queryString from 'query-string';
 import { useWhatsNew } from '../../contexts/WhatsNewContext';
 
 export default function UpvotesPage() {
-  const navigate = useNavigate();
   const location = useLocation();
 
   const { user: userDetails, setShowBanner } = useUser();
-  const { moderation, permissions } = userDetails ?? {};
+  const { permissions } = userDetails ?? {};
   const {
     state: {
       filters: { filtering, sort, status, tags: filterTags, title },
       ideas,
+      loading,
+      roadmaps,
       selectedIdea,
     },
-    setListing,
-    setIdeas,
+    handleListFeedback,
     setSelectedIdea,
-    setTags,
     updateIdea,
     updateIdeaInRoadmap,
   } = useFeedback();
@@ -45,9 +43,6 @@ export default function UpvotesPage() {
   } = useSocket();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-
-  const [fetching, setFetching] = useState<boolean>(true);
-  const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
 
   useEffect(() => {
     setActiveTab('/upvotes');
@@ -70,10 +65,7 @@ export default function UpvotesPage() {
       ) {
         postApi({
           url: 'auth/activate',
-          payload: {
-            id: parseInt(params['u']),
-            activation_key: params['k'],
-          },
+          payload: { id: parseInt(params['u']), activation_key: params['k'] },
         }).then((res) => {
           if (res.results.error) {
             if (res.results.error == 'error.account.verified') {
@@ -120,68 +112,6 @@ export default function UpvotesPage() {
     });
   };
 
-  const handleGetStatus = () => {
-    getApi<Roadmap[]>({
-      url: 'roadmaps',
-      params: { domain: window.location.host },
-    }).then((res) => {
-      if (res.results.data) {
-        const data = res.results.data;
-        setRoadmaps(data);
-      }
-    });
-  };
-
-  const handleListTag = () => {
-    getApi<Tag[]>({
-      url: 'tags',
-      params: is_public
-        ? {
-            domain: window.location.host,
-          }
-        : undefined,
-      useCustomerKey: is_public && moderation?.user_login === true,
-    }).then((res) => {
-      if (is_public && res.results.error === 'error-client.bad-request') {
-        navigate('/');
-      }
-      if (res.results.data) {
-        setTags(res.results.data);
-      }
-      handleGetStatus();
-    });
-  };
-
-  const handleListFeedback = (filtering: boolean) => {
-    const url = is_public
-      ? `feedback/list/${window.location.host}`
-      : 'feedback/list-upvote';
-
-    setFetching(true);
-    setListing(true);
-    getApi<Feedback[]>({
-      url,
-      params: {
-        sort,
-        status,
-        tags: filterTags.join(','),
-        title,
-      },
-      useSessionToken: is_public && moderation?.user_login === true,
-    })
-      .then((res) => {
-        setListing(false);
-        if (res.results.data) {
-          setIdeas(res.results.data);
-        }
-        if (!filtering) {
-          handleListTag();
-        }
-      })
-      .catch((err) => console.error('handleListFeedback', { err }))
-      .finally(() => setFetching(false));
-  };
-
   useEffect(() => {
     if (sort.length > 0 && permissions !== undefined) {
       handleListFeedback(filtering);
@@ -209,21 +139,16 @@ export default function UpvotesPage() {
           permissions?.length === 0
         }
       />
-      <UpvoteFilters roadmaps={roadmaps} />
+      <UpvoteFilters roadmaps={roadmaps ?? []} />
       <div id="UpVoteList">
-        {fetching && ideas.length === 0 && (
+        {loading && ideas.length === 0 && (
           <div style={{ paddingTop: '50px' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
               <FadeLoader height={5} width={2} radius={2} margin={-10} />
             </div>
           </div>
         )}
-        {!fetching && ideas.length === 0 && (
+        {!loading && ideas.length === 0 && (
           <div
             style={{
               display: 'flex',
