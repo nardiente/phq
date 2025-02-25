@@ -34,7 +34,6 @@ const OnboardingPage = () => {
     if (window.location.pathname === '/ob-success') {
       localStorage.setItem('onboarding_page', OnboardingPages.SUCCESS);
       setActivePage(OnboardingPages.SUCCESS);
-      window.location.reload();
       return;
     }
     setActivePage(localStorage.getItem('onboarding_page') as OnboardingPages);
