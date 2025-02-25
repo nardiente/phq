@@ -14,12 +14,6 @@ const TypeOfChangeDropdown = ({
   selectedChangeTypes: ChangeType[];
   setSelectedChangeTypes: Dispatch<SetStateAction<ChangeType[]>>;
 }) => {
-  console.log('TypeOfChangeDropdown', {
-    changeTypes,
-    disabled,
-    selectedChangeTypes,
-    setSelectedChangeTypes,
-  });
   const [showOptions, setShowOptions] = useState<boolean>(false);
   return (
     <div id="TypeOfChange">

@@ -90,10 +90,6 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
       ?.value || 1;
   const defaultConfidence = Confidence[Confidences.LOW];
 
-  console.log('item.impact:', item.impact);
-  console.log('impactOptions:', impactOptions);
-  console.log('defaultImpact:', defaultImpact);
-
   const scoreStyle: React.CSSProperties = {
     color: '#5a00cd',
     fontSize: '1.1em',
