@@ -203,31 +203,33 @@ export const SubmitIdea = () => {
       url: 'feedback',
       payload,
       useSessionToken: !is_admin && moderation?.user_login === true,
-    }).then(async (res) => {
-      setSubmitting(false);
-      await handleGetUser();
-      if (res.results.errors) {
-        setApiFieldErrors(res.results.errors);
-      }
-      if (res.results.data) {
-        setSuccessType('idea');
-        setActivePage('success');
-        if (is_logged_in) {
-          const data = res.results.data as Feedback;
-          const filteredData = handleFilterData(data, 'Add Idea');
-          const filteredDataInRoadmap = handleFilterData(
-            data,
-            'Add Idea in Roadmap'
-          );
-
-          if (filteredData && filteredDataInRoadmap) {
-            addIdea(filteredData);
-            addIdeaInRoadmap(data.status_id ?? 0, filteredDataInRoadmap);
-          }
-          setSelectedIdea(data);
+    })
+      .then(async (res) => {
+        setSubmitting(false);
+        await handleGetUser();
+        if (res.results.errors) {
+          setApiFieldErrors(res.results.errors);
         }
-      }
-    });
+        if (res.results.data) {
+          setSuccessType('idea');
+          setActivePage('success');
+          if (is_logged_in) {
+            const data = res.results.data as Feedback;
+            const filteredData = handleFilterData(data, 'Add Idea');
+            const filteredDataInRoadmap = handleFilterData(
+              data,
+              'Add Idea in Roadmap'
+            );
+
+            if (filteredData && filteredDataInRoadmap) {
+              addIdea(filteredData);
+              addIdeaInRoadmap(data.status_id ?? 0, filteredDataInRoadmap);
+            }
+            setSelectedIdea(data);
+          }
+        }
+      })
+      .finally(() => setPanelLoading(false));
   };
 
   const voteOnBehalf = async (option: Option) => {

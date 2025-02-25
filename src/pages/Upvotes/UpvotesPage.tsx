@@ -132,7 +132,7 @@ export default function UpvotesPage() {
   }, [tags]);
 
   return (
-    <Settings>
+    <Settings className="pb-0">
       <SettingsHeader
         title="Upvotes"
         filter={<UpvoteFilters roadmaps={roadmaps ?? []} />}

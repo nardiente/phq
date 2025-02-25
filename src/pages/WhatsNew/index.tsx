@@ -160,7 +160,8 @@ export const WhatsNewPage = () => {
             title="What's New"
             filter={
               <div
-                className={`w-[${!is_public ? '8' : '9'}0%] flex justify-end`}
+                className="flex justify-end"
+                style={{ width: is_public ? '90%' : '80%' }}
               >
                 <div className="field is-grouped">
                   <WhatsNewFilter
