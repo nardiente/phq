@@ -17,7 +17,7 @@ export const PROFILE_PLACEHOLDER =
   '../../../static/assets/profile-placeholder.svg';
 export const COMPANY_LOGO_PLACEHOLDER =
   '../../../static/icons/updated-company-logo-placeholder.svg';
-export const FAVICON_PLACEHOLDER = '../../../favicon.ico';
+export const FAVICON_PLACEHOLDER = '../../../static/icons/favicon.ico';
 
 export const UploadPhoto: React.FC<{
   image_type: string;
