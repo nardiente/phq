@@ -23,6 +23,7 @@ import { usePanel } from './contexts/PanelContext';
 const App: FC = () => {
   const { user, showBanner, setShowBanner, setUser } = useUser();
   const { admin_profile, moderation, project, user: user_profile } = user ?? {};
+  const { is_index_search_engine } = project ?? {};
   const { company_logo, email, kasl_key } = admin_profile ?? {};
   const {
     state: { socket },
@@ -34,6 +35,7 @@ const App: FC = () => {
   const { setPanelLoading } = usePanel();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+  const { favicon } = (is_public ? admin_profile : user_profile) ?? {};
 
   useEffect(() => {
     if (is_public && admin_profile) {
@@ -44,7 +46,21 @@ const App: FC = () => {
   useEffect(() => {
     checkSubscriptionBanner();
 
-    let gistScript: any, linkIconTag: any, metaTag: any;
+    let gistScript: any, metaTag: any;
+
+    if (favicon) {
+      const link: HTMLLinkElement | null =
+        document.querySelector("link[rel='icon']");
+
+      if (link) {
+        link.href = favicon;
+      } else {
+        const newLink = document.createElement('link');
+        newLink.rel = 'icon';
+        newLink.href = favicon;
+        document.head.appendChild(newLink);
+      }
+    }
 
     if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
       // Remove clarity script
@@ -54,29 +70,13 @@ const App: FC = () => {
       // clarity.async = true
       // document.body.appendChild(clarity)
 
-      linkIconTag = document.createElement('link');
-      linkIconTag.rel = 'icon';
-      linkIconTag.type = 'image/svg+xml';
-      linkIconTag.href = '/favicon.ico';
-      document.head.appendChild(linkIconTag);
-
       gistScript = document.createElement('script');
       gistScript.src =
         'https://s3.amazonaws.com/app.productfeedback.co/scripts/gist.js';
       document.head.appendChild(gistScript);
     }
 
-    if (is_public) {
-      document.title = '';
-      const link = document.querySelector(
-        'link[rel~="icon"]'
-      ) as HTMLLinkElement;
-      if (link) {
-        link.href = company_logo && company_logo.length > 0 ? company_logo : '';
-      }
-    }
-
-    if (is_public && !project?.is_index_search_engine) {
+    if (is_public && !is_index_search_engine) {
       metaTag = document.createElement('meta');
       metaTag.name = 'robots';
       metaTag.content = 'noindex';
@@ -88,25 +88,14 @@ const App: FC = () => {
       if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
         // Remove clarity cleanup
         // document.body.removeChild(clarity)
-        document.head.removeChild(linkIconTag);
         document.head.removeChild(gistScript);
       }
 
-      if (is_public && !email?.endsWith('@producthq.io')) {
-        document.title = '';
-        const link = document.querySelector(
-          'link[rel~="icon"]'
-        ) as HTMLLinkElement;
-        if (link) {
-          link.href = '';
-        }
-      }
-
-      if (is_public && !project?.is_index_search_engine) {
+      if (is_public && !is_index_search_engine) {
         document.head.removeChild(metaTag);
       }
     };
-  }, [admin_profile, project]);
+  }, [company_logo, email, favicon, is_index_search_engine]);
 
   useEffect(() => {
     if (

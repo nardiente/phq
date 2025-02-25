@@ -17,11 +17,13 @@ export const PROFILE_PLACEHOLDER =
   '../../../static/assets/profile-placeholder.svg';
 export const COMPANY_LOGO_PLACEHOLDER =
   '../../../static/icons/updated-company-logo-placeholder.svg';
+export const FAVICON_PLACEHOLDER = '../../../favicon.ico';
 
 export const UploadPhoto: React.FC<{
   image_type: string;
   maxFileSize: number;
   setCompanyLogo: (value: string) => void;
+  setFavicon: (value: string) => void;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
   setProfilePhoto: (value: string) => void;
   show_modal: boolean;
@@ -119,9 +121,10 @@ export const UploadPhoto: React.FC<{
   };
 
   const updateProfileAndCompanyPhotos = (data: User, imageType: string) => {
-    const { company_logo, profile_photo } = data;
-    updatePhoto(profile_photo, props.setProfilePhoto, PROFILE_PLACEHOLDER);
+    const { company_logo, favicon, profile_photo } = data;
     updatePhoto(company_logo, props.setCompanyLogo, COMPANY_LOGO_PLACEHOLDER);
+    updatePhoto(favicon, props.setFavicon, FAVICON_PLACEHOLDER);
+    updatePhoto(profile_photo, props.setProfilePhoto, PROFILE_PLACEHOLDER);
     if (imageType === ImageType.WHATS_NEW_IMAGES) {
       const { image } = data as WhatsNew;
       updatePhoto(image, props.setProfilePhoto, '');
@@ -250,7 +253,7 @@ export const UploadPhoto: React.FC<{
             />
           </label>
         </span>
-        <span className="upload-photo-heading">{`Upload ${props.image_type === ImageType.PROFILE_PHOTOS ? 'Profile Photo' : 'Company Logo'}`}</span>
+        <span className="upload-photo-heading">{`Upload ${props.image_type === ImageType.PROFILE_PHOTOS ? 'Profile Photo' : props.image_type === ImageType.FAVICON ? 'favicon' : 'Company Logo'}`}</span>
       </ModalHeader>
       <ModalBody>
         {imageErrorMsg && (

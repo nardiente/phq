@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   COMPANY_LOGO_PLACEHOLDER,
+  FAVICON_PLACEHOLDER,
   PROFILE_PLACEHOLDER,
   UploadPhoto,
 } from '../../components/UploadPhoto';
@@ -49,6 +50,10 @@ export function AccountSettings() {
 
   const setCompanyLogo = (company_logo: string) => {
     setUser((prev) => ({ ...prev, user: { ...prev.user, company_logo } }));
+  };
+
+  const setFavicon = (favicon: string) => {
+    setUser((prev) => ({ ...prev, user: { ...prev.user, favicon } }));
   };
 
   const setProfilePhoto = (profile_photo: string) => {
@@ -304,9 +309,8 @@ export function AccountSettings() {
             ProductHQ just for you."
           />
 
-          {/* Company Logo */}
           <div className="grid grid-cols-2 gap-4 m-0">
-            <div></div>
+            {/* Company Logo */}
             <div className="flex items-start gap-4 m-0">
               <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center">
                 {userDetails?.company_logo !== undefined &&
@@ -327,6 +331,24 @@ export function AccountSettings() {
                 text="Upload"
                 onClick={() => {
                   setImageType(ImageType.COMPANY_LOGO);
+                  setModal((prev) => !prev);
+                }}
+                variant="secondary"
+              />
+            </div>
+            {/* favicon */}
+            <div className="flex items-start gap-4 m-0">
+              <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center">
+                <img
+                  className="is-rounded responsiveImage rounded-full w-16 h-16"
+                  src={userDetails?.favicon ?? FAVICON_PLACEHOLDER}
+                />
+              </div>
+              <Button
+                className="w-fit text-[13px]"
+                text="Upload"
+                onClick={() => {
+                  setImageType(ImageType.FAVICON);
                   setModal((prev) => !prev);
                 }}
                 variant="secondary"
@@ -516,6 +538,7 @@ export function AccountSettings() {
         image_type={image_type}
         maxFileSize={2097152}
         setCompanyLogo={setCompanyLogo}
+        setFavicon={setFavicon}
         setModal={setModal}
         setProfilePhoto={setProfilePhoto}
         show_modal={show_modal}

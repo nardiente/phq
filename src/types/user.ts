@@ -6,8 +6,9 @@ export interface ForgotPasswordFormProps {
 }
 
 export enum ImageType {
-  PROFILE_PHOTOS = 'profile-photos',
   COMPANY_LOGO = 'company-logos',
+  FAVICON = 'favicon',
+  PROFILE_PHOTOS = 'profile-photos',
   WHATS_NEW_IMAGES = 'whats-new-images',
 }
 
@@ -16,44 +17,69 @@ export enum InvitationType {
   TEAM_MEMBER = 'team_member',
 }
 
+export enum LoginType {
+  ADMIN = 'ADMIN',
+  PUBLIC = 'PUBLIC',
+}
+
 export interface User {
   id?: number;
+  customer_id?: number;
+  team_owner_id?: number;
+  added_vote_on_behalf?: boolean;
   address_line1?: string;
   address_line2?: string;
+  alternate_email?: string;
+  birthdate?: string;
   city?: string;
   company_heic_blob_url?: string;
   company_logo?: string;
   company_name?: string;
   country?: string;
   country_code?: string;
-  full_name?: string;
-  first_name?: string;
-  last_name?: string;
-  phone?: string;
-  gender?: string;
-  birthdate?: string;
+  deleted?: boolean;
   email?: string;
+  email_confirmation_sent?: boolean;
+  favicon?: string;
+  first_name?: string;
+  full_name?: string;
+  gender?: string;
+  is_activated?: boolean;
+  is_private_user?: boolean;
+  is_receiving_newsletter?: boolean;
   job_title?: string;
+  kasl_key?: string;
+  last_name?: string;
+  logged_in_at?: string;
+  login_type?: LoginType;
+  onboarding_done?: boolean;
+  onboarding_page?: OnboardingPages;
+  partnero_partner?: string;
+  password_hash?: string;
+  permissions?: string[];
+  phone?: string;
   profile_heic_blob_url?: string;
   profile_photo?: string;
+  rbac_permissions?: string[];
+  registered_at?: string;
+  reinvited?: boolean;
+  remind_3_days?: boolean;
+  remind_3_days_timestamp?: string;
+  reset_key?: string;
+  reset_requested_at?: string;
+  role?: RolePermission;
+  role_id?: number;
+  role_name?: string;
   state?: string;
+  stop_remind_add_board?: boolean;
+  stripe_cust_id?: string;
+  token?: string;
+  type?: string;
+  value?: string;
+  website_url?: string;
   zip_code?: string;
   created_at?: string;
   updated_at?: string;
-  is_beta?: boolean;
-  onboarding_done?: boolean;
-  onboarding_page?: OnboardingPages;
-  role_id?: number;
-  type?: string;
-  role?: RolePermission;
-  is_private_user?: boolean;
-  website_url?: string;
-  stop_remind_add_board?: boolean;
-  remind_3_days?: boolean;
-  remind_3_days_timestamp?: string;
-  kasl_key?: string;
-  role_name?: string;
-  token?: string;
 }
 
 interface RoleBody {
