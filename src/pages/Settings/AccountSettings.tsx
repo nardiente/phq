@@ -75,12 +75,12 @@ export function AccountSettings() {
           eraseKaslKey();
           toast(res.results.message, {
             autoClose: 3000,
+            className: 'custom-theme',
             closeOnClick: true,
             hideProgressBar: true,
             icon: false,
             position: 'bottom-center',
-            theme: 'colored',
-            type: 'success',
+            theme: 'dark',
           });
           navigate('/sign-in');
         }

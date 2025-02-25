@@ -36,10 +36,6 @@ const OnboardingPage = () => {
       setActivePage(OnboardingPages.SUCCESS);
       return;
     }
-    if (window.location.pathname === '/ob-survey') {
-      window.location.href = import.meta.env.VITE_SURVEY_FORM_URL ?? '';
-      return;
-    }
     setActivePage(localStorage.getItem('onboarding_page') as OnboardingPages);
     setToken(getOnboardingToken() ?? '');
     navigate(
