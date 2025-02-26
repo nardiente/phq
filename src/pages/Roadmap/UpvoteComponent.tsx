@@ -1,4 +1,5 @@
 import { Calendar4RangeIcon } from '../../components/icons/calendar4-range.icon';
+import StatusBadge from '../../components/StatusBadge';
 import { UpVoteCounter } from '../../components/UpVoteCounter';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { usePanel } from '../../contexts/PanelContext';
@@ -16,40 +17,57 @@ export const UpvoteComponent = ({ upvote }: { upvote: Feedback }) => {
   };
 
   return (
-    <div className="idea-card">
-      <UpVoteCounter data={upvote} hideArrow={true} />
-      <div className="upvote-details">
-        <div
-          className="is-clickable idea-h"
-          onClick={() => handleClickIdea(upvote)}
-        >
-          {upvote.title}
+    <div
+      className="flex flex-col gap-2 bg-white rounded-lg"
+      style={{
+        border: '1px solid #f9f9fa',
+        boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)',
+        padding: '16px',
+      }}
+    >
+      <div className="idea-card">
+        <UpVoteCounter data={upvote} hideArrow={true} />
+        <div className="upvote-details">
+          <div
+            className="is-clickable idea-h"
+            onClick={() => handleClickIdea(upvote)}
+          >
+            {upvote.title}
+          </div>
+          <div className="upvote-tags">
+            {(upvote.feedback_tags || ([] as FeedbackTag[]))?.map(
+              (feedback_tag, idx) => (
+                <div key={idx} className="upvote-tag">
+                  {feedback_tag.tag?.tag.substring(0, 10).trim()}
+                  {feedback_tag.tag?.tag && feedback_tag.tag?.tag.length > 10
+                    ? '...'
+                    : ''}
+                </div>
+              )
+            )}
+          </div>
         </div>
-        <div className="upvote-tags">
-          {(upvote.feedback_tags || ([] as FeedbackTag[]))?.map(
-            (feedback_tag, idx) => (
-              <div key={idx} className="upvote-tag">
-                {feedback_tag.tag?.tag.substring(0, 10).trim()}
-                {feedback_tag.tag?.tag && feedback_tag.tag?.tag.length > 10
-                  ? '...'
-                  : ''}
-              </div>
-            )
-          )}
-        </div>
-        {upvote.estimated_release_date && (
-          <>
-            <hr />
-            <div className="release-date-container">
-              <div className="content">
-                <Calendar4RangeIcon size={10} />
-                Estimated Date:{' '}
-                {formatDate(new Date(upvote.estimated_release_date))}
-              </div>
-            </div>
-          </>
-        )}
       </div>
+      {(upvote.estimated_release_date ||
+        upvote.score ||
+        upvote.status?.name) && (
+        <>
+          <hr />
+          <div className="release-date-container flex justify-between h-[18px]">
+            <div className="content">
+              <Calendar4RangeIcon size={10} />
+              Est Date:{' '}
+              {upvote.estimated_release_date
+                ? formatDate(new Date(upvote.estimated_release_date))
+                : ''}
+            </div>
+            <div className="content">Score: {upvote.score ?? 0}</div>
+            <div className="content">
+              <StatusBadge status={upvote.status?.name.toString() ?? ''} />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

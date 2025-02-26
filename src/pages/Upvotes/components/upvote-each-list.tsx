@@ -12,6 +12,7 @@ import { PinFillIcon } from '../../../components/icons/pin-fill.icon';
 import { UpVoteCounter } from '../../../components/UpVoteCounter';
 import { formatDate } from '../../../utils/date';
 import '../styles.css';
+import StatusBadge from '../../../components/StatusBadge';
 
 const UpvoteLabelLink = styled.span`
   align-items: center;
@@ -146,14 +147,24 @@ export const UpVoteEachList = ({
               </span>
             ))}
         </div> */}
-        {props.estimated_release_date && (
+        {(props.estimated_release_date ||
+          props.score ||
+          props.status?.name) && (
           <>
             <hr className="p-0" />
-            <div className="release-date-container">
+            <div className="release-date-container flex h-[18px]">
               <div className="content">
                 <Calendar4RangeIcon size={10} />
-                Estimated Date:{' '}
-                {formatDate(new Date(props.estimated_release_date))}
+                Est Date:{' '}
+                {props.estimated_release_date
+                  ? formatDate(new Date(props.estimated_release_date))
+                  : ''}
+              </div>
+              <div className="content justify-center">
+                Score: {props.score ?? 0}
+              </div>
+              <div className="content justify-end">
+                <StatusBadge status={props.status?.name.toString() ?? ''} />
               </div>
             </div>
           </>
