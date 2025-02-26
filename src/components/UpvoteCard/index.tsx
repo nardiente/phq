@@ -9,6 +9,10 @@ import { Permissions, RbacPermissions } from '../../types/common';
 import { usePanel } from '../../contexts/PanelContext';
 import { TrashIcon } from '../icons/trash.icon';
 import { formatDate } from '../../utils/date';
+import { EyeIcon } from '../icons/eye.icon';
+import { EyeSlashIcon } from '../icons/eye-slash.icon';
+import { putApi } from '../../utils/api/api';
+import { useFeedback } from '../../contexts/FeedbackContext';
 
 const UpvoteLabelLink = styled.span`
   align-items: center;
@@ -23,13 +27,34 @@ const UpvoteLabelLink = styled.span`
 `;
 
 const UpvoteCard = ({ props }: { props: Feedback }) => {
+  const { updateIdea, updateIdeaInRoadmap } = useFeedback();
   const { user } = useUser();
   const { setActivePage, setDeleteId, setDeleteType } = usePanel();
 
   const is_admin = import.meta.env.VITE_SYSTEM_TYPE === 'admin';
   const is_member = user?.user?.role_id;
 
+  const [loading, setLoading] = useState<boolean>(false);
   const [viewMore, setViewMore] = useState<boolean>(false);
+
+  const onHideOnRoadmap = () => {
+    const { description, title } = props;
+    setLoading(true);
+    putApi<Feedback>(`feedback/${props.id}`, {
+      description,
+      hide_on_roadmap: !props.hide_on_roadmap,
+      status: props.status?.name,
+      title,
+    }).then((res) => {
+      setLoading(false);
+      const { results } = res;
+      const { data } = results ?? {};
+      if (data) {
+        updateIdea(data);
+        updateIdeaInRoadmap(data.status_id ?? 0, data);
+      }
+    });
+  };
 
   return (
     <div id="UpVoteEachList">
@@ -50,7 +75,8 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
                 role="button"
                 disabled={
                   !user?.permissions.includes(Permissions.EDIT_IDEA) ||
-                  props.not_administer
+                  props.not_administer ||
+                  loading
                 }
               >
                 <svg
@@ -66,6 +92,14 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
               </button>
             )}
 
+            <button
+              className="h-[38px] text-[#6b7280]"
+              disabled={loading}
+              onClick={onHideOnRoadmap}
+            >
+              {props.hide_on_roadmap ? <EyeSlashIcon /> : <EyeIcon />}
+            </button>
+
             {((is_member &&
               user.rbac_permissions.includes(RbacPermissions.DELETE_IDEAS)) ||
               !is_member) && (
@@ -77,7 +111,10 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
                   setDeleteId(props.id ?? 0);
                   setActivePage('delete');
                 }}
-                disabled={!user?.permissions.includes(Permissions.DELETE_IDEA)}
+                disabled={
+                  !user?.permissions.includes(Permissions.DELETE_IDEA) ||
+                  loading
+                }
               >
                 <TrashIcon />
               </button>

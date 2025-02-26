@@ -152,7 +152,7 @@ export const UpVoteEachList = ({
           props.status?.name) && (
           <>
             <hr className="p-0" />
-            <div className="release-date-container flex h-[18px]">
+            <div className="release-date-container flex justify-between h-[18px]">
               <div className="content">
                 <Calendar4RangeIcon size={10} />
                 Est Date:{' '}
@@ -160,10 +160,8 @@ export const UpVoteEachList = ({
                   ? formatDate(new Date(props.estimated_release_date))
                   : ''}
               </div>
-              <div className="content justify-center">
-                Score: {props.score ?? 0}
-              </div>
-              <div className="content justify-end">
+              <div className="content">Score: {props.score ?? 0}</div>
+              <div className="content">
                 <StatusBadge status={props.status?.name.toString() ?? ''} />
               </div>
             </div>

@@ -2,36 +2,37 @@ import { ApiFieldError } from '../utils/api/types';
 import { User } from './user';
 
 export interface Feedback {
+  id?: number;
   author?: {
     full_name: string;
     profile_photo?: string;
   };
-  id?: number;
-  vote: number;
-  title?: string;
-  description?: string;
-  created_by?: number;
+  comment_count?: number;
+  confidence?: Confidences;
   created_at?: Date;
-  updated_by?: number;
-  updated_at?: Date;
+  created_by?: number;
+  customer_id?: number;
+  description?: string;
+  did_vote?: boolean;
+  draft?: boolean;
+  effort?: number;
+  estimated_release_date?: string;
+  feedback_tags?: FeedbackTag[];
+  hide_on_roadmap?: boolean;
+  impact?: Impacts;
+  not_administer?: boolean;
+  pinned?: boolean;
+  reach?: number;
+  score?: number;
   status?: Status;
   status_id?: number;
   tags?: string[];
-  feedback_tags?: FeedbackTag[];
-  comment_count?: number;
-  did_vote?: boolean;
-  not_administer?: boolean;
-  draft?: boolean;
+  title?: string;
+  updated_at?: Date;
+  updated_by?: number;
+  vote: number;
   vote_on_behalf?: User;
   vote_on_behalf_id?: number;
-  estimated_release_date?: string;
-  pinned?: boolean;
-  customer_id?: number;
-  reach?: number;
-  impact?: Impacts;
-  confidence?: Confidences;
-  effort?: number;
-  score?: number;
 }
 
 export enum Confidences {

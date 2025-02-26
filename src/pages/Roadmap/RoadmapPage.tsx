@@ -567,7 +567,11 @@ export function RoadmapPage() {
                                     className="idea-list-container"
                                   >
                                     {roadmap.upvotes
-                                      ?.filter((upvote) => !upvote.draft)
+                                      ?.filter(
+                                        (upvote) =>
+                                          !upvote.draft &&
+                                          !upvote.hide_on_roadmap
+                                      )
                                       .map((upvote, idx) => {
                                         return (
                                           <Draggable
