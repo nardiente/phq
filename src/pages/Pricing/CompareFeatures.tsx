@@ -203,6 +203,9 @@ export default function CompareFeatures({
                 <div className="tableItem">
                   <h6>Email and chat support</h6>
                 </div>
+                <div className="tableItem">
+                  <h6>Moderation</h6>
+                </div>
                 <div className="title">
                   <h5>USER TYPES</h5>
                 </div>
@@ -464,6 +467,16 @@ export default function CompareFeatures({
                     </div>
                     <div className="tableItem">
                       <h6>Email and chat support</h6>
+                      <h6>
+                        <img
+                          src="./static/images/checkMarkSquare.svg"
+                          alt=""
+                          className="icon"
+                        />
+                      </h6>
+                    </div>
+                    <div className="tableItem">
+                      <h6>Moderation</h6>
                       <h6>
                         <img
                           src="./static/images/checkMarkSquare.svg"
@@ -947,6 +960,16 @@ export default function CompareFeatures({
                     </div>
                     <div className="tableItem">
                       <h6>Email and chat support</h6>
+                      <h6>
+                        <img
+                          src="./static/images/checkMarkSquare.svg"
+                          alt=""
+                          className="icon"
+                        />
+                      </h6>
+                    </div>
+                    <div className="tableItem">
+                      <h6>Moderation</h6>
                       <h6>
                         <img
                           src="./static/images/checkMarkSquare.svg"
@@ -1446,6 +1469,16 @@ export default function CompareFeatures({
                     </div>
                     <div className="tableItem">
                       <h6>Email and chat support</h6>
+                      <h6>
+                        <img
+                          src="./static/images/checkMarkSquare.svg"
+                          alt=""
+                          className="icon"
+                        />
+                      </h6>
+                    </div>
+                    <div className="tableItem">
+                      <h6>Moderation</h6>
                       <h6>
                         <img
                           src="./static/images/checkMarkSquare.svg"
