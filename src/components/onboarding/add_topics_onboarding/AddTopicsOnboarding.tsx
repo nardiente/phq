@@ -5,16 +5,11 @@ import { postApi } from '../../../utils/api/api';
 import { ApiFieldError } from '../../../utils/api/types';
 import { UIField } from '../../UIField';
 import { OnboardingStatus } from '../../OnboardingStatus';
-import { OnboardingPages, OnboardingUrls } from '../../../types/onboarding';
-import { useNavigate } from 'react-router-dom';
 import { setOnboardingToken } from '../../../utils/localStorage';
 
 const AddTopicsOnboarding = () => {
-  const navigate = useNavigate();
-
   const {
     state: { token },
-    setActivePage,
   } = useOnboarding();
 
   const [, /* field_errors */ setFieldErrors] = useState<ApiFieldError[]>([]);
@@ -40,9 +35,7 @@ const AddTopicsOnboarding = () => {
       }
       if (res.results.data) {
         setOnboardingToken(token);
-        localStorage.setItem('onboarding_page', OnboardingPages.SURVEY);
-        setActivePage(OnboardingPages.SURVEY);
-        navigate(OnboardingUrls[OnboardingPages.SURVEY]);
+        window.location.href = import.meta.env.VITE_SURVEY_FORM_URL ?? '';
       }
     });
   };
