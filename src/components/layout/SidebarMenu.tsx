@@ -77,7 +77,12 @@ export function SidebarMenu({
       label: 'Widgets',
       id: 'widgets',
     },
-    { icon: ListOrdered, label: 'Prioritization', id: 'prioritization' },
+    {
+      icon: ListOrdered,
+      label: 'Prioritization',
+      id: 'prioritization',
+      hidden: true,
+    },
     { icon: PieChart, label: 'Segments', id: 'segments', hidden: true },
     { icon: Users, label: 'Customer Profiles', id: 'profiles', hidden: true },
   ];
@@ -86,7 +91,12 @@ export function SidebarMenu({
     { icon: User, label: 'Account Details', id: 'account' },
     { icon: Settings2, label: 'Project Details', id: 'project' },
     { icon: Paintbrush, label: 'Appearance', id: 'appearance' },
-    { icon: MessageSquare, label: 'Moderation', id: 'moderation' },
+    {
+      icon: MessageSquare,
+      label: 'Moderation',
+      id: 'moderation',
+      hidden: true,
+    },
     { icon: Users2, label: 'Team Members', id: 'team' },
     { icon: CreditCard, label: 'Billing and Invoicing', id: 'billing' },
     { icon: Tag, label: 'Tags', id: 'tags' },

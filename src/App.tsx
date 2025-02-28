@@ -46,7 +46,7 @@ const App: FC = () => {
   useEffect(() => {
     checkSubscriptionBanner();
 
-    let gistScript: any, metaTag: any;
+    let clarity: any, gistScript: any, metaTag: any;
 
     if (favicon) {
       const link: HTMLLinkElement | null =
@@ -64,11 +64,11 @@ const App: FC = () => {
 
     if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
       // Remove clarity script
-      // clarity = document.createElement('script')
-      // clarity.src =
-      //     'https://s3.amazonaws.com/app.productfeedback.co/scripts/clarity.min.js'
-      // clarity.async = true
-      // document.body.appendChild(clarity)
+      clarity = document.createElement('script');
+      clarity.src =
+        'https://s3.amazonaws.com/app.productfeedback.co/scripts/clarity.min.js';
+      clarity.async = true;
+      document.body.appendChild(clarity);
 
       gistScript = document.createElement('script');
       gistScript.src =
@@ -87,7 +87,7 @@ const App: FC = () => {
     return () => {
       if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
         // Remove clarity cleanup
-        // document.body.removeChild(clarity)
+        document.body.removeChild(clarity);
         document.head.removeChild(gistScript);
       }
 
