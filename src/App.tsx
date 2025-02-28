@@ -39,7 +39,7 @@ const App: FC = () => {
     if (!is_public || (is_public && userProfile?.id)) {
       checkSubscriptionBanner();
 
-      let clarity: any, gistScript: any, metaTag: any;
+      let gistScript: any, metaTag: any;
 
       const linkIconTag: HTMLLinkElement | null =
         document.querySelector('link[rel="icon"]');
@@ -51,11 +51,11 @@ const App: FC = () => {
 
       if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
         // Remove clarity script
-        clarity = document.createElement('script');
-        clarity.src =
-          'https://s3.amazonaws.com/app.productfeedback.co/scripts/clarity.min.js';
-        clarity.async = true;
-        document.body.appendChild(clarity);
+        // clarity = document.createElement('script');
+        // clarity.src =
+        //   'https://s3.amazonaws.com/app.productfeedback.co/scripts/clarity.min.js';
+        // clarity.async = true;
+        // document.body.appendChild(clarity);
 
         gistScript = document.createElement('script');
         gistScript.src =
@@ -74,7 +74,7 @@ const App: FC = () => {
       return () => {
         if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
           // Remove clarity cleanup
-          document.body.removeChild(clarity);
+          // document.body.removeChild(clarity);
           document.head.removeChild(gistScript);
         }
 

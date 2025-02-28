@@ -6,6 +6,7 @@ import DashboardPage from '../pages/DashboardPage';
 import { AccountSettings } from '../pages/Settings/AccountSettings';
 import ProjectDetailsPage from '../pages/Settings/ProjectDetailsPage';
 import AppearancePage from '../pages/Settings/AppearancePage';
+import ModerationPage from '../pages/Settings/ModerationPage.tsx';
 import EmailsPage from '../pages/EmailsPage';
 import TagsPage from '../pages/Settings/TagsPage';
 import TeamMembersPage from '../pages/Settings/TeamMembersPage';
@@ -20,6 +21,7 @@ import { WhatsNewPage } from '../pages/WhatsNew';
 import { Suspense } from 'react';
 import Fallback from './Fallback';
 import UserProfilesPage from '../pages/UserProfilesPage';
+import PrioritizationPage from '../pages/PrioritizationPage.tsx';
 import PricingPage from '../pages/Pricing';
 import SuccessPage from '../pages/success/success';
 import OnboardingPage from '../pages/onboarding/onboarding';
@@ -70,13 +72,13 @@ const AppRoutes = () => {
             <Route path="/widgets/page" element={<WidgetsPage />} />
             <Route path="/widgets/page/:id" element={<WidgetsPage />} /> */}
             <Route path="/profiles" element={<UserProfilesPage />} />
-            {/* <Route path="/prioritization" element={<PrioritizationPage />} /> */}
+            <Route path="/prioritization" element={<PrioritizationPage />} />
 
             {/* Settings */}
             <Route path="/account" element={<AccountSettings />} />
             <Route path="/project" element={<ProjectDetailsPage />} />
             <Route path="/appearance" element={<AppearancePage />} />
-            {/* <Route path="/moderation" element={<ModerationPage />} /> */}
+            <Route path="/moderation" element={<ModerationPage />} />
             <Route path="/team" element={<TeamMembersPage />} />
             <Route path="/billing" element={<BillingPage />} />
             <Route path="/tags" element={<TagsPage />} />
