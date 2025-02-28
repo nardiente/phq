@@ -53,7 +53,7 @@ const App: FC = () => {
         // Remove clarity script
         // clarity = document.createElement('script')
         // clarity.src =
-        //   'https://s3.amazonaws.com/app.productfeedback.co/scripts/clarity.min.js'
+        //     'https://s3.amazonaws.com/app.productfeedback.co/scripts/clarity.min.js'
         // clarity.async = true
         // document.body.appendChild(clarity)
 
