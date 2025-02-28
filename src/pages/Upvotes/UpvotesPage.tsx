@@ -160,7 +160,7 @@ export default function UpvotesPage() {
             </div>
           </div>
         )}
-        {!loading && ideas.length === 0 && (
+        {!loading && is_public && permissions && permissions.length === 0 ? (
           <div
             style={{
               display: 'flex',
@@ -178,55 +178,88 @@ export default function UpvotesPage() {
               }}
             >
               <h4>
-                {!filtering ? (
-                  <div className="container no-upvote-background">
-                    <div className="flex items-center justify-center mb-2 sad-face">
-                      <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
-                    </div>
-                    <h3 className="no-upvote-header">
-                      {is_public && permissions && permissions.length === 0
-                        ? 'This public board is no longer available. Please contact the admin.'
-                        : 'No ideas have been created… yet.'}
-                    </h3>
-                    {!is_public && permissions && permissions.length > 0 && (
-                      <h4 className="no-upvote-sub">
-                        Now is a great time to add your first idea.
-                      </h4>
-                    )}
+                <div className="container no-upvote-background">
+                  <div className="flex items-center justify-center mb-2 sad-face">
+                    <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
                   </div>
-                ) : (
-                  'Crickets and tumbleweeds. Please try again.'
-                )}
+                  <h3 className="no-upvote-header">
+                    This public board is no longer available. Please contact the
+                    admin.
+                  </h3>
+                </div>
               </h4>
             </div>
           </div>
-        )}
-        {ideas.length > 0 &&
-          (!is_public ||
-            (is_public && permissions && permissions.length > 0)) && (
-            <div className="upvote-each-list-container">
-              {ideas.find((idea) => idea.pinned) && (
-                <p className="pinned-label">
-                  Pinned idea
-                  {ideas.filter((idea) => idea.pinned).length > 1 ? 's' : ''}
-                </p>
+        ) : (
+          <>
+            {!loading && ideas.length === 0 && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  paddingLeft: '30px',
+                  paddingRight: '30px',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingTop: '10%',
+                  }}
+                >
+                  <h4>
+                    <div className="container no-upvote-background">
+                      <div className="flex items-center justify-center mb-2 sad-face">
+                        <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
+                      </div>
+                      <h3 className="no-upvote-header">
+                        {!filtering ? (
+                          <>
+                            {is_public
+                              ? 'No ideas have been created… yet.'
+                              : 'Now is a great time to add your first idea.'}
+                          </>
+                        ) : (
+                          'Crickets and tumbleweeds. Please try again.'
+                        )}
+                      </h3>
+                    </div>
+                  </h4>
+                </div>
+              </div>
+            )}
+            {ideas.length > 0 &&
+              (!is_public ||
+                (is_public && permissions && permissions.length > 0)) && (
+                <div className="upvote-each-list-container">
+                  {ideas.find((idea) => idea.pinned) && (
+                    <p className="pinned-label">
+                      Pinned idea
+                      {ideas.filter((idea) => idea.pinned).length > 1
+                        ? 's'
+                        : ''}
+                    </p>
+                  )}
+                  {ideas
+                    ?.filter((idea) => !idea.draft)
+                    .map((idea, idx) => (
+                      <Fragment key={idx}>
+                        <UpVoteEachList
+                          props={idea}
+                          handleListFeedback={handleListFeedback}
+                        />
+                        {ideas.find((idea) => idea.pinned) &&
+                          idea.pinned &&
+                          ideas.length - 1 > idx &&
+                          !ideas[idx + 1].pinned && <hr />}
+                      </Fragment>
+                    ))}
+                </div>
               )}
-              {ideas
-                ?.filter((idea) => !idea.draft)
-                .map((idea, idx) => (
-                  <Fragment key={idx}>
-                    <UpVoteEachList
-                      props={idea}
-                      handleListFeedback={handleListFeedback}
-                    />
-                    {ideas.find((idea) => idea.pinned) &&
-                      idea.pinned &&
-                      ideas.length - 1 > idx &&
-                      !ideas[idx + 1].pinned && <hr />}
-                  </Fragment>
-                ))}
-            </div>
-          )}
+          </>
+        )}
       </div>
     </Settings>
   );

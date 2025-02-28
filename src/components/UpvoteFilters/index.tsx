@@ -3,44 +3,44 @@ import { UpvoteFiltersProps } from './types';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { Dropdown } from '../DropDown';
 import { ChevronDownIcon } from '../icons/chevron-down.icon';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect } from 'react';
 
 export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
   const {
     state: { filters, tags },
     setFilter,
   } = useFeedback();
+  const { sort, status, title } = filters;
 
-  const [title, setTitle] = useState<string>(filters.title);
+  useEffect(() => {
+    setFilter({
+      ...filters,
+      filtering:
+        sort !== 'Newest' ||
+        status.length > 0 ||
+        filters.tags.length > 0 ||
+        title.length > 0,
+    });
+  }, [sort, status, filters.tags, title]);
 
   const handleUpvoteSearch = () => {
-    setFilter(Object.assign(filters, { filtering: true, title }));
+    setFilter({ ...filters, title });
   };
 
   const handleUpvoteSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
-
-    if (
-      filters.filtering &&
-      filters.title.length > 0 &&
-      e.target.value.length === 0
-    ) {
-      setFilter(
-        Object.assign(filters, { filtering: true, title: e.target.value })
-      );
-    }
+    setFilter({ ...filters, title: e.target.value });
   };
 
   const onFilterStatus = (status: string) => {
-    setFilter(Object.assign(filters, { filtering: true, status, title }));
+    setFilter({ ...filters, status });
   };
 
   const onFilterTags = (tags: string[]) => {
-    setFilter(Object.assign(filters, { filtering: true, tags, title }));
+    setFilter({ ...filters, tags });
   };
 
   const onSort = (sort: string) => {
-    setFilter(Object.assign(filters, { filtering: true, sort, title }));
+    setFilter({ ...filters, sort });
   };
 
   return (
@@ -154,9 +154,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
                         className="dropdown-item is-clickable drop-down-font text-[#110733]"
                         onClick={() =>
                           onFilterStatus(
-                            roadmap.name === filters.status
-                              ? 'All'
-                              : roadmap.name
+                            roadmap.name === filters.status ? '' : roadmap.name
                           )
                         }
                       >
