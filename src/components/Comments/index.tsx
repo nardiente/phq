@@ -8,6 +8,7 @@ import { Fragment, useState } from 'react';
 import { deleteApi } from '../../utils/api/api';
 import { PinFillIcon } from '../icons/pin-fill.icon';
 import { Comment } from '../Comment';
+import { useUser } from '../../contexts/UserContext';
 
 export const Comments = ({
   comments,
@@ -30,6 +31,8 @@ export const Comments = ({
   const {
     state: { socket },
   } = useSocket();
+  const { user } = useUser();
+
   let idea = ideas?.find((idea) => idea.id === selectedIdea?.id);
   if (!idea) {
     idea = selectedIdea ?? undefined;
@@ -52,15 +55,20 @@ export const Comments = ({
               ...idea,
               comment_count: (idea?.comment_count ?? 0) - 1,
             });
+            socket?.emit('message', {
+              action: 'updateIdea',
+              data: { user_id: user?.user?.id, projectId: user?.project?.id },
+            });
           }
           setPanelCommentIdToDelete(0);
           handleGetComments();
-          socket?.current?.send(
-            JSON.stringify({
-              action: 'updateTag',
+          socket?.emit('message', {
+            action: 'updateTag',
+            data: {
               created_by: idea?.customer_id || 0,
-            })
-          );
+              projectId: user?.project?.id,
+            },
+          });
         }
       }
     );

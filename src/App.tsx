@@ -9,29 +9,17 @@ import {
   setCustomerKaslKey,
   setSessionToken,
 } from './utils/localStorage';
-import { useSocket } from './contexts/SocketContext';
-import { UserNotification } from './types/notification';
-import { getApi, postApi } from './utils/api/api';
-import { Tag } from './types/feedback';
-import { useFeedback } from './contexts/FeedbackContext';
-import { useUserNotification } from './contexts/UserNotificationContext';
+import { postApi } from './utils/api/api';
 import { generateToken } from './utils/token';
 import { User } from './types/user';
 import { Permissions } from './types/common';
 import { usePanel } from './contexts/PanelContext';
 
 const App: FC = () => {
-  const { user, showBanner, setShowBanner, setUser } = useUser();
+  const { user, showBanner, setFetching, setShowBanner, setUser } = useUser();
   const { admin_profile, moderation, project, user: user_profile } = user ?? {};
   const { is_index_search_engine } = project ?? {};
   const { company_logo, email, kasl_key } = admin_profile ?? {};
-  const {
-    state: { socket },
-    setSocket,
-    setSocketTags,
-  } = useSocket();
-  const { setTags } = useFeedback();
-  const { setFetching, setUserNotification } = useUserNotification();
   const { setPanelLoading } = usePanel();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
@@ -97,15 +85,6 @@ const App: FC = () => {
     };
   }, [company_logo, email, favicon, is_index_search_engine]);
 
-  useEffect(() => {
-    if (
-      (admin_profile || user_profile) &&
-      socket?.current?.readyState !== WebSocket.OPEN
-    ) {
-      startWebSocket();
-    }
-  }, [admin_profile, user_profile]);
-
   const authenticate = async () => {
     const token = getSessionToken();
     const isNew = moderation?.user_login === true && !token;
@@ -162,98 +141,6 @@ const App: FC = () => {
     }
 
     setPanelLoading(false);
-  };
-
-  const startWebSocket = () => {
-    setSocket({ current: new WebSocket(import.meta.env.VITE_SOCKET_URL) });
-
-    if (socket !== null) {
-      socket.current.onerror = (error: any) => {
-        console.error('WebSocket on error error:', error);
-        socket.current?.close();
-      };
-
-      socket.current.onopen = () => {
-        const profile = is_public ? admin_profile : user_profile;
-        if (socket.current?.readyState === WebSocket.OPEN) {
-          console.log('WebSocket on open.');
-          socket.current?.send(
-            JSON.stringify({
-              action: 'setTagCreator',
-              id: profile?.id,
-              name: profile?.full_name?.substring(0, 20),
-            })
-          );
-        }
-        setInterval(() => {
-          if (socket.current?.readyState === WebSocket.OPEN) {
-            socket.current?.send(
-              JSON.stringify({
-                action: 'ping',
-                id: profile?.id,
-                name: profile?.full_name?.substring(0, 20),
-              })
-            );
-          }
-        }, 1000);
-      };
-      socket.current.onclose = () => {
-        console.error('WebSocket closed.');
-        socket.current?.close();
-        window.location.reload();
-      };
-      socket.current.onmessage = (event: any) => {
-        if (event.data) {
-          const profile = is_public ? admin_profile : user_profile;
-          const data = JSON.parse(event.data);
-          if (
-            data.message?.includes(' updated a tag.') &&
-            data.memberUpdatedTag?.id === profile?.id
-          ) {
-            console.log('WebSocket on message event data:', data);
-            handleListTag();
-            setSocketTags(true);
-          }
-          if (
-            data.message?.includes('sent a notifications') &&
-            data.memberNotified?.id === profile?.id
-          ) {
-            getNotifications();
-          }
-        }
-      };
-    }
-  };
-
-  const handleListTag = () => {
-    getApi<Tag[]>({
-      url: 'tags',
-      params: is_public ? { domain: window.location.host } : undefined,
-      useCustomerKey: is_public && moderation?.user_login === true,
-    }).then((res) => {
-      if (res.results.data) {
-        setTags(res.results.data);
-      }
-    });
-  };
-
-  const getNotifications = (seeMore?: boolean) => {
-    setFetching(true);
-    const params = {};
-    if (!seeMore) {
-      Object.assign(params, { limit: 3 });
-    }
-
-    getApi<UserNotification>({
-      url: 'notifications',
-      params: params,
-      // useSessionToken: is_public && moderation?.user_login === true, // Uncomment if needed
-    }).then((res) => {
-      setFetching(false);
-      if (res.results.data) {
-        setUserNotification(res.results.data);
-      }
-    });
   };
 
   return (

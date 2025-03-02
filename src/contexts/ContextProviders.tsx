@@ -16,23 +16,23 @@ const ContextProviders: React.FC<ContextProvidersProps> = ({ children }) => {
   return (
     <AppProvider>
       <OnboardingProvider>
-        <SocketProvider>
+        <UserProvider>
           <PanelProvider>
-            <UserProvider>
-              <FeedbackProvider>
-                <WhatsNewProvider>
-                  <UserNotificationProvider>
+            <FeedbackProvider>
+              <WhatsNewProvider>
+                <UserNotificationProvider>
+                  <SocketProvider>
                     <DropdownProvider>
                       <UnsavedChangesProvider>
                         {children}
                       </UnsavedChangesProvider>
                     </DropdownProvider>
-                  </UserNotificationProvider>
-                </WhatsNewProvider>
-              </FeedbackProvider>
-            </UserProvider>
+                  </SocketProvider>
+                </UserNotificationProvider>
+              </WhatsNewProvider>
+            </FeedbackProvider>
           </PanelProvider>
-        </SocketProvider>
+        </UserProvider>
       </OnboardingProvider>
     </AppProvider>
   );

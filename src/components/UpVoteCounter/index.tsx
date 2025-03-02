@@ -7,6 +7,7 @@ import { getKaslKey, getSessionToken } from '../../utils/localStorage';
 import { Permissions, RbacPermissions } from '../../types/common';
 import { deleteApi, postApi } from '../../utils/api/api';
 import { useFeedback } from '../../contexts/FeedbackContext';
+import { useSocket } from '../../contexts/SocketContext';
 
 const UpvoteBoxDiv = styled.button`
   align-items: center;
@@ -34,6 +35,9 @@ export const UpVoteCounter = ({
   const { user } = useUser();
   const { moderation, permissions } = user ?? {};
   const { updateIdea, updateIdeaInRoadmap } = useFeedback();
+  const {
+    state: { socket },
+  } = useSocket();
 
   const [active_uv_arrow, setActiveUVArrow] = useState('');
   const [loading, setLoading] = useState(false);
@@ -106,6 +110,11 @@ export const UpVoteCounter = ({
           updateIdeaInRoadmap(updated_idea.status_id ?? 0, updated_idea);
         });
     }
+
+    socket?.emit('message', {
+      action: 'updateIdea',
+      data: { user_id: user?.user?.id, projectId: user?.project?.id },
+    });
 
     setLoading(false);
   };

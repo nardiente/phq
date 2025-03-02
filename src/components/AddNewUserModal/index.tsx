@@ -16,6 +16,8 @@ import {
 import { Loader } from 'lucide-react';
 import { PlusIcon } from '../icons/plus.icon';
 import { Checkbox } from '../Checkbox';
+import { useUser } from '../../contexts/UserContext';
+import { useSocket } from '../../contexts/SocketContext';
 
 interface Props {
   open: boolean;
@@ -33,6 +35,10 @@ export const AddNewUserModal = ({ open, title, onClose }: Props) => {
     setSelectedIdea,
   } = useFeedback();
   const { setActivePage } = usePanel();
+  const { user } = useUser();
+  const {
+    state: { socket },
+  } = useSocket();
 
   const [addingUser, setAddingUser] = useState<boolean>(false);
   const [first_name, setFirstName] = useState('');
@@ -129,6 +135,10 @@ export const AddNewUserModal = ({ open, title, onClose }: Props) => {
       updateIdea(updated_idea);
       updateIdeaInRoadmap(updated_idea.status_id ?? 0, updated_idea);
       setSelectedIdea(updated_idea);
+      socket?.emit('message', {
+        action: 'updateIdea',
+        data: { user_id: user?.user?.id, projectId: user?.project?.id },
+      });
     });
   };
 

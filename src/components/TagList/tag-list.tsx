@@ -88,16 +88,17 @@ export const EditableTag: React.FC<Tag> = (props: Tag) => {
           setEditable(false);
           setUpdatedTagName(tag_name);
           setUpdatedTagDescription(tag_description);
-          console.log('EditableTag handleOnClickSubmit socket:', socket);
-          socket?.current?.send(
-            JSON.stringify({
-              action: 'updateTag',
+
+          socket?.emit('message', {
+            action: 'updateTag',
+            data: {
               created_by:
                 res.results.data && res.results.data.length > 0
                   ? res.results.data[0].created_by || 0
                   : 0,
-            })
-          );
+              projectId: user?.project?.id,
+            },
+          });
         }
         setLoading(false);
       });
@@ -251,6 +252,7 @@ const TagList = ({ data }: { data: Tag[] }) => {
   const {
     state: { socket },
   } = useSocket();
+  const { user } = useUser();
   const [field_errors, setFieldErrors] = useState<ApiFieldError[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
 
@@ -262,10 +264,11 @@ const TagList = ({ data }: { data: Tag[] }) => {
       } else {
         const created_by = tags.length > 0 ? tags[0].created_by || 0 : 0;
         setTags(tags.filter((tag) => tag.id !== Number(id)));
-        console.log('TagList handleOnClickDeleteTag socket:', socket);
-        socket?.current?.send(
-          JSON.stringify({ action: 'updateTag', created_by })
-        );
+
+        socket?.emit('message', {
+          action: 'updateTag',
+          data: { created_by, projectId: user?.project?.id },
+        });
       }
     });
   };

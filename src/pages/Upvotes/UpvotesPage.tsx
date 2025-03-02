@@ -22,10 +22,10 @@ export default function UpvotesPage() {
   const location = useLocation();
 
   const { user: userDetails, setShowBanner } = useUser();
-  const { permissions } = userDetails ?? {};
+  const { admin_profile, permissions, project, user } = userDetails ?? {};
   const {
     state: {
-      filters: { filtering, sort, status, tags: filterTags, title },
+      filters: { filtering, sort },
       ideas,
       loading,
       roadmaps,
@@ -41,11 +41,12 @@ export default function UpvotesPage() {
   const { setIsContinueReading, setWhatsNewId, setWhatsNewPreviewId } =
     useWhatsNew();
   const {
-    state: { tags },
+    state: { socket, tags },
     setSocketTags,
   } = useSocket();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+  const userInfo = is_public ? admin_profile : user;
 
   useEffect(() => {
     setActiveTab('/upvotes');
@@ -97,10 +98,26 @@ export default function UpvotesPage() {
       return;
     }
 
-    if (permissions !== undefined) {
+    if (userInfo?.id) {
       handleListFeedback(false);
     }
-  }, [permissions]);
+  }, [userInfo]);
+
+  useEffect(() => {
+    if (sort.length > 0 && userInfo?.id) {
+      handleListFeedback(filtering);
+    }
+  }, [sort, userInfo]);
+
+  useEffect(() => {
+    if (tags && userInfo?.id) {
+      if (selectedIdea?.id) {
+        getFeedback(selectedIdea.id);
+      }
+      handleListFeedback(true);
+      setSocketTags(false);
+    }
+  }, [tags, userInfo]);
 
   const getFeedback = (id: number) => {
     getApi<Feedback>({ url: `feedback/${id}` }).then((res) => {
@@ -111,25 +128,13 @@ export default function UpvotesPage() {
         setSelectedIdea(data);
         setActivePage('add_comment');
         setIsOpen(true);
+        socket?.emit('message', {
+          action: 'updateIdea',
+          data: { user_id: user?.id, projectId: project?.id },
+        });
       }
     });
   };
-
-  useEffect(() => {
-    if (sort.length > 0 && permissions !== undefined) {
-      handleListFeedback(filtering);
-    }
-  }, [sort, status, filterTags.length, title]);
-
-  useEffect(() => {
-    if (tags && permissions !== undefined) {
-      if (selectedIdea?.id) {
-        getFeedback(selectedIdea.id);
-      }
-      handleListFeedback(true);
-      setSocketTags(false);
-    }
-  }, [tags]);
 
   return (
     <Settings className="pb-0">

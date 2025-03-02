@@ -277,13 +277,18 @@ export const Comment = ({
             ...idea,
             comment_count: (idea.comment_count ?? 0) + 1,
           });
+          socket?.emit('message', {
+            action: 'updateIdea',
+            data: { user_id: user?.user?.id, projectId: user?.project?.id },
+          });
         }
-        socket?.current?.send(
-          JSON.stringify({
-            action: 'updateTag',
+        socket?.emit('message', {
+          action: 'updateTag',
+          data: {
             created_by: idea?.customer_id || 0,
-          })
-        );
+            projectId: user?.project?.id,
+          },
+        });
       }
     });
   };

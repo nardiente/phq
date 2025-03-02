@@ -70,13 +70,13 @@ export default function ModerationPage() {
             className: 'custom-theme',
           });
           if (data.data.notified === true) {
-            console.log('SettingsModerationPage handleUpdate socket:', socket);
-            socket?.current?.send(
-              JSON.stringify({
-                action: 'updateNotification',
+            socket?.emit('message', {
+              action: 'updateNotification',
+              data: {
                 user_id: data.data.user_id,
-              })
-            );
+                projectId: user?.project?.id,
+              },
+            });
           }
         }
       })

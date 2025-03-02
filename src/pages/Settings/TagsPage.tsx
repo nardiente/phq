@@ -67,13 +67,14 @@ export default function TagsPage() {
       if (res.results.data) {
         const data = res.results.data;
         setTagList(data);
-        console.log('TagsPage handleGetTags socket:', socket);
-        socket?.current?.send(
-          JSON.stringify({
-            action: 'updateTag',
+
+        socket?.emit('message', {
+          action: 'updateTag',
+          data: {
             created_by: data.length > 0 ? data[0].created_by || 0 : 0,
-          })
-        );
+            projectId: user?.project?.id,
+          },
+        });
       }
       if (res.results.error) {
         setGeneralError(res.results.error);

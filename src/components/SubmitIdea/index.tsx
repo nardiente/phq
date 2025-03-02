@@ -23,6 +23,7 @@ import { CustomDropdown } from '../ui/dropdown/dropdown_search';
 import { UpvoteAdminStatus } from '../UpvoteAdminStatus';
 import { Calendar } from '../Calendar';
 import { PrivacyPolicyField } from '../PrivacyPolicyField';
+import { useSocket } from '../../contexts/SocketContext';
 
 export const SubmitIdea = () => {
   const { handleGetUser, user } = useUser();
@@ -43,6 +44,9 @@ export const SubmitIdea = () => {
     updateIdeaInRoadmap,
     setSelectedIdea,
   } = useFeedback();
+  const {
+    state: { socket },
+  } = useSocket();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const is_logged_in =
@@ -278,6 +282,10 @@ export const SubmitIdea = () => {
             className: 'toast-success',
           }
         );
+        socket?.emit('message', {
+          action: 'updateIdea',
+          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+        });
       }
     });
   };

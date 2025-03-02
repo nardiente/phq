@@ -82,6 +82,7 @@ type FeedbackAction =
 interface FeedbackContextType {
   state: FeedbackState;
   handleListFeedback: (filtering: boolean) => Promise<void>;
+  handleListTag: () => void;
   addIdea: (idea: Feedback) => Promise<void>;
   addIdeaInRoadmap: (roadmap_id: number, idea: Feedback) => Promise<void>;
   addRoadmap: (roadmap: Roadmap) => Promise<void>;
@@ -128,7 +129,7 @@ const initialState: FeedbackState = {
   ideas: [],
   items: [],
   activeTab: 'ideas',
-  loading: false,
+  loading: true,
   error: null,
   tags: [],
   selectedIdea: null,
@@ -528,6 +529,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     () => ({
       state,
       handleListFeedback,
+      handleListTag,
       addIdea,
       addIdeaInRoadmap,
       addRoadmap,

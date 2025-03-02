@@ -2,12 +2,17 @@ import {
   createContext,
   ReactNode,
   useContext,
+  useEffect,
   useMemo,
   useReducer,
 } from 'react';
+import { useUser } from './UserContext';
+import { io, Socket } from 'socket.io-client';
+import { useFeedback } from './FeedbackContext';
+import { useUserNotification } from './UserNotificationContext';
 
 interface SocketState {
-  socket: any;
+  socket: Socket | null;
   tags: boolean;
 }
 
@@ -49,7 +54,75 @@ function socketReducer(
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export function SocketProvider({ children }: { children: ReactNode }) {
+  const { user } = useUser();
+  const { admin_profile, project, user: user_profile } = user ?? {};
+  const { handleListFeedback, handleListTag } = useFeedback();
+  const { getNotifications } = useUserNotification();
+
   const [state, dispatch] = useReducer(socketReducer, initialState);
+  const { socket } = state;
+
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+
+  useEffect(() => {
+    if (project?.id && socket === null) {
+      setSocket(io(import.meta.env.VITE_SOCKET_URL));
+    }
+  }, [project]);
+
+  useEffect(() => {
+    if (socket !== null) {
+      socket.on('error', (error: any) => {
+        console.error('Connection error:', error);
+      });
+
+      socket.on('connect', () => {
+        console.log('Connected to server:', socket.id);
+
+        const profile = is_public ? admin_profile : user_profile;
+
+        socket.emit('message', {
+          action: 'setTagCreator',
+          data: {
+            id: profile?.id,
+            name: profile?.full_name?.substring(0, 20),
+            projectId: project?.id,
+          },
+        });
+      });
+
+      socket.on('close', () => {
+        console.warn('Connection closed.');
+        setSocket(null);
+      });
+
+      socket.on('message', (msg: any) => {
+        console.log({ msg });
+
+        const {
+          action,
+          data: { projectId },
+        } = msg;
+
+        if (projectId === project?.id) {
+          switch (action) {
+            case 'updateIdea':
+              handleListFeedback(false);
+              break;
+            case 'updateNotification':
+              getNotifications();
+              break;
+            case 'updateTag':
+              handleListTag();
+              setSocketTags(true);
+              break;
+            default:
+              break;
+          }
+        }
+      });
+    }
+  }, [socket]);
 
   const setSocket = (socket: any) => {
     dispatch({ type: 'SET_SOCKET', payload: socket });

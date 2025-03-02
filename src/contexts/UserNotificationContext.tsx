@@ -6,6 +6,7 @@ import {
   useReducer,
 } from 'react';
 import { UserNotification } from '../types/notification';
+import { getApi } from '../utils/api/api';
 
 interface UserNotificationState {
   fetching: boolean;
@@ -21,6 +22,7 @@ type UserNotificationAction =
 
 interface UserNotificationContextType {
   state: UserNotificationState;
+  getNotifications: (seeMore?: boolean) => void;
   setFetching: (value: boolean) => Promise<void>;
   setUserNotification: (userNotification: UserNotification) => Promise<void>;
 }
@@ -58,6 +60,25 @@ export function UserNotificationProvider({
 }) {
   const [state, dispatch] = useReducer(userNotificationReducer, initialState);
 
+  const getNotifications = (seeMore?: boolean) => {
+    setFetching(true);
+    const params = {};
+    if (!seeMore) {
+      Object.assign(params, { limit: 3 });
+    }
+
+    getApi<UserNotification>({
+      url: 'notifications',
+      params: params,
+      // useSessionToken: is_public && moderation?.user_login === true, // Uncomment if needed
+    }).then((res) => {
+      setFetching(false);
+      if (res.results.data) {
+        setUserNotification(res.results.data);
+      }
+    });
+  };
+
   const setFetching = async (value: boolean) => {
     dispatch({
       type: 'SET_FETCHING',
@@ -75,6 +96,7 @@ export function UserNotificationProvider({
   const value = useMemo(
     () => ({
       state,
+      getNotifications,
       setFetching,
       setUserNotification,
     }),

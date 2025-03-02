@@ -13,6 +13,7 @@ import { EyeIcon } from '../icons/eye.icon';
 import { EyeSlashIcon } from '../icons/eye-slash.icon';
 import { putApi } from '../../utils/api/api';
 import { useFeedback } from '../../contexts/FeedbackContext';
+import { useSocket } from '../../contexts/SocketContext';
 
 const UpvoteLabelLink = styled.span`
   align-items: center;
@@ -30,6 +31,9 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
   const { updateIdea, updateIdeaInRoadmap } = useFeedback();
   const { user } = useUser();
   const { setActivePage, setDeleteId, setDeleteType } = usePanel();
+  const {
+    state: { socket },
+  } = useSocket();
 
   const is_admin = import.meta.env.VITE_SYSTEM_TYPE === 'admin';
   const is_member = user?.user?.role_id;
@@ -52,6 +56,10 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
       if (data) {
         updateIdea(data);
         updateIdeaInRoadmap(data.status_id ?? 0, data);
+        socket?.emit('message', {
+          action: 'updateIdea',
+          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+        });
       }
     });
   };

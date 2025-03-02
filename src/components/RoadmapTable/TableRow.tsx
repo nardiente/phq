@@ -13,6 +13,8 @@ import {
 } from '../../types/feedback';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { putApi } from '../../utils/api/api';
+import { useSocket } from '../../contexts/SocketContext';
+import { useUser } from '../../contexts/UserContext';
 
 interface TableRowProps {
   item: Feedback;
@@ -22,6 +24,10 @@ interface TableRowProps {
 const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
   const { setIsOpen, setActivePage } = usePanel();
   const { setSelectedIdea, updateIdea } = useFeedback();
+  const {
+    state: { socket },
+  } = useSocket();
+  const { user } = useUser();
 
   const [isImpactOpen, setIsImpactOpen] = useState(false);
   const [isConfidenceOpen, setIsConfidenceOpen] = useState(false);
@@ -130,6 +136,10 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
         if (res.results.data) {
           updateIdea(res.results.data);
           setSaveStatus('saved');
+          socket?.emit('message', {
+            action: 'updateIdea',
+            data: { user_id: user?.user?.id, projectId: user?.project?.id },
+          });
         }
       })
       .catch(() => setSaveStatus('error'))
