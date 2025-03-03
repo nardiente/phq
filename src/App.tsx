@@ -30,7 +30,7 @@ const App: FC = () => {
     if (is_public && admin_profile) {
       authenticate();
     }
-  }, [admin_profile, moderation]);
+  }, [admin_profile]);
 
   useEffect(() => {
     checkSubscriptionBanner();
@@ -103,7 +103,7 @@ const App: FC = () => {
         const {
           results: { data, error },
         } = res;
-        if (error === 'Session not found.') {
+        if (error) {
           eraseSessionToken();
         }
         if (data) {

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { eraseKaslKey, eraseSessionToken } from '../utils/localStorage';
 import { User, UserTypes } from '../types/user';
+import { useNavigate } from 'react-router-dom';
 
 interface UserMenuProps {
   user: User | undefined;
@@ -9,7 +10,10 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ user, onNavigate }: UserMenuProps) {
+  const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
+
   const menuRef = useRef<HTMLDivElement>(null);
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
@@ -33,7 +37,7 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
   const handleLogout = () => {
     eraseKaslKey();
     eraseSessionToken();
-    window.location.href = is_public ? '/upvotes' : '/sign-in';
+    navigate(is_public ? '/upvotes' : '/sign-in');
   };
 
   return (
@@ -106,20 +110,24 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
           </div>
 
           <div className="flex flex-col gap-1">
-            <button
-              onClick={() => handleNavigation('account')}
-              className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
-            >
-              Account Settings
-            </button>
-            <a
-              href={`${window.location.origin}/pricing`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-[calc(100%-16px)] mx-2 px-4 py-2 text-sm text-[#22C55E] hover:bg-gray-50 border border-[#22C55E] rounded-lg text-center cursor-pointer mb-0"
-            >
-              CHOOSE PLAN
-            </a>
+            {user?.type === UserTypes.CUSTOMER && (
+              <>
+                <button
+                  onClick={() => handleNavigation('account')}
+                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                >
+                  Account Settings
+                </button>
+                <a
+                  href={`${window.location.origin}/pricing`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-[calc(100%-16px)] mx-2 px-4 py-2 text-sm text-[#22C55E] hover:bg-gray-50 border border-[#22C55E] rounded-lg text-center cursor-pointer mb-0"
+                >
+                  CHOOSE PLAN
+                </a>
+              </>
+            )}
             <button
               onClick={handleLogout}
               className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"

@@ -98,7 +98,7 @@ export const SettingsTable: React.FC = () => {
   });
 
   return fetching ? (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center mt-5">
       <Loader />
     </div>
   ) : (

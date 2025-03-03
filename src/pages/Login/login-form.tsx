@@ -439,7 +439,7 @@ export const LoginForm = (props: LoginFormProps) => {
           setKaslKey(res.headers['kasl-key'].toString());
           await handleGetUser();
           if (props.type === UserTypes.USER) {
-            navigate('/dashboard');
+            navigate('/upvotes');
             return;
           }
           const subscription = result.subscription;

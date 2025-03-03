@@ -84,7 +84,7 @@ export const UpVoteEachList = ({
             />
           </figure>
           <span>
-            {props.author?.full_name.substring(0, 20).trim()}
+            {props.author?.full_name?.substring(0, 20).trim()}
             {props.author?.full_name && props.author?.full_name.length > 20
               ? '...'
               : ''}

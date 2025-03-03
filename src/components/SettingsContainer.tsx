@@ -10,7 +10,10 @@ const SettingsContainer: React.FC<SettingsContainerProps> = ({
   children,
 }) => {
   return (
-    <div id={id} className="bg-white rounded-lg border border-gray-200 p-6">
+    <div
+      id={id}
+      className="bg-white rounded-lg border border-gray-200 p-6 mt-5"
+    >
       <div className="flex flex-col gap-8 text-gray-700">
         {children} {/* Render the children passed to this component */}
       </div>
