@@ -15,7 +15,7 @@ import { useState } from 'react';
 import { UserTypes } from '../../types/user';
 import { RbacPermissions } from '../../types/common';
 import { Permissions } from '../../types/common';
-import { PROFILE_PLACEHOLDER } from '../UploadPhoto';
+import { PROFILE_PLACEHOLDER } from '../../constants/placeholders';
 import { PinFillIcon } from '../icons/pin-fill.icon';
 import { EyeSlashIcon } from '../icons/eye-slash.icon';
 import { EyeIcon } from '../icons/eye.icon';

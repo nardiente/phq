@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UploadPhoto } from '../../components/UploadPhoto';
 import {
   COMPANY_LOGO_PLACEHOLDER,
   FAVICON_PLACEHOLDER,
   PROFILE_PLACEHOLDER,
-  UploadPhoto,
-} from '../../components/UploadPhoto';
+} from '../../constants/placeholders';
 import { ImageType, User } from '../../types/user';
 import { useUser } from '../../contexts/UserContext';
 import { toast } from 'react-toastify';

@@ -11,13 +11,12 @@ import { WhatsNew } from '../../types/whats-new';
 import './styles.css';
 import { useTranslation } from 'react-i18next';
 import { UserContextConfig, useUser } from '../../contexts/UserContext';
-
-export const DROP_BOX_IMAGE = '../../../static/icons/updated_drop_images.svg';
-export const PROFILE_PLACEHOLDER =
-  '../../../static/assets/profile-placeholder.svg';
-export const COMPANY_LOGO_PLACEHOLDER =
-  '../../../static/icons/updated-company-logo-placeholder.svg';
-export const FAVICON_PLACEHOLDER = '../../../static/icons/favicon.ico';
+import {
+  COMPANY_LOGO_PLACEHOLDER,
+  DROP_BOX_IMAGE,
+  FAVICON_PLACEHOLDER,
+  PROFILE_PLACEHOLDER,
+} from '../../constants/placeholders';
 
 export const UploadPhoto: React.FC<{
   image_type: string;
