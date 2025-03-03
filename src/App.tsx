@@ -14,10 +14,7 @@ import { generateToken } from './utils/token';
 import { User } from './types/user';
 import { Permissions } from './types/common';
 import { usePanel } from './contexts/PanelContext';
-import {
-  FAVICON_EMPTY_PLACEHOLDER,
-  FAVICON_PLACEHOLDER,
-} from './constants/placeholders';
+import { FAVICON_EMPTY_PLACEHOLDER } from './constants/placeholders';
 
 const App: FC = () => {
   const { user, showBanner, setFetching, setShowBanner, setUser } = useUser();
@@ -41,13 +38,18 @@ const App: FC = () => {
 
       let gistScript: any, metaTag: any;
 
-      const linkIconTag: HTMLLinkElement | null =
-        document.querySelector('link[rel="icon"]');
-      if (linkIconTag) {
-        linkIconTag.href =
-          favicon ??
-          (is_public ? FAVICON_EMPTY_PLACEHOLDER : FAVICON_PLACEHOLDER);
+      const defaultFavicon =
+        !is_public || (is_public && email?.includes('@producthq.io'))
+          ? '/favicon.ico'
+          : FAVICON_EMPTY_PLACEHOLDER;
+      let linkIconTag = document.querySelector(
+        'link[rel~="icon"]'
+      ) as HTMLLinkElement | null;
+      if (linkIconTag === null) {
+        linkIconTag = document.createElement('link');
       }
+      linkIconTag.type = 'image/svg+xml';
+      linkIconTag.href = favicon ?? defaultFavicon;
 
       if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
         // Remove clarity script
