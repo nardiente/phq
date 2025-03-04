@@ -14,76 +14,85 @@ import { generateToken } from './utils/token';
 import { User } from './types/user';
 import { Permissions } from './types/common';
 import { usePanel } from './contexts/PanelContext';
-import { FAVICON_EMPTY_PLACEHOLDER } from './constants/placeholders';
+import {
+  FAVICON_EMPTY_PLACEHOLDER,
+  FAVICON_PLACEHOLDER,
+} from './constants/placeholders';
 
 const App: FC = () => {
   const { user, showBanner, setFetching, setShowBanner, setUser } = useUser();
   const { admin_profile, moderation, project, user: user_profile } = user ?? {};
   const { is_index_search_engine } = project ?? {};
-  const { company_logo, email, kasl_key } = admin_profile ?? {};
+  const { email, kasl_key } = admin_profile ?? {};
   const { setPanelLoading } = usePanel();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-  const { favicon } = (is_public ? admin_profile : user_profile) ?? {};
+  const userProfile = is_public ? admin_profile : user_profile;
+  const { favicon } = userProfile ?? {};
 
   useEffect(() => {
-    if (is_public && admin_profile) {
+    if (is_public && userProfile?.id) {
       authenticate();
     }
-  }, [admin_profile]);
+  }, [userProfile]);
 
   useEffect(() => {
-    checkSubscriptionBanner();
+    if (userProfile?.id) {
+      checkSubscriptionBanner();
 
-    let clarity: any, gistScript: any, metaTag: any;
+      let clarity: any, gistScript: any, metaTag: any;
 
-    const defaultFavicon =
-      !is_public || (is_public && email?.includes('@producthq.io'))
-        ? '/favicon.ico'
-        : FAVICON_EMPTY_PLACEHOLDER;
-    let linkIconTag = document.querySelector(
-      'link[rel~="icon"]'
-    ) as HTMLLinkElement | null;
-    if (linkIconTag === null) {
-      linkIconTag = document.createElement('link');
-    }
-    linkIconTag.type = 'image/svg+xml';
-    linkIconTag.href = favicon ?? defaultFavicon;
+      const defaultFavicon =
+        !is_public || (is_public && email?.includes('@producthq.io'))
+          ? FAVICON_PLACEHOLDER
+          : FAVICON_EMPTY_PLACEHOLDER;
 
-    if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
-      // Remove clarity script
-      clarity = document.createElement('script');
-      clarity.src =
-        'https://s3.amazonaws.com/app.productfeedback.co/scripts/clarity.min.js';
-      clarity.async = true;
-      document.body.appendChild(clarity);
+      let linkIconTag: HTMLLinkElement | null =
+        document.querySelector('link[rel~="icon"]');
+      if (!linkIconTag) {
+        linkIconTag = document.createElement('link');
+        linkIconTag.rel = 'icon';
+        linkIconTag.href = favicon ?? defaultFavicon;
+        document.head.appendChild(linkIconTag);
+      } else {
+        linkIconTag.href = favicon ?? defaultFavicon;
+      }
 
-      gistScript = document.createElement('script');
-      gistScript.src =
-        'https://s3.amazonaws.com/app.productfeedback.co/scripts/gist.js';
-      document.head.appendChild(gistScript);
-    }
-
-    if (is_public && !is_index_search_engine) {
-      metaTag = document.createElement('meta');
-      metaTag.name = 'robots';
-      metaTag.content = 'noindex';
-
-      document.head.appendChild(metaTag);
-    }
-
-    return () => {
       if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
-        // Remove clarity cleanup
-        document.body.removeChild(clarity);
-        document.head.removeChild(gistScript);
+        // Remove clarity script
+        clarity = document.createElement('script');
+        clarity.src =
+          'https://s3.amazonaws.com/app.productfeedback.co/scripts/clarity.min.js';
+        clarity.async = true;
+        document.body.appendChild(clarity);
+
+        gistScript = document.createElement('script');
+        gistScript.src =
+          'https://s3.amazonaws.com/app.productfeedback.co/scripts/gist.js';
+        document.head.appendChild(gistScript);
       }
 
       if (is_public && !is_index_search_engine) {
-        document.head.removeChild(metaTag);
+        metaTag = document.createElement('meta');
+        metaTag.name = 'robots';
+        metaTag.content = 'noindex';
+
+        document.head.appendChild(metaTag);
       }
-    };
-  }, [company_logo, email, favicon, is_index_search_engine]);
+
+      return () => {
+        if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
+          // Remove clarity cleanup
+          document.body.removeChild(clarity);
+          document.head.removeChild(gistScript);
+        }
+
+        if (is_public && !is_index_search_engine) {
+          document.head.removeChild(metaTag);
+        }
+      };
+    }
+  }, [userProfile, email, favicon, is_index_search_engine]);
 
   const authenticate = async () => {
     const token = getSessionToken();
