@@ -37,25 +37,17 @@ const App: FC = () => {
   }, [userProfile]);
 
   useEffect(() => {
-    if (userProfile?.id) {
+    if (!is_public || (is_public && userProfile?.id)) {
       checkSubscriptionBanner();
 
       let clarity: any, gistScript: any, metaTag: any;
 
-      const defaultFavicon =
-        !is_public || (is_public && email?.includes('@producthq.io'))
-          ? FAVICON_PLACEHOLDER
-          : FAVICON_EMPTY_PLACEHOLDER;
-
-      let linkIconTag: HTMLLinkElement | null =
-        document.querySelector('link[rel~="icon"]');
-      if (!linkIconTag) {
-        linkIconTag = document.createElement('link');
-        linkIconTag.rel = 'icon';
-        linkIconTag.href = favicon ?? defaultFavicon;
-        document.head.appendChild(linkIconTag);
-      } else {
-        linkIconTag.href = favicon ?? defaultFavicon;
+      const linkIconTag: HTMLLinkElement | null =
+        document.querySelector('link[rel="icon"]');
+      if (linkIconTag) {
+        linkIconTag.href =
+          favicon ??
+          (is_public ? FAVICON_EMPTY_PLACEHOLDER : FAVICON_PLACEHOLDER);
       }
 
       if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
