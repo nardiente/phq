@@ -20,18 +20,19 @@ interface RolesPermission {
   role_id: number;
 }
 
+interface Role {
+  id: number;
+  name: string;
+  tag: string;
+}
+
 export const SettingsTable: React.FC = () => {
   const [fetching, setFetching] = React.useState<boolean>(false);
   const [permissions, setPermissions] = React.useState<RbacPermission[]>([]);
   const [rolesPermission, setRolesPermission] = React.useState<
     RolesPermission[]
   >([]);
-
-  const rolesData = [
-    { id: 1, tag: 'superadmin', name: 'Super Admin' },
-    { id: 2, tag: 'admin', name: 'Admin' },
-    { id: 3, tag: 'manager', name: 'Manager' },
-  ];
+  const [roles, setRoles] = React.useState<Role[]>([]);
 
   React.useEffect(() => {
     setFetching(true);
@@ -44,58 +45,19 @@ export const SettingsTable: React.FC = () => {
       url: 'users/roles-permission',
     });
 
-    Promise.all([rbcaPermissionsPromise, rolesPermissionPromise]).then(
-      ([rbcaPermissionsRes, rolesPermissionRes]) => {
-        setFetching(false);
-        setPermissions(rbcaPermissionsRes.results.data || []);
-        setRolesPermission(rolesPermissionRes.results.data || []);
-      }
-    );
+    const rolesPromise = getApi<Role[]>({ url: 'users/roles' });
+
+    Promise.all([
+      rbcaPermissionsPromise,
+      rolesPermissionPromise,
+      rolesPromise,
+    ]).then(([rbcaPermissionsRes, rolesPermissionRes, rolesRes]) => {
+      setFetching(false);
+      setPermissions(rbcaPermissionsRes.results.data || []);
+      setRolesPermission(rolesPermissionRes.results.data || []);
+      setRoles(rolesRes.results.data ?? []);
+    });
   }, []);
-
-  const roles = permissions.map((rbacGroup) => {
-    const permissions = rolesPermission
-      .filter((permission) => permission.rbac_permission_id === rbacGroup.id)
-      .map((permission) => {
-        const rolePermissions = rolesData.map((role) => {
-          const rolesPermissionRes = rolesPermission.find(
-            (rp) =>
-              rp.rbac_permission_id === permission.id && rp.role_id === role.id
-          );
-
-          return {
-            role: role.name,
-            value: rolesPermissionRes
-              ? rolesPermissionRes.has_permission
-              : false,
-          };
-        });
-
-        // Extract the first three third-level values
-        const firstThreeThirdLevelValues = rolePermissions
-          .slice(0, 3)
-          .map((permission, index) => ({
-            role: permission.role,
-            value:
-              index === 1
-                ? rolePermissions[2].value
-                : index === 2
-                  ? rolePermissions[1].value
-                  : permission.value,
-          }));
-
-        return firstThreeThirdLevelValues; // Keep only the first three third-level values
-      })
-      .reduce((acc, curr) => acc.concat(curr), []) // Flatten the third-level values using reduce
-      .slice(0, 3)
-      .reverse();
-
-    return {
-      name: rbacGroup.name,
-      permissions, // Assign the flattened and limited third-level values to 'permissions'
-      rbac_group_id: rbacGroup.rbac_group_id,
-    };
-  });
 
   return fetching ? (
     <div className="flex items-center justify-center mt-5">
@@ -116,41 +78,52 @@ export const SettingsTable: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {roles
-              .filter((item) => item.rbac_group_id == 1)
-              .map((item, index) => (
-                <tr key={index}>
-                  <td className="permissions-col">{item.name}</td>
+            {permissions
+              .filter((item) => item.rbac_group_id === 1 && !item.is_hidden)
+              .map((item, index) => {
+                return (
+                  <tr key={index}>
+                    <td className="permissions-col">{item.name}</td>
 
-                  {item.permissions.map((item, index) => (
-                    <td className="status" key={index}>
-                      {item.value ? (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-check-lg check-mark"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
-                        </svg>
-                      ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-x  x-mark"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                        </svg>
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
+                    {roles.map((role) => {
+                      const hasPermission =
+                        rolesPermission.find(
+                          (rolePermission) =>
+                            rolePermission.rbac_permission_id === item.id &&
+                            rolePermission.role_id === role.id
+                        )?.has_permission ?? false;
+
+                      return (
+                        <td className="status">
+                          {hasPermission ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              fill="currentColor"
+                              className="bi bi-check-lg check-mark"
+                              viewBox="0 0 16 16"
+                            >
+                              <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                            </svg>
+                          ) : (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              fill="currentColor"
+                              className="bi bi-x  x-mark"
+                              viewBox="0 0 16 16"
+                            >
+                              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                            </svg>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
 
@@ -166,39 +139,48 @@ export const SettingsTable: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {roles
+            {permissions
               .filter((item) => item.rbac_group_id == 2)
               .map((item, index) => (
                 <tr key={index}>
                   <td className="permissions-col">{item.name}</td>
 
-                  {item.permissions.map((item, index) => (
-                    <td className="status" key={index}>
-                      {item.value ? (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-check-lg check-mark"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
-                        </svg>
-                      ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-x  x-mark"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                        </svg>
-                      )}
-                    </td>
-                  ))}
+                  {roles.map((role) => {
+                    const hasPermission =
+                      rolesPermission.find(
+                        (rolePermission) =>
+                          rolePermission.rbac_permission_id === item.id &&
+                          rolePermission.role_id === role.id
+                      )?.has_permission ?? false;
+
+                    return (
+                      <td className="status">
+                        {hasPermission ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            className="bi bi-check-lg check-mark"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            className="bi bi-x  x-mark"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                          </svg>
+                        )}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
           </tbody>
@@ -216,39 +198,48 @@ export const SettingsTable: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {roles
+            {permissions
               .filter((item) => item.rbac_group_id == 3)
               .map((item, index) => (
                 <tr key={index}>
                   <td className="permissions-col">{item.name}</td>
 
-                  {item.permissions.map((item, index) => (
-                    <td className="status" key={index}>
-                      {item.value ? (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-check-lg check-mark"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
-                        </svg>
-                      ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-x  x-mark"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                        </svg>
-                      )}
-                    </td>
-                  ))}
+                  {roles.map((role) => {
+                    const hasPermission =
+                      rolesPermission.find(
+                        (rolePermission) =>
+                          rolePermission.rbac_permission_id === item.id &&
+                          rolePermission.role_id === role.id
+                      )?.has_permission ?? false;
+
+                    return (
+                      <td className="status">
+                        {hasPermission ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            className="bi bi-check-lg check-mark"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            className="bi bi-x  x-mark"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                          </svg>
+                        )}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
           </tbody>
@@ -266,39 +257,48 @@ export const SettingsTable: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {roles
+            {permissions
               .filter((item) => item.rbac_group_id == 4)
               .map((item, index) => (
                 <tr key={index}>
                   <td className="permissions-col">{item.name}</td>
 
-                  {item.permissions.map((item, index) => (
-                    <td className="status" key={index}>
-                      {item.value ? (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-check-lg check-mark"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
-                        </svg>
-                      ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-x  x-mark"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                        </svg>
-                      )}
-                    </td>
-                  ))}
+                  {roles.map((role) => {
+                    const hasPermission =
+                      rolesPermission.find(
+                        (rolePermission) =>
+                          rolePermission.rbac_permission_id === item.id &&
+                          rolePermission.role_id === role.id
+                      )?.has_permission ?? false;
+
+                    return (
+                      <td className="status">
+                        {hasPermission ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            className="bi bi-check-lg check-mark"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            className="bi bi-x  x-mark"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                          </svg>
+                        )}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
           </tbody>
@@ -316,39 +316,48 @@ export const SettingsTable: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {roles
+            {permissions
               .filter((item) => item.rbac_group_id == 5)
               .map((item, index) => (
                 <tr key={index}>
                   <td className="permissions-col">{item.name}</td>
 
-                  {item.permissions.map((item, index) => (
-                    <td className="status" key={index}>
-                      {item.value ? (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-check-lg check-mark"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
-                        </svg>
-                      ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-x  x-mark"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                        </svg>
-                      )}
-                    </td>
-                  ))}
+                  {roles.map((role) => {
+                    const hasPermission =
+                      rolesPermission.find(
+                        (rolePermission) =>
+                          rolePermission.rbac_permission_id === item.id &&
+                          rolePermission.role_id === role.id
+                      )?.has_permission ?? false;
+
+                    return (
+                      <td className="status">
+                        {hasPermission ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            className="bi bi-check-lg check-mark"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            className="bi bi-x  x-mark"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                          </svg>
+                        )}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
           </tbody>
