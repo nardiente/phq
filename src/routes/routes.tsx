@@ -32,7 +32,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 import { pathExceptions } from '../types/app';
 import TestFetch from '../pages/TestFetch';
 import DesignSystem from '../pages/DesignSystem';
-import MainLayout from '../layouts/MainLayout';
+import SegmentsPage from '../pages/SegmentsPage.tsx';
 
 // Add /test to exceptions at the top of the file
 pathExceptions.push('/test');
@@ -74,6 +74,7 @@ const AppRoutes = () => {
             <Route path="/widgets/page/:id" element={<WidgetsPage />} /> */}
             <Route path="/profiles" element={<UserProfilesPage />} />
             <Route path="/prioritization" element={<PrioritizationPage />} />
+            <Route path="/segments" element={<SegmentsPage />} />
 
             {/* Settings */}
             <Route path="/account" element={<AccountSettings />} />

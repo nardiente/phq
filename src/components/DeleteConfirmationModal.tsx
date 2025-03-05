@@ -11,8 +11,8 @@ interface DeleteConfirmationModalProps {
 
 const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   isOpen,
-  title,
-  itemName,
+  // title,
+  // itemName,
   onClose,
   onConfirm,
 }) => {

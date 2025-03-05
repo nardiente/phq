@@ -664,15 +664,14 @@ export default function AppearancePage() {
             disabled={loading || loading_user}
             loading={loading || loading_user}
             onClick={handleUpdate}
-            text="Update"
-          />
+          >
+            <div className="text-white">Update</div>
+          </Button>
         }
         secondaryButton={
-          <Button
-            text="Cancel"
-            onClick={() => navigate('/dashboard')}
-            variant="secondary"
-          />
+          <Button onClick={() => navigate('/dashboard')} variant="outline">
+            Cancel
+          </Button>
         }
       />
 

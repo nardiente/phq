@@ -165,20 +165,14 @@ export function AccountSettings() {
       <SettingsHeader
         title="Account Settings"
         primaryButton={
-          <Button
-            disabled={isLoading}
-            loading={isLoading}
-            onClick={onSubmit}
-            text="Update"
-            variant="primary"
-          />
+          <Button disabled={isLoading} loading={isLoading} onClick={onSubmit}>
+            <div className="text-white">Update</div>
+          </Button>
         }
         secondaryButton={
-          <Button
-            onClick={() => navigate('/dashboard')}
-            text="Cancel"
-            variant="secondary"
-          />
+          <Button onClick={() => navigate('/dashboard')} variant="outline">
+            Cancel
+          </Button>
         }
       />
 
@@ -204,14 +198,14 @@ export function AccountSettings() {
               )}
             </div>
             <Button
-              className="w-fit text-[13px]"
-              text="Upload"
               onClick={() => {
                 setImageType(ImageType.PROFILE_PHOTOS);
                 setModal((prev) => !prev);
               }}
-              variant="secondary"
-            />
+              variant="outline"
+            >
+              Upload
+            </Button>
           </div>
 
           {/* Name Fields */}
@@ -292,13 +286,9 @@ export function AccountSettings() {
               type="password"
             />
           </div>
-          <Button
-            className="w-fit text-[13px]"
-            disabled={isLoading}
-            loading={isLoading}
-            text="Reset password"
-            variant="secondary"
-          />
+          <Button disabled={isLoading} loading={isLoading} variant="outline">
+            Reset password
+          </Button>
         </div>
 
         {/* Company Section */}
@@ -331,14 +321,14 @@ export function AccountSettings() {
                   )}
                 </div>
                 <Button
-                  className="w-fit text-[13px]"
-                  text="Upload"
                   onClick={() => {
                     setImageType(ImageType.COMPANY_LOGO);
                     setModal((prev) => !prev);
                   }}
-                  variant="secondary"
-                />
+                  variant="outline"
+                >
+                  Upload
+                </Button>
               </div>
             </div>
             {/* favicon */}
@@ -354,14 +344,14 @@ export function AccountSettings() {
                   />
                 </div>
                 <Button
-                  className="w-fit text-[13px]"
-                  text="Upload"
                   onClick={() => {
                     setImageType(ImageType.FAVICON);
                     setModal((prev) => !prev);
                   }}
-                  variant="secondary"
-                />
+                  variant="outline"
+                >
+                  Upload
+                </Button>
               </div>
             </div>
           </div>
@@ -538,9 +528,9 @@ export function AccountSettings() {
             disabled={deleteConfirmation !== 'DELETE' || isLoading}
             loading={isLoading}
             onClick={handleDeleteAccount}
-            text="DELETE ACCOUNT"
-            variant="danger" // Assuming you have a 'danger' variant for delete actions
-          />
+          >
+            DELETE ACCOUNT
+          </Button>
         </div>
       </SettingsContainer>
 

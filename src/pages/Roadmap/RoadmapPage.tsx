@@ -419,18 +419,17 @@ export function RoadmapPage() {
         }
         primaryButton={
           <Button
-            text={
-              <>
-                <Plus size={16} />
-                New Idea
-              </>
-            }
             disabled={
               (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
               permissions?.length === 0
             }
             onClick={() => setIsOpen(true)}
-          />
+          >
+            <div className="flex gap-2 text-white">
+              <Plus size={16} />
+              New Idea
+            </div>
+          </Button>
         }
       />
       {fetching &&

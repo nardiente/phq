@@ -504,16 +504,14 @@ export default function ProjectDetailsPage() {
             disabled={loading}
             loading={loading}
             onClick={handleUpdateProject}
-            text="Update"
-            variant="primary"
-          />
+          >
+            <div className="text-white">Update</div>
+          </Button>
         }
         secondaryButton={
-          <Button
-            text="Cancel"
-            onClick={() => navigate('/dashboard')}
-            variant="secondary"
-          />
+          <Button onClick={() => navigate('/dashboard')} variant="outline">
+            Cancel
+          </Button>
         }
       />
       <SettingsContainer id="ProjectDetails">
@@ -861,9 +859,10 @@ export default function ProjectDetailsPage() {
                     }
                     loading={loadingInvite}
                     onClick={handleInvite}
-                    text="Invite"
-                    variant="secondary"
-                  />
+                    variant="outline"
+                  >
+                    Invite
+                  </Button>
                 </div>
                 <div className="flex flex-col gap-6 settings-section">
                   {fetching_private_users && (

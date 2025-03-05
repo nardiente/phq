@@ -46,6 +46,7 @@ export interface User {
   gender?: string;
   isAnonymous?: boolean;
   is_activated?: boolean;
+  is_beta?: boolean;
   is_private_user?: boolean;
   is_receiving_newsletter?: boolean;
   job_title?: string;

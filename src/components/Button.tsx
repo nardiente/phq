@@ -4,17 +4,23 @@ type ButtonState = 'default' | 'hover' | 'focus' | 'disabled';
 type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'soft' | 'link' | 'white';
 
 interface ButtonProps {
-  children: React.ReactNode;
-  variant?: ButtonVariant;
-  state?: ButtonState;
   className?: string;
+  children: React.ReactNode;
+  disabled?: boolean;
+  loading?: boolean;
+  onClick?: () => void;
+  state?: ButtonState;
+  variant?: ButtonVariant;
 }
 
 const Button: React.FC<ButtonProps> = ({
   children,
-  variant = 'solid',
-  state = 'default',
   className = '',
+  disabled = false,
+  loading = false,
+  onClick,
+  state = 'default',
+  variant = 'solid',
 }) => {
   const baseStyles = 'flex gap-0 items-start relative bg-transparent';
 
@@ -41,13 +47,17 @@ const Button: React.FC<ButtonProps> = ({
   };
 
   return (
-    <button className={baseStyles}>
+    <button
+      className={baseStyles}
+      disabled={disabled || loading}
+      onClick={onClick}
+    >
       <div
         className={`overflow-hidden rounded-md px-5 py-[14px] flex gap-2.5 justify-center items-center relative ${getVariantStyles(variant, state)} ${className}`}
       >
         <p className="text-[15px] leading-[18px] tracking-[0.005em] text-center">
           <span className="text-[15px] tracking-[0.005em] font-medium">
-            {children}
+            {loading ? 'Loading ...' : children}
           </span>
         </p>
       </div>

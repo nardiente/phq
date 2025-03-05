@@ -30,10 +30,10 @@ const SimpleUserList: React.FC<SimpleUserListProps> = ({
 
     const calculateColumnWidths = () => {
       const headerCells = Array.from(
-        tableRef.current.querySelectorAll('thead th')
+        tableRef.current?.querySelectorAll('thead th') ?? []
       ) as HTMLTableCellElement[];
       const bodyRows = Array.from(
-        tableRef.current.querySelectorAll('tbody tr')
+        tableRef.current?.querySelectorAll('tbody tr') ?? []
       ) as HTMLTableRowElement[];
 
       const newColumnWidths: Record<string, number> = {};

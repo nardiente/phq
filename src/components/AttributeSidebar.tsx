@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, X } from 'lucide-react';
+import { Search } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -44,8 +44,8 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
   onClear,
   currentSelectedAttributes,
   currentFilters,
-  onCancel,
-  onSave,
+  // onCancel,
+  // onSave,
 }) => {
   const [state, setState] = useState({
     searchTerm: '',
@@ -164,7 +164,11 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
     onFilterChange(newFilters, selectedAttributes);
   };
 
-  const handleDateChange = (attribute: string, date: Date | null, type: 'startDate' | 'endDate') => {
+  const handleDateChange = (
+    attribute: string,
+    date: Date | null,
+    type: 'startDate' | 'endDate'
+  ) => {
     setDateRange((prevDateRange) => ({
       ...prevDateRange,
       [attribute]: {
@@ -190,15 +194,15 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
     onClear();
   };
 
-  const handleCancel = () => {
-    setSelectedAttributes(currentSelectedAttributes || {});
-    setFilters(currentFilters || {});
-    onCancel();
-  };
+  // const handleCancel = () => {
+  //   setSelectedAttributes(currentSelectedAttributes || {});
+  //   setFilters(currentFilters || {});
+  //   onCancel();
+  // };
 
-  const handleSave = () => {
-    onSave();
-  };
+  // const handleSave = () => {
+  //   onSave();
+  // };
 
   const renderFilterInput = (attribute: string) => {
     if (filters[attribute]?.operator === 'between') {
@@ -209,7 +213,9 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
             selectsStart
             startDate={dateRange[attribute]?.startDate || null}
             endDate={dateRange[attribute]?.endDate || null}
-            onChange={(date: Date | null) => handleDateChange(attribute, date, 'startDate')}
+            onChange={(date: Date | null) =>
+              handleDateChange(attribute, date, 'startDate')
+            }
             placeholderText="Start Date"
             className="w-full p-2 border rounded-md"
           />
@@ -219,7 +225,9 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
             startDate={dateRange[attribute]?.startDate || null}
             endDate={dateRange[attribute]?.endDate || null}
             minDate={dateRange[attribute]?.startDate || null}
-            onChange={(date: Date | null) => handleDateChange(attribute, date, 'endDate')}
+            onChange={(date: Date | null) =>
+              handleDateChange(attribute, date, 'endDate')
+            }
             placeholderText="End Date"
             className="w-full p-2 border rounded-md"
           />
@@ -297,7 +305,11 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
                           }
                         >
                           {getOperatorsForAttribute(attribute).map((op) => (
-                            <option key={op} value={op} className="text-gray-700">
+                            <option
+                              key={op}
+                              value={op}
+                              className="text-gray-700"
+                            >
                               {op}
                             </option>
                           ))}

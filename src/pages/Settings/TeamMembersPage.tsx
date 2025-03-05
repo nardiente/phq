@@ -364,11 +364,9 @@ export default function TeamMembersPage() {
       <SettingsHeader
         title="Account Settings"
         secondaryButton={
-          <Button
-            text="Cancel"
-            onClick={() => navigate('/dashboard')}
-            variant="secondary"
-          />
+          <Button onClick={() => navigate('/dashboard')} variant="outline">
+            Cancel
+          </Button>
         }
       />
 
@@ -385,131 +383,127 @@ export default function TeamMembersPage() {
             <>
               <SectionHeader title="Invite admins to company" />
 
-              <div className="grid grid-cols-2 gap-4 m-0">
-                <InputField
-                  disabled={loadingInvite}
-                  label="First Name"
-                  onChange={handleOnFirstname}
-                  error={first_name_error_msg}
-                  placeholder="First name"
-                  value={first_name}
-                  variant={first_name_error_msg !== '' ? 'error' : 'default'}
-                />
-                <InputField
-                  disabled={loadingInvite}
-                  label="Last Name"
-                  onChange={handleOnLastname}
-                  error={last_name_error_msg}
-                  placeholder="Last name"
-                  value={last_name}
-                  variant={last_name_error_msg !== '' ? 'error' : 'default'}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4 m-0">
-                <InputField
-                  disabled={loadingInvite}
-                  label="Email Address"
-                  onBlur={(e: any) => {
-                    if (e.target.value.length === 0) {
-                      setEmailErrorMessage('This is a required field.');
-                    }
-                  }}
-                  onChange={handleOnChangeEmail}
-                  error={
-                    email_error_message ||
-                    field_errors.find((x) => x.field === 'email')?.message ||
-                    api_field_error
-                  }
-                  placeholder="Email@domain.com"
-                  value={email_address}
-                  variant={
-                    email_error_message !== '' ||
-                    field_errors.some((x) => x.field === 'email') ||
-                    api_field_error !== ''
-                      ? 'error'
-                      : 'default'
-                  }
-                />
-                <div ref={ref as LegacyRef<HTMLDivElement>}>
-                  <div
-                    className={`dropdown ${is_expanded ? ' is-active' : ''}`}
+          <div className="grid grid-cols-2 gap-4 m-0">
+            <InputField
+              disabled={loadingInvite}
+              label="First Name"
+              onChange={handleOnFirstname}
+              error={first_name_error_msg}
+              placeholder="First name"
+              value={first_name}
+              variant={first_name_error_msg !== '' ? 'error' : 'default'}
+            />
+            <InputField
+              disabled={loadingInvite}
+              label="Last Name"
+              onChange={handleOnLastname}
+              error={last_name_error_msg}
+              placeholder="Last name"
+              value={last_name}
+              variant={last_name_error_msg !== '' ? 'error' : 'default'}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4 m-0">
+            <InputField
+              disabled={loadingInvite}
+              label="Email Address"
+              onBlur={(e: any) => {
+                if (e.target.value.length === 0) {
+                  setEmailErrorMessage('This is a required field.');
+                }
+              }}
+              onChange={handleOnChangeEmail}
+              error={
+                email_error_message ||
+                field_errors.find((x) => x.field === 'email')?.message ||
+                api_field_error
+              }
+              placeholder="Email@domain.com"
+              value={email_address}
+              variant={
+                email_error_message !== '' ||
+                field_errors.some((x) => x.field === 'email') ||
+                api_field_error !== ''
+                  ? 'error'
+                  : 'default'
+              }
+            />
+            <div ref={ref as LegacyRef<HTMLDivElement>}>
+              <div className={`dropdown ${is_expanded ? ' is-active' : ''}`}>
+                <div className="dropdown-trigger">
+                  <button
+                    aria-controls="dropdown-menu"
+                    aria-haspopup="true"
+                    className="button drop-down-button"
+                    onClick={toggle}
+                    tabIndex={3}
+                    disabled={loadingInvite}
                   >
-                    <div className="dropdown-trigger">
-                      <button
-                        aria-controls="dropdown-menu"
-                        aria-haspopup="true"
-                        className="button drop-down-button"
-                        onClick={toggle}
-                        tabIndex={3}
-                        disabled={loadingInvite}
+                    <Fragment>
+                      <span className="for-dropdown">
+                        {role ? role : 'Role'}
+                      </span>
+                      <span
+                        className="icon is-small"
+                        style={{ marginTop: '2px' }}
                       >
-                        <Fragment>
-                          <span
-                            className={`for-dropdown ${role ? 'text-gray-600' : 'text-gray-500'}`}
-                          >
-                            {role ? role : 'Role'}
-                          </span>
-                          <span
-                            className="icon is-small"
-                            style={{ marginTop: '2px' }}
-                          >
-                            <ChevronDownIcon />
-                          </span>
-                        </Fragment>
-                      </button>
-                    </div>
-                    <div
-                      aria-hidden={!is_expanded}
-                      className="dropdown-menu"
-                      id="dropdown-menu"
-                      onClick={toggle}
-                      role="menu"
-                    >
-                      <div className="dropdown-content text-gray-600">
-                        <Fragment>
-                          <span
-                            onClick={() => handleOnChangeRole('Super Admin')}
-                            className="dropdown-item is-clickable drop-down-font text-inherit"
-                          >
-                            Super Admin
-                          </span>
-                          <span
-                            onClick={() => handleOnChangeRole('Admin')}
-                            className="dropdown-item is-clickable drop-down-font text-inherit"
-                          >
-                            Admin
-                          </span>
-                          <span
-                            onClick={() => handleOnChangeRole('Manager')}
-                            className="dropdown-item is-clickable drop-down-font text-inherit"
-                          >
-                            Manager
-                          </span>
-                        </Fragment>
-                      </div>
-                    </div>
+                        <ChevronDownIcon />
+                      </span>
+                    </Fragment>
+                  </button>
+                </div>
+                <div
+                  aria-hidden={!is_expanded}
+                  className="dropdown-menu"
+                  id="dropdown-menu"
+                  onClick={toggle}
+                  role="menu"
+                >
+                  <div className="dropdown-content">
+                    <Fragment>
+                      <span
+                        onClick={() => handleOnChangeRole('Super Admin')}
+                        className="dropdown-item is-clickable drop-down-font"
+                      >
+                        Super Admin
+                      </span>
+                      <span
+                        onClick={() => handleOnChangeRole('Admin')}
+                        className="dropdown-item is-clickable drop-down-font"
+                      >
+                        Admin
+                      </span>
+                      <span
+                        onClick={() => handleOnChangeRole('Manager')}
+                        className="dropdown-item is-clickable drop-down-font"
+                      >
+                        Manager
+                      </span>
+                    </Fragment>
                   </div>
                 </div>
               </div>
-              <Button
-                className="w-fit text-[13px]"
-                disabled={
-                  email_address === '' ||
-                  first_name === '' ||
-                  last_name === '' ||
-                  role === '' ||
-                  email_error_message !== '' ||
-                  first_name_error_msg !== '' ||
-                  last_name_error_msg !== '' ||
-                  !hasUnsavedChanges
-                }
-                loading={loadingInvite}
-                onClick={button_name === 'Save' ? onSubmitEdit : onSubmit}
-                text={button_name}
-                variant="secondary"
-              />
-            </>
-          )}
+            </div>
+          </div>
+
+          <Button
+            className="w-fit text-[13px]"
+            disabled={
+              email_address === '' ||
+              first_name === '' ||
+              last_name === '' ||
+              role === '' ||
+              email_error_message !== '' ||
+              first_name_error_msg !== '' ||
+              last_name_error_msg !== '' ||
+              !hasUnsavedChanges
+            }
+            loading={loadingInvite}
+            onClick={button_name === 'Save' ? onSubmitEdit : onSubmit}
+            variant="outline"
+          >
+            {button_name}
+          </Button>
         </div>
 
         <div className="columns is-mobile is-multiline">

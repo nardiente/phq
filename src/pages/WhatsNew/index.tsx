@@ -175,18 +175,17 @@ export const WhatsNewPage = () => {
             primaryButton={
               !is_public ? (
                 <Button
-                  text={
-                    <>
-                      <Plus size={16} />
-                      New Post
-                    </>
-                  }
                   disabled={
                     !permissions?.includes(Permissions.ADD_POST) ||
                     permissions?.length === 0
                   }
                   onClick={() => openPostForm(undefined)}
-                />
+                >
+                  <div className="flex gap-2 text-white">
+                    <Plus size={16} />
+                    New Post
+                  </div>
+                </Button>
               ) : (
                 <></>
               )

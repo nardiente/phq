@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { Copy } from 'lucide-react';
 import { useBoardBanner } from '../../hooks/useBoardBanner';
+import { useState } from 'react';
 import { Toast } from '../Toast';
 import { useUser } from '../../contexts/UserContext';
 
@@ -10,7 +10,14 @@ export function BoardBanner() {
   const { user } = useUser();
   const { project } = user ?? {};
 
+  const { isVisible, loading, hideTemporarily, hidePermanently } =
+    useBoardBanner();
+  const { user } = useUser();
+  const { project } = user ?? {};
+
   const [showCopyToast, setShowCopyToast] = useState(false);
+
+  if (!isVisible) return null;
 
   if (!isVisible) return null;
 
@@ -50,6 +57,23 @@ export function BoardBanner() {
               <Copy size={14} />
             </button>
           </div>
+        </div>
+
+        <div className="flex items-center justify-center gap-4 pt-2">
+          <button
+            onClick={hideTemporarily}
+            className="text-[13px] text-gray-600 hover:text-gray-700"
+            disabled={loading}
+          >
+            Remind me in 3 days
+          </button>
+          <button
+            onClick={hidePermanently}
+            className="text-[13px] text-gray-600 hover:text-gray-700"
+            disabled={loading}
+          >
+            Close and don't show again
+          </button>
         </div>
 
         <div className="flex items-center justify-center gap-4 pt-2">

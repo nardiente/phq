@@ -102,11 +102,11 @@ export default function TagsPage() {
                 title="Account Settings"
                 secondaryButton={
                   <Button
-                    className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200"
                     onClick={() => navigate('/dashboard')}
-                    text="Cancel"
-                    variant="secondary"
-                  />
+                    variant="outline"
+                  >
+                    Cancel
+                  </Button>
                 }
               />
 
