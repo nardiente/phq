@@ -3,8 +3,6 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import Banner from '../components/Banner';
 import { SidebarMenu } from '../components/layout/SidebarMenu';
-import moment from 'moment';
-import { AddYourBoardModal } from '../components/AddYourBoardModal';
 import { SidePanel } from '../components/SidePanel';
 import Footer from '../components/Footer';
 import { onbordingPaths, PageType, pathExceptions } from '../types/app';
@@ -21,12 +19,11 @@ const AppRoute = () => {
     handleGetUser,
     isAuthenticated,
   } = useUser();
-  const { project, user } = userDetails ?? {};
+  const { project } = userDetails ?? {};
 
   const [currentPage, setCurrentPage] = useState<PageType>(
     pathname.slice(1) as PageType
   );
-  const [remindAddBoard, setRemindAddBoard] = useState<boolean | undefined>();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
@@ -69,21 +66,6 @@ const AppRoute = () => {
     }
   }, [loaded]);
 
-  useEffect(() => {
-    if (!is_public) {
-      setRemindAddBoard(
-        !is_public &&
-          project !== undefined &&
-          user &&
-          !user.stop_remind_add_board &&
-          (!user.remind_3_days ||
-            (user.remind_3_days &&
-              moment().diff(moment(user.remind_3_days_timestamp), 'minutes') >=
-                4320))
-      );
-    }
-  }, [user]);
-
   return (
     <div className="bg-white">
       {isAuthenticated() || (!isAuthenticated() && is_public) ? (
@@ -106,7 +88,6 @@ const AppRoute = () => {
                 />
               )}
               <Outlet />
-              <AddYourBoardModal open={remindAddBoard ?? false} />
             </div>
           </div>
         </>

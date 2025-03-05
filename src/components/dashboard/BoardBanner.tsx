@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Copy } from 'lucide-react';
 import { useBoardBanner } from '../../hooks/useBoardBanner';
 import { Toast } from '../Toast';
+import { useUser } from '../../contexts/UserContext';
 
 export function BoardBanner() {
-  const { isVisible, hideTemporarily, hidePermanently } = useBoardBanner();
+  const { isVisible, loading, hideTemporarily, hidePermanently } =
+    useBoardBanner();
+  const { user } = useUser();
+  const { project } = user ?? {};
+
   const [showCopyToast, setShowCopyToast] = useState(false);
 
   if (!isVisible) return null;
 
   const copyUrl = async () => {
-    await navigator.clipboard.writeText('testadmin01.producthq.io');
+    await navigator.clipboard.writeText(
+      `${project?.portal_subdomain ?? 'feedback'}.producthq.io`
+    );
     setShowCopyToast(true);
   };
 
@@ -33,7 +40,7 @@ export function BoardBanner() {
 
           <div className="inline-flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg">
             <span className="text-[14px] text-gray-600">
-              testadmin01.producthq.io
+              {`${project?.portal_subdomain ?? 'feedback'}.producthq.io`}
             </span>
             <button
               onClick={copyUrl}
@@ -49,12 +56,14 @@ export function BoardBanner() {
           <button
             onClick={hideTemporarily}
             className="text-[13px] text-gray-600 hover:text-gray-700"
+            disabled={loading}
           >
             Remind me in 3 days
           </button>
           <button
             onClick={hidePermanently}
             className="text-[13px] text-gray-600 hover:text-gray-700"
+            disabled={loading}
           >
             Close and don't show again
           </button>
