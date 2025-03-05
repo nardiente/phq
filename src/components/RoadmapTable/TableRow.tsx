@@ -115,10 +115,6 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
       ?.value || 1;
   const defaultConfidence = Confidence[Confidences.LOW];
 
-  console.log('item.impact:', item.impact);
-  console.log('impactOptions:', impactOptions);
-  console.log('defaultImpact:', defaultImpact);
-
   const scoreStyle: React.CSSProperties = {
     color: '#5a00cd',
     fontSize: '1.1em',
@@ -216,7 +212,7 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
         className="py-4 px-4 text-gray-700 w-32 text-sm"
         style={{ verticalAlign: 'middle' }}
       >
-        <StatusBadge status={item.status?.name ?? ''} />
+        <StatusBadge status={item.status?.name.toString() ?? ''} />
       </td>
       <td
         className="py-4 px-4 text-gray-700 w-24 text-sm"
