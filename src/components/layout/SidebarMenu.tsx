@@ -62,14 +62,7 @@ export function SidebarMenu({
   const company_info = is_public ? user?.admin_profile : user?.user;
 
   const mainMenuItems: MenuItem[] = [
-    {
-      icon: LayoutDashboard,
-      label: 'Dashboard',
-      id: 'dashboard',
-      disabled: false,
-      badge: <ComingSoon />,
-      opacity: 0.5,
-    },
+    { icon: LayoutDashboard, label: 'Dashboard', id: 'dashboard' },
     { icon: ThumbsUp, label: 'Upvotes', id: 'upvotes' },
     { icon: Map, label: 'Roadmap', id: 'roadmap' },
     { icon: Zap, label: "What's New", id: 'whatsnew' },
