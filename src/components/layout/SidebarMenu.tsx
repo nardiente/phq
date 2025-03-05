@@ -95,13 +95,7 @@ export function SidebarMenu({
       badge: <ComingSoon />,
       disabled: false,
     },
-    {
-      icon: Upload,
-      label: 'Import Ideas',
-      id: 'import',
-      badge: <ComingSoon />,
-      disabled: false,
-    },
+    { icon: Upload, label: 'Import Ideas', id: 'import' },
   ];
 
   const bottomMenuItems: MenuItem[] = [

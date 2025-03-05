@@ -2,9 +2,7 @@ import React from 'react';
 import DesignPage from '../components/design/DesignPage';
 
 const DesignSystem = () => {
-  return (
-    <DesignPage />
-  );
+  return <DesignPage />;
 };
 
 export default DesignSystem;

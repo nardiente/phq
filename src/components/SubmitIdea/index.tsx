@@ -269,6 +269,7 @@ export const SubmitIdea = () => {
           vote: result.vote,
           vote_on_behalf: result.vote_on_behalf,
           vote_on_behalf_id: result.vote_on_behalf_id,
+          index: selectedIdea?.index ?? 0,
         };
         updateIdea(updated_idea);
         updateIdeaInRoadmap(updated_idea.status_id ?? 0, updated_idea);
