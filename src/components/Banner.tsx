@@ -115,7 +115,9 @@ function Banner({ activeItem, onNavigate }: BannerProps) {
             <Button onClick={() => navigate('/sign-in')} variant="outline">
               Sign in
             </Button>
-            <Button onClick={() => navigate('/sign-up')}>Sign up</Button>
+            <Button onClick={() => navigate('/sign-up')}>
+              <div className="text-white">Sign up</div>
+            </Button>
           </>
         )}
         {!is_public && (
