@@ -14,9 +14,7 @@ import ColumnInput from '../../components/ui/column_input/ColumnInput';
 import ColumnOptionDropdown from '../../components/ui/dropdown/column_option_dropdown/ColumnOptionDropdown';
 import { RoadmapColor } from '../../types/roadmap';
 import { Permissions, RbacPermissions } from '../../types/common';
-import { AddYourBoardModal } from '../../components/AddYourBoardModal';
 import { PlusIcon } from '../../components/icons/plus.icon';
-import moment from 'moment';
 import { useUser } from '../../contexts/UserContext';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
@@ -701,21 +699,6 @@ export function RoadmapPage() {
           )}
         </div>
       </div>
-      <AddYourBoardModal
-        open={
-          (!is_public &&
-            user?.project !== undefined &&
-            user.user &&
-            !user.user.stop_remind_add_board &&
-            (!user.user.remind_3_days ||
-              (user.user.remind_3_days &&
-                moment().diff(
-                  moment(user.user?.remind_3_days_timestamp),
-                  'minutes'
-                ) >= 4320))) ??
-          false
-        }
-      />
     </Settings>
   );
 }

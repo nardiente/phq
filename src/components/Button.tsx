@@ -53,11 +53,11 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
     >
       <div
-        className={`overflow-hidden rounded-md px-5 py-[14px] flex gap-2.5 justify-center items-center relative ${getVariantStyles(variant, state)} ${className}`}
+        className={`overflow-hidden rounded-md px-5 py-[14px] flex justify-center items-center relative ${getVariantStyles(variant, state)} ${className}`}
       >
         <p className="text-[15px] leading-[18px] tracking-[0.005em] text-center">
           <span className="text-[15px] tracking-[0.005em] font-medium">
-            {loading ? 'Loading ...' : children}
+            {children}
           </span>
         </p>
       </div>

@@ -76,6 +76,8 @@ export const ResetPasswordForm: FC<{
           progress: undefined,
           theme: 'dark',
           className: 'custom-theme',
+          bodyClassName: 'p-2',
+          pauseOnFocusLoss: false,
         });
       }
 
@@ -95,6 +97,8 @@ export const ResetPasswordForm: FC<{
           progress: undefined,
           theme: 'dark',
           className: 'custom-theme',
+          bodyClassName: 'p-2',
+          pauseOnFocusLoss: false,
         });
       }
     });

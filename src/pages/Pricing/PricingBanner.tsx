@@ -105,9 +105,11 @@ export default function PricingBanner({
             hideProgressBar: true,
             closeOnClick: true,
             pauseOnHover: true,
+            pauseOnFocusLoss: false,
             draggable: true,
             progress: undefined,
             theme: 'dark',
+            bodyClassName: 'p-2',
             className: 'custom-theme',
           });
         }
@@ -244,7 +246,8 @@ export default function PricingBanner({
                             {plan?.monthly.plans[1].product.name}
                           </h6>
                           <p>
-                            Amplify your product insights as your team expands{' '}
+                            Amplify your product insights as your team
+                            expands{' '}
                           </p>
                           <h4>
                             ${plan?.monthly.plans[1].amount}/<span>month</span>{' '}
@@ -376,7 +379,8 @@ export default function PricingBanner({
                             {plan?.yearly.plans[1].product.name}
                           </h6>
                           <p>
-                            Amplify your product insights as your team expands{' '}
+                            Amplify your product insights as your team
+                            expands{' '}
                           </p>
                           <h4>
                             ${plan?.yearly.plans[1].amount}/<span>year</span>{' '}

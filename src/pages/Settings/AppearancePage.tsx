@@ -633,6 +633,8 @@ export default function AppearancePage() {
           progress: undefined,
           theme: 'dark',
           className: 'custom-theme',
+          bodyClassName: 'p-2',
+          pauseOnFocusLoss: false,
         });
       }
 

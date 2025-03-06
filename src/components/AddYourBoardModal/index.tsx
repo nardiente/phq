@@ -83,9 +83,11 @@ export const AddYourBoardModal = ({ open }: Props) => {
                         hideProgressBar: true,
                         closeOnClick: true,
                         pauseOnHover: true,
+                        pauseOnFocusLoss: false,
                         draggable: true,
                         progress: undefined,
                         theme: 'dark',
+                        bodyClassName: 'p-2',
                         className: 'custom-theme',
                       }
                     );

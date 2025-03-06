@@ -161,12 +161,11 @@ export default function DashboardPage() {
   });
 
   return (
-    <div className="flex-1 px-8 py-6" style={{ opacity: 0.5 }}>
+    <div className="flex-1 px-8 py-6">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-[28px] font-semibold text-gray-900">Dashboard</h1>
       </div>
 
-      <BoardBanner />
       <BoardBanner />
 
       <h2 className="text-lg font-semibold text-gray-900 mt-8 mb-4">

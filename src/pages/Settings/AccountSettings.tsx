@@ -44,6 +44,8 @@ export function AccountSettings() {
         position: 'bottom-center',
         theme: 'colored',
         type: 'error',
+        bodyClassName: 'p-2',
+        pauseOnFocusLoss: false,
       });
     }
   }, [api_error]);
@@ -81,6 +83,8 @@ export function AccountSettings() {
             icon: false,
             position: 'bottom-center',
             theme: 'dark',
+            bodyClassName: 'p-2',
+            pauseOnFocusLoss: false,
           });
           navigate('/sign-in');
         }
@@ -144,12 +148,14 @@ export function AccountSettings() {
 
             toast('Saved', {
               autoClose: 3000,
+              bodyClassName: 'p-2',
               className: 'bg-[#110733]',
               closeOnClick: true,
               hideProgressBar: true,
               icon: false,
               position: 'bottom-center',
               theme: 'dark',
+              pauseOnFocusLoss: false,
             });
           }
         })
@@ -166,7 +172,9 @@ export function AccountSettings() {
         title="Account Settings"
         primaryButton={
           <Button disabled={isLoading} loading={isLoading} onClick={onSubmit}>
-            <div className="text-white">Update</div>
+            <div className="text-white">
+              {isLoading ? 'Updating...' : 'Update'}
+            </div>
           </Button>
         }
         secondaryButton={

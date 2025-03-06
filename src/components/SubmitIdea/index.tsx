@@ -250,8 +250,10 @@ export const SubmitIdea = () => {
           hideProgressBar: true,
           closeOnClick: true,
           pauseOnHover: true,
+          pauseOnFocusLoss: false,
           draggable: false,
           theme: 'dark',
+          bodyClassName: 'p-2',
           className: 'custom-theme',
         });
         setSelectedOption(
@@ -278,8 +280,10 @@ export const SubmitIdea = () => {
             hideProgressBar: true,
             closeOnClick: true,
             pauseOnHover: true,
+            pauseOnFocusLoss: false,
             draggable: false,
             theme: 'colored',
+            bodyClassName: 'p-2',
             className: 'toast-success',
           }
         );

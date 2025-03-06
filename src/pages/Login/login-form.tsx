@@ -151,9 +151,11 @@ export const LoginForm = (props: LoginFormProps) => {
           hideProgressBar: true,
           closeOnClick: true,
           pauseOnHover: true,
+          pauseOnFocusLoss: false,
           draggable: true,
           progress: undefined,
           theme: 'dark',
+          bodyClassName: 'p-2',
           className: 'custom-theme',
         });
       }
@@ -259,9 +261,11 @@ export const LoginForm = (props: LoginFormProps) => {
               hideProgressBar: true,
               closeOnClick: true,
               pauseOnHover: true,
+              pauseOnFocusLoss: false,
               draggable: true,
               progress: undefined,
               theme: 'dark',
+              bodyClassName: 'p-2',
               className: 'custom-theme',
             });
             return;
@@ -272,9 +276,11 @@ export const LoginForm = (props: LoginFormProps) => {
             hideProgressBar: true,
             closeOnClick: true,
             pauseOnHover: true,
+            pauseOnFocusLoss: false,
             draggable: true,
             progress: undefined,
             theme: 'dark',
+            bodyClassName: 'p-2',
             className: 'custom-theme',
           });
         }
@@ -375,9 +381,11 @@ export const LoginForm = (props: LoginFormProps) => {
               hideProgressBar: true,
               closeOnClick: true,
               pauseOnHover: true,
+              pauseOnFocusLoss: false,
               draggable: true,
               progress: undefined,
               theme: 'dark',
+              bodyClassName: 'p-2',
               className: 'custom-theme',
             });
             break;
@@ -388,9 +396,11 @@ export const LoginForm = (props: LoginFormProps) => {
               hideProgressBar: true,
               closeOnClick: true,
               pauseOnHover: true,
+              pauseOnFocusLoss: false,
               draggable: true,
               progress: undefined,
               theme: 'dark',
+              bodyClassName: 'p-2',
               className: 'custom-theme-toast',
             });
             break;
@@ -417,8 +427,10 @@ export const LoginForm = (props: LoginFormProps) => {
               hideProgressBar: true,
               closeOnClick: true,
               pauseOnHover: true,
+              pauseOnFocusLoss: false,
               progress: undefined,
               theme: 'dark',
+              bodyClassName: 'p-2',
               className: 'custom-theme-toast',
             });
             break;
@@ -470,9 +482,11 @@ export const LoginForm = (props: LoginFormProps) => {
           hideProgressBar: true,
           closeOnClick: true,
           pauseOnHover: true,
+          pauseOnFocusLoss: false,
           draggable: true,
           progress: undefined,
           theme: 'dark',
+          bodyClassName: 'p-2',
           className: 'custom-theme',
         });
       }

@@ -317,6 +317,8 @@ export const SignUpForm: FC<SignUpFormProps> = ({ is_mobile, type }) => {
               progress: undefined,
               theme: 'dark',
               className: 'custom-theme',
+              bodyClassName: 'p-2',
+              pauseOnFocusLoss: false,
             });
           }
         })

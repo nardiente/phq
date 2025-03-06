@@ -98,14 +98,16 @@ export const AddNewUserModal = ({ open, title, onClose }: Props) => {
       }
       if (res.results.error) {
         toast('Vote on behalf of was not successful.', {
-          position: 'bottom-center',
           autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: false,
-          theme: 'dark',
+          bodyClassName: 'p-2',
           className: 'custom-theme',
+          closeOnClick: true,
+          draggable: false,
+          hideProgressBar: true,
+          pauseOnHover: true,
+          pauseOnFocusLoss: false,
+          position: 'bottom-center',
+          theme: 'dark',
         });
         return;
       }
@@ -114,8 +116,10 @@ export const AddNewUserModal = ({ open, title, onClose }: Props) => {
       setActivePage('add_comment');
 
       toast('The user has been successfully added to the upvote.', {
+        bodyClassName: 'p-2',
         className: 'toast-success',
         pauseOnHover: true,
+        pauseOnFocusLoss: false,
         closeOnClick: true,
         autoClose: 3000,
         position: 'bottom-center',

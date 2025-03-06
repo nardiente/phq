@@ -67,11 +67,11 @@ const InputField: React.FC<InputFieldProps> = ({
         )}
         {onClick !== undefined && (
           <Button
-            className="border-solid border rounded-l-[0px] rounded-r-lg h-10 flex justify-center items-center gap-2 text-[14px]"
+            className="border-solid border rounded-l-[0px] rounded-r-lg h-10 flex justify-center items-center text-[14px]"
             onClick={onClick}
-            variant="outline"
+            variant="white"
           >
-            <div className="flex gap-2">
+            <div className="flex gap-1">
               <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/updated_copy.svg" />
               Copy
             </div>

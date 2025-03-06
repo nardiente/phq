@@ -219,6 +219,8 @@ export default function ProjectDetailsPage() {
           progress: undefined,
           theme: 'dark',
           className: 'custom-theme',
+          bodyClassName: 'p-2',
+          pauseOnFocusLoss: false,
         });
       }
     });
@@ -252,6 +254,8 @@ export default function ProjectDetailsPage() {
           progress: undefined,
           theme: 'dark',
           className: 'custom-theme',
+          bodyClassName: 'p-2',
+          pauseOnFocusLoss: false,
         });
       }
     });
@@ -283,6 +287,8 @@ export default function ProjectDetailsPage() {
             progress: undefined,
             theme: 'dark',
             className: 'custom-theme',
+            bodyClassName: 'p-2',
+            pauseOnFocusLoss: false,
           });
         }
       })
@@ -311,6 +317,8 @@ export default function ProjectDetailsPage() {
           progress: undefined,
           theme: 'dark',
           className: 'custom-theme',
+          bodyClassName: 'p-2',
+          pauseOnFocusLoss: false,
         });
       }
       handleSetModal(idx);
@@ -380,6 +388,8 @@ export default function ProjectDetailsPage() {
           position: 'bottom-center',
           theme: 'dark',
           type: 'error',
+          bodyClassName: 'p-2',
+          pauseOnFocusLoss: false,
         });
       }
       const errors = res.results?.errors as ApiFieldError[];
@@ -450,6 +460,8 @@ export default function ProjectDetailsPage() {
           progress: undefined,
           theme: 'dark',
           className: 'custom-theme',
+          bodyClassName: 'p-2',
+          pauseOnFocusLoss: false,
         });
         setHasUnsavedChanges(false);
 
@@ -571,9 +583,11 @@ export default function ProjectDetailsPage() {
                 hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
+                pauseOnFocusLoss: false,
                 draggable: true,
                 progress: undefined,
                 theme: 'dark',
+                bodyClassName: 'p-2',
                 className: 'custom-theme',
               });
             }}
@@ -618,6 +632,8 @@ export default function ProjectDetailsPage() {
                 progress: undefined,
                 theme: 'dark',
                 className: 'custom-theme',
+                bodyClassName: 'p-2',
+                pauseOnFocusLoss: false,
               });
             }}
             placeholder="feedback.yoursite.com"

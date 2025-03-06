@@ -200,6 +200,8 @@ export default function TeamMembersPage() {
           progress: undefined,
           theme: 'dark',
           className: 'custom-theme',
+          bodyClassName: 'p-2',
+          pauseOnFocusLoss: false,
         });
       }
       handleSetModal(idx);
@@ -282,6 +284,8 @@ export default function TeamMembersPage() {
             progress: undefined,
             theme: 'dark',
             className: 'custom-theme',
+            bodyClassName: 'p-2',
+            pauseOnFocusLoss: false,
           });
           setButtonName('Invite');
           setToastMessage(<>Saved!</>);
@@ -340,6 +344,8 @@ export default function TeamMembersPage() {
               progress: undefined,
               theme: 'dark',
               className: 'custom-theme',
+              bodyClassName: 'p-2',
+              pauseOnFocusLoss: false,
             }
           );
         }

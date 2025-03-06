@@ -113,6 +113,8 @@ export default function BillingPage() {
               progress: undefined,
               theme: 'dark',
               className: 'custom-theme',
+              bodyClassName: 'p-2',
+              pauseOnFocusLoss: false,
             }
           );
         }
@@ -261,6 +263,8 @@ export default function BillingPage() {
             progress: undefined,
             theme: 'dark',
             className: 'custom-theme',
+            bodyClassName: 'p-2',
+            pauseOnFocusLoss: false,
           });
         }
         if (res.results.data) {
@@ -313,6 +317,8 @@ export default function BillingPage() {
             progress: undefined,
             theme: 'dark',
             className: 'custom-theme',
+            bodyClassName: 'p-2',
+            pauseOnFocusLoss: false,
           });
         }
         if (res.results.data) {
@@ -343,6 +349,8 @@ export default function BillingPage() {
             progress: undefined,
             theme: 'dark',
             className: 'custom-theme',
+            bodyClassName: 'p-2',
+            pauseOnFocusLoss: false,
           });
         }
         if (res.results.data) {

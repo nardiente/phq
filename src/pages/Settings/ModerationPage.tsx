@@ -68,6 +68,8 @@ export default function ModerationPage() {
             progress: undefined,
             theme: 'dark',
             className: 'custom-theme',
+            bodyClassName: 'p-2',
+            pauseOnFocusLoss: false,
           });
           if (data.data.notified === true) {
             socket?.emit('message', {
