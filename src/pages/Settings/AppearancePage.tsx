@@ -667,7 +667,7 @@ export default function AppearancePage() {
             loading={loading || loading_user}
             onClick={handleUpdate}
           >
-            <div className="text-white">{`Updat${loading ? 'ing' : 'e'}`}</div>
+            <div className="text-white">{`Updat${loading ? 'ing...' : 'e'}`}</div>
           </Button>
         }
         secondaryButton={

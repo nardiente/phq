@@ -174,7 +174,7 @@ export function AccountSettings() {
         primaryButton={
           <Button disabled={isLoading} loading={isLoading} onClick={onSubmit}>
             <div className="text-white">
-              {`Updat${isLoading ? 'ing' : 'e'}`}
+              {`Updat${isLoading ? 'ing...' : 'e'}`}
             </div>
           </Button>
         }
@@ -538,7 +538,7 @@ export function AccountSettings() {
             loading={isLoading}
             onClick={handleDeleteAccount}
           >
-            {`DELET${isDeleting ? 'ING' : 'E'} ACCOUNT`}
+            {`DELET${isDeleting ? 'ING...' : 'E'} ACCOUNT`}
           </Button>
         </div>
       </SettingsContainer>

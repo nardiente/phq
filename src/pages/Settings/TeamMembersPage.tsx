@@ -509,11 +509,13 @@ export default function TeamMembersPage() {
             variant="outline"
           >
             {loadingInvite
-              ? button_name === 'Resend'
-                ? `${button_name}ing`
-                : button_name === 'Save'
-                  ? 'Saving'
-                  : 'Inviting'
+              ? `${
+                  button_name === 'Resend'
+                    ? button_name
+                    : button_name === 'Save'
+                      ? 'Sav'
+                      : 'Invit'
+                }ing...`
               : button_name}
           </Button>
         </div>
