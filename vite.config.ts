@@ -5,21 +5,22 @@ import autoprefixer from 'autoprefixer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
-    autoprefixer(),
-  ],
+  plugins: [react()],
+  css: {
+    postcss: {
+      plugins: [tailwindcss(), autoprefixer()],
+    },
+  },
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
   server: {
     port: 5173,
-    host: true
+    host: true,
   },
   resolve: {
     alias: {
       '@': '/src',
     },
-  }
+  },
 });
