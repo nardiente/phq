@@ -32,6 +32,7 @@ export function AccountSettings() {
   const [image_type, setImageType] = useState<string>('');
 
   const [deleteConfirmation, setDeleteConfirmation] = useState('');
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -69,7 +70,7 @@ export function AccountSettings() {
   };
 
   const handleDeleteAccount = () => {
-    setIsLoading(true);
+    setIsDeleting(true);
     deletePortal();
     deleteApi<User>({ url: `users/hard-delete/${userDetails?.id}` })
       .then((res) => {
@@ -90,7 +91,7 @@ export function AccountSettings() {
         }
       })
       .finally(() => {
-        setIsLoading(false);
+        setIsDeleting(false);
       });
   };
 
@@ -173,7 +174,7 @@ export function AccountSettings() {
         primaryButton={
           <Button disabled={isLoading} loading={isLoading} onClick={onSubmit}>
             <div className="text-white">
-              {isLoading ? 'Updating...' : 'Update'}
+              {`Updat${isLoading ? 'ing' : 'e'}`}
             </div>
           </Button>
         }
@@ -295,7 +296,7 @@ export function AccountSettings() {
             />
           </div>
           <Button disabled={isLoading} loading={isLoading} variant="outline">
-            Reset password
+            {`Reset${isLoading ? 'ting' : ''} password`}
           </Button>
         </div>
 
@@ -533,11 +534,11 @@ export function AccountSettings() {
           />
           <Button
             className="w-fit px-4 py-2 bg-red-500 rounded-lg hover:bg-red-200 hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-[13px]"
-            disabled={deleteConfirmation !== 'DELETE' || isLoading}
+            disabled={deleteConfirmation !== 'DELETE' || isDeleting}
             loading={isLoading}
             onClick={handleDeleteAccount}
           >
-            DELETE ACCOUNT
+            {`DELET${isDeleting ? 'ING' : 'E'} ACCOUNT`}
           </Button>
         </div>
       </SettingsContainer>

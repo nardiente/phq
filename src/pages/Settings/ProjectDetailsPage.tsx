@@ -517,7 +517,7 @@ export default function ProjectDetailsPage() {
             loading={loading}
             onClick={handleUpdateProject}
           >
-            <div className="text-white">Update</div>
+            <div className="text-white">{`Updat${loading ? 'ing' : 'e'}`}</div>
           </Button>
         }
         secondaryButton={
@@ -877,7 +877,7 @@ export default function ProjectDetailsPage() {
                     onClick={handleInvite}
                     variant="outline"
                   >
-                    Invite
+                    {`Invit${loadingInvite ? 'ing' : 'e'}`}
                   </Button>
                 </div>
                 <div className="flex flex-col gap-6 settings-section">

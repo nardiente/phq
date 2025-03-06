@@ -508,7 +508,13 @@ export default function TeamMembersPage() {
             onClick={button_name === 'Save' ? onSubmitEdit : onSubmit}
             variant="outline"
           >
-            {button_name}
+            {loadingInvite
+              ? button_name === 'Resend'
+                ? `${button_name}ing`
+                : button_name === 'Save'
+                  ? 'Saving'
+                  : 'Inviting'
+              : button_name}
           </Button>
         </div>
 

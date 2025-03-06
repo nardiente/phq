@@ -95,7 +95,7 @@ export default function ModerationPage() {
             loading={loading}
             onClick={handleUpdate}
           >
-            <div className="text-white">Update</div>
+            <div className="text-white">{`Updat${loading ? 'ing' : 'e'}`}</div>
           </Button>
         }
         secondaryButton={
