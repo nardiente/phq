@@ -11,6 +11,7 @@ export interface Feedback {
   confidence?: Confidences;
   created_at?: Date;
   created_by?: number;
+  ctr?: number;
   customer_id?: number;
   description?: string;
   did_vote?: boolean;
@@ -24,6 +25,7 @@ export interface Feedback {
   not_administer?: boolean;
   pinned?: boolean;
   reach?: number;
+  reactions?: number;
   score?: number;
   status?: Status;
   status_id?: number;
@@ -31,6 +33,7 @@ export interface Feedback {
   title?: string;
   updated_at?: Date;
   updated_by?: number;
+  views?: number;
   vote: number;
   vote_on_behalf?: User;
   vote_on_behalf_id?: number;

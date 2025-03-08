@@ -1,17 +1,14 @@
-import {
-  LineChart,
-  RefreshCw,
-  ArrowUp,
-  ArrowDown,
-  Calendar,
-} from 'lucide-react';
+import { ArrowUp, ArrowDown, Calendar } from 'lucide-react';
 import { BoardBanner } from '../components/dashboard/BoardBanner';
 import { useEffect, useState } from 'react';
+import { useFeedback } from '../contexts/FeedbackContext';
 
 export default function DashboardPage() {
-  const [segments, setSegments] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [ideas, setIdeas] = useState([]);
+  const {
+    state: { ideas },
+    handleListFeedback,
+  } = useFeedback();
+
   const [whatsNewFilter, setWhatsNewFilter] = useState('all'); // Default filter
   const [ideasFilter, setIdeasFilter] = useState('all'); // Default filter for Ideas
   const [usersFilter, setUsersFilter] = useState('all'); // Default filter for Users
@@ -21,64 +18,64 @@ export default function DashboardPage() {
     // Fetch data from the server
     const fetchData = async () => {
       try {
-        const segmentsResponse = await fetch('http://localhost:3001/segments');
-        const segmentsData = await segmentsResponse.json();
-        setSegments(segmentsData);
-
-        const usersResponse = await fetch('http://localhost:3001/users');
-        const usersData = await usersResponse.json();
-        setUsers(usersData);
-
         // Fetch ideas from the same endpoint as UpvotesPage
-        const ideasResponse = await fetch('http://localhost:3001/feedback');
-        const ideasData = await ideasResponse.json();
-        setIdeas(ideasData);
+        await handleListFeedback(false);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
+
+    setWhatsNewFilter('all');
+    setIdeasFilter('all');
+    setUsersFilter('all');
   }, []);
 
-  const filterUsersBySegment = (segment) => {
-    return users.filter((user) => {
-      if (!segment.filters || typeof segment.filters !== 'object') {
-        return false; // Skip this segment if filters is not an object
-      }
-      return Object.keys(segment.filters).every((attribute) => {
-        const filter = segment.filters[attribute];
-        const value = user[attribute];
+  // const filterUsersBySegment = (segment: Segment) => {
+  //   return users.filter((user) => {
+  //     if (!segment.filters || typeof segment.filters !== 'object') {
+  //       return false; // Skip this segment if filters is not an object
+  //     }
+  //     return Object.keys(segment.filters).every((attribute) => {
+  //       const filter = segment.filters[attribute as Attributes];
+  //       const userAttribute =
+  //         CustomerAttributes.find(
+  //           (customerAttribute) => customerAttribute.label === attribute
+  //         )?.key ?? '';
+  //       const value = user[userAttribute as keyof User];
 
-        switch (filter.operator) {
-          case 'equals':
-            return String(value) === String(filter.filterValue);
-          case 'contains':
-            return String(value)
-              .toLowerCase()
-              .includes(String(filter.filterValue).toLowerCase());
-          case 'starts with':
-            return String(value)
-              .toLowerCase()
-              .startsWith(String(filter.filterValue).toLowerCase());
-          case 'ends with':
-            return String(value)
-              .toLowerCase()
-              .endsWith(String(filter.filterValue).toLowerCase());
-          case 'is greater than':
-            return Number(value) > Number(filter.filterValue);
-          case 'is less than':
-            return String(value) < String(filter.filterValue);
-          case 'is empty':
-            return !value;
-          case 'is not empty':
-            return !!value;
-          default:
-            return true;
-        }
-      });
-    });
-  };
+  //       if (filter) {
+  //         switch (filter.operator) {
+  //           case 'equals':
+  //             return String(value) === String(filter.filterValue);
+  //           case 'contains':
+  //             return String(value)
+  //               .toLowerCase()
+  //               .includes(String(filter.filterValue).toLowerCase());
+  //           case 'starts with':
+  //             return String(value)
+  //               .toLowerCase()
+  //               .startsWith(String(filter.filterValue).toLowerCase());
+  //           case 'ends with':
+  //             return String(value)
+  //               .toLowerCase()
+  //               .endsWith(String(filter.filterValue).toLowerCase());
+  //           case 'is greater than':
+  //             return Number(value) > Number(filter.filterValue);
+  //           case 'is less than':
+  //             return String(value) < String(filter.filterValue);
+  //           case 'is empty':
+  //             return !value;
+  //           case 'is not empty':
+  //             return !!value;
+  //           default:
+  //             return true;
+  //         }
+  //       }
+  //     });
+  //   });
+  // };
 
   const stats = [
     { label: 'Total Users', value: '1,200', change: '12%', trend: 'up' },
@@ -95,26 +92,26 @@ export default function DashboardPage() {
     { label: 'Conversion Rate', value: '8%', change: '10%', trend: 'up' },
   ];
 
-  const recentIdeas = [
-    { title: '[Example Idea] More colour options', votes: 1, date: '9 Oct' },
-    {
-      title: '[Example Idea] Pabbly Connect Integration',
-      votes: 0,
-      date: '9 Oct',
-    },
-    { title: '[Read Me] Change your Topics', votes: 0, date: '9 Oct' },
-    { title: '[Example Idea] Custom Domains', votes: 0, date: '9 Oct' },
-    {
-      title: "[Read Me] We've created a few example ideas for you",
-      votes: 1,
-      date: '9 Oct',
-    },
-  ];
+  // const recentIdeas = [
+  //   { title: '[Example Idea] More colour options', votes: 1, date: '9 Oct' },
+  //   {
+  //     title: '[Example Idea] Pabbly Connect Integration',
+  //     votes: 0,
+  //     date: '9 Oct',
+  //   },
+  //   { title: '[Read Me] Change your Topics', votes: 0, date: '9 Oct' },
+  //   { title: '[Example Idea] Custom Domains', votes: 0, date: '9 Oct' },
+  //   {
+  //     title: "[Read Me] We've created a few example ideas for you",
+  //     votes: 1,
+  //     date: '9 Oct',
+  //   },
+  // ];
 
-  const ideaStatusCounts = ideas.reduce((counts, item) => {
-    counts[item.status] = (counts[item.status] || 0) + 1;
-    return counts;
-  }, {});
+  // const ideaStatusCounts = ideas.reduce((counts, item) => {
+  //   counts[item.status] = (counts[item.status] || 0) + 1;
+  //   return counts;
+  // }, {});
 
   const sortedIdeas = [...ideas]
     .sort((a, b) => {
@@ -124,28 +121,28 @@ export default function DashboardPage() {
         case 'ctr':
           return (b.ctr || 0) - (a.ctr || 0);
         case 'comments':
-          return (b.commentCount || 0) - (a.commentCount || 0);
+          return (b.comment_count || 0) - (a.comment_count || 0);
         case 'reactions':
           return (b.reactions || 0) - (a.reactions || 0);
         default:
-          return (b.votes || 0) - (a.votes || 0); // Default to votes
+          return (b.vote || 0) - (a.vote || 0); // Default to votes
       }
     })
     .slice(0, 3);
 
   // Sort ideas by votes
   const mostVotedIdeas = [...ideas]
-    .sort((a, b) => (b.votes || 0) - (a.votes || 0))
+    .sort((a, b) => (b.vote || 0) - (a.vote || 0))
     .slice(0, 3);
 
   const filteredIdeas = ideas.filter((idea) => {
     switch (ideasFilter) {
       case 'active':
-        return idea.status === 'Active'; // Assuming you have a status property
+        return idea.status?.name === 'Active'; // Assuming you have a status property
       case 'shipped':
-        return idea.status === 'Shipped'; // Assuming you have a status property
+        return idea.status?.name === 'Shipped'; // Assuming you have a status property
       case 'votes':
-        return [...ideas].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+        return [...ideas].sort((a, b) => (b.vote || 0) - (a.vote || 0));
       default:
         return true; // All
     }
@@ -154,7 +151,7 @@ export default function DashboardPage() {
   const filteredCommentedIdeas = ideas.filter((idea) => {
     switch (usersFilter) {
       case 'recentComments':
-        return idea.commentCount > 0;
+        return idea.comment_count && idea.comment_count > 0;
       default:
         return true;
     }
@@ -168,7 +165,7 @@ export default function DashboardPage() {
 
       <BoardBanner />
 
-      <h2 className="text-lg font-semibold text-gray-900 mt-8 mb-4">
+      {/* <h2 className="text-lg font-semibold text-gray-900 mt-8 mb-4">
         User Segmentation
       </h2>
       <div className="grid grid-cols-3 gap-4">
@@ -189,7 +186,7 @@ export default function DashboardPage() {
             </div>
           );
         })}
-      </div>
+      </div> */}
 
       <div className="flex items-center justify-between mt-8 mb-4">
         <h2 className="text-lg font-semibold text-gray-900">Key Metrics</h2>

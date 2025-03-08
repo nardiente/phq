@@ -8,6 +8,7 @@ import {
 import { parseResponse, prepHeaders, processErrors } from './utils';
 import { Moderation } from '../../types/moderation';
 import { SavedWidget } from '../../types/savedWidget';
+import { Segment } from '../../types/segment';
 
 export const api_url = import.meta.env.VITE_API_HOST;
 export const api_public_url = import.meta.env.VITE_API_HOST_PUBLIC;
@@ -59,7 +60,7 @@ export const postApi = async <Data = any>({
   useOnboardingToken,
 }: {
   url: string;
-  payload?: Payload | SavedWidget;
+  payload?: Payload | SavedWidget | Partial<Segment>;
   pub?: boolean;
   useCustomerKey?: boolean;
   useSessionToken?: boolean;
@@ -120,7 +121,7 @@ export const patchApi = async <Data = any>(url: string, payload?: Payload) => {
 
 export const putApi = async <Data = any>(
   url: string,
-  payload?: Payload | Moderation | Partial<SavedWidget>
+  payload?: Payload | Moderation | Partial<SavedWidget | Segment>
 ) => {
   let results: ApiResponseBody<Data> = {};
   let headers: ApiResponseHeaders;

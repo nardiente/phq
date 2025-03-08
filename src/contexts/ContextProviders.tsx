@@ -9,6 +9,7 @@ import { SocketProvider } from './SocketContext';
 import { PanelProvider } from './PanelContext';
 import { OnboardingProvider } from './OnboardingContext';
 import { AppProvider } from './AppContext';
+import { SegmentProvider } from './SegmentContext/SegmentProvider';
 
 type ContextProvidersProps = { children: ReactNode };
 
@@ -24,7 +25,7 @@ const ContextProviders: React.FC<ContextProvidersProps> = ({ children }) => {
                   <SocketProvider>
                     <DropdownProvider>
                       <UnsavedChangesProvider>
-                        {children}
+                        <SegmentProvider>{children}</SegmentProvider>
                       </UnsavedChangesProvider>
                     </DropdownProvider>
                   </SocketProvider>

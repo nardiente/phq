@@ -46,6 +46,8 @@ interface UserContextType {
   isAuthenticated: () => boolean;
   loaded: boolean;
   setLoaded: Dispatch<SetStateAction<boolean>>;
+  users: User[];
+  listUsers: () => Promise<void>;
 }
 
 const initialUser: UserContextConfig = {
@@ -79,6 +81,8 @@ const UserContext = createContext<UserContextType>({
   isAuthenticated: () => false,
   loaded: false,
   setLoaded: () => {},
+  users: [],
+  listUsers: async () => Promise.resolve(),
 });
 
 interface UserProviderProps {
@@ -95,6 +99,7 @@ export function UserProvider({ children }: UserProviderProps) {
   const [email, setEmail] = useState<string>('');
   const [loading_social, setLoadingSocial] = useState<boolean>(false);
   const [loaded, setLoaded] = useState<boolean>(false);
+  const [users, setUsers] = useState<User[]>([]);
 
   const handleGetUser = async () => {
     setFetching(true);
@@ -121,6 +126,19 @@ export function UserProvider({ children }: UserProviderProps) {
     return getKaslKey() !== undefined;
   };
 
+  const listUsers = async () => {
+    setFetching(true);
+    getApi<User[]>({ url: 'users' })
+      .then((res) => {
+        const { results } = res ?? {};
+        const { data } = results ?? {};
+        if (data) {
+          setUsers(data);
+        }
+      })
+      .finally(() => setFetching(false));
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -144,6 +162,8 @@ export function UserProvider({ children }: UserProviderProps) {
         isAuthenticated,
         loaded,
         setLoaded,
+        users,
+        listUsers,
       }}
     >
       {children}

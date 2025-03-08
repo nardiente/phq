@@ -2,42 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { Attributes, CustomerAttributes } from '../types/segment';
 
 interface AttributeSidebarProps {
   onFilterChange: (
-    filters: { [key: string]: any },
-    selectedAttributes: { [key: string]: boolean }
+    newFilters: {
+      [key in Attributes]?: { operator: string; filterValue: string };
+    },
+    newSelectedAttributes: {
+      [key in Attributes]?: boolean;
+    }
   ) => void;
   onClear: () => void;
-  currentSelectedAttributes?: { [key: string]: boolean };
-  currentFilters?: { [key: string]: any };
+  currentSelectedAttributes?: { [key in Attributes]?: boolean };
+  currentFilters?: {
+    [key in Attributes]?: { operator: string; filterValue: string };
+  };
   onCancel: () => void;
   onSave: () => void;
 }
-
-const ATTRIBUTES = [
-  'User ID',
-  'Full Name',
-  'Email',
-  'Phone',
-  'Signed Up',
-  'Subscription',
-  'Last seen',
-  'Status',
-  'Lifetime Value',
-  'Job Title',
-  'Last login',
-  'Idea count',
-  'Comment count',
-  'Vote count',
-  'Company Name',
-  'Company Created At',
-  'Monthly Spend',
-  'New Users',
-  'Active Users',
-  'High-Value Customers',
-  'Churn Risk',
-];
 
 const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
   onFilterChange,
@@ -52,10 +35,12 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
     expandedAttributes: {} as { [key: string]: boolean },
   });
 
-  const [selectedAttributes, setSelectedAttributes] = useState(
-    currentSelectedAttributes || {}
-  );
-  const [filters, setFilters] = useState(currentFilters || {});
+  const [selectedAttributes, setSelectedAttributes] = useState<{
+    [key in Attributes]?: boolean;
+  }>(currentSelectedAttributes || {});
+  const [filters, setFilters] = useState<{
+    [key in Attributes]?: { operator: string; filterValue: string };
+  }>(currentFilters || {});
   const [dateRange, setDateRange] = useState<{
     [key: string]: { startDate: Date | null; endDate: Date | null };
   }>({});
@@ -64,8 +49,6 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
     setSelectedAttributes(currentSelectedAttributes || {});
     setFilters(currentFilters || {});
   }, [currentSelectedAttributes, currentFilters]);
-
-  const attributes = ATTRIBUTES;
 
   const getOperatorsForAttribute = (attribute: string) => {
     switch (attribute) {
@@ -100,8 +83,8 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
   };
 
   const updateFilters = (
-    attribute: string,
-    newSelectedAttributes: { [key: string]: boolean }
+    attribute: Attributes,
+    newSelectedAttributes: { [key in Attributes]?: boolean }
   ) => {
     if (!newSelectedAttributes[attribute]) {
       const newFilters = { ...filters };
@@ -114,23 +97,19 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
   const handleCheckboxChange = (attribute: string) => {
     const newSelectedAttributes = {
       ...selectedAttributes,
-      [attribute]: !selectedAttributes[attribute],
+      [attribute]: !selectedAttributes?.[attribute as Attributes],
     };
     setSelectedAttributes(newSelectedAttributes);
 
-    const newFilters = updateFilters(attribute, newSelectedAttributes);
-
-    console.log('handleCheckboxChange - attribute:', attribute);
-    console.log('handleCheckboxChange - newFilters:', newFilters);
-    console.log(
-      'handleCheckboxChange - newSelectedAttributes:',
+    const newFilters = updateFilters(
+      attribute as Attributes,
       newSelectedAttributes
     );
 
     onFilterChange(newFilters, newSelectedAttributes);
   };
 
-  const handleOperatorChange = (attribute: string, operator: string) => {
+  const handleOperatorChange = (attribute: Attributes, operator: string) => {
     const newFilters = {
       ...filters,
       [attribute]: {
@@ -140,14 +119,10 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
     };
     setFilters(newFilters);
 
-    console.log('handleOperatorChange - attribute:', attribute);
-    console.log('handleOperatorChange - operator:', operator);
-    console.log('handleOperatorChange - newFilters:', newFilters);
-
     onFilterChange(newFilters, selectedAttributes);
   };
 
-  const handleValueChange = (attribute: string, filterValue: string) => {
+  const handleValueChange = (attribute: Attributes, filterValue: string) => {
     const newFilters = {
       ...filters,
       [attribute]: {
@@ -157,15 +132,11 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
     };
     setFilters(newFilters);
 
-    console.log('handleValueChange - attribute:', attribute);
-    console.log('handleValueChange - filterValue:', filterValue);
-    console.log('handleValueChange - newFilters:', newFilters);
-
     onFilterChange(newFilters, selectedAttributes);
   };
 
   const handleDateChange = (
-    attribute: string,
+    attribute: Attributes,
     date: Date | null,
     type: 'startDate' | 'endDate'
   ) => {
@@ -194,17 +165,7 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
     onClear();
   };
 
-  // const handleCancel = () => {
-  //   setSelectedAttributes(currentSelectedAttributes || {});
-  //   setFilters(currentFilters || {});
-  //   onCancel();
-  // };
-
-  // const handleSave = () => {
-  //   onSave();
-  // };
-
-  const renderFilterInput = (attribute: string) => {
+  const renderFilterInput = (attribute: Attributes) => {
     if (filters[attribute]?.operator === 'between') {
       return (
         <div className="flex space-x-2">
@@ -255,7 +216,7 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
   };
 
   return (
-    <div className="w-72 flex flex-col h-screen">
+    <div className="w-72 flex flex-col">
       <div className="p-4 border-r border-gray-200 overflow-y-auto flex-grow">
         <h2 className="text-lg font-semibold mb-4">Customer Attributes</h2>
 
@@ -271,56 +232,50 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
         </div>
 
         <div className="space-y-2">
-          {attributes
-            .filter((attr) =>
-              attr.toLowerCase().includes(state.searchTerm.toLowerCase())
-            )
-            .map((attribute) => {
-              const isSelected = selectedAttributes[attribute];
-              return (
-                <div
-                  key={attribute}
-                  className={`rounded-lg ${isSelected ? 'bg-purple-50' : ''}`}
-                >
-                  <div className="p-3">
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={isSelected || false}
-                        onChange={() => handleCheckboxChange(attribute)}
-                        className="mr-3"
-                      />
-                      <span className="text-gray-700">
-                        {capitalizeWords(attribute)}
-                      </span>
-                    </label>
+          {CustomerAttributes.filter((attr) =>
+            attr.label.toLowerCase().includes(state.searchTerm.toLowerCase())
+          ).map((attribute) => {
+            const isSelected = selectedAttributes[attribute.label];
+            return (
+              <div
+                key={attribute.key}
+                className={`rounded-lg ${isSelected ? 'bg-purple-50' : ''}`}
+              >
+                <div className="p-3">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={isSelected || false}
+                      onChange={() => handleCheckboxChange(attribute.label)}
+                      className="mr-3"
+                    />
+                    <span className="text-gray-700">
+                      {capitalizeWords(attribute.label)}
+                    </span>
+                  </label>
 
-                    {isSelected && (
-                      <div className="mt-3 space-y-2">
-                        <select
-                          className="w-full p-2 border rounded-md text-gray-700"
-                          value={filters[attribute]?.operator || 'equals'}
-                          onChange={(e) =>
-                            handleOperatorChange(attribute, e.target.value)
-                          }
-                        >
-                          {getOperatorsForAttribute(attribute).map((op) => (
-                            <option
-                              key={op}
-                              value={op}
-                              className="text-gray-700"
-                            >
-                              {op}
-                            </option>
-                          ))}
-                        </select>
-                        {renderFilterInput(attribute)}
-                      </div>
-                    )}
-                  </div>
+                  {isSelected && (
+                    <div className="mt-3 space-y-2">
+                      <select
+                        className="w-full p-2 border rounded-md text-gray-700"
+                        value={filters[attribute.label]?.operator || 'equals'}
+                        onChange={(e) =>
+                          handleOperatorChange(attribute.label, e.target.value)
+                        }
+                      >
+                        {getOperatorsForAttribute(attribute.label).map((op) => (
+                          <option key={op} value={op} className="text-gray-700">
+                            {op}
+                          </option>
+                        ))}
+                      </select>
+                      {renderFilterInput(attribute.label)}
+                    </div>
+                  )}
                 </div>
-              );
-            })}
+              </div>
+            );
+          })}
         </div>
       </div>
       <div className="bg-gray-50 border-t border-gray-200 p-4 border-gray-200 border-r flex-grow-0">

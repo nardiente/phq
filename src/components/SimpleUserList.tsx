@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { ArrowUp, ArrowDown } from 'lucide-react';
+import { Attributes, CustomerAttributes } from '../types/segment';
 
 interface SimpleUserListProps {
   users: any[];
-  selectedAttributes: { [key: string]: boolean };
+  selectedAttributes: { [key in Attributes]?: boolean };
 }
 
 const SimpleUserList: React.FC<SimpleUserListProps> = ({
@@ -12,7 +13,7 @@ const SimpleUserList: React.FC<SimpleUserListProps> = ({
 }) => {
   const attributesToShow = useMemo(() => {
     return Object.keys(selectedAttributes).filter(
-      (key) => selectedAttributes[key]
+      (key) => selectedAttributes?.[key as Attributes]
     );
   }, [selectedAttributes]);
 
@@ -121,25 +122,27 @@ const SimpleUserList: React.FC<SimpleUserListProps> = ({
     });
   }, [users, sortBy, sortOrder]);
 
-  console.log('Attributes to show:', attributesToShow);
-
   const columns = useMemo(
     () =>
-      attributesToShow.map((attribute) => ({
-        key: attribute,
-        title: attribute,
-        sortable: true,
-        width: columnWidths[attribute] || 150,
-      })),
+      attributesToShow.map((attribute) => {
+        const userAttribute =
+          CustomerAttributes.find(
+            (customerAttribute) => customerAttribute.label === attribute
+          )?.key ?? '';
+
+        return {
+          key: userAttribute,
+          title: attribute,
+          sortable: true,
+          width: columnWidths[attribute] || 150,
+        };
+      }),
     [attributesToShow, columnWidths]
   );
 
   return (
-    <div style={{ overflowX: 'auto', width: '100%', paddingLeft: '10px' }}>
-      <table
-        style={{ width: 'auto', tableLayout: 'auto', minWidth: '1024px' }}
-        ref={tableRef}
-      >
+    <div className="flex overflow-auto w-full pl-[10px]">
+      <table className="w-auto table-auto min-w-[1024px]" ref={tableRef}>
         <thead>
           <tr>
             {columns.map((column) => (
@@ -158,7 +161,7 @@ const SimpleUserList: React.FC<SimpleUserListProps> = ({
                 }}
               >
                 <div
-                  style={{ display: 'flex', alignItems: 'center' }}
+                  className="flex justify-between"
                   onClick={() => handleSort(column.key)}
                 >
                   <span>{column.title}</span>
@@ -186,27 +189,24 @@ const SimpleUserList: React.FC<SimpleUserListProps> = ({
           </tr>
         </thead>
         <tbody>
-          {sortedUsers.map((user, index) => {
-            console.log('User:', user);
-            return (
-              <tr key={index}>
-                {columns.map((column) => (
-                  <td
-                    key={column.key}
-                    style={{
-                      padding: '0.5rem',
-                      borderBottom: '1px solid #ddd',
-                      whiteSpace: 'normal',
-                      fontFamily: 'sans-serif',
-                      color: '#718096',
-                    }}
-                  >
-                    {String(user[column.key])}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
+          {sortedUsers.map((user, index) => (
+            <tr key={index}>
+              {columns.map((column) => (
+                <td
+                  key={column.key}
+                  style={{
+                    padding: '0.5rem',
+                    borderBottom: '1px solid #ddd',
+                    whiteSpace: 'normal',
+                    fontFamily: 'sans-serif',
+                    color: '#718096',
+                  }}
+                >
+                  {String(user[column.key] ?? '')}
+                </td>
+              ))}
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

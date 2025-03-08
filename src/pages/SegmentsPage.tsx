@@ -1,22 +1,31 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import AttributeSidebar from '../components/AttributeSidebar';
 import SegmentHeader from '../components/SegmentHeader';
 import SimpleUserList from '../components/SimpleUserList';
 import { User } from '../types/user';
-import { Segment } from '../types/segment';
-import SaveSegmentModal from '../components/Modal/SaveSegmentModal';
-import DeleteConfirmationModal from '../components/Modal/DeleteConfirmationModal';
+import { Attributes, CustomerAttributes, Segment } from '../types/segment';
+import { useSegment } from '../contexts/SegmentContext/SegmentProvider';
+import { useUser } from '../contexts/UserContext';
 
 export default function SegmentsPage() {
-  const [users, setUsers] = useState<User[]>([]);
+  const {
+    state: { segments },
+    addSegment,
+    deleteSegment,
+    listSegments,
+    updateSegment,
+  } = useSegment();
+  const { users, listUsers } = useUser();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedAttributes, setSelectedAttributes] = useState<{
-    [key: string]: boolean;
+    [key in Attributes]?: boolean;
   }>({});
-  const [filters, setFilters] = useState<{ [key: string]: any }>({});
-  const [savedSegments, setSavedSegments] = useState<Segment[]>([]);
-  const [currentSegment, setCurrentSegment] = useState<Segment | null>(null);
+  const [filters, setFilters] = useState<{
+    [key in Attributes]?: { operator: string; filterValue: string };
+  }>({});
+  const [currentSegment, setCurrentSegment] = useState<Partial<Segment>>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [deleteModal, setDeleteModal] = useState({
@@ -24,24 +33,22 @@ export default function SegmentsPage() {
     segmentId: '',
     segmentName: '',
   });
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
   console.log('Users:', users);
   console.log('Search term:', searchTerm);
   console.log('Search results:', searchResults);
   console.log('Selected attributes:', selectedAttributes);
   console.log('Filters:', filters);
-  console.log('Saved segments:', savedSegments);
+  console.log('Saved segments:', segments);
   console.log('Current segment:', currentSegment);
   console.log('Is modal open:', isModalOpen);
   console.log('Has unsavedChanges:', hasUnsavedChanges);
+  console.log('deleteModal:', deleteModal);
 
   const fetchUsers = async () => {
     try {
-      const usersResponse = await fetch('http://localhost:3001/users');
-      const usersData = await usersResponse.json();
-      console.log('Fetched users data:', usersData);
-      setUsers(usersData || []);
-      setSearchResults(usersData || []);
+      await listUsers();
     } catch (error) {
       console.error('Error loading users data:', error);
     }
@@ -49,39 +56,55 @@ export default function SegmentsPage() {
 
   const fetchSegments = async () => {
     try {
-      const segmentsResponse = await fetch('http://localhost:3001/segments');
-      const segmentsData = await segmentsResponse.json();
-      console.log('Fetched segments data:', segmentsData);
-      setSavedSegments(segmentsData || []);
-      console.log('Saved segments after fetch:', savedSegments);
+      await listSegments();
     } catch (error) {
       console.error('Error loading segments data:', error);
     }
   };
 
   useEffect(() => {
+    setDeleteModal({ isOpen: false, segmentId: '', segmentName: '' });
+    setIsModalOpen(false);
+    setSearchTerm('');
+
     fetchUsers();
     fetchSegments();
+
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const filtered = useMemo(() => {
     console.log('Filtering and searching...');
-    let filtered = [...users];
+    let filtered = users;
 
     // Apply filters
     filtered = filtered.filter((user) => {
       return Object.keys(filters).every((attribute) => {
-        const filter = filters[attribute];
-        const value = user[attribute];
+        const filter = filters[attribute as Attributes];
+        const userAttribute =
+          CustomerAttributes.find(
+            (customerAttribute) => customerAttribute.label === attribute
+          )?.key ?? '';
+        const value = user[userAttribute as keyof User];
 
-        console.log('Filter:', filter);
-        console.log('Value:', value);
+        const { operator, filterValue } = filter ?? {};
 
-        if (!filter || !filter.operator) {
+        if (
+          !operator ||
+          operator.length === 0 ||
+          !filterValue ||
+          filterValue.length === 0
+        ) {
           return true;
         }
-
-        const { operator, filterValue } = filter;
 
         switch (operator) {
           case 'equals':
@@ -113,12 +136,12 @@ export default function SegmentsPage() {
     });
 
     // Apply search
-    if (searchTerm) {
+    if (searchTerm.length > 0) {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter((user) =>
         Object.keys(selectedAttributes).some((attribute) => {
-          if (selectedAttributes[attribute]) {
-            const value = user[attribute];
+          if (selectedAttributes?.[attribute as Attributes]) {
+            const value = user[attribute as keyof User];
             return String(value).toLowerCase().includes(term);
           }
           return false;
@@ -150,7 +173,7 @@ export default function SegmentsPage() {
   };
 
   const handleClear = () => {
-    setCurrentSegment(null);
+    setCurrentSegment(undefined);
     setFilters({});
     setSelectedAttributes({});
     setHasUnsavedChanges(false);
@@ -166,28 +189,14 @@ export default function SegmentsPage() {
   };
 
   const handleSaveSegment = async (segmentName: string) => {
-    const newSegment: Segment = {
-      id: Math.random().toString(36).substring(7),
+    const newSegment: Partial<Segment> = {
       name: segmentName,
       filters: filters,
       selectedAttributes: selectedAttributes,
     };
 
     try {
-      const response = await fetch('http://localhost:3001/segments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newSegment),
-      });
-
-      console.log('Save segment response:', response);
-
-      const updatedSegments = [...savedSegments, newSegment];
-
-      setSavedSegments(updatedSegments);
-      console.log('Saved segments:', updatedSegments);
+      await addSegment(newSegment);
       setCurrentSegment(newSegment);
       setHasUnsavedChanges(false);
     } catch (error) {
@@ -198,7 +207,7 @@ export default function SegmentsPage() {
   const handleUpdateSegment = async () => {
     if (!currentSegment) return;
 
-    const updatedSegment: Segment = {
+    const updatedSegment: Partial<Segment> = {
       id: currentSegment.id,
       name: currentSegment.name,
       filters: filters,
@@ -206,31 +215,7 @@ export default function SegmentsPage() {
     };
 
     try {
-      const response = await fetch(
-        `http://localhost:3001/segments/${currentSegment.id}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updatedSegment),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const updatedSegments = savedSegments.map((segment: any) => {
-        if (segment[0] && segment[0].id === currentSegment.id) {
-          segment[0] = updatedSegment;
-        } else if (segment.id === currentSegment.id) {
-          return updatedSegment;
-        }
-        return segment;
-      });
-
-      setSavedSegments(updatedSegments);
+      await updateSegment(updatedSegment);
       setCurrentSegment(updatedSegment);
       setHasUnsavedChanges(false);
     } catch (error) {
@@ -238,24 +223,9 @@ export default function SegmentsPage() {
     }
   };
 
-  const handleDeleteSegment = async (segmentId: string) => {
+  const handleDeleteSegment = async (id: number) => {
     try {
-      const response = await fetch(
-        `http://localhost:3001/segments/${segmentId}`,
-        {
-          method: 'DELETE',
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const updatedSegments = savedSegments.filter(
-        (segment) => segment.id !== segmentId
-      );
-      setSavedSegments(updatedSegments);
-      setCurrentSegment(null);
+      await deleteSegment(id).finally(() => handleClear());
     } catch (error) {
       console.error('Error deleting segment:', error);
     }
@@ -270,7 +240,7 @@ export default function SegmentsPage() {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
+    <div className="flex" style={{ height: 'calc(100vh - 60px)' }}>
       <AttributeSidebar
         onFilterChange={handleFilterChange}
         onClear={handleClear}
@@ -279,12 +249,15 @@ export default function SegmentsPage() {
         onCancel={handleCancel}
         onSave={handleSave}
       />
-      <div style={{ flex: 1, overflowY: 'auto', height: '100%' }}>
+      <div
+        className="flex flex-col"
+        style={{ width: `${screenWidth - 475}px` }}
+      >
         <SegmentHeader
           onSaveSegment={handleSaveSegment}
           onUpdateSegment={handleUpdateSegment}
           onSaveAsNewSegment={() => {}}
-          savedSegments={savedSegments}
+          savedSegments={segments}
           onSelectSegment={handleSelectSegment}
           onDeleteSegment={handleDeleteSegment}
           currentSegment={currentSegment}
