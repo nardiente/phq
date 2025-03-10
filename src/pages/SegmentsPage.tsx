@@ -6,6 +6,7 @@ import { User } from '../types/user';
 import { Attributes, CustomerAttributes, Segment } from '../types/segment';
 import { useSegment } from '../contexts/SegmentContext/SegmentProvider';
 import { useUser } from '../contexts/UserContext';
+import moment from 'moment';
 
 export default function SegmentsPage() {
   const {
@@ -93,9 +94,10 @@ export default function SegmentsPage() {
           CustomerAttributes.find(
             (customerAttribute) => customerAttribute.label === attribute
           )?.key ?? '';
-        const value = user[userAttribute as keyof User];
+        let value = user[userAttribute as keyof User];
 
-        const { operator, filterValue } = filter ?? {};
+        const { operator } = filter ?? {};
+        let { filterValue } = filter ?? {};
 
         if (
           !operator ||
@@ -104,6 +106,19 @@ export default function SegmentsPage() {
           filterValue.length === 0
         ) {
           return true;
+        }
+
+        switch (userAttribute) {
+          case 'registered_at':
+          case 'last_seen':
+          case 'logged_in_at':
+          case 'company_created_at': {
+            value = moment(value?.toString()).unix().toString();
+            filterValue = moment(filterValue.toString()).unix().toString();
+            break;
+          }
+          default:
+            break;
         }
 
         switch (operator) {
