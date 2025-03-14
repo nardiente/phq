@@ -91,6 +91,7 @@ export default function ModerationPage() {
         title="Account Settings"
         primaryButton={
           <Button
+            className="bg-[#ff6334]"
             disabled={fetching || loading}
             loading={loading}
             onClick={handleUpdate}

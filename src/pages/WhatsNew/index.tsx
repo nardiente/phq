@@ -158,37 +158,29 @@ export const WhatsNewPage = () => {
         <Settings className="pb-0">
           <SettingsHeader
             title="What's New"
-            filter={
-              <div
-                className="flex justify-end"
-                style={{ width: is_public ? '90%' : '80%' }}
-              >
-                <div className="field is-grouped">
-                  <WhatsNewFilter
-                    listChangeType={listChangeType}
-                    change_types={change_types}
-                    listWhatsNew={listWhatsNew}
-                  />
-                </div>
-              </div>
-            }
             primaryButton={
-              !is_public ? (
-                <Button
-                  disabled={
-                    !permissions?.includes(Permissions.ADD_POST) ||
-                    permissions?.length === 0
-                  }
-                  onClick={() => openPostForm(undefined)}
-                >
-                  <div className="flex gap-2 text-white">
-                    <Plus size={16} />
-                    New Post
-                  </div>
-                </Button>
-              ) : (
-                <></>
-              )
+              <>
+                <WhatsNewFilter
+                  listChangeType={listChangeType}
+                  change_types={change_types}
+                  listWhatsNew={listWhatsNew}
+                />
+                {!is_public && (
+                  <Button
+                    className="bg-[#ff6334]"
+                    disabled={
+                      !permissions?.includes(Permissions.ADD_POST) ||
+                      permissions?.length === 0
+                    }
+                    onClick={() => openPostForm(undefined)}
+                  >
+                    <div className="flex gap-2 text-white">
+                      <Plus size={16} />
+                      New Post
+                    </div>
+                  </Button>
+                )}
+              </>
             }
           />
           {(!posts ||

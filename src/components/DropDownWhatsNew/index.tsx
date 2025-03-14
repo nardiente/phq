@@ -57,16 +57,15 @@ export const DropdownWhatsNew: FC<{
             props.content_container_class
               ? ` ${props.content_container_class}`
               : ''
-          }`}
+          } right-0 left-auto`}
           id="dropdown-menu"
           onClick={toggle}
           role="menu"
-          style={{ left: 0 }}
         >
           <div
             className={`dropdown-content${
               props.content_class ? ` ${props.content_class}` : ''
-            }`}
+            } right-0`}
             style={{ width: '230px' }}
           >
             {props.content}

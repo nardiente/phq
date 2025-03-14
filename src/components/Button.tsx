@@ -9,6 +9,7 @@ interface ButtonProps {
   disabled?: boolean;
   loading?: boolean;
   onClick?: () => void;
+  pClassName?: string;
   state?: ButtonState;
   variant?: ButtonVariant;
 }
@@ -19,6 +20,7 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   loading = false,
   onClick,
+  pClassName = '',
   state = 'default',
   variant = 'solid',
 }) => {
@@ -53,9 +55,14 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
     >
       <div
-        className={`overflow-hidden rounded-md px-5 py-[14px] flex justify-center items-center relative ${getVariantStyles(variant, state)} ${className}`}
+        className={`overflow-hidden rounded-md px-4 py-2 flex justify-center items-center relative ${getVariantStyles(variant, state)} ${className}`}
       >
-        <p className="text-[15px] leading-[18px] tracking-[0.005em] text-center">
+        <p
+          className={
+            'text-[15px] leading-[18px] tracking-[0.005em] text-center ' +
+            pClassName
+          }
+        >
           <span className="text-[15px] tracking-[0.005em] font-medium">
             {children}
           </span>

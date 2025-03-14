@@ -94,17 +94,20 @@ export default function Widgets() {
         description="Create and manage your widgets."
         secondaryButton={
           <Button
+            pClassName="text-white"
             onClick={() => {
               setIsGetCodeModalOpen(true);
               setSelectedWidgetKey('your-widget-key'); // We'll need the actual key here
             }}
-            variant="outline"
           >
             Get Code
           </Button>
         }
         primaryButton={
-          <Button onClick={() => navigate('/widgets/page')}>
+          <Button
+            className="bg-[#ff6334]"
+            onClick={() => navigate('/widgets/page')}
+          >
             <div className="flex gap-2 text-white">
               <span className="mr-2">+</span> Create New
             </div>

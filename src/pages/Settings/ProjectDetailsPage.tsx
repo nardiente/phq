@@ -513,6 +513,7 @@ export default function ProjectDetailsPage() {
         title="Account Settings"
         primaryButton={
           <Button
+            className="bg-[#ff6334]"
             disabled={loading}
             loading={loading}
             onClick={handleUpdateProject}

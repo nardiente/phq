@@ -172,7 +172,12 @@ export function AccountSettings() {
       <SettingsHeader
         title="Account Settings"
         primaryButton={
-          <Button disabled={isLoading} loading={isLoading} onClick={onSubmit}>
+          <Button
+            className="bg-[#ff6334]"
+            disabled={isLoading}
+            loading={isLoading}
+            onClick={onSubmit}
+          >
             <div className="text-white">
               {`Updat${isLoading ? 'ing...' : 'e'}`}
             </div>

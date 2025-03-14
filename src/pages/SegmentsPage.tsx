@@ -265,8 +265,8 @@ export default function SegmentsPage() {
         onSave={handleSave}
       />
       <div
-        className="flex flex-col"
-        style={{ width: `${screenWidth - 475}px` }}
+        className="flex flex-col w-full"
+        style={{ minWidth: `${screenWidth - 475}px` }}
       >
         <SegmentHeader
           onSaveSegment={handleSaveSegment}
