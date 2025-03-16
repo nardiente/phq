@@ -484,6 +484,9 @@ export function RoadmapPage() {
               )}
               {roadmaps &&
                 roadmaps.length > 0 &&
+                roadmaps.some(
+                  (roadmap) => roadmap.upvotes && roadmap.upvotes.length > 0
+                ) &&
                 (!is_public ||
                   (is_public && permissions && permissions.length > 0)) && (
                   <DragDropContext onDragEnd={onDragEnd}>
