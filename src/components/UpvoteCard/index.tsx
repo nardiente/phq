@@ -102,7 +102,9 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
 
             <button
               className="h-[38px] text-[#6b7280]"
-              disabled={loading}
+              disabled={
+                !user?.permissions.includes(Permissions.EDIT_IDEA) || loading
+              }
               onClick={onHideOnRoadmap}
             >
               {props.hide_on_roadmap ? <EyeSlashIcon /> : <EyeIcon />}

@@ -373,11 +373,13 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     })
       .then((res) => {
         setListing(false);
-        if (res.results.data) {
-          setIdeas(res.results.data);
+        const { results } = res ?? {};
+        const { data } = results ?? {};
+        if (data) {
+          setIdeas(data);
         }
         if (!filtering) {
-          handleListTag();
+          handleGetStatus(data ?? []);
         }
       })
       .catch((err) => console.error('handleListFeedback', { err }))
@@ -393,27 +395,24 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       if (res.results.data) {
         setTags(res.results.data);
       }
-      handleGetStatus();
     });
   };
 
-  const handleGetStatus = () => {
-    const url = is_public
-      ? `roadmaps/upvotes/${window.location.host}`
-      : 'roadmaps/upvotes';
-
-    const {
-      filters: { tags, title },
-    } = state;
-
+  const handleGetStatus = (ideas: Feedback[]) => {
     getApi<Roadmap[]>({
-      url,
-      params: { tags: tags.join(','), title },
-      useSessionToken: is_public && moderation?.user_login === true,
+      url: 'roadmaps',
+      params: { domain: window.location.host },
     }).then((res) => {
       if (res.results.data) {
         const data = res.results.data;
-        setRoadmaps(data);
+        setRoadmaps(
+          data.map((roadmap) => ({
+            ...roadmap,
+            upvotes: ideas.filter((idea) => idea.status_id === roadmap.id),
+          }))
+        );
+
+        handleListTag();
       }
     });
   };

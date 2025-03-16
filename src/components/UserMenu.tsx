@@ -37,7 +37,11 @@ export function UserMenu({ user, onNavigate }: UserMenuProps) {
   const handleLogout = () => {
     eraseKaslKey();
     eraseSessionToken();
-    navigate(is_public ? '/upvotes' : '/sign-in');
+    if (is_public) {
+      location.reload();
+    } else {
+      navigate('/sign-in');
+    }
   };
 
   return (
