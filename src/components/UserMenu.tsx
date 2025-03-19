@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { eraseKaslKey, eraseSessionToken } from '../utils/localStorage';
+import { eraseKaslKey } from '../utils/localStorage';
 import { User, UserTypes } from '../types/user';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
-import { RbacPermissions } from '../types/common';
 
 interface UserMenuProps {
   user: User | undefined;
@@ -12,7 +11,11 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ onNavigate }: UserMenuProps) {
+export function UserMenu({ onNavigate }: UserMenuProps) {
   const navigate = useNavigate();
+
+  const { user: userDetails, removeUser } = useUser();
+  const { moderation, user } = userDetails ?? {};
 
   const { user: userDetails, removeUser } = useUser();
   const { moderation, user } = userDetails ?? {};
@@ -22,6 +25,14 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+  const currentUser = !is_public
+    ? user
+    : moderation?.user_login === true && user?.kasl_key === undefined
+      ? user
+      : !moderation?.user_login &&
+          (user?.isAnonymous === false || !!user?.kasl_key)
+        ? user
+        : undefined;
   const currentUser = !is_public
     ? user
     : moderation?.user_login === true && user?.kasl_key === undefined
@@ -49,16 +60,15 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
 
   const handleLogout = () => {
     eraseKaslKey();
-    eraseSessionToken();
     if (is_public) {
-      location.reload();
+      removeUser();
     } else {
       navigate('/sign-in');
     }
   };
 
   return (
-    <div className="relative" data-testid="user-menu" ref={menuRef}>
+    <div className="relative" ref={menuRef}>
       {currentUser?.full_name && (
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -73,6 +83,9 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
                       currentUser?.profile_photo &&
                       currentUser?.profile_photo.length > 0 &&
                       currentUser?.profile_photo !=
+                      currentUser?.profile_photo &&
+                      currentUser?.profile_photo.length > 0 &&
+                      currentUser?.profile_photo !=
                         '../../../static/assets/profile-placeholder.svg'
                         ? ''
                         : ' avatar'
@@ -81,18 +94,27 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
                     {currentUser?.profile_photo &&
                     currentUser?.profile_photo.length > 0 &&
                     currentUser?.profile_photo !=
+                    {currentUser?.profile_photo &&
+                    currentUser?.profile_photo.length > 0 &&
+                    currentUser?.profile_photo !=
                       '../../../static/assets/profile-placeholder.svg' ? (
+                      <img
+                        className="rounded-full"
+                        src={currentUser?.profile_photo}
+                      />
                       <img
                         className="rounded-full"
                         src={currentUser?.profile_photo}
                       />
                     ) : (
                       currentUser?.full_name?.toUpperCase().charAt(0)
+                      currentUser?.full_name?.toUpperCase().charAt(0)
                     )}
                   </figure>
                 </span>
               </div>
               <span className="text-[14px] text-gray-900">
+                {currentUser?.full_name}
                 {currentUser?.full_name}
               </span>
             </>
@@ -115,13 +137,17 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
               <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
                 <span className="text-purple-600 text-lg">
                   {currentUser?.first_name?.charAt(0)}
+                  {currentUser?.first_name?.charAt(0)}
                 </span>
               </div>
               <div className="flex flex-col">
                 <span className="text-sm font-medium text-gray-900">
                   {currentUser?.full_name?.substring(0, 20).trim()}
                   {(currentUser?.full_name?.length ?? 0) > 20 ? '...' : ''}
+                  {currentUser?.full_name?.substring(0, 20).trim()}
+                  {(currentUser?.full_name?.length ?? 0) > 20 ? '...' : ''}
                 </span>
+                {currentUser?.type === UserTypes.CUSTOMER && (
                 {currentUser?.type === UserTypes.CUSTOMER && (
                   <span className="px-2 py-0.5 text-[12px] font-medium bg-blue-50 text-blue-600 rounded w-fit">
                     Admin
@@ -132,6 +158,7 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
           </div>
 
           <div className="flex flex-col gap-1">
+            {currentUser?.type === UserTypes.CUSTOMER && (
             {currentUser?.type === UserTypes.CUSTOMER && (
               <>
                 {user?.rbac_permissions?.includes(

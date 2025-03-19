@@ -48,6 +48,7 @@ interface UserContextType {
   setLoaded: Dispatch<SetStateAction<boolean>>;
   users: User[];
   listUsers: () => Promise<void>;
+  removeUser: () => Promise<void>;
 }
 
 const initialUser: UserContextConfig = {
@@ -83,6 +84,7 @@ const UserContext = createContext<UserContextType>({
   setLoaded: () => {},
   users: [],
   listUsers: async () => Promise.resolve(),
+  removeUser: async () => Promise.resolve(),
 });
 
 interface UserProviderProps {
@@ -139,6 +141,9 @@ export function UserProvider({ children }: UserProviderProps) {
       .finally(() => setFetching(false));
   };
 
+  const removeUser = async () =>
+    setUser((prev) => ({ ...prev, user: undefined }));
+
   return (
     <UserContext.Provider
       value={{
@@ -164,6 +169,7 @@ export function UserProvider({ children }: UserProviderProps) {
         setLoaded,
         users,
         listUsers,
+        removeUser,
       }}
     >
       {children}
