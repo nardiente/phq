@@ -117,7 +117,8 @@ const AddComment = () => {
     getKaslKey() !== undefined ||
     (getSessionToken() !== undefined &&
       is_public &&
-      user?.moderation?.user_login === true);
+      user?.moderation?.user_login === true &&
+      user.user?.id);
 
   const [comments, setComments] = useState<FeedbackComment[]>([]);
 

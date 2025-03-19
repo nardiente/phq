@@ -44,6 +44,7 @@ export interface User {
   first_name?: string;
   full_name?: string;
   gender?: string;
+  isAnonymous?: boolean;
   is_activated?: boolean;
   is_private_user?: boolean;
   is_receiving_newsletter?: boolean;

@@ -9,7 +9,7 @@ import { useUser } from '../../contexts/UserContext';
 import { usePanel } from '../../contexts/PanelContext';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
-import { getKaslKey } from '../../utils/localStorage';
+import { getKaslKey, getSessionToken } from '../../utils/localStorage';
 import { Fragment, useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { UserTypes } from '../../types/user';
@@ -112,7 +112,12 @@ export const Comment = ({
     idea = selectedIdea ?? undefined;
   }
 
-  const is_logged_in = getKaslKey() !== undefined;
+  const is_logged_in =
+    getKaslKey() !== undefined ||
+    (getSessionToken() !== undefined &&
+      is_public &&
+      user?.moderation?.user_login === true &&
+      user.user?.id);
   const is_draft = comment.draft;
   const [currentComment, setCurrentComment] = useState(comment);
   const [lineHeight, setLightHeight] = useState(0);

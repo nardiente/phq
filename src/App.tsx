@@ -4,9 +4,11 @@ import AppRoutes from './routes/routes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
+  eraseKaslKey,
   eraseSessionToken,
   getSessionToken,
   setCustomerKaslKey,
+  setKaslKey,
   setSessionToken,
 } from './utils/localStorage';
 import { postApi } from './utils/api/api';
@@ -106,10 +108,15 @@ const App: FC = () => {
         } = res;
         if (error) {
           eraseSessionToken();
+          eraseKaslKey();
         }
         if (data) {
-          if (data.token) {
-            setSessionToken(data.token);
+          const { kasl_key, token } = data;
+          if (token) {
+            setSessionToken(token);
+          }
+          if (kasl_key) {
+            setKaslKey(kasl_key);
           }
           setUser((prev) => ({ ...prev, user: data }));
         }

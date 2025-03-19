@@ -1,7 +1,7 @@
 import './styles.css';
 import { FeedbackComment } from '../Comments/types';
 import { WhatsNew } from '../../types/whats-new';
-import { getKaslKey } from '../../utils/localStorage';
+import { getKaslKey, getSessionToken } from '../../utils/localStorage';
 import { useUser } from '../../contexts/UserContext';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useEffect, useState } from 'react';
@@ -14,9 +14,6 @@ interface EmojiListProps {
 }
 
 const EmojiList: React.FC<EmojiListProps> = ({ comment, addEmoji }) => {
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-  const is_logged_in = getKaslKey() !== undefined;
-
   const { deleted, emoji_list, my_emoji } = comment as FeedbackComment;
 
   const { user } = useUser();
@@ -25,6 +22,14 @@ const EmojiList: React.FC<EmojiListProps> = ({ comment, addEmoji }) => {
   } = useFeedback();
 
   const [idea, setIdea] = useState<Feedback>();
+
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+  const is_logged_in =
+    getKaslKey() !== undefined ||
+    (getSessionToken() !== undefined &&
+      is_public &&
+      user?.moderation?.user_login === true &&
+      user.user?.id);
 
   useEffect(() => {
     let idea = ideas?.find((idea) => idea.id === selectedIdea?.id);

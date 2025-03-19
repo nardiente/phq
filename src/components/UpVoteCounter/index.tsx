@@ -48,7 +48,8 @@ export const UpVoteCounter = ({
     getKaslKey() !== undefined ||
     (is_public &&
       moderation?.user_login === true &&
-      getSessionToken() !== undefined);
+      getSessionToken() !== undefined &&
+      user?.user?.id);
   const is_member = !!user?.user?.role_id;
 
   const can_upvote =

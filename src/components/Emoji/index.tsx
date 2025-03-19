@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useUser } from '../../contexts/UserContext';
-import { getKaslKey } from '../../utils/localStorage';
+import { getKaslKey, getSessionToken } from '../../utils/localStorage';
 import './styles.css';
 import { Feedback } from '../../types/feedback';
 import { EmojiTypes, Permissions } from '../../types/common';
@@ -13,9 +13,6 @@ const Emoji = ({
   addEmoji: (type: any) => Promise<void>;
   is_draft: any;
 }) => {
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-  const is_logged_in = getKaslKey() !== undefined;
-
   const { user } = useUser();
   const {
     state: { ideas, selectedIdea },
@@ -23,6 +20,14 @@ const Emoji = ({
 
   const [idea, setIdea] = useState<Feedback>();
   const [showOption, setShowOption] = useState<boolean>(false);
+
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+  const is_logged_in =
+    getKaslKey() !== undefined ||
+    (getSessionToken() !== undefined &&
+      is_public &&
+      user?.moderation?.user_login === true &&
+      user.user?.id);
 
   useEffect(() => {
     let idea = ideas?.find((idea) => idea.id === selectedIdea?.id);

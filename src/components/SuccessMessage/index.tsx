@@ -16,7 +16,8 @@ const SuccessMessage = () => {
     getKaslKey() !== undefined ||
     (getSessionToken() !== undefined &&
       is_public &&
-      user?.moderation?.user_login === true);
+      user?.moderation?.user_login === true &&
+      user.user?.id);
 
   return (
     <div id="success-container">

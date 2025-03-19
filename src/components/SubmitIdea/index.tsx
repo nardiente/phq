@@ -26,8 +26,8 @@ import { PrivacyPolicyField } from '../PrivacyPolicyField';
 import { useSocket } from '../../contexts/SocketContext';
 
 export const SubmitIdea = () => {
-  const { handleGetUser, user } = useUser();
-  const { moderation } = user ?? {};
+  const { handleGetUser, user: userDetails } = useUser();
+  const { moderation, project, user } = userDetails ?? {};
   // Active Page: add_idea, add_comment, success, delete_idea, delete_column
   const {
     state: { activePage },
@@ -53,7 +53,8 @@ export const SubmitIdea = () => {
     getKaslKey() !== undefined ||
     (getSessionToken() !== undefined &&
       is_public &&
-      moderation?.user_login === true);
+      moderation?.user_login === true &&
+      user?.id);
 
   const [active_status, setActiveStatus] = useState<string>('Select status');
   const [agreed_privacy_policy, setAgreedPrivacyPolicy] = useState<
@@ -284,7 +285,7 @@ export const SubmitIdea = () => {
         );
         socket?.emit('message', {
           action: 'updateIdea',
-          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+          data: { user_id: user?.id, projectId: project?.id },
         });
       }
     });
@@ -332,8 +333,8 @@ export const SubmitIdea = () => {
   }, []);
 
   useEffect(() => {
-    if (user?.user) {
-      if (user.user.role_id) {
+    if (user) {
+      if (user.role_id) {
         setIsMember(true);
       }
     }
@@ -399,6 +400,7 @@ export const SubmitIdea = () => {
       <div className="upvote-details">
         {is_admin &&
           activePage === 'edit_idea' &&
+          user?.rbac_permissions &&
           user?.rbac_permissions.includes(
             RbacPermissions.VOTE_ON_OTHERS_BEHALF
           ) && (
@@ -461,6 +463,7 @@ export const SubmitIdea = () => {
           <div className="tag-heading-group">
             <label>Select up to 3 tags related to this idea (optional)</label>
             {((is_member &&
+              user?.rbac_permissions &&
               user?.rbac_permissions.includes(
                 RbacPermissions.MANAGE_TAGS_PAGE
               )) ||

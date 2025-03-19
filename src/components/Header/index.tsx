@@ -67,7 +67,8 @@ export const Header: FC = () => {
     getKaslKey() !== undefined ||
     (is_public &&
       moderation?.user_login === true &&
-      getSessionToken() !== undefined);
+      getSessionToken() !== undefined &&
+      user?.user?.id);
 
   if (!is_logged_in) {
     header_exceptions.push('/success');

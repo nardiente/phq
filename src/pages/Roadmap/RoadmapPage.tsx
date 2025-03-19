@@ -21,7 +21,7 @@ import { useUser } from '../../contexts/UserContext';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
 import { usePanel } from '../../contexts/PanelContext';
-import { getKaslKey } from '../../utils/localStorage';
+import { getKaslKey, getSessionToken } from '../../utils/localStorage';
 import { useEffect, useState } from 'react';
 import { Settings } from '../../components/Settings';
 import SettingsHeader from '../../components/SettingsHeader';
@@ -58,7 +58,12 @@ export function RoadmapPage() {
   const [dragging, setDragging] = useState<boolean>(false);
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-  const is_logged_in = getKaslKey() !== undefined;
+  const is_logged_in =
+    getKaslKey() !== undefined ||
+    (is_public &&
+      moderation?.user_login === true &&
+      getSessionToken() !== undefined &&
+      user?.user?.id);
   const isRestricted =
     !fetching && is_public && permissions && permissions.length === 0;
 
