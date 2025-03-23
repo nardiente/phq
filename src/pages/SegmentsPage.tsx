@@ -266,7 +266,10 @@ export default function SegmentsPage() {
       />
       <div
         className="flex flex-col w-full"
-        style={{ minWidth: `${screenWidth - 475}px` }}
+        style={{
+          minWidth: `${screenWidth - 475}px`,
+          maxWidth: `${screenWidth - 475}px`,
+        }}
       >
         <SegmentHeader
           onSaveSegment={handleSaveSegment}
