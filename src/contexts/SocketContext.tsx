@@ -97,8 +97,6 @@ export function SocketProvider({ children }: { children: ReactNode }) {
       });
 
       socket.on('message', (msg: any) => {
-        console.log({ msg });
-
         const {
           action,
           data: { projectId },

@@ -209,7 +209,13 @@ const PostItem = ({
               ) : (
                 ''
               )}
-              {whats_new.title}
+              <a
+                href={`/whatsnew/${whats_new.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {whats_new.title}
+              </a>
             </div>
             <div className="change-types">
               {whats_new.change_types?.map((change_type, idx) => (

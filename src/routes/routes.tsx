@@ -31,6 +31,7 @@ import { LtdPage } from '../pages/LtdPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import { pathExceptions } from '../types/app';
 import TestFetch from '../pages/TestFetch';
+import WhatsNewPost from '../pages/WhatsNewPost/index.tsx';
 
 // Add /test to exceptions at the top of the file
 pathExceptions.push('/test');
@@ -66,6 +67,7 @@ const AppRoutes = () => {
             <Route path="/upvotes" element={<UpvotesPage />} />
             <Route path="/roadmap" element={<RoadmapPage />} />
             <Route path="/whatsnew" element={<WhatsNewPage />} />
+            <Route path="/whatsnew/:post_id" element={<WhatsNewPost />} />
             <Route path="/widgets" element={<WidgetsView />} />
             <Route path="/widgets/page" element={<WidgetsPage />} />
             <Route path="/widgets/page/:id" element={<WidgetsPage />} />

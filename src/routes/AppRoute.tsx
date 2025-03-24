@@ -43,7 +43,7 @@ const AppRoute = () => {
   }, []);
 
   useEffect(() => {
-    setCurrentPage(pathname.slice(1) as PageType);
+    setCurrentPage(pathname.slice(1).split('/')[0] as PageType);
     if (!is_public) {
       if (
         ![...pathExceptions, ...onbordingPaths].includes(pathname) ||
