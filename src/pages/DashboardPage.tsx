@@ -2,10 +2,11 @@ import { BoardBanner } from '../components/dashboard/BoardBanner';
 import { useEffect, useState } from 'react';
 import { useFeedback } from '../contexts/FeedbackContext';
 import { KeyMetrics } from '../components/dashboard/KeyMetrics';
+import moment from 'moment';
 
 export default function DashboardPage() {
   const {
-    state: { ideas },
+    state: { ideas, roadmaps },
     handleListFeedback,
   } = useFeedback();
 
@@ -97,7 +98,7 @@ export default function DashboardPage() {
   //   return counts;
   // }, {});
 
-  const sortedIdeas = [...ideas]
+  const sortedIdeas = ideas
     .sort((a, b) => {
       switch (whatsNewFilter) {
         case 'views':
@@ -112,12 +113,70 @@ export default function DashboardPage() {
           return (b.vote || 0) - (a.vote || 0); // Default to votes
       }
     })
-    .slice(0, 3);
+    .slice(0, 5);
+
+  const mostCommentedIdeas = () => {
+    return ideas
+      .sort((a, b) => (b.comment_count || 0) - (a.comment_count || 0))
+      .slice(0, 5)
+      .map((idea) => (
+        <div key={idea.id} className="flex items-center justify-between">
+          <div className="text-sm font-medium text-gray-500">{idea.title}</div>
+        </div>
+      ));
+  };
+
+  const mostOldestIdeas = () => {
+    return ideas
+      .sort(
+        (a, b) =>
+          moment(b.created_at ?? moment()).unix() -
+          moment(a.created_at ?? moment()).unix()
+      )
+      .slice(0, 5)
+      .map((idea) => (
+        <div key={idea.id} className="flex items-center justify-between">
+          <div className="text-sm font-medium text-gray-500">{idea.title}</div>
+        </div>
+      ));
+  };
+
+  const mostShippedIdeas = () => {
+    const shipped =
+      roadmaps && roadmaps.length > 0
+        ? roadmaps[roadmaps.length - 1]
+        : undefined;
+    if (shipped) {
+      return ideas
+        .filter((idea) => idea.status?.name === shipped.name)
+        .sort((a, b) => {
+          return (
+            moment(b.updated_at ?? moment()).unix() -
+            moment(a.updated_at ?? moment()).unix()
+          );
+        })
+        .slice(0, 5)
+        .map((idea) => (
+          <div key={idea.id} className="flex items-center justify-between">
+            <div className="text-sm font-medium text-gray-500">
+              {idea.title}
+            </div>
+          </div>
+        ));
+    }
+  };
 
   // Sort ideas by votes
-  const mostVotedIdeas = [...ideas]
-    .sort((a, b) => (b.vote || 0) - (a.vote || 0))
-    .slice(0, 3);
+  const mostVotedIdeas = () => {
+    return ideas
+      .sort((a, b) => (b.vote || 0) - (a.vote || 0))
+      .slice(0, 5)
+      .map((idea) => (
+        <div key={idea.id} className="flex items-center justify-between">
+          <div className="text-sm font-medium text-gray-500">{idea.title}</div>
+        </div>
+      ));
+  };
 
   const filteredIdeas = ideas.filter((idea) => {
     switch (ideasFilter) {
@@ -180,49 +239,25 @@ export default function DashboardPage() {
           <div className="text-base font-medium text-gray-700 mb-1">
             Most Upvotes
           </div>
-          {mostVotedIdeas.map((idea) => (
-            <div key={idea.id} className="flex items-center justify-between">
-              <div className="text-sm font-medium text-gray-500">
-                {idea.title}
-              </div>
-            </div>
-          ))}
+          {mostVotedIdeas()}
         </div>
         <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
           <div className="text-base font-medium text-gray-700 mb-1">
             Most Comments
           </div>
-          {sortedIdeas.map((idea) => (
-            <div key={idea.id} className="flex items-center justify-between">
-              <div className="text-sm font-medium text-gray-500">
-                {idea.title}
-              </div>
-            </div>
-          ))}
+          {mostCommentedIdeas()}
         </div>
         <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
           <div className="text-base font-medium text-gray-700 mb-1">
             Ideas Shipped
           </div>
-          {filteredIdeas.map((idea) => (
-            <div key={idea.id} className="flex items-center justify-between">
-              <div className="text-sm font-medium text-gray-500">
-                {idea.title}
-              </div>
-            </div>
-          ))}
+          {mostShippedIdeas()}
         </div>
         <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
           <div className="text-base font-medium text-gray-700 mb-1">
             Oldest Ideas
           </div>
-          {filteredCommentedIdeas.map((idea) => (
-            <div key={idea.id} className="flex items-center justify-between">
-              <div className="text-sm font-medium text-gray-500">
-                {idea.title}
-              </div>
-            </div>
-          ))}
+          {mostOldestIdeas()}
         </div>
       </div>
 
@@ -234,13 +269,7 @@ export default function DashboardPage() {
           <div className="text-base font-medium text-gray-700 mb-1">
             Most Viewed
           </div>
-          {mostVotedIdeas.map((idea) => (
-            <div key={idea.id} className="flex items-center justify-between">
-              <div className="text-sm font-medium text-gray-500">
-                {idea.title}
-              </div>
-            </div>
-          ))}
+          {mostVotedIdeas()}
         </div>
         <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
           <div className="text-base font-medium text-gray-700 mb-1">
@@ -286,13 +315,7 @@ export default function DashboardPage() {
           <div className="text-base font-medium text-gray-700 mb-1">
             Most Upvotes
           </div>
-          {mostVotedIdeas.map((idea) => (
-            <div key={idea.id} className="flex items-center justify-between">
-              <div className="text-sm font-medium text-gray-500">
-                {idea.title}
-              </div>
-            </div>
-          ))}
+          {mostVotedIdeas()}
         </div>
         <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
           <div className="text-base font-medium text-gray-700 mb-1">
