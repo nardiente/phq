@@ -1,7 +1,7 @@
-import { ArrowUp, ArrowDown, Calendar } from 'lucide-react';
 import { BoardBanner } from '../components/dashboard/BoardBanner';
 import { useEffect, useState } from 'react';
 import { useFeedback } from '../contexts/FeedbackContext';
+import { KeyMetrics } from '../components/dashboard/KeyMetrics';
 
 export default function DashboardPage() {
   const {
@@ -12,7 +12,6 @@ export default function DashboardPage() {
   const [whatsNewFilter, setWhatsNewFilter] = useState('all'); // Default filter
   const [ideasFilter, setIdeasFilter] = useState('all'); // Default filter for Ideas
   const [usersFilter, setUsersFilter] = useState('all'); // Default filter for Users
-  const [timeRange, setTimeRange] = useState('1 week');
 
   useEffect(() => {
     // Fetch data from the server
@@ -76,21 +75,6 @@ export default function DashboardPage() {
   //     });
   //   });
   // };
-
-  const stats = [
-    { label: 'Total Users', value: '1,200', change: '12%', trend: 'up' },
-    { label: 'Active Users (MAU)', value: '800', change: '-5%', trend: 'down' },
-    { label: 'New Users', value: '120', change: '10%', trend: 'up' },
-    { label: 'Churn Rate', value: '5%', change: '2%', trend: 'down' },
-    {
-      label: 'Customer Lifetime Value (CLTV)',
-      value: '$500',
-      change: '3%',
-      trend: 'up',
-    },
-    { label: 'Total Revenue', value: '$5,000', change: '-8%', trend: 'down' },
-    { label: 'Conversion Rate', value: '8%', change: '10%', trend: 'up' },
-  ];
 
   // const recentIdeas = [
   //   { title: '[Example Idea] More colour options', votes: 1, date: '9 Oct' },
@@ -188,51 +172,7 @@ export default function DashboardPage() {
         })}
       </div> */}
 
-      <div className="flex items-center justify-between mt-8 mb-4">
-        <h2 className="text-lg font-semibold text-gray-900">Key Metrics</h2>
-        <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-gray-500" />
-          <select
-            value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value)}
-            className="text-sm text-gray-600 border border-gray-200 rounded-lg px-2 py-1 bg-white hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          >
-            <option value="1 week">1 week</option>
-            <option value="4 week">4 week</option>
-            <option value="MTD">MTD</option>
-            <option value="QTD">QTD</option>
-            <option value="YTD">YTD</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-4 gap-4">
-        {stats.map((stat, index) => (
-          <div
-            key={index}
-            className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm"
-          >
-            <div className="text-sm font-medium text-gray-500 mb-1">
-              {stat.label}
-            </div>
-            <div className="flex items-center">
-              <div className="text-2xl font-semibold text-gray-800">
-                {stat.value}
-              </div>
-              <div
-                className={`ml-2 text-sm ${stat.trend === 'up' ? 'text-green-500' : 'text-red-500'}`}
-              >
-                {stat.change}
-                {stat.trend === 'up' ? (
-                  <ArrowUp size={14} />
-                ) : (
-                  <ArrowDown size={14} />
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <KeyMetrics />
 
       <h2 className="text-xl font-semibold text-gray-900 mt-8 mb-4">Ideas</h2>
       <div className="grid grid-cols-2 gap-4">

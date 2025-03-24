@@ -5,6 +5,17 @@ import {
   userNameFormats,
 } from '../types/appearance';
 
+export const formatNumber = (value: number | string): string => {
+  if (typeof value === 'string' && value.startsWith('$')) {
+    // Handle currency values
+    const num = parseFloat(value.replace('$', '').replace(',', ''));
+    return `$${num.toLocaleString()}`;
+  }
+  // Handle regular numbers
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  return isNaN(num) ? value.toString() : num.toLocaleString();
+};
+
 export const generateUserNameFormats = (user: User): DisplayUserName[] => {
   const userNames: DisplayUserName[] = [];
 
