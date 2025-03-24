@@ -33,6 +33,7 @@ import { pathExceptions } from '../types/app';
 import TestFetch from '../pages/TestFetch';
 import DesignSystem from '../pages/DesignSystem';
 import SegmentsPage from '../pages/SegmentsPage.tsx';
+import WhatsNewPost from '../pages/WhatsNewPost/index.tsx';
 
 // Add /test to exceptions at the top of the file
 pathExceptions.push('/test');
