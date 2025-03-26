@@ -16,6 +16,7 @@ import { useUser } from '../../../contexts/UserContext';
 import { useEffect, useState } from 'react';
 import { useWhatsNew } from '../../../contexts/WhatsNewContext';
 import { usePanel } from '../../../contexts/PanelContext';
+import { getIPAddress } from '../../../utils/token';
 
 const PostItem = ({
   whats_new,
@@ -113,6 +114,20 @@ const PostItem = ({
     });
   };
 
+  const onClickPost = async () => {
+    postApi<WhatsNew>({
+      url: `whatsnew/${whats_new.id}/clicks`,
+      payload: { ip_address: await getIPAddress() },
+    });
+  };
+
+  const onSharePost = async () => {
+    postApi<WhatsNew>({
+      url: `whatsnew/${whats_new.id}/shares`,
+      payload: { ip_address: await getIPAddress() },
+    });
+  };
+
   const pin = () => {
     setPinning(true);
     patchApi<WhatsNew[]>(`whatsnew/${whats_new.id}/pin`)
@@ -202,7 +217,7 @@ const PostItem = ({
       )}
       <div className="post-container">
         <div className="post">
-          <div className="post-title">
+          <div className="post-title" onClick={onClickPost}>
             <div className="title-text">
               {whats_new.publication === 'Draft' ? (
                 <span className="draft">[DRAFT]</span>
@@ -237,7 +252,7 @@ const PostItem = ({
               ))}
             </div>
           </div>
-          <div className="description">
+          <div className="description" onClick={onClickPost}>
             <ReactQuill
               value={whats_new.formatted_description}
               readOnly={true}
@@ -286,6 +301,7 @@ const PostItem = ({
                     disabled={
                       !user?.permissions.includes(Permissions.EDIT_POST)
                     }
+                    onClick={onSharePost}
                     windowWidth={2000}
                     windowHeight={2000}
                   >
@@ -301,6 +317,7 @@ const PostItem = ({
                     disabled={
                       !user?.permissions.includes(Permissions.EDIT_POST)
                     }
+                    onClick={onSharePost}
                     windowWidth={2000}
                     windowHeight={2000}
                   >
@@ -323,6 +340,7 @@ const PostItem = ({
                           navigator.clipboard.writeText(
                             `${socmed_url}/whatsnew/${whats_new.id}`
                           );
+                          onSharePost();
                           setCopiedId(whats_new.id);
                           setTimeout(() => {
                             setCopiedId(0);

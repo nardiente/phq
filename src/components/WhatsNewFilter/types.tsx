@@ -1,4 +1,4 @@
-import { ChangeType } from '@pages/Changelog/types';
+import { ChangeType } from '../../types/whats-new';
 
 export interface WhatsNewFilterProps {
   listChangeType: (change_types: string[]) => void;

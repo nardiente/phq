@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useFeedback } from '../contexts/FeedbackContext';
 import { KeyMetrics } from '../components/dashboard/KeyMetrics';
 import { IdeasSection } from '../components/dashboard/IdeasSection';
+import { WhatsNewSection } from '../components/dashboard/WhatsNewSection';
 
 export default function DashboardPage() {
   const {
@@ -170,53 +171,7 @@ export default function DashboardPage() {
 
       <KeyMetrics />
       <IdeasSection />
-
-      <h2 className="text-xl font-semibold text-gray-900 mt-8 mb-4">
-        What's New
-      </h2>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-          <div className="text-base font-medium text-gray-700 mb-1">
-            Most Viewed
-          </div>
-        </div>
-        <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-          <div className="text-base font-medium text-gray-700 mb-1">
-            Most Clicks
-          </div>
-          {sortedIdeas.map((idea) => (
-            <div key={idea.id} className="flex items-center justify-between">
-              <div className="text-sm font-medium text-gray-500">
-                {idea.title}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-          <div className="text-base font-medium text-gray-700 mb-1">
-            Most Reactions
-          </div>
-          {filteredIdeas.map((idea) => (
-            <div key={idea.id} className="flex items-center justify-between">
-              <div className="text-sm font-medium text-gray-500">
-                {idea.title}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-          <div className="text-base font-medium text-gray-700 mb-1">
-            Most Shared
-          </div>
-          {filteredCommentedIdeas.map((idea) => (
-            <div key={idea.id} className="flex items-center justify-between">
-              <div className="text-sm font-medium text-gray-500">
-                {idea.title}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <WhatsNewSection />
 
       <h2 className="text-xl font-semibold text-gray-900 mt-8 mb-4">Users</h2>
       <div className="grid grid-cols-2 gap-4">

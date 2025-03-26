@@ -13,6 +13,7 @@ import Emoji from '../../components/Emoji';
 import { getApi, postApi } from '../../utils/api/api';
 import { usePanel } from '../../contexts/PanelContext';
 import { PageHeader } from '../../components/PageHeader';
+import { getIPAddress } from '../../utils/token';
 
 const WhatsNewPost = () => {
   const quillRef = React.useRef<ReactQuill>(null);
@@ -29,6 +30,19 @@ const WhatsNewPost = () => {
   const [copied_id, setCopiedId] = React.useState<number>(0);
   const [fetching, setFetching] = React.useState<boolean>(true);
   const [whats_new, setWhatsNew] = React.useState<WhatsNew>();
+
+  React.useEffect(() => {
+    if (whats_new) {
+      onViewPost();
+    }
+  }, [whats_new]);
+
+  const onViewPost = async () => {
+    postApi<WhatsNew>({
+      url: `whatsnew/${whats_new?.id}/views`,
+      payload: { ip_address: await getIPAddress() },
+    });
+  };
 
   const addEmoji = async (type: any) => {
     const { emoji_list, my_emoji } =

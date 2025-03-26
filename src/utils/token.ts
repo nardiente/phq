@@ -2,7 +2,7 @@ import CryptoJS from 'crypto-js';
 
 const secretKey = import.meta.env.VITE_CRYPTO_KEY ?? '';
 
-const getIPAddress = async () => {
+export const getIPAddress = async () => {
   // Fetch the IP address from an external service
   const response = await fetch('https://api.ipify.org?format=json');
   const data = await response.json();

@@ -2,7 +2,8 @@ import { createContext, useContext, useMemo } from 'react';
 
 import { ReactNode } from 'react';
 import { useReducer } from 'react';
-import { WhatsNew } from '../types/whats-new';
+import { Image, WhatsNew } from '../types/whats-new';
+import { getApi } from '../utils/api/api';
 
 interface State {
   is_continue_reading: boolean;
@@ -96,6 +97,7 @@ function reducer(state: State, action: Action): State {
 
 interface ContextType {
   state: State;
+  listWhatsNew: () => Promise<void>;
   addPost: (post: WhatsNew) => Promise<void>;
   deletePost: (post: WhatsNew) => Promise<void>;
   deletePostById: (id: number) => Promise<void>;
@@ -110,6 +112,28 @@ const Context = createContext<ContextType | undefined>(undefined);
 
 export function WhatsNewProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  const listWhatsNew = async () => {
+    getApi<WhatsNew[]>({ url: 'whatsnew' }).then((res) => {
+      if (res.results.data) {
+        const data = res.results.data;
+        setPosts(
+          data.map((datum) => {
+            if (!datum.images) {
+              datum.images = [
+                {
+                  image: datum.image,
+                  image_height: datum.image_height,
+                  image_width: datum.image_width,
+                },
+              ] as Image[];
+            }
+            return datum;
+          })
+        );
+      }
+    });
+  };
 
   const addPost = async (post: WhatsNew) => {
     dispatch({ type: ActionTypes.ADD_POST, payload: post });
@@ -152,6 +176,7 @@ export function WhatsNewProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       state,
+      listWhatsNew,
       addPost,
       deletePost,
       deletePostById,

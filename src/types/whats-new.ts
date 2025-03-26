@@ -36,6 +36,30 @@ export interface WhatsNew {
   emoji_list: any;
   my_emoji: any;
   pinned?: boolean;
+  clicks: WhatsNewClick[];
+  shares: WhatsNewShare[];
+  views: WhatsNewView[];
+}
+
+export interface WhatsNewClick {
+  id: number;
+  whats_new_id: number;
+  created_by?: number | null;
+  ip_address?: string | null;
+}
+
+export interface WhatsNewShare {
+  id: number;
+  whats_new_id: number;
+  created_by?: number | null;
+  ip_address?: string | null;
+}
+
+export interface WhatsNewView {
+  id: number;
+  whats_new_id: number;
+  created_by?: number | null;
+  ip_address?: string | null;
 }
 
 export interface ChangeTypeColor {
