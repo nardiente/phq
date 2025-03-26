@@ -1,38 +1,10 @@
 import { BoardBanner } from '../components/dashboard/BoardBanner';
-import { useEffect, useState } from 'react';
-import { useFeedback } from '../contexts/FeedbackContext';
 import { KeyMetrics } from '../components/dashboard/KeyMetrics';
 import { IdeasSection } from '../components/dashboard/IdeasSection';
 import { WhatsNewSection } from '../components/dashboard/WhatsNewSection';
+import { UsersSection } from '../components/dashboard/UsersSection';
 
 export default function DashboardPage() {
-  const {
-    state: { ideas },
-    handleListFeedback,
-  } = useFeedback();
-
-  const [whatsNewFilter, setWhatsNewFilter] = useState('all'); // Default filter
-  const [ideasFilter, setIdeasFilter] = useState('all'); // Default filter for Ideas
-  const [usersFilter, setUsersFilter] = useState('all'); // Default filter for Users
-
-  useEffect(() => {
-    // Fetch data from the server
-    const fetchData = async () => {
-      try {
-        // Fetch ideas from the same endpoint as UpvotesPage
-        await handleListFeedback(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-
-    setWhatsNewFilter('all');
-    setIdeasFilter('all');
-    setUsersFilter('all');
-  }, []);
-
   // const filterUsersBySegment = (segment: Segment) => {
   //   return users.filter((user) => {
   //     if (!segment.filters || typeof segment.filters !== 'object') {
@@ -99,45 +71,6 @@ export default function DashboardPage() {
   //   return counts;
   // }, {});
 
-  const sortedIdeas = ideas
-    .sort((a, b) => {
-      switch (whatsNewFilter) {
-        case 'views':
-          return (b.views || 0) - (a.views || 0);
-        case 'ctr':
-          return (b.ctr || 0) - (a.ctr || 0);
-        case 'comments':
-          return (b.comment_count || 0) - (a.comment_count || 0);
-        case 'reactions':
-          return (b.reactions || 0) - (a.reactions || 0);
-        default:
-          return (b.vote || 0) - (a.vote || 0); // Default to votes
-      }
-    })
-    .slice(0, 5);
-
-  const filteredIdeas = ideas.filter((idea) => {
-    switch (ideasFilter) {
-      case 'active':
-        return idea.status?.name === 'Active'; // Assuming you have a status property
-      case 'shipped':
-        return idea.status?.name === 'Shipped'; // Assuming you have a status property
-      case 'votes':
-        return [...ideas].sort((a, b) => (b.vote || 0) - (a.vote || 0));
-      default:
-        return true; // All
-    }
-  });
-
-  const filteredCommentedIdeas = ideas.filter((idea) => {
-    switch (usersFilter) {
-      case 'recentComments':
-        return idea.comment_count && idea.comment_count > 0;
-      default:
-        return true;
-    }
-  });
-
   return (
     <div className="flex-1 px-8 py-6">
       <div className="flex items-center justify-between mb-8">
@@ -172,51 +105,7 @@ export default function DashboardPage() {
       <KeyMetrics />
       <IdeasSection />
       <WhatsNewSection />
-
-      <h2 className="text-xl font-semibold text-gray-900 mt-8 mb-4">Users</h2>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-          <div className="text-base font-medium text-gray-700 mb-1">
-            Most Upvotes
-          </div>
-        </div>
-        <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-          <div className="text-base font-medium text-gray-700 mb-1">
-            Most Comments
-          </div>
-          {sortedIdeas.map((idea) => (
-            <div key={idea.id} className="flex items-center justify-between">
-              <div className="text-sm font-medium text-gray-500">
-                {idea.title}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-          <div className="text-base font-medium text-gray-700 mb-1">
-            Most Ideas
-          </div>
-          {filteredIdeas.map((idea) => (
-            <div key={idea.id} className="flex items-center justify-between">
-              <div className="text-sm font-medium text-gray-500">
-                {idea.title}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-          <div className="text-base font-medium text-gray-700 mb-1">
-            Team Member Activity
-          </div>
-          {filteredCommentedIdeas.map((idea) => (
-            <div key={idea.id} className="flex items-center justify-between">
-              <div className="text-sm font-medium text-gray-500">
-                {idea.title}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <UsersSection />
     </div>
   );
 }

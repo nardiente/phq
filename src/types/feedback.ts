@@ -79,6 +79,7 @@ export interface FeedbackComment {
   draft: boolean;
   comment: string;
   created_at?: Date;
+  created_by?: number;
   created_by_name: string;
   id: number;
   feedback_id: number;
@@ -126,4 +127,14 @@ export interface Tag {
   updated_at?: Date;
   field_errors?: ApiFieldError[];
   on_delete?: (e: any) => void;
+}
+
+export interface UpvoteLog {
+  id?: number;
+  feedback_id: number;
+  user_id?: number;
+  anonymous_id?: number;
+  on_behalf?: boolean;
+  updated_at?: Date;
+  created_at?: Date;
 }

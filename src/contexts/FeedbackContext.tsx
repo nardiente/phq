@@ -5,13 +5,16 @@ import {
   useMemo,
   ReactNode,
 } from 'react';
-import { Feedback, Tag } from '../types/feedback';
+import { Feedback, FeedbackComment, Tag, UpvoteLog } from '../types/feedback';
 import { Roadmap } from '../types/roadmap';
 import { getApi } from '../utils/api/api';
 import { useUser } from './UserContext';
 
 interface FeedbackState {
-  listing: boolean;
+  activeTab: 'ideas' | 'comments';
+  comments: FeedbackComment[];
+  error: string | null;
+  filter: { tags: string[]; title: string };
   filters: {
     filtering: boolean;
     sort: string;
@@ -21,13 +24,12 @@ interface FeedbackState {
   };
   ideas: Feedback[];
   items: (Partial<Feedback> & { content?: string; date?: string })[];
-  roadmaps?: Roadmap[];
-  activeTab: 'ideas' | 'comments';
+  listing: boolean;
   loading: boolean;
-  error: string | null;
-  tags: any[];
+  roadmaps?: Roadmap[];
   selectedIdea: Feedback | null;
-  filter: { tags: string[]; title: string };
+  tags: any[];
+  upvotes: UpvoteLog[];
 }
 
 type FeedbackAction =
@@ -43,6 +45,7 @@ type FeedbackAction =
       payload: { roadmap_id: number; idea_id: number };
     }
   | { type: 'FILTER_SET_DEFAULT' }
+  | { type: 'SET_COMMENTS'; payload: FeedbackComment[] }
   | {
       type: 'SET_FILTER';
       payload: {
@@ -68,6 +71,7 @@ type FeedbackAction =
   | { type: 'SET_TAGS'; payload: Tag[] }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string | null }
+  | { type: 'SET_UPVOTES'; payload: UpvoteLog[] }
   | { type: 'UPDATE_IDEA'; payload: Feedback }
   | {
       type: 'UPDATE_IDEA_IN_ROADMAP';
@@ -91,6 +95,8 @@ interface FeedbackContextType {
     roadmap_id: number,
     idea_id: number
   ) => Promise<void>;
+  listComments: () => Promise<void>;
+  listUpvotes: () => Promise<void>;
   setActiveTab: (tab: 'ideas' | 'comments') => Promise<void>;
   setDefaultFilter: () => Promise<void>;
   setFilter: (filter: {
@@ -118,7 +124,10 @@ interface FeedbackContextType {
 }
 
 const initialState: FeedbackState = {
-  listing: false,
+  activeTab: 'ideas',
+  comments: [],
+  error: null,
+  filter: { tags: [], title: '' },
   filters: {
     filtering: false,
     sort: 'Newest',
@@ -128,12 +137,11 @@ const initialState: FeedbackState = {
   },
   ideas: [],
   items: [],
-  activeTab: 'ideas',
+  listing: false,
   loading: true,
-  error: null,
-  tags: [],
   selectedIdea: null,
-  filter: { tags: [], title: '' },
+  tags: [],
+  upvotes: [],
 };
 
 const FeedbackContext = createContext<FeedbackContextType | undefined>(
@@ -260,6 +268,8 @@ function feedbackReducer(
           title: '',
         },
       };
+    case 'SET_COMMENTS':
+      return { ...state, comments: action.payload };
     case 'SET_ERROR':
       return { ...state, error: action.payload };
     case 'SET_FILTER':
@@ -286,6 +296,8 @@ function feedbackReducer(
       return { ...state, loading: action.payload };
     case 'SET_SELECTED_IDEA':
       return { ...state, selectedIdea: action.payload };
+    case 'SET_UPVOTES':
+      return { ...state, upvotes: action.payload };
     case 'UPDATE_IDEA':
       return {
         ...state,
@@ -443,6 +455,22 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const listComments = async () => {
+    getApi<FeedbackComment[]>({ url: 'feedback/comments' }).then((res) => {
+      if (res.results.data) {
+        dispatch({ type: 'SET_COMMENTS', payload: res.results.data });
+      }
+    });
+  };
+
+  const listUpvotes = async () => {
+    getApi<UpvoteLog[]>({ url: 'feedback/upvotes' }).then((res) => {
+      if (res.results.data) {
+        dispatch({ type: 'SET_UPVOTES', payload: res.results.data });
+      }
+    });
+  };
+
   const setActiveTab = async (tab: 'ideas' | 'comments') => {
     dispatch({ type: 'SET_TAB', payload: tab });
     await fetchItems(tab);
@@ -534,6 +562,8 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       addRoadmap,
       deleteIdeaById,
       deleteIdeaInRoadmapById,
+      listComments,
+      listUpvotes,
       setActiveTab,
       setDefaultFilter,
       setFilter,
