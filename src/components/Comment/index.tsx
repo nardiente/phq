@@ -733,7 +733,7 @@ export const Comment = ({
               {loading ? 'Loading ...' : 'Reply'}
             </button>
             {!is_public && !comment.internal && (
-              <div className="internal-switch">
+              <div className="internal-switch flex items-center gap-4">
                 <input
                   id="internalReply"
                   type="checkbox"
