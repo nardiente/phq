@@ -1,6 +1,6 @@
 import './styles.css';
 import moment from 'moment';
-import { FeedbackComment } from '../Comments/types';
+import { FeedbackComment } from '../../types/feedback';
 import ReactQuill from 'react-quill';
 import 'quill-mention';
 import 'quill-mention/dist/quill.mention.css';
@@ -22,6 +22,7 @@ import { EyeIcon } from '../icons/eye.icon';
 import { TrashIcon } from '../icons/trash.icon';
 import Emoji from '../Emoji';
 import EmojiList from '../EmojiList';
+import { FiPaperclip } from 'react-icons/fi';
 
 const mentionSource = async (searchTerm: any, renderList: any) => {
   postApi({
@@ -554,6 +555,23 @@ export const Comment = ({
                 'This comment has been hidden.'}
               {currentComment.deleted && 'This comment has been deleted.'}
             </pre>
+            <div className="attachment-section flex gap-1 items-center">
+              {currentComment.attachments &&
+                currentComment.attachments.length > 0 && (
+                  <>
+                    <label className="attachment-button text-[#888399] cursor-default">
+                      <FiPaperclip />
+                    </label>
+                    <div className="selected-files mt-0">
+                      {currentComment.attachments.map((attachment, index) => (
+                        <div key={index} className="file-item">
+                          <span>{attachment.file_name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+            </div>
           </div>
           {!is_admin &&
           currentComment.hidden &&

@@ -13,6 +13,7 @@ export interface Feedback {
   created_by?: number;
   ctr?: number;
   customer_id?: number;
+  deleted?: boolean;
   description?: string;
   did_vote?: boolean;
   draft?: boolean;
@@ -76,6 +77,14 @@ export interface FeedbackComment {
     profile_photo?: string;
     is_admin: boolean;
   };
+  attachments?: (
+    | { file_name: string; url: string }
+    | {
+        file_name: string;
+        content_type: string;
+        content: string;
+      }
+  )[];
   draft: boolean;
   comment: string;
   created_at?: Date;

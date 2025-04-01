@@ -1,4 +1,4 @@
-import Axios, { AxiosHeaders } from 'axios';
+import Axios, { AxiosHeaders, AxiosProgressEvent } from 'axios';
 import {
   ApiResponseBody,
   ApiResponseHeaders,
@@ -53,6 +53,7 @@ export const getApi = async <Data = any>({
 
 export const postApi = async <Data = any>({
   url,
+  onUploadProgress,
   payload,
   pub,
   useCustomerKey,
@@ -60,11 +61,28 @@ export const postApi = async <Data = any>({
   useOnboardingToken,
 }: {
   url: string;
-  payload?: Payload | SavedWidget | Partial<Segment>;
+  payload?:
+    | Payload
+    | SavedWidget
+    | Partial<Segment>
+    | {
+        attachments: (
+          | {
+              file_name: string;
+              content_type: string;
+              content: string;
+            }
+          | {
+              file_name: string;
+              url: string;
+            }
+        )[];
+      };
   pub?: boolean;
   useCustomerKey?: boolean;
   useSessionToken?: boolean;
   useOnboardingToken?: boolean;
+  onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
 }) => {
   let results: ApiResponseBody<Data> = {};
   let headers: ApiResponseHeaders;
@@ -79,6 +97,7 @@ export const postApi = async <Data = any>({
           useSessionToken,
           useOnboardingToken,
         }) as unknown as AxiosHeaders,
+        onUploadProgress,
       }
     );
 

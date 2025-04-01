@@ -48,6 +48,8 @@ export default function UpvotesPage() {
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const userInfo = is_public ? admin_profile : user;
 
+  const filteredIdeas = ideas.filter((idea) => !idea.deleted);
+
   useEffect(() => {
     setActiveTab('/upvotes');
     if (location.search) {
@@ -158,7 +160,7 @@ export default function UpvotesPage() {
         }
       />
       <div id="UpVoteList">
-        {loading && ideas.length === 0 && (
+        {loading && filteredIdeas.length === 0 && (
           <div style={{ paddingTop: '50px' }}>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <FadeLoader height={5} width={2} radius={2} margin={-10} />
@@ -197,7 +199,7 @@ export default function UpvotesPage() {
           </div>
         ) : (
           <>
-            {!loading && ideas.length === 0 && (
+            {!loading && filteredIdeas.length === 0 && (
               <div
                 style={{
                   display: 'flex',
@@ -235,19 +237,19 @@ export default function UpvotesPage() {
                 </div>
               </div>
             )}
-            {ideas.length > 0 &&
+            {filteredIdeas.length > 0 &&
               (!is_public ||
                 (is_public && permissions && permissions.length > 0)) && (
                 <div className="upvote-each-list-container">
-                  {ideas.find((idea) => idea.pinned) && (
+                  {filteredIdeas.find((idea) => idea.pinned) && (
                     <p className="pinned-label">
                       Pinned idea
-                      {ideas.filter((idea) => idea.pinned).length > 1
+                      {filteredIdeas.filter((idea) => idea.pinned).length > 1
                         ? 's'
                         : ''}
                     </p>
                   )}
-                  {ideas
+                  {filteredIdeas
                     ?.filter((idea) => !idea.draft)
                     .map((idea, idx) => (
                       <Fragment key={idx}>
@@ -255,10 +257,10 @@ export default function UpvotesPage() {
                           props={idea}
                           handleListFeedback={handleListFeedback}
                         />
-                        {ideas.find((idea) => idea.pinned) &&
+                        {filteredIdeas.find((idea) => idea.pinned) &&
                           idea.pinned &&
-                          ideas.length - 1 > idx &&
-                          !ideas[idx + 1].pinned && <hr />}
+                          filteredIdeas.length - 1 > idx &&
+                          !filteredIdeas[idx + 1].pinned && <hr />}
                       </Fragment>
                     ))}
                 </div>

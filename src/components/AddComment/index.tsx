@@ -29,6 +29,9 @@ import {
 } from '../../utils/custom-validation';
 import { PrivacyPolicyField } from '../PrivacyPolicyField';
 import { Comments } from '../Comments';
+import { FiPaperclip } from 'react-icons/fi';
+import { fileToBase64 } from '../../utils/file';
+import { toast } from 'react-toastify';
 
 const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
@@ -144,6 +147,14 @@ const AddComment = () => {
 
   const [enable_button, setEnableButton] = useState<boolean>(false);
 
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setAttachments((prev) => [...prev, ...files]);
+  };
+
   const handleGetComments = () => {
     setFetchingComment(true);
     setPanelLoading(true);
@@ -189,10 +200,9 @@ const AddComment = () => {
       });
   };
 
-  const handleAddComment = () => {
-    setLoading(true);
-    setPanelCommentId();
-
+  const handleAddComment = async (
+    attachmentData?: { file_name: string; url: string }[]
+  ) => {
     let cleaned_comment = comment.trim().replace('<p><br></p>', '');
     do {
       cleaned_comment = cleaned_comment.replace('<p><br></p>', '');
@@ -202,9 +212,13 @@ const AddComment = () => {
       cleaned_comment = cleaned_comment.replace('\t', '');
     } while (cleaned_comment.includes('\t'));
 
+    setLoading(true);
+    setPanelCommentId();
+
     postApi({
       url: `feedback/${idea?.id ?? 0}/comment`,
       payload: {
+        attachments: attachmentData ?? [],
         comment: cleaned_comment,
         internal,
         first_name,
@@ -223,41 +237,104 @@ const AddComment = () => {
             : undefined,
       },
       useSessionToken: is_public && user?.moderation?.user_login === true,
+    })
+      .then((res) => {
+        if (res.results.errors) {
+          setApiFieldErrors(res.results.errors);
+        }
+        if (res.results.data) {
+          if (is_logged_in) {
+            setInternal(false);
+            setComment(''); // clear the text field
+            handleGetComments();
+            if (idea) {
+              updateIdea({
+                ...idea,
+                comment_count: (idea.comment_count ?? 0) + 1,
+              });
+              updateIdeaInRoadmap(idea.status_id ?? 0, {
+                ...idea,
+                comment_count: (idea.comment_count ?? 0) + 1,
+              });
+              socket?.emit('message', {
+                action: 'updateIdea',
+                data: { projectId: user?.project?.id },
+              });
+            }
+          } else {
+            setSuccessType('comment');
+            setActivePage('success');
+          }
+          socket?.emit('message', {
+            action: 'updateTag',
+            data: {
+              created_by: idea?.customer_id ?? 0,
+              projectId: user?.project?.id,
+            },
+          });
+        }
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const handleCommentWithAttachments = async () => {
+    const attachedFiles: {
+      file_name: string;
+      content_type: string;
+      content: string;
+    }[] = [];
+
+    const base64files = await Promise.all(
+      attachments.map((file) => fileToBase64(file))
+    );
+
+    attachments.forEach((attachment, index) => {
+      attachedFiles.push({
+        file_name: attachment.name,
+        content_type: attachment.type,
+        content: base64files[index],
+      });
+    });
+
+    setLoading(true);
+
+    postApi({
+      url: 'feedback/upload-attachments',
+      payload: {
+        attachments: attachedFiles as {
+          file_name: string;
+          content_type: string;
+          content: string;
+        }[],
+      },
+      onUploadProgress: (progressEvent) => {
+        const progress = Math.round(
+          (progressEvent.loaded * 100) / (progressEvent.total || 1)
+        );
+        setUploadProgress(progress);
+      },
     }).then((res) => {
       setLoading(false);
-      if (res.results.errors) {
-        setApiFieldErrors(res.results.errors);
-      }
-      if (res.results.data) {
-        if (is_logged_in) {
-          setInternal(false);
-          setComment(''); // clear the text field
-          handleGetComments();
-          if (idea) {
-            updateIdea({
-              ...idea,
-              comment_count: (idea.comment_count ?? 0) + 1,
-            });
-            updateIdeaInRoadmap(idea.status_id ?? 0, {
-              ...idea,
-              comment_count: (idea.comment_count ?? 0) + 1,
-            });
-            socket?.emit('message', {
-              action: 'updateIdea',
-              data: { projectId: user?.project?.id },
-            });
-          }
-        } else {
-          setSuccessType('comment');
-          setActivePage('success');
-        }
-        socket?.emit('message', {
-          action: 'updateTag',
-          data: {
-            created_by: idea?.customer_id ?? 0,
-            projectId: user?.project?.id,
-          },
+      setAttachments([]);
+      setUploadProgress(0);
+      const {
+        results: { data, error },
+      } = res ?? {};
+      if (error) {
+        toast(error, {
+          autoClose: 3000,
+          bodyClassName: 'p-2',
+          className: 'custom-theme',
+          closeOnClick: true,
+          draggable: false,
+          hideProgressBar: true,
+          pauseOnFocusLoss: false,
+          pauseOnHover: true,
+          theme: 'dark',
         });
+      }
+      if (data) {
+        handleAddComment(data);
       }
     });
   };
@@ -409,17 +486,36 @@ const AddComment = () => {
                 )
               }
             />
+            <div className="attachment-section">
+              {attachments.length > 0 && (
+                <div className="selected-files">
+                  {attachments.map((file, index) => (
+                    <div key={index} className="file-item">
+                      <span>{file.name}</span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setAttachments((prev) =>
+                            prev.filter((_, i) => i !== index)
+                          )
+                        }
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {/* Show upload progress when uploading */}
+              {uploadProgress > 0 && uploadProgress < 100 && (
+                <div className="upload-progress">
+                  Uploading: {uploadProgress}%
+                </div>
+              )}
+            </div>
           </div>
           {/* )} */}
           <div className="comment-form-bottom">
-            <button
-              id="AddCommentButton"
-              onClick={handleAddComment}
-              disabled={!enable_button}
-              type="button"
-            >
-              {loading ? 'Loading ...' : 'Add comment'}
-            </button>
             {!is_public && (
               <div className="internal-switch flex items-center gap-4">
                 <input
@@ -439,6 +535,36 @@ const AddComment = () => {
                 </label>
               </div>
             )}
+            <div className="flex gap-3">
+              <div className="flex items-center">
+                <label
+                  htmlFor="file-upload"
+                  className="attachment-button text-[#888399]"
+                >
+                  <FiPaperclip />
+                </label>
+                <input
+                  id="file-upload"
+                  type="file"
+                  multiple
+                  onChange={handleFileSelect}
+                  style={{ display: 'none' }}
+                  accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+                />
+              </div>
+              <button
+                id="AddCommentButton"
+                onClick={() =>
+                  attachments.length > 0
+                    ? handleCommentWithAttachments()
+                    : handleAddComment()
+                }
+                disabled={!enable_button}
+                type="button"
+              >
+                {loading ? 'Loading ...' : 'Add comment'}
+              </button>
+            </div>
           </div>
         </form>
       )}
@@ -749,7 +875,11 @@ const AddComment = () => {
                 loading ||
                 !user?.permissions.includes(Permissions.ADD_COMMENT)
               }
-              onClick={handleAddComment}
+              onClick={() =>
+                attachments.length > 0
+                  ? handleCommentWithAttachments()
+                  : handleAddComment()
+              }
               type="button"
             >
               {loading ? 'Loading ...' : 'Add comment'}
