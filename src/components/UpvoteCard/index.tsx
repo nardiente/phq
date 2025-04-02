@@ -14,6 +14,9 @@ import { EyeSlashIcon } from '../icons/eye-slash.icon';
 import { putApi } from '../../utils/api/api';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
+import { CloudArrowUpFillIcon } from '../icons/cloud-arrow-up-fill.icon';
+import { UploadPhoto } from '../UploadPhoto';
+import { ImageType } from '../../types/user';
 
 const UpvoteLabelLink = styled.span`
   align-items: center;
@@ -28,7 +31,7 @@ const UpvoteLabelLink = styled.span`
 `;
 
 const UpvoteCard = ({ props }: { props: Feedback }) => {
-  const { updateIdea, updateIdeaInRoadmap } = useFeedback();
+  const { setSelectedIdea, updateIdea, updateIdeaInRoadmap } = useFeedback();
   const { user } = useUser();
   const { setActivePage, setDeleteId, setDeleteType } = usePanel();
   const {
@@ -39,6 +42,7 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
   const is_member = user?.user?.role_id;
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [showUpload, setShowUpload] = useState<boolean>(false);
   const [viewMore, setViewMore] = useState<boolean>(false);
 
   const onHideOnRoadmap = () => {
@@ -64,6 +68,14 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
     });
   };
 
+  const onSetPhoto = (value: string) => {
+    setSelectedIdea({ ...props, cover_photo: value });
+    updateIdea({ ...props, cover_photo: value });
+    if (props.status_id) {
+      updateIdeaInRoadmap(props.status_id, { ...props, cover_photo: value });
+    }
+  };
+
   return (
     <div id="UpVoteEachList">
       <div className="upvote-counter-container">
@@ -79,13 +91,14 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
               <button
                 className="edit-button"
                 data-tooltip-content="Edit"
-                onClick={() => setActivePage('edit_idea')}
-                role="button"
                 disabled={
                   !user?.permissions.includes(Permissions.EDIT_IDEA) ||
                   props.not_administer ||
                   loading
                 }
+                onClick={() => setActivePage('edit_idea')}
+                role="button"
+                title="Edit"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -101,11 +114,13 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
             )}
 
             <button
-              className="h-[38px] text-[#6b7280]"
+              className="w-[38px] h-[38px] text-[#6b7280] rounded-md flex items-center justify-center hover:bg-[#f3f4f6] hover:text-[#09041a]"
+              data-tooltip-content="Hide on roadmap"
               disabled={
                 !user?.permissions.includes(Permissions.EDIT_IDEA) || loading
               }
               onClick={onHideOnRoadmap}
+              title="Hide on roadmap"
             >
               {props.hide_on_roadmap ? <EyeSlashIcon /> : <EyeIcon />}
             </button>
@@ -116,17 +131,30 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
               <button
                 className="delete-btn"
                 data-tooltip-content="Delete"
+                disabled={
+                  !user?.permissions.includes(Permissions.DELETE_IDEA) ||
+                  loading
+                }
                 onClick={() => {
                   setDeleteType('idea');
                   setDeleteId(props.id ?? 0);
                   setActivePage('delete');
                 }}
-                disabled={
-                  !user?.permissions.includes(Permissions.DELETE_IDEA) ||
-                  loading
-                }
+                title="Delete"
               >
                 <TrashIcon />
+              </button>
+            )}
+
+            {is_admin && (
+              <button
+                className="w-[38px] h-[38px] text-[#6b7280] rounded-md flex items-center justify-center hover:bg-[#f3f4f6] hover:text-[#09041a]"
+                data-tooltip-content="Upload Cover"
+                disabled={loading}
+                onClick={() => setShowUpload(true)}
+                title="Upload Cover"
+              >
+                <CloudArrowUpFillIcon />
               </button>
             )}
           </>
@@ -202,6 +230,14 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
           ))}
         </div>
       </div>
+      <UploadPhoto
+        id={props.id}
+        image_type={ImageType.IDEA_COVER}
+        maxFileSize={2097152}
+        setModal={setShowUpload}
+        setPhoto={onSetPhoto}
+        show_modal={showUpload}
+      />
     </div>
   );
 };

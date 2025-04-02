@@ -420,7 +420,9 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
         setRoadmaps(
           data.map((roadmap) => ({
             ...roadmap,
-            upvotes: ideas.filter((idea) => idea.status_id === roadmap.id),
+            upvotes: ideas.filter(
+              (idea) => idea.status_id === roadmap.id && !idea.deleted
+            ),
           }))
         );
 

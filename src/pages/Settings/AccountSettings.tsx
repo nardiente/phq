@@ -29,7 +29,7 @@ export function AccountSettings() {
   const { setHasUnsavedChanges } = useUnsavedChanges();
 
   const [show_modal, setModal] = useState<boolean>(false);
-  const [image_type, setImageType] = useState<string>('');
+  const [image_type, setImageType] = useState<ImageType>(ImageType['']);
 
   const [deleteConfirmation, setDeleteConfirmation] = useState('');
   const [isDeleting, setIsDeleting] = useState<boolean>(false);

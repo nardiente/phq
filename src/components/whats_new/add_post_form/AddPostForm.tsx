@@ -612,10 +612,8 @@ const AddPostForm = ({
       <UploadPhoto
         image_type={ImageType.WHATS_NEW_IMAGES}
         maxFileSize={2097152}
-        setCompanyLogo={() => false}
-        setFavicon={() => false}
         setModal={setModal}
-        setProfilePhoto={setImageUploaded}
+        setPhoto={setImageUploaded}
         show_modal={show_modal}
       />
     </div>

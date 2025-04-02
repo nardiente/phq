@@ -498,7 +498,7 @@ export function RoadmapPage() {
                       {(provided) => (
                         /* Container */
                         <div ref={provided.innerRef} className="flex gap-6">
-                          {(roadmaps as Roadmap[]).map((roadmap, idx) => (
+                          {roadmaps.map((roadmap, idx) => (
                             <Draggable
                               draggableId={`roadmap-${roadmap.id.toString()}`}
                               key={roadmap.id}

@@ -6,8 +6,10 @@ export interface ForgotPasswordFormProps {
 }
 
 export enum ImageType {
+  '' = '',
   COMPANY_LOGO = 'company-logos',
   FAVICON = 'favicon',
+  IDEA_COVER = 'idea-covers',
   PROFILE_PHOTOS = 'profile-photos',
   WHATS_NEW_IMAGES = 'whats-new-images',
 }

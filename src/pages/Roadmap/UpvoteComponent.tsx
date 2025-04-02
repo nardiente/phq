@@ -25,6 +25,9 @@ export const UpvoteComponent = ({ upvote }: { upvote: Feedback }) => {
         padding: '16px',
       }}
     >
+      {upvote.cover_photo && (
+        <img className="h-[200px] rounded-md" src={upvote.cover_photo} />
+      )}
       <div className="idea-card">
         <UpVoteCounter data={upvote} hideArrow={true} />
         <div className="upvote-details">

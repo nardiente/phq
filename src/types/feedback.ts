@@ -9,6 +9,8 @@ export interface Feedback {
   };
   comment_count?: number;
   confidence?: Confidences;
+  cover_heic_blob_url?: string;
+  cover_photo?: string;
   created_at?: Date;
   created_by?: number;
   ctr?: number;

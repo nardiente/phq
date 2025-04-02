@@ -15,7 +15,7 @@ import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
 import { ApiFieldError } from '../../utils/api/types';
 import { useEffect, useRef, useState } from 'react';
-import { FeedbackComment } from '../../types/feedback';
+import { Feedback, FeedbackComment } from '../../types/feedback';
 import { UserTypes } from '../../types/user';
 import { Permissions, RbacPermissions } from '../../types/common';
 import UpvoteCard from '../UpvoteCard';
@@ -104,17 +104,13 @@ const AddComment = () => {
     setSuccessType,
   } = usePanel();
   const {
-    state: { ideas, selectedIdea },
+    state: { selectedIdea },
     updateIdea,
     updateIdeaInRoadmap,
   } = useFeedback();
   const {
     state: { socket },
   } = useSocket();
-  let idea = ideas?.find((idea) => idea.id === selectedIdea?.id);
-  if (!idea) {
-    idea = selectedIdea ?? undefined;
-  }
 
   const is_logged_in =
     getKaslKey() !== undefined ||
@@ -123,6 +119,7 @@ const AddComment = () => {
       user?.moderation?.user_login === true &&
       user.user?.id);
 
+  const [idea, setIdea] = useState<Feedback | null>(selectedIdea);
   const [comments, setComments] = useState<FeedbackComment[]>([]);
 
   const [is_member, setIsMember] = useState<boolean>(false);
@@ -149,6 +146,10 @@ const AddComment = () => {
 
   const [attachments, setAttachments] = useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+
+  useEffect(() => {
+    setIdea(selectedIdea);
+  }, [selectedIdea]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);

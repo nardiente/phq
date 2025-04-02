@@ -17,14 +17,17 @@ import {
   FAVICON_PLACEHOLDER,
   PROFILE_PLACEHOLDER,
 } from '../../constants/placeholders';
+import { Feedback } from '../../types/feedback';
 
 export const UploadPhoto: React.FC<{
-  image_type: string;
+  id?: number;
+  image_type: ImageType;
   maxFileSize: number;
-  setCompanyLogo: (value: string) => void;
-  setFavicon: (value: string) => void;
+  setCompanyLogo?: (value: string) => void;
+  setFavicon?: (value: string) => void;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setProfilePhoto: (value: string) => void;
+  setPhoto?: (value: string) => void;
+  setProfilePhoto?: (value: string) => void;
   show_modal: boolean;
 }> = (props) => {
   const { t } = useTranslation();
@@ -88,13 +91,22 @@ export const UploadPhoto: React.FC<{
     }
   };
 
-  const handleUpload = async (imageType: string) => {
+  const handleUpload = async (imageType: ImageType) => {
     setUploadState((prev) => ({ ...prev, uploading: true }));
     const { name, type } = file as File;
-    const url =
-      imageType === ImageType.WHATS_NEW_IMAGES
-        ? 'whatsnew/upload/image'
-        : 'users/upload/photo';
+
+    let url = '';
+    switch (imageType) {
+      case ImageType.WHATS_NEW_IMAGES:
+        url = 'whatsnew/upload/image';
+        break;
+      case ImageType.IDEA_COVER:
+        url = `feedback/${props.id}/upload-cover`;
+        break;
+      default:
+        url = 'users/upload/photo';
+        break;
+    }
 
     try {
       const res = await postApi({
@@ -112,21 +124,40 @@ export const UploadPhoto: React.FC<{
     }
   };
 
-  const handleResponse = (res: any, imageType: string) => {
+  const handleResponse = (res: any, imageType: ImageType) => {
     if (res.results.data) {
-      setUser({ ...user, user: res.results.data as User } as UserContextConfig);
-      updateProfileAndCompanyPhotos(res.results.data, imageType);
+      if (
+        [ImageType.COMPANY_LOGO, ImageType.PROFILE_PHOTOS].includes(imageType)
+      ) {
+        setUser({
+          ...user,
+          user: res.results.data as User,
+        } as UserContextConfig);
+      }
+      updatePhotos(res.results.data, imageType);
     }
   };
 
-  const updateProfileAndCompanyPhotos = (data: User, imageType: string) => {
+  const updatePhotos = (data: any, imageType: ImageType) => {
     const { company_logo, favicon, profile_photo } = data;
-    updatePhoto(company_logo, props.setCompanyLogo, COMPANY_LOGO_PLACEHOLDER);
-    updatePhoto(favicon, props.setFavicon, FAVICON_PLACEHOLDER);
-    updatePhoto(profile_photo, props.setProfilePhoto, PROFILE_PLACEHOLDER);
-    if (imageType === ImageType.WHATS_NEW_IMAGES) {
-      const { image } = data as WhatsNew;
-      updatePhoto(image, props.setProfilePhoto, '');
+    if (props.setCompanyLogo) {
+      updatePhoto(company_logo, props.setCompanyLogo, COMPANY_LOGO_PLACEHOLDER);
+    }
+    if (props.setFavicon) {
+      updatePhoto(favicon, props.setFavicon, FAVICON_PLACEHOLDER);
+    }
+    if (props.setProfilePhoto) {
+      updatePhoto(profile_photo, props.setProfilePhoto, PROFILE_PLACEHOLDER);
+    }
+    if (props.setPhoto) {
+      if (imageType === ImageType.WHATS_NEW_IMAGES) {
+        const { image } = data as WhatsNew;
+        updatePhoto(image, props.setPhoto, '');
+      }
+      if (imageType === ImageType.IDEA_COVER) {
+        const { cover_photo } = data as Feedback;
+        updatePhoto(cover_photo, props.setPhoto, '');
+      }
     }
   };
 
@@ -235,6 +266,22 @@ export const UploadPhoto: React.FC<{
     });
   };
 
+  let uploadHeader = 'Upload';
+  switch (props.image_type) {
+    case ImageType.PROFILE_PHOTOS:
+      uploadHeader = uploadHeader + ' Profile Photo';
+      break;
+    case ImageType.FAVICON:
+      uploadHeader = uploadHeader + ' favicon';
+      break;
+    case ImageType.IDEA_COVER:
+      uploadHeader = uploadHeader + ' Cover';
+      break;
+    default:
+      uploadHeader = uploadHeader + ' Company Logo';
+      break;
+  }
+
   return (
     <Modal isOpen={props.show_modal}>
       {uploadState.uploading && (
@@ -252,7 +299,7 @@ export const UploadPhoto: React.FC<{
             />
           </label>
         </span>
-        <span className="upload-photo-heading">{`Upload ${props.image_type === ImageType.PROFILE_PHOTOS ? 'Profile Photo' : props.image_type === ImageType.FAVICON ? 'favicon' : 'Company Logo'}`}</span>
+        <span className="upload-photo-heading">{uploadHeader}</span>
       </ModalHeader>
       <ModalBody>
         {imageErrorMsg && (
