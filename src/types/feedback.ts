@@ -20,6 +20,7 @@ export interface Feedback {
   feedback_tags?: FeedbackTag[];
   hide_on_roadmap?: boolean;
   impact?: Impacts;
+  index: number;
   not_administer?: boolean;
   pinned?: boolean;
   reach?: number;

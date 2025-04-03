@@ -602,7 +602,8 @@ export function RoadmapPage() {
                                         className="idea-list-container"
                                       >
                                         {roadmap.upvotes
-                                          ?.filter(
+                                          ?.sort((a, b) => a.index - b.index)
+                                          .filter(
                                             (upvote) =>
                                               !upvote.draft &&
                                               !upvote.hide_on_roadmap
