@@ -224,7 +224,7 @@ export const Header: FC = () => {
     }
     if (hash && hash == 'whats_new') {
       setActiveTab('/changelog');
-      const uri = location.toString();
+      const uri = window.location.toString();
       if (uri.indexOf('#') > 0) {
         const clean_uri = uri.substring(0, uri.indexOf('#'));
         window.history.replaceState({}, '', clean_uri);

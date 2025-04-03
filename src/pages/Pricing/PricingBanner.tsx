@@ -92,7 +92,7 @@ export default function PricingBanner({
         cancel_url: window.location.href,
         description,
         free_trial,
-        success_url: `http://${window.location.host}/success`,
+        success_url: `http://${window.location.host}/billing`,
         prices,
       },
     })
