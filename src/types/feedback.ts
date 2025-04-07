@@ -25,6 +25,7 @@ export interface Feedback {
   hide_on_roadmap?: boolean;
   impact?: Impacts;
   index: number;
+  is_archived?: boolean;
   not_administer?: boolean;
   pinned?: boolean;
   reach?: number;

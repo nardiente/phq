@@ -17,6 +17,9 @@ import { useSocket } from '../../contexts/SocketContext';
 import { CloudArrowUpFillIcon } from '../icons/cloud-arrow-up-fill.icon';
 import { UploadPhoto } from '../UploadPhoto';
 import { ImageType } from '../../types/user';
+import { ArchiveFillIcon } from '../icons/archive-fill.icon';
+import { ArchiveOffIcon } from '../icons/archive-off.icon';
+import { toast } from 'react-toastify';
 
 const UpvoteLabelLink = styled.span`
   align-items: center;
@@ -45,6 +48,46 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
   const [showUpload, setShowUpload] = useState<boolean>(false);
   const [viewMore, setViewMore] = useState<boolean>(false);
 
+  const onArchive = () => {
+    const { description, status, title } = props;
+    setLoading(true);
+    putApi<Feedback>(`feedback/${props.id}`, {
+      description,
+      is_archived: !props.is_archived,
+      status: status?.name,
+      title,
+    }).then((res) => {
+      setLoading(false);
+      const { results } = res;
+      const { data } = results ?? {};
+      if (data) {
+        setSelectedIdea(data);
+        updateIdea(data);
+        if (props.status_id) {
+          updateIdeaInRoadmap(props.status_id, data);
+        }
+        socket?.emit('message', {
+          action: 'updateIdea',
+          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+        });
+        toast(
+          `Idea has been ${!props.is_archived ? 'archived' : 'restored'}.`,
+          {
+            autoClose: 3000,
+            bodyClassName: 'p-2',
+            className: 'toast-success',
+            closeOnClick: true,
+            draggable: false,
+            hideProgressBar: true,
+            pauseOnHover: true,
+            pauseOnFocusLoss: false,
+            theme: 'colored',
+          }
+        );
+      }
+    });
+  };
+
   const onHideOnRoadmap = () => {
     const { description, title } = props;
     setLoading(true);
@@ -58,6 +101,7 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
       const { results } = res;
       const { data } = results ?? {};
       if (data) {
+        setSelectedIdea(data);
         updateIdea(data);
         updateIdeaInRoadmap(data.status_id ?? 0, data);
         socket?.emit('message', {
@@ -147,15 +191,27 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
             )}
 
             {is_admin && (
-              <button
-                className="w-[38px] h-[38px] text-[#6b7280] rounded-md flex items-center justify-center hover:bg-[#f3f4f6] hover:text-[#09041a]"
-                data-tooltip-content="Upload Cover"
-                disabled={loading}
-                onClick={() => setShowUpload(true)}
-                title="Upload Cover"
-              >
-                <CloudArrowUpFillIcon />
-              </button>
+              <>
+                <button
+                  className="w-[38px] h-[38px] text-[#6b7280] rounded-md flex items-center justify-center hover:bg-[#f3f4f6] hover:text-[#09041a]"
+                  data-tooltip-content="Upload Cover"
+                  disabled={loading}
+                  onClick={() => setShowUpload(true)}
+                  title="Upload Cover"
+                >
+                  <CloudArrowUpFillIcon />
+                </button>
+
+                <button
+                  className="w-[38px] h-[38px] text-[#6b7280] rounded-md flex items-center justify-center hover:bg-[#f3f4f6] hover:text-[#09041a]"
+                  data-tooltip-content={`${props.is_archived ? 'Restore' : 'Archive'} Idea`}
+                  disabled={loading}
+                  onClick={onArchive}
+                  title={`${props.is_archived ? 'Restore' : 'Archive'} Idea`}
+                >
+                  {props.is_archived ? <ArchiveOffIcon /> : <ArchiveFillIcon />}
+                </button>
+              </>
             )}
           </>
         )}
