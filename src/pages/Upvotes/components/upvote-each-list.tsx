@@ -66,7 +66,7 @@ export const UpVoteEachList = ({
       {props.is_archived && <ArchivedBadge className="rounded-t-lg" />}
       <div
         id="UpVoteEachList"
-        className={props.is_archived ? 'rounded-b-lg' : 'rounded-lg'}
+        className={props.is_archived ? 'rounded-b-lg pt-2' : 'rounded-lg'}
       >
         <UpVoteCounter data={props} />
         <div className="upvote-details">

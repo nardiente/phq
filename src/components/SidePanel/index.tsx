@@ -50,7 +50,9 @@ export const SidePanel = () => {
     >
       <Fragment>
         {selectedIdea?.is_archived && <ArchivedBadge />}
-        <div className="w-full flex flex-col gap-[8px] py-[35px] px-[24px]">
+        <div
+          className={`w-full flex flex-col gap-[8px] py-[35px] px-[24px] ${selectedIdea?.is_archived ? 'pt-2' : ''}`}
+        >
           <div className="header">
             <div>
               {activePage == 'add_idea' && 'Tell us your idea!'}
