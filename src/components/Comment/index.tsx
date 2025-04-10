@@ -23,6 +23,8 @@ import { TrashIcon } from '../icons/trash.icon';
 import Emoji from '../Emoji';
 import EmojiList from '../EmojiList';
 import { FiPaperclip } from 'react-icons/fi';
+import { fileToBase64 } from '../../utils/file';
+import { toast } from 'react-toastify';
 
 const mentionSource = async (searchTerm: any, renderList: any) => {
   postApi({
@@ -89,6 +91,7 @@ export const Comment = ({
   parentComment?: FeedbackComment;
   handleGetComments: () => void;
 }) => {
+  const inputRef = useRef<HTMLInputElement>();
   const quillRef = useRef<ReactQuill>(null);
 
   const { user } = useUser();
@@ -142,6 +145,9 @@ export const Comment = ({
   const [mentioned_user_ids, setMentionedUserIds] = useState<number[]>([]);
 
   const [enable_reply_button, setEnableReplyButton] = useState<boolean>(false);
+
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   if (!isReplyFocused || !showReply) {
     const mention_containers = document.querySelectorAll(
@@ -216,6 +222,11 @@ export const Comment = ({
     });
   };
 
+  const handleReplyFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setAttachments((prev) => [...prev, ...files]);
+  };
+
   const handleGetReplies = () => {
     setPanelLoading(true);
     getApi<FeedbackComment[]>({
@@ -241,7 +252,9 @@ export const Comment = ({
       .catch(() => setPanelLoading(false));
   };
 
-  const handleOnAddReply = () => {
+  const handleOnAddReply = (
+    attachmentData?: { file_name: string; url: string }[]
+  ) => {
     setLoading(true);
     setPanelCommentId();
 
@@ -257,6 +270,7 @@ export const Comment = ({
     postApi({
       url: `feedback/${comment.feedback_id}/comment`,
       payload: {
+        attachments: attachmentData ?? [],
         comment: cleaned_comment,
         internal,
         parent_id: comment.id,
@@ -307,6 +321,68 @@ export const Comment = ({
         handleGetComments();
       }
     );
+  };
+
+  const handleReplyWithAttachments = async () => {
+    const attachedFiles: {
+      file_name: string;
+      content_type: string;
+      content: string;
+    }[] = [];
+
+    const base64files = await Promise.all(
+      attachments.map((file) => fileToBase64(file))
+    );
+
+    attachments.forEach((attachment, index) => {
+      attachedFiles.push({
+        file_name: attachment.name,
+        content_type: attachment.type,
+        content: base64files[index],
+      });
+    });
+
+    setLoading(true);
+
+    postApi<{ file_name: string; url: string }[]>({
+      url: 'feedback/upload-attachments',
+      payload: {
+        attachments: attachedFiles as {
+          file_name: string;
+          content_type: string;
+          content: string;
+        }[],
+      },
+      onUploadProgress: (progressEvent) => {
+        const progress = Math.round(
+          (progressEvent.loaded * 100) / (progressEvent.total || 1)
+        );
+        setUploadProgress(progress);
+      },
+    }).then((res) => {
+      setLoading(false);
+      setAttachments([]);
+      setUploadProgress(0);
+      const {
+        results: { data, error },
+      } = res ?? {};
+      if (error) {
+        toast(error, {
+          autoClose: 3000,
+          bodyClassName: 'p-2',
+          className: 'custom-theme',
+          closeOnClick: true,
+          draggable: false,
+          hideProgressBar: true,
+          pauseOnFocusLoss: false,
+          pauseOnHover: true,
+          theme: 'dark',
+        });
+      }
+      if (data) {
+        handleOnAddReply(data);
+      }
+    });
   };
 
   const toggleForm = () => {
@@ -740,35 +816,93 @@ export const Comment = ({
               idea?.not_administer
             }
           />
-          {/* )} */}
-          <div className="reply-form-bottom">
-            <button
-              id="AddReplyButton"
-              onClick={handleOnAddReply}
-              disabled={!enable_reply_button}
-              type="button"
-            >
-              {loading ? 'Loading ...' : 'Reply'}
-            </button>
-            {!is_public && !comment.internal && (
-              <div className="internal-switch flex items-center gap-4">
-                <input
-                  id="internalReply"
-                  type="checkbox"
-                  name="internalReply"
-                  className="switch is-rounded is-small"
-                  checked={internal}
-                  onChange={() => setInternal((prev) => !prev)}
-                  disabled={
-                    !user?.permissions.includes(Permissions.ADD_REPLY) ||
-                    idea?.not_administer
-                  }
-                />
-                <label className="switch-label" htmlFor="internalReply">
-                  Post reply internally
-                </label>
+          <div className="attachment-section w-full">
+            {attachments.length > 0 && (
+              <div className="selected-files">
+                {attachments.map((file, index) => (
+                  <div key={index} className="file-item">
+                    <span>{file.name}</span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setAttachments((prev) =>
+                          prev.filter((_, i) => i !== index)
+                        )
+                      }
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
+            {/* Show upload progress when uploading */}
+            {uploadProgress > 0 && uploadProgress < 100 && (
+              <div className="upload-progress">
+                Uploading: {uploadProgress}%
+              </div>
+            )}
+          </div>
+          {/* )} */}
+          <div className="reply-form-bottom">
+            <div className="internal-switch flex items-center gap-4">
+              {!is_public && !comment.internal && (
+                <>
+                  <input
+                    id="internalReply"
+                    type="checkbox"
+                    name="internalReply"
+                    className="switch is-rounded is-small"
+                    checked={internal}
+                    onChange={() => setInternal((prev) => !prev)}
+                    disabled={
+                      !user?.permissions.includes(Permissions.ADD_REPLY) ||
+                      idea?.not_administer
+                    }
+                  />
+                  <label className="switch-label" htmlFor="internalReply">
+                    Post reply internally
+                  </label>
+                </>
+              )}
+            </div>
+            <div className="flex gap-3">
+              <div className="flex items-center">
+                <label
+                  className="attachment-button text-[#888399]"
+                  htmlFor="file-upload"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (inputRef.current) {
+                      inputRef.current.click();
+                    }
+                  }}
+                >
+                  <FiPaperclip />
+                </label>
+                <input
+                  accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+                  className="hidden"
+                  id="file-upload"
+                  multiple
+                  onChange={handleReplyFileSelect}
+                  ref={inputRef as React.LegacyRef<HTMLInputElement>}
+                  type="file"
+                />
+              </div>
+              <button
+                id="AddReplyButton"
+                onClick={() =>
+                  attachments.length > 0
+                    ? handleReplyWithAttachments()
+                    : handleOnAddReply()
+                }
+                disabled={!enable_reply_button}
+                type="button"
+              >
+                {loading ? 'Loading ...' : 'Reply'}
+              </button>
+            </div>
           </div>
         </form>
       )}

@@ -91,6 +91,7 @@ const modules = {
 };
 
 const AddComment = () => {
+  const inputRef = useRef<HTMLInputElement>();
   const quillRef = useRef<ReactQuill>(null);
 
   const { user } = useUser();
@@ -299,7 +300,7 @@ const AddComment = () => {
 
     setLoading(true);
 
-    postApi({
+    postApi<{ file_name: string; url: string }[]>({
       url: 'feedback/upload-attachments',
       payload: {
         attachments: attachedFiles as {
@@ -517,40 +518,49 @@ const AddComment = () => {
           </div>
           {/* )} */}
           <div className="comment-form-bottom">
-            {!is_public && (
-              <div className="internal-switch flex items-center gap-4">
-                <input
-                  id="internalComment"
-                  type="checkbox"
-                  name="internalComment"
-                  className="switch is-rounded is-small"
-                  checked={internal}
-                  onChange={() => setInternal((prev) => !prev)}
-                  disabled={
-                    !user?.permissions.includes(Permissions.ADD_COMMENT) ||
-                    idea?.not_administer
-                  }
-                />
-                <label className="switch-label" htmlFor="internalComment">
-                  Post comment internally
-                </label>
-              </div>
-            )}
+            <div className="internal-switch flex items-center gap-4">
+              {!is_public && (
+                <>
+                  <input
+                    id="internalComment"
+                    type="checkbox"
+                    name="internalComment"
+                    className="switch is-rounded is-small"
+                    checked={internal}
+                    onChange={() => setInternal((prev) => !prev)}
+                    disabled={
+                      !user?.permissions.includes(Permissions.ADD_COMMENT) ||
+                      idea?.not_administer
+                    }
+                  />
+                  <label className="switch-label" htmlFor="internalComment">
+                    Post comment internally
+                  </label>
+                </>
+              )}
+            </div>
             <div className="flex gap-3">
               <div className="flex items-center">
                 <label
-                  htmlFor="file-upload"
                   className="attachment-button text-[#888399]"
+                  htmlFor="file-upload"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (inputRef.current) {
+                      inputRef.current.click();
+                    }
+                  }}
                 >
                   <FiPaperclip />
                 </label>
                 <input
+                  accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+                  className="hidden"
                   id="file-upload"
-                  type="file"
                   multiple
                   onChange={handleFileSelect}
-                  style={{ display: 'none' }}
-                  accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+                  ref={inputRef as React.LegacyRef<HTMLInputElement>}
+                  type="file"
                 />
               </div>
               <button

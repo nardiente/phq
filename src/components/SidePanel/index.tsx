@@ -44,14 +44,14 @@ export const SidePanel = () => {
         setActivePage('add_idea');
         setSelectedIdea(null);
       }}
-      panelClassName="panel-container p-0"
-      panelContainerClassName="rounded-none"
+      panelClassName="panel-container p-0 overflow-auto"
+      panelContainerClassName="rounded-none overflow-visible"
       backdropClicked={() => activePage == 'success' && setIsOpen(false)}
     >
       <Fragment>
         {selectedIdea?.is_archived && <ArchivedBadge />}
         <div
-          className={`w-full flex flex-col gap-[8px] py-[35px] px-[24px] ${selectedIdea?.is_archived ? 'pt-2' : ''}`}
+          className={`h-screen w-full flex flex-col gap-[8px] py-[35px] px-[24px] ${selectedIdea?.is_archived ? 'pt-2' : ''}`}
         >
           <div className="header">
             <div>
