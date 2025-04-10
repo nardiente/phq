@@ -4,6 +4,7 @@ import { eraseKaslKey } from '../utils/localStorage';
 import { User, UserTypes } from '../types/user';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
+import { RbacPermissions } from '../types/common';
 
 interface UserMenuProps {
   user: User | undefined;
@@ -56,7 +57,7 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
   };
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative" data-testid="user-menu" ref={menuRef}>
       {currentUser?.full_name && (
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -106,7 +107,9 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
 
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-          <div className="px-4 py-3 border-b border-gray-100">
+          <div
+            className={`px-4 py-3 ${user?.rbac_permissions?.includes(RbacPermissions.MANAGE_ACCOUNT_DETAILS_PAGE) ? 'border-b' : ''} border-gray-100`}
+          >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
                 <span className="text-purple-600 text-lg">
@@ -130,12 +133,16 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
           <div className="flex flex-col gap-1">
             {currentUser?.type === UserTypes.CUSTOMER && (
               <>
-                <button
-                  onClick={() => handleNavigation('account')}
-                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
-                >
-                  Account Settings
-                </button>
+                {user?.rbac_permissions?.includes(
+                  RbacPermissions.MANAGE_ACCOUNT_DETAILS_PAGE
+                ) && (
+                  <button
+                    onClick={() => handleNavigation('account')}
+                    className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    Account Settings
+                  </button>
+                )}
                 <a
                   href={`${window.location.origin}/pricing`}
                   target="_blank"

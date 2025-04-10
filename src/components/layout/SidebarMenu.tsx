@@ -28,6 +28,7 @@ import {
 import { PageType } from '../../types/app';
 import { useUser } from '../../contexts/UserContext';
 import { ComingSoon } from '../ComingSoon';
+import { RbacPermissions } from '../../types/common';
 
 interface SidebarMenuProps {
   activeItem: string;
@@ -121,6 +122,9 @@ export function SidebarMenu({
       id: 'settings',
       label: 'Settings',
       icon: Settings,
+      hidden: !user?.user?.rbac_permissions?.includes(
+        RbacPermissions.MANAGE_ACCOUNT_DETAILS_PAGE
+      ),
     },
     {
       id: 'documentation',
@@ -178,6 +182,7 @@ export function SidebarMenu({
       className={`bg-white border-r border-gray-200 transition-all duration-300 mr-[5px] ${
         isExpanded ? 'w-max' : 'w-16'
       }`}
+      data-testid="side-menu"
       ref={menuRef}
     >
       <div className="sticky top-0 flex flex-col h-screen">
