@@ -4,6 +4,7 @@ import { eraseKaslKey } from '../utils/localStorage';
 import { User, UserTypes } from '../types/user';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
+import { RbacPermissions } from '../types/common';
 
 interface UserMenuProps {
   user: User | undefined;
@@ -68,7 +69,7 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
   };
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative" data-testid="user-menu" ref={menuRef}>
       {currentUser?.full_name && (
         <button
           onClick={() => setIsOpen(!isOpen)}
