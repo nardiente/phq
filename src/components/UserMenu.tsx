@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { eraseKaslKey } from '../utils/localStorage';
+import { eraseKaslKey, eraseSessionToken } from '../utils/localStorage';
 import { User, UserTypes } from '../types/user';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
@@ -63,6 +63,9 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
     eraseKaslKey();
     if (is_public) {
       removeUser();
+      if (!moderation?.user_login) {
+        eraseSessionToken();
+      }
     } else {
       navigate('/sign-in');
     }
