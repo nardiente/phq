@@ -4,8 +4,6 @@ import AppRoutes from './routes/routes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-  eraseKaslKey,
-  eraseSessionToken,
   getSessionToken,
   setCustomerKaslKey,
   setKaslKey,
@@ -25,12 +23,11 @@ const App: FC = () => {
   const { user, showBanner, setFetching, setShowBanner, setUser } = useUser();
   const { admin_profile, moderation, project, user: user_profile } = user ?? {};
   const { is_index_search_engine } = project ?? {};
-  const { email, kasl_key } = admin_profile ?? {};
   const { setPanelLoading } = usePanel();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-  const userProfile = is_public ? admin_profile : user_profile;
-  const { favicon } = userProfile ?? {};
+  const userProfile = user_profile ?? admin_profile;
+  const { email, favicon, kasl_key } = userProfile ?? {};
 
   useEffect(() => {
     if (is_public && userProfile?.id) {
@@ -104,12 +101,8 @@ const App: FC = () => {
     })
       .then((res) => {
         const {
-          results: { data, error },
+          results: { data },
         } = res;
-        if (error) {
-          eraseSessionToken();
-          eraseKaslKey();
-        }
         if (data) {
           const { kasl_key, token } = data;
           if (token) {
