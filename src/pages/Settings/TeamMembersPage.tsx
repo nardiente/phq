@@ -491,24 +491,25 @@ export default function TeamMembersPage() {
                   </div>
                 </div>
               </div>
-
-          <Button
-            className="w-fit text-[13px]"
-            disabled={
-              email_address === '' ||
-              first_name === '' ||
-              last_name === '' ||
-              role === '' ||
-              email_error_message !== '' ||
-              first_name_error_msg !== '' ||
-              last_name_error_msg !== '' ||
-              !hasUnsavedChanges
-            }
-            loading={loadingInvite}
-            onClick={button_name === 'Save' ? onSubmitEdit : onSubmit}
-            text={button_name}
-            variant="secondary"
-          />
+              <Button
+                className="w-fit text-[13px]"
+                disabled={
+                  email_address === '' ||
+                  first_name === '' ||
+                  last_name === '' ||
+                  role === '' ||
+                  email_error_message !== '' ||
+                  first_name_error_msg !== '' ||
+                  last_name_error_msg !== '' ||
+                  !hasUnsavedChanges
+                }
+                loading={loadingInvite}
+                onClick={button_name === 'Save' ? onSubmitEdit : onSubmit}
+                text={button_name}
+                variant="secondary"
+              />
+            </>
+          )}
         </div>
 
         <div className="columns is-mobile is-multiline">
