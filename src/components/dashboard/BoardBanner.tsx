@@ -10,14 +10,7 @@ export function BoardBanner() {
   const { user } = useUser();
   const { project } = user ?? {};
 
-  const { isVisible, loading, hideTemporarily, hidePermanently } =
-    useBoardBanner();
-  const { user } = useUser();
-  const { project } = user ?? {};
-
   const [showCopyToast, setShowCopyToast] = useState(false);
-
-  if (!isVisible) return null;
 
   if (!isVisible) return null;
 
@@ -29,7 +22,7 @@ export function BoardBanner() {
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+    <div className="bg-white rounded-lg border-2 border-purple-200 p-6 mb-6">
       <div className="max-w-[600px] mx-auto text-center space-y-4">
         <h2 className="text-xl font-semibold text-gray-900">
           Add your board to your website.
@@ -57,23 +50,6 @@ export function BoardBanner() {
               <Copy size={14} />
             </button>
           </div>
-        </div>
-
-        <div className="flex items-center justify-center gap-4 pt-2">
-          <button
-            onClick={hideTemporarily}
-            className="text-[13px] text-gray-600 hover:text-gray-700"
-            disabled={loading}
-          >
-            Remind me in 3 days
-          </button>
-          <button
-            onClick={hidePermanently}
-            className="text-[13px] text-gray-600 hover:text-gray-700"
-            disabled={loading}
-          >
-            Close and don't show again
-          </button>
         </div>
 
         <div className="flex items-center justify-center gap-4 pt-2">

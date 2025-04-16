@@ -7,7 +7,6 @@ import {
   getSessionToken,
   setCustomerKaslKey,
   setKaslKey,
-  setKaslKey,
   setSessionToken,
 } from './utils/localStorage';
 import { postApi } from './utils/api/api';
@@ -42,18 +41,13 @@ const App: FC = () => {
 
       let gistScript: any, metaTag: any;
 
-      const defaultFavicon =
-        !is_public || (is_public && email?.includes('@producthq.io'))
-          ? '/favicon.ico'
-          : FAVICON_EMPTY_PLACEHOLDER;
-      let linkIconTag = document.querySelector(
-        'link[rel~="icon"]'
-      ) as HTMLLinkElement | null;
-      if (linkIconTag === null) {
-        linkIconTag = document.createElement('link');
+      const linkIconTag: HTMLLinkElement | null =
+        document.querySelector('link[rel="icon"]');
+      if (linkIconTag) {
+        linkIconTag.href =
+          favicon ??
+          (is_public ? FAVICON_EMPTY_PLACEHOLDER : FAVICON_PLACEHOLDER);
       }
-      linkIconTag.type = 'image/svg+xml';
-      linkIconTag.href = favicon ?? defaultFavicon;
 
       if (!is_public || (is_public && email?.endsWith('@producthq.io'))) {
         // Remove clarity script
@@ -110,12 +104,6 @@ const App: FC = () => {
           results: { data },
         } = res;
         if (data) {
-          const { kasl_key, token } = data;
-          if (token) {
-            setSessionToken(token);
-          }
-          if (kasl_key) {
-            setKaslKey(kasl_key);
           const { kasl_key, token } = data;
           if (token) {
             setSessionToken(token);

@@ -15,18 +15,6 @@ import { useFeedback } from '../../contexts/FeedbackContext';
 import { putApi } from '../../utils/api/api';
 import { useSocket } from '../../contexts/SocketContext';
 import { useUser } from '../../contexts/UserContext';
-import {
-  Confidence,
-  Confidences,
-  Efforts,
-  Feedback,
-  Impact,
-  Impacts,
-} from '../../types/feedback';
-import { useFeedback } from '../../contexts/FeedbackContext';
-import { putApi } from '../../utils/api/api';
-import { useSocket } from '../../contexts/SocketContext';
-import { useUser } from '../../contexts/UserContext';
 
 interface TableRowProps {
   item: Feedback;
@@ -34,13 +22,6 @@ interface TableRowProps {
 }
 
 const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
-  const { setIsOpen, setActivePage } = usePanel();
-  const { setSelectedIdea, updateIdea } = useFeedback();
-  const {
-    state: { socket },
-  } = useSocket();
-  const { user } = useUser();
-
   const { setIsOpen, setActivePage } = usePanel();
   const { setSelectedIdea, updateIdea } = useFeedback();
   const {
@@ -250,7 +231,7 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
               setDropdownPosition(position);
               setIsImpactOpen(!isImpactOpen);
             }}
-            className="w-full p-1 border rounded-lg flex items-center justify-between text-gray-700 text-sm"
+            className="w-full p-1 flex items-center justify-between text-gray-700 text-sm"
           >
             <span>
               {impactOptions.find(
@@ -307,7 +288,7 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
               setDropdownPosition(position);
               setIsConfidenceOpen(!isConfidenceOpen);
             }}
-            className="w-full p-1 border rounded-lg flex items-center justify-between text-gray-700 text-sm"
+            className="w-full p-1 flex items-center justify-between text-gray-700 text-sm"
           >
             <span>
               {item.confidence === undefined
@@ -323,11 +304,11 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
                 top: dropdownPosition.top,
                 left: dropdownPosition.left,
                 zIndex: 9999,
-                width: '144px',
+                width: '160px',
               }}
               className="mt-1 w-full bg-white rounded-lg shadow-lg border"
             >
-              {['50% - Low', '80% - Medium', '100% - High'].map((option) => (
+              {confidenceOptions.map((option) => (
                 <button
                   key={option.value}
                   onClick={() => {
@@ -359,7 +340,7 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
           }}
         />
       </td>
-      <td className="py-2 px-3 text-sm w-16" style={scoreStyle}>
+      <td className="py-4 px-4 text-sm w-16" style={scoreStyle}>
         {item.score}
       </td>
     </tr>

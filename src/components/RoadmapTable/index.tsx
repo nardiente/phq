@@ -38,11 +38,15 @@ const RoadmapTable = ({ items, onItemsChange }: RoadmapTableProps) => {
   }, [items]);
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-auto relative z-0">
-      <table className="w-full table-auto">
-        <TableHeader />
-        <tbody>
-          {items.map((item) => (
+    <div className="overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-300">
+        <TableHeader
+          onSort={handleSort}
+          currentSortColumn={sortColumn}
+          currentSortOrder={sortOrder}
+        />
+        <tbody className="divide-y divide-gray-200 bg-white">
+          {sortedItems.map((item) => (
             <TableRow
               key={item.id}
               item={item}

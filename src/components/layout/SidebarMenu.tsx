@@ -77,7 +77,7 @@ export function SidebarMenu({
       hidden: true,
     },
     { icon: ListOrdered, label: 'Prioritization', id: 'prioritization' },
-    { icon: PieChart, label: 'Segments', id: 'segments', hidden: true },
+    { icon: PieChart, label: 'Segments', id: 'segments', hidden: false },
     { icon: Users, label: 'Customer Profiles', id: 'profiles', hidden: true },
   ];
 
