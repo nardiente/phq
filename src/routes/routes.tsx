@@ -12,8 +12,6 @@ import TeamMembersPage from '../pages/Settings/TeamMembersPage';
 import BillingPage from '../pages/Settings/BillingPage';
 import ImportIdeasPage from '../pages/ImportIdeasPage';
 import TestimonialsPage from '../pages/TestimonialsPage';
-import WidgetsPage from '../pages/WidgetsPage';
-import WidgetsView from '../pages/widgets.tsx';
 import { SSOVerifyingPage } from '../components/SSOVerifying';
 import ForgotPasswordPage from '../pages/ForgotPassword';
 import UpvotesPage from '../pages/Upvotes/UpvotesPage';
@@ -68,9 +66,9 @@ const AppRoutes = () => {
             <Route path="/roadmap" element={<RoadmapPage />} />
             <Route path="/whatsnew" element={<WhatsNewPage />} />
             <Route path="/whatsnew/:post_id" element={<WhatsNewPost />} />
-            <Route path="/widgets" element={<WidgetsView />} />
+            {/* <Route path="/widgets" element={<WidgetsView />} />
             <Route path="/widgets/page" element={<WidgetsPage />} />
-            <Route path="/widgets/page/:id" element={<WidgetsPage />} />
+            <Route path="/widgets/page/:id" element={<WidgetsPage />} /> */}
             <Route path="/profiles" element={<UserProfilesPage />} />
             {/* <Route path="/prioritization" element={<PrioritizationPage />} /> */}
 
