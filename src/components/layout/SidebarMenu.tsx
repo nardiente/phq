@@ -77,6 +77,7 @@ export function SidebarMenu({
       icon: LayoutTemplate,
       label: 'Widgets',
       id: 'widgets',
+      hidden: true,
     },
     {
       icon: ListOrdered,
