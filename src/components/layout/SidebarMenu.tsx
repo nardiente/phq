@@ -74,7 +74,6 @@ export function SidebarMenu({
       icon: LayoutTemplate,
       label: 'Widgets',
       id: 'widgets',
-      hidden: true,
     },
     { icon: ListOrdered, label: 'Prioritization', id: 'prioritization' },
     { icon: PieChart, label: 'Segments', id: 'segments', hidden: false },
