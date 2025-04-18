@@ -7,7 +7,7 @@ export function FiletypeCsvIcon() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_3808_517287)">
+      <g clipPath="url(#clip0_3808_517287)">
         <path
           fillRule="evenodd"
           clipRule="evenodd"

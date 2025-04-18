@@ -1,13 +1,17 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Upload, X } from 'lucide-react';
 import { FiletypeCsvIcon } from '../components/icons/filetype-csv.icon';
 import { Toast } from '../components/Toast';
 import { TypeOptions } from 'react-toastify';
+import { postApi } from '../utils/api/api';
 
 export default function ImportIdeasPage() {
+  const fileReader = new FileReader();
   const inputRef = useRef<HTMLInputElement>();
 
+  const [csvContent, setCsvContent] = useState<string>();
   const [file, setFile] = useState<File | undefined>(undefined);
+  const [fileDataURL, setFileDataURL] = useState<string>();
   const [isDragging, setIsDragging] = useState(false);
   const [toast, setToast] = useState<{
     message?: string;
@@ -15,13 +19,49 @@ export default function ImportIdeasPage() {
     type?: TypeOptions;
   }>();
 
+  useEffect(() => {
+    if (csvContent && file) {
+      parseCsvContent(file);
+    }
+  }, [csvContent]);
+
+  useEffect(() => {
+    let isCancel = false;
+
+    if (file) {
+      fileReader.onload = (e) => {
+        const { result } = e.target as FileReader;
+        if (result && !isCancel) {
+          setFileDataURL(result as string);
+        }
+      };
+      fileReader.readAsDataURL(file);
+    }
+
+    return () => {
+      isCancel = true;
+      if (fileReader && fileReader.readyState === 1) {
+        fileReader.abort();
+      }
+    };
+  }, [file]);
+
+  useEffect(() => {
+    if (file && fileDataURL && fileDataURL.length > 0) {
+      fileReader.onload = (event) => {
+        setCsvContent(event.target?.result as string);
+      };
+      fileReader.readAsText(file);
+    }
+  }, [fileDataURL]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
 
     const files = e.target.files;
     if (files && files.length > 0) {
       const file = files[0];
-      validateFile(file);
+      handleSetFile(file);
     }
   };
 
@@ -42,8 +82,22 @@ export default function ImportIdeasPage() {
     const files = e.dataTransfer.files;
     if (files.length) {
       const file = files[0];
-      validateFile(file);
+      handleSetFile(file);
     }
+  };
+
+  const handleSetFile = (file: File) => {
+    setFile(undefined);
+    const isValidFile = validateFile(file);
+    if (!isValidFile) {
+      setToast({
+        message: 'Please upload your file in the .CSV format.',
+        show: true,
+        type: 'error',
+      });
+      return;
+    }
+    setFile(file);
   };
 
   const onButtonClick = () => {
@@ -53,28 +107,23 @@ export default function ImportIdeasPage() {
   };
 
   const parseCsvContent = (file: File) => {
-    setFile(file);
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const csvContent = event.target?.result as string;
-      // Split the CSV content into rows
-      const rows = csvContent.split('\n').map((row) => row.split(','));
-      console.log('Parsed CSV:', rows);
-      // TODO: Process the CSV data as needed
-    };
-    reader.readAsText(file);
+    const rows = csvContent?.split('\n').map((row) => row.split(','));
+    console.log('Parsed CSV:', rows);
+    // TODO: Process the CSV data as needed
+    uploadFile(file);
+  };
+
+  const uploadFile = (file: File) => {
+    postApi({
+      url: 'feedback/upload-csv',
+      payload: { file: fileDataURL, file_name: file.name },
+    }).then((res) => {
+      console.log({ res });
+    });
   };
 
   const validateFile = (file: File) => {
-    if (file.type === 'text/csv') {
-      parseCsvContent(file);
-    } else {
-      setToast({
-        message: 'Please upload your file in the .CSV format.',
-        show: true,
-        type: 'error',
-      });
-    }
+    return file.type === 'text/csv';
   };
 
   return (
