@@ -1,13 +1,19 @@
 import React, { useRef, useState } from 'react';
 import { Upload, X } from 'lucide-react';
 import { FiletypeCsvIcon } from '../components/icons/filetype-csv.icon';
-import { toast } from 'react-toastify';
+import { Toast } from '../components/Toast';
+import { TypeOptions } from 'react-toastify';
 
 export default function ImportIdeasPage() {
   const inputRef = useRef<HTMLInputElement>();
 
   const [file, setFile] = useState<File | undefined>(undefined);
   const [isDragging, setIsDragging] = useState(false);
+  const [toast, setToast] = useState<{
+    message?: string;
+    show: boolean;
+    type?: TypeOptions;
+  }>();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -63,16 +69,10 @@ export default function ImportIdeasPage() {
     if (file.type === 'text/csv') {
       parseCsvContent(file);
     } else {
-      toast('Please upload a CSV file.', {
-        autoClose: 3000,
-        bodyClassName: 'p-2',
-        className: 'custom-theme',
-        closeOnClick: true,
-        draggable: false,
-        hideProgressBar: true,
-        pauseOnFocusLoss: false,
-        pauseOnHover: true,
-        theme: 'dark',
+      setToast({
+        message: 'Please upload your file in the .CSV format.',
+        show: true,
+        type: 'error',
       });
     }
   };
@@ -152,6 +152,13 @@ export default function ImportIdeasPage() {
           </p>
         </div>
       </div>
+      {toast?.show && (
+        <Toast
+          message={toast.message}
+          onClose={() => setToast({ show: false })}
+          type={toast.type}
+        />
+      )}
     </div>
   );
 }
