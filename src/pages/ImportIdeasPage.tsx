@@ -88,10 +88,10 @@ export default function ImportIdeasPage() {
 
   const handleSetFile = (file: File) => {
     setFile(undefined);
-    const isValidFile = validateFile(file);
-    if (!isValidFile) {
+    const errorMessage = validateFile(file);
+    if (errorMessage.length > 0) {
       setToast({
-        message: 'Please upload your file in the .CSV format.',
+        message: errorMessage,
         show: true,
         type: 'error',
       });
@@ -122,8 +122,14 @@ export default function ImportIdeasPage() {
     });
   };
 
-  const validateFile = (file: File) => {
-    return file.type === 'text/csv';
+  const validateFile = (file: File): string => {
+    if (file.type !== 'text/csv') {
+      return 'Please upload your file in the .CSV format.';
+    }
+    if (file.size > 2097152) {
+      return 'Please upload a file no larger than 2 MB.';
+    }
+    return '';
   };
 
   return (
