@@ -112,10 +112,14 @@ function Banner({ activeItem, onNavigate }: BannerProps) {
           </>
         ) : (
           <>
-            <Button onClick={() => navigate('/sign-in')} variant="outline">
+            <Button
+              onClick={() => navigate('/sign-in')}
+              state="outline"
+              variant="blue"
+            >
               Sign in
             </Button>
-            <Button onClick={() => navigate('/sign-up')}>
+            <Button onClick={() => navigate('/sign-up')} variant="blue">
               <div className="text-white">Sign up</div>
             </Button>
           </>

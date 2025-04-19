@@ -4,6 +4,7 @@ import { FiletypeCsvIcon } from '../components/icons/filetype-csv.icon';
 import { Toast } from '../components/Toast';
 import { TypeOptions } from 'react-toastify';
 import { postApi } from '../utils/api/api';
+import Button from '../components/Button';
 
 export default function ImportIdeasPage() {
   const fileReader = new FileReader();
@@ -170,23 +171,33 @@ export default function ImportIdeasPage() {
         </div>
 
         {!!file && (
-          <div className="rounded-lg bg-gray-50 flex items-center w-full p-5 gap-2.5 justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-[56px] h-[56px] flex items-center justify-center">
-                <FiletypeCsvIcon />
+          <div className="w-full flex flex-col justify-between gap-6">
+            <div className="rounded-lg bg-gray-50 flex items-center w-full p-5 gap-2.5 justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-[56px] h-[56px] flex items-center justify-center">
+                  <FiletypeCsvIcon />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p className="text-[#110733] font-normal text-base leading-6">
+                    {file.name}
+                  </p>
+                  <p className="text-[#888399] font-medium text-sm leading-5">
+                    {file.size}KB
+                  </p>
+                </div>
               </div>
-              <div className="flex flex-col gap-1">
-                <p className="text-[#110733] font-normal text-base leading-6">
-                  {file.name}
-                </p>
-                <p className="text-[#888399] font-medium text-sm leading-5">
-                  {file.size}KB
-                </p>
+              <button onClick={() => setFile(undefined)}>
+                <X />
+              </button>
+            </div>
+            <div className="flex justify-end">
+              <div className="flex gap-3.5">
+                <Button onClick={() => setFile(undefined)} variant="outline">
+                  Cancel
+                </Button>
+                <Button>Import</Button>
               </div>
             </div>
-            <button onClick={() => setFile(undefined)}>
-              <X />
-            </button>
           </div>
         )}
 

@@ -167,7 +167,6 @@ export const WhatsNewPage = () => {
                 />
                 {!is_public && (
                   <Button
-                    className="bg-[#ff6334]"
                     disabled={
                       !permissions?.includes(Permissions.ADD_POST) ||
                       permissions?.length === 0

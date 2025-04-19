@@ -31,7 +31,6 @@ const PrioritizationPage = () => {
         </h1>
 
         <Button
-          className="bg-[#ff6334]"
           onClick={() => {
             setActivePage('add_idea');
             setIsOpen(true);

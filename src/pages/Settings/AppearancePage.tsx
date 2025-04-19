@@ -663,7 +663,6 @@ export default function AppearancePage() {
         title="Account Settings"
         primaryButton={
           <Button
-            className="bg-[#ff6334]"
             disabled={loading || loading_user}
             loading={loading || loading_user}
             onClick={handleUpdate}

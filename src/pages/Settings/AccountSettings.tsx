@@ -172,12 +172,7 @@ export function AccountSettings() {
       <SettingsHeader
         title="Account Settings"
         primaryButton={
-          <Button
-            className="bg-[#ff6334]"
-            disabled={isLoading}
-            loading={isLoading}
-            onClick={onSubmit}
-          >
+          <Button disabled={isLoading} loading={isLoading} onClick={onSubmit}>
             <div className="text-white">
               {`Updat${isLoading ? 'ing...' : 'e'}`}
             </div>
@@ -216,7 +211,8 @@ export function AccountSettings() {
                 setImageType(ImageType.PROFILE_PHOTOS);
                 setModal((prev) => !prev);
               }}
-              variant="outline"
+              state="outline"
+              variant="blue"
             >
               Upload
             </Button>
@@ -300,7 +296,12 @@ export function AccountSettings() {
               type="password"
             />
           </div>
-          <Button disabled={isLoading} loading={isLoading} variant="outline">
+          <Button
+            disabled={isLoading}
+            loading={isLoading}
+            state="outline"
+            variant="blue"
+          >
             {`Reset${isLoading ? 'ting' : ''} password`}
           </Button>
         </div>
@@ -339,7 +340,8 @@ export function AccountSettings() {
                     setImageType(ImageType.COMPANY_LOGO);
                     setModal((prev) => !prev);
                   }}
-                  variant="outline"
+                  state="outline"
+                  variant="blue"
                 >
                   Upload
                 </Button>
@@ -362,7 +364,8 @@ export function AccountSettings() {
                     setImageType(ImageType.FAVICON);
                     setModal((prev) => !prev);
                   }}
-                  variant="outline"
+                  state="outline"
+                  variant="blue"
                 >
                   Upload
                 </Button>

@@ -510,7 +510,8 @@ export default function TeamMembersPage() {
                 }
                 loading={loadingInvite}
                 onClick={button_name === 'Save' ? onSubmitEdit : onSubmit}
-                variant="outline"
+                state="outline"
+                variant="blue"
               >
                 {loadingInvite
                   ? `${

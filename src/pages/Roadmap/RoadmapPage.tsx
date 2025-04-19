@@ -417,7 +417,7 @@ export function RoadmapPage() {
         }
         primaryButton={
           <Button
-            className="bg-[#ff6334] px-4 py-2"
+            className="px-4 py-2"
             disabled={
               (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
               permissions?.length === 0
