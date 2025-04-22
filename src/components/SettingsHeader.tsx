@@ -16,7 +16,7 @@ const SettingsHeader: React.FC<SettingsHeaderProps> = ({
   primaryButton,
 }) => {
   return (
-    <div className="flex items-center justify-between mb-8">
+    <div className="flex items-center justify-between mb-8 px-8">
       <div>
         <h1 className="text-[28px] font-semibold text-gray-900 leading-none">
           {title}

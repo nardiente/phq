@@ -131,7 +131,7 @@ export default function Widgets() {
           )}
         </>
       ) : (
-        <div>
+        <div className="px-8">
           <div className="overflow-visible shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
             <table className="min-w-full divide-y divide-gray-300">
               <thead className="bg-gray-50">

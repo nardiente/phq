@@ -440,7 +440,7 @@ export function RoadmapPage() {
         )}
       <div
         id="RoadmapPublicView"
-        className={isRestricted ? 'flex justify-center' : ''}
+        className={`${isRestricted ? 'flex justify-center' : ''} px-8`}
       >
         <div className="pt-8 w-[75vw]">
           {isRestricted ? (
