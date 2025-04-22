@@ -77,7 +77,12 @@ export const postApi = async <Data = any>({
               url: string;
             }
         )[];
-      };
+      }
+    | {
+        description: string;
+        title: string;
+        type: string;
+      }[];
   pub?: boolean;
   useCustomerKey?: boolean;
   useSessionToken?: boolean;

@@ -22,6 +22,7 @@ export interface Feedback {
   effort?: number;
   estimated_release_date?: string;
   feedback_tags?: FeedbackTag[];
+  file_name?: string;
   hide_on_roadmap?: boolean;
   impact?: Impacts;
   index: number;
@@ -37,10 +38,17 @@ export interface Feedback {
   title?: string;
   updated_at?: Date;
   updated_by?: number;
+  url?: string;
   views?: number;
   vote: number;
   vote_on_behalf?: User;
   vote_on_behalf_id?: number;
+}
+
+export interface FeedbackUpload {
+  id?: number;
+  file_name: string;
+  url: string;
 }
 
 export enum Confidences {
