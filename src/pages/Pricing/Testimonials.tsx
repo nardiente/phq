@@ -7,7 +7,12 @@ export default function Testimonials() {
             <div className="testItem">
               <div className="testBlock">
                 <div className="titleBlock">
-                  <h5>
+                  <h5
+                    style={{
+                      fontWeight: 700,
+                      fontSize: '18px',
+                    }}
+                  >
                     Aura Brooks <span>|</span>{' '}
                     <img src="./static/images/reviewStars.svg" alt="" />
                   </h5>
@@ -21,7 +26,12 @@ export default function Testimonials() {
             <div className="testItem">
               <div className="testBlock">
                 <div className="titleBlock">
-                  <h5>
+                  <h5
+                    style={{
+                      fontWeight: 700,
+                      fontSize: '18px',
+                    }}
+                  >
                     Jack Graham <span>|</span>{' '}
                     <img src="./static/images/reviewStars.svg" alt="" />
                   </h5>
@@ -35,7 +45,12 @@ export default function Testimonials() {
             <div className="testItem">
               <div className="testBlock">
                 <div className="titleBlock">
-                  <h5>
+                  <h5
+                    style={{
+                      fontWeight: 700,
+                      fontSize: '18px',
+                    }}
+                  >
                     Eve Crawford <span>|</span>{' '}
                     <img src="./static/images/reviewStars.svg" alt="" />
                   </h5>

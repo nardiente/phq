@@ -160,8 +160,20 @@ export default function PricingBanner({
         </div>
         <div className="dd-container">
           <div className="bannerContent">
-            <h6>ProductHQ Pricing</h6>
-            <h1>
+            <h6
+              style={{
+                fontWeight: 700,
+                fontSize: '14px',
+              }}
+            >
+              ProductHQ Pricing
+            </h6>
+            <h1
+              style={{
+                fontWeight: 700,
+                fontSize: '50px',
+              }}
+            >
               Build the right features, <br />
               not expensive mistakes
             </h1>

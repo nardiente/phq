@@ -281,7 +281,7 @@ export const Header: FC = () => {
             }}
           >
             <a href="https://producthq.io/">
-              <img src="https://eka7rg34bmu.exactdn.com/wp-content/uploads/2023/01/Logo.svg" />
+              <img src="../../../static/assets/logo.png" />
             </a>
             <nav style={{ display: 'flex' }}>
               <ul

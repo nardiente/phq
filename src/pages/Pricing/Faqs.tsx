@@ -56,7 +56,14 @@ const Faqs: React.FC = () => {
           {faqItems.map((faq, index) => (
             <div className="faqItem" key={index}>
               <div className="titleBlock" onClick={() => toggleFaq(index)}>
-                <h6>{faq.question}</h6>
+                <h6
+                  style={{
+                    fontWeight: 700,
+                    fontSize: '18px',
+                  }}
+                >
+                  {faq.question}
+                </h6>
                 <span className="icon">
                   <img
                     src="./static/images/angleDown.svg"

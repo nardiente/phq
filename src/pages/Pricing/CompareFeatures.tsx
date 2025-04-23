@@ -72,9 +72,32 @@ export default function CompareFeatures({
   return (
     <>
       <div className="comparefeaturesSection">
-        <div className="sectionTitleBlock">
+        <div
+          className="sectionTitleBlock"
+          style={{
+            borderBottomWidth: '1px',
+          }}
+        >
           <div className="dd-container">
-            <div className="wrapper">
+            <div
+              className="wrapper"
+              style={{
+                paddingBottom: '25px',
+              }}
+            >
+              <div className="leftBlock">
+                <div className="title">
+                  <h5
+                    style={{
+                      color: '#09041A',
+                      fontWeight: 700,
+                      fontSize: '30px',
+                    }}
+                  >
+                    Compare Features
+                  </h5>
+                </div>
+              </div>
               <div className="rightBlock">
                 <div
                   className={`tableTitleBlock scale ${
@@ -84,7 +107,14 @@ export default function CompareFeatures({
                     setTabView('Scale');
                   }}
                 >
-                  <h6>
+                  <h6
+                    className="flex gap-2"
+                    style={{
+                      color: '#09041A',
+                      fontWeight: 700,
+                      fontSize: '18px',
+                    }}
+                  >
                     <img
                       src="https://s3.amazonaws.com/app.productfeedback.co/icon/scale-icon.svg"
                       alt=""
@@ -100,7 +130,14 @@ export default function CompareFeatures({
                     setTabView('Growth');
                   }}
                 >
-                  <h6>
+                  <h6
+                    className="flex gap-2"
+                    style={{
+                      color: '#09041A',
+                      fontWeight: 700,
+                      fontSize: '18px',
+                    }}
+                  >
                     <img
                       src="https://s3.amazonaws.com/app.productfeedback.co/icon/growth-icon.svg"
                       alt=""
@@ -116,7 +153,14 @@ export default function CompareFeatures({
                     setTabView('Starter');
                   }}
                 >
-                  <h6>
+                  <h6
+                    className="flex gap-2"
+                    style={{
+                      color: '#09041A',
+                      fontWeight: 700,
+                      fontSize: '18px',
+                    }}
+                  >
                     <img
                       src="https://s3.amazonaws.com/app.productfeedback.co/icon/starter-icon.svg"
                       alt=""
@@ -130,40 +174,19 @@ export default function CompareFeatures({
         </div>
         <div className="tablesWrapper">
           <div className="dd-container">
-            <div className="wrapper">
-              <div className="topTitle">
+            <div className="wrapper" style={{ marginTop: 'unset' }}>
+              <div
+                className="topTitle"
+                style={{
+                  borderBottomWidth: '1px',
+                }}
+              >
                 <div className="leftBlock">
-                  <div className="title">
+                  <div
+                    className="title"
+                    style={{ border: 'unset', marginTop: '10px' }}
+                  >
                     <h5>Core Features</h5>
-                  </div>
-                </div>
-                <div className="rightBlock">
-                  <div className="Icontitle">
-                    <h6>
-                      <img
-                        src="https://s3.amazonaws.com/app.productfeedback.co/icon/scale-icon.svg"
-                        alt=""
-                      />
-                      Scale
-                    </h6>
-                  </div>
-                  <div className="Icontitle">
-                    <h6>
-                      <img
-                        src="https://s3.amazonaws.com/app.productfeedback.co/icon/growth-icon.svg"
-                        alt=""
-                      />
-                      Growth
-                    </h6>
-                  </div>
-                  <div className="Icontitle">
-                    <h6>
-                      <img
-                        src="https://s3.amazonaws.com/app.productfeedback.co/icon/starter-icon.svg"
-                        alt=""
-                      />
-                      Starter
-                    </h6>
                   </div>
                 </div>
               </div>
@@ -349,7 +372,15 @@ export default function CompareFeatures({
                   <h6>Segmentation</h6>
                 </div>
                 <div className="bigtitle">
-                  <h5>Add-ons</h5>
+                  <h5
+                    style={{
+                      color: '#09041A',
+                      fontWeight: 700,
+                      fontSize: '30px',
+                    }}
+                  >
+                    Add-ons
+                  </h5>
                 </div>
                 <div className="tableItem">
                   <h6>Remove ProductHQ branding</h6>
