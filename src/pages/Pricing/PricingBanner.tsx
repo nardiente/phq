@@ -24,6 +24,7 @@ export default function PricingBanner({
   const [downgrade_plan, setDowngradePlan] = useState<Price>();
   const [downgrading, setDowngrading] = useState<boolean>(false);
   const [number_ideas, setNumberIdeas] = useState<number>(0);
+  const [subscribe_plan, setSubscribePlan] = useState<Price>();
   const [subscribing, setSubscribing] = useState(false);
 
   const is_logged_in = getKaslKey() !== undefined;
@@ -124,6 +125,7 @@ export default function PricingBanner({
   };
 
   const handleStartTrial = (subscribe_plan: Price) => {
+    setSubscribePlan(subscribe_plan);
     if (is_logged_in && plan) {
       createCheckoutSession(subscribe_plan, true);
     } else {
@@ -133,6 +135,7 @@ export default function PricingBanner({
   };
 
   const subscribe = (subscribe_plan: Price) => {
+    setSubscribePlan(subscribe_plan);
     if (checkIsDowngrading(subscribe_plan)) {
       const idea_feature = features.find((feature) => feature.tag == 'ideas');
       switch (subscribe_plan.product.name.toLowerCase()) {
@@ -240,8 +243,8 @@ export default function PricingBanner({
                               }}
                             >
                               {plan && plan.subscription
-                                ? 'Subscribe'
-                                : 'Start your free trial'}
+                                ? `Subscrib${subscribing && subscribe_plan?.id === plan.monthly.plans[2].id ? 'ing...' : 'e'}`
+                                : `Start${subscribing && subscribe_plan?.id === plan?.monthly.plans[2].id ? 'ing' : ''} your free trial${subscribing && subscribe_plan?.id === plan?.monthly.plans[2].id ? '...' : ''}`}
                             </a>
                           </div>
                         </div>
@@ -282,8 +285,8 @@ export default function PricingBanner({
                               }}
                             >
                               {plan && plan.subscription
-                                ? 'Subscribe'
-                                : 'Start your free trial'}
+                                ? `Subscrib${subscribing && subscribe_plan?.id === plan.monthly.plans[1].id ? 'ing...' : 'e'}`
+                                : `Start${subscribing && subscribe_plan?.id === plan?.monthly.plans[1].id ? 'ing' : ''} your free trial${subscribing && subscribe_plan?.id === plan?.monthly.plans[1].id ? '...' : ''}`}
                             </a>
                           </div>
                         </div>
@@ -326,8 +329,8 @@ export default function PricingBanner({
                               }}
                             >
                               {plan && plan.subscription
-                                ? 'Subscribe'
-                                : 'Start your free trial'}
+                                ? `Subscrib${subscribing && subscribe_plan?.id === plan.monthly.plans[0].id ? 'ing...' : 'e'}`
+                                : `Start${subscribing && subscribe_plan?.id === plan?.monthly.plans[0].id ? 'ing' : ''} your free trial${subscribing && subscribe_plan?.id === plan?.monthly.plans[0].id ? '...' : ''}`}
                             </a>
                           </div>
                         </div>
@@ -373,8 +376,8 @@ export default function PricingBanner({
                               }}
                             >
                               {plan && plan.subscription
-                                ? 'Subscribe'
-                                : 'Start your free trial'}
+                                ? `Subscrib${subscribing && subscribe_plan?.id === plan.yearly.plans[2].id ? 'ing...' : 'e'}`
+                                : `Start${subscribing && subscribe_plan?.id === plan?.yearly.plans[2].id ? 'ing' : ''} your free trial${subscribing && subscribe_plan?.id === plan?.yearly.plans[2].id ? '...' : ''}`}
                             </a>
                           </div>
                         </div>
@@ -415,8 +418,8 @@ export default function PricingBanner({
                               }}
                             >
                               {plan && plan.subscription
-                                ? 'Subscribe'
-                                : 'Start your free trial'}
+                                ? `Subscrib${subscribing && subscribe_plan?.id === plan.yearly.plans[1].id ? 'ing...' : 'e'}`
+                                : `Start${subscribing && subscribe_plan?.id === plan?.yearly.plans[1].id ? 'ing' : ''} your free trial${subscribing && subscribe_plan?.id === plan?.yearly.plans[1].id ? '...' : ''}`}
                             </a>
                           </div>
                         </div>
@@ -459,8 +462,8 @@ export default function PricingBanner({
                               }}
                             >
                               {plan && plan.subscription
-                                ? 'Subscribe'
-                                : 'Start your free trial'}
+                                ? `Subscrib${subscribing && subscribe_plan?.id === plan.yearly.plans[0].id ? 'ing...' : 'e'}`
+                                : `Start${subscribing && subscribe_plan?.id === plan?.yearly.plans[0].id ? 'ing' : ''} your free trial${subscribing && subscribe_plan?.id === plan?.yearly.plans[0].id ? '...' : ''}`}
                             </a>
                           </div>
                         </div>
@@ -537,7 +540,7 @@ export default function PricingBanner({
             }}
             type="button"
           >
-            Downgrade
+            {`Downgrad${subscribing ? 'ing...' : 'e'}`}
           </button>
         </ModalFooter>
       </Modal>
