@@ -29,7 +29,7 @@ export const DisplayUserName = ({
   return (
     <div
       id="display-user-name"
-      className="bg-white rounded-lg border border-gray-200 p-6"
+      className="bg-white rounded-lg border border-gray-200 p-6 mx-8"
     >
       <div className="header-text">
         <p className="header">Display User Name</p>
