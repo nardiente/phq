@@ -330,7 +330,7 @@ function feedbackReducer(
 export function FeedbackProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(feedbackReducer, initialState);
 
-  const { roadmaps } = state;
+  const { ideas, roadmaps } = state;
 
   const { user } = useUser();
   const { moderation } = user ?? {};
@@ -378,7 +378,9 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
         const { data } = results ?? {};
         if (data) {
           setIdeas(data);
-          setBoardItems(data);
+          if (roadmaps.length > 0) {
+            setBoardItems(data, roadmaps);
+          }
         }
       })
       .catch((err) => {
@@ -409,12 +411,16 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     }).then((res) => {
       if (res.results.data) {
         const data = res.results.data;
-        setRoadmaps(data);
+        if (ideas.length > 0) {
+          setBoardItems(ideas, data);
+        } else {
+          setRoadmaps(data);
+        }
       }
     });
   };
 
-  const setBoardItems = (ideas: Feedback[]) => {
+  const setBoardItems = (ideas: Feedback[], roadmaps: Roadmap[]) => {
     const roadmapUpvotes = roadmaps.map((roadmap) => ({
       ...roadmap,
       upvotes: ideas
