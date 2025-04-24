@@ -14,19 +14,18 @@ interface FeedbackState {
   activeTab: 'ideas' | 'comments';
   comments: FeedbackComment[];
   error: string | null;
-  filter: { tags: string[]; title: string };
   filters: {
     filtering: boolean;
     sort: string;
     status: string;
-    tags: any[];
+    tags: string[];
     title: string;
   };
   ideas: Feedback[];
   items: (Partial<Feedback> & { content?: string; date?: string })[];
   listing: boolean;
   loading: boolean;
-  roadmaps?: Roadmap[];
+  roadmaps: Roadmap[];
   selectedIdea: Feedback | null;
   tags: any[];
   upvotes: UpvoteLog[];
@@ -56,9 +55,6 @@ type FeedbackAction =
         title: string;
       };
     }
-  | { type: 'SET_FILTER_DEFAULT' }
-  | { type: 'SET_FILTER_TAGS'; payload: any[] }
-  | { type: 'SET_FILTER_TITLE'; payload: string }
   | { type: 'SET_IDEAS'; payload: Feedback[] }
   | {
       type: 'SET_ITEMS';
@@ -85,7 +81,8 @@ type FeedbackAction =
 
 interface FeedbackContextType {
   state: FeedbackState;
-  handleListFeedback: (filtering: boolean) => Promise<void>;
+  handleGetStatus: () => Promise<void>;
+  handleListFeedback: () => Promise<void>;
   handleListTag: () => void;
   addIdea: (idea: Feedback) => Promise<void>;
   addIdeaInRoadmap: (roadmap_id: number, idea: Feedback) => Promise<void>;
@@ -106,9 +103,6 @@ interface FeedbackContextType {
     tags: any[];
     title: string;
   }) => Promise<void>;
-  setFilterDefault: () => Promise<void>;
-  setFilterTags: (tags: any[]) => Promise<void>;
-  setFilterTitle: (title: string) => Promise<void>;
   setIdeas: (ideas: Feedback[]) => Promise<void>;
   setListing: (listing: boolean) => Promise<void>;
   setRoadmaps: (roadmaps: Roadmap[]) => Promise<void>;
@@ -127,7 +121,6 @@ const initialState: FeedbackState = {
   activeTab: 'ideas',
   comments: [],
   error: null,
-  filter: { tags: [], title: '' },
   filters: {
     filtering: false,
     sort: 'Newest',
@@ -139,6 +132,7 @@ const initialState: FeedbackState = {
   items: [],
   listing: false,
   loading: true,
+  roadmaps: [],
   selectedIdea: null,
   tags: [],
   upvotes: [],
@@ -274,12 +268,6 @@ function feedbackReducer(
       return { ...state, error: action.payload };
     case 'SET_FILTER':
       return { ...state, filters: action.payload };
-    case 'SET_FILTER_DEFAULT':
-      return { ...state, filter: { tags: [], title: '' } };
-    case 'SET_FILTER_TAGS':
-      return { ...state, filter: { ...state.filter, tags: action.payload } };
-    case 'SET_FILTER_TITLE':
-      return { ...state, filter: { ...state.filter, title: action.payload } };
     case 'SET_IDEAS':
       return { ...state, ideas: action.payload };
     case 'SET_ITEMS':
@@ -342,6 +330,8 @@ function feedbackReducer(
 export function FeedbackProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(feedbackReducer, initialState);
 
+  const { roadmaps } = state;
+
   const { user } = useUser();
   const { moderation } = user ?? {};
 
@@ -367,7 +357,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const handleListFeedback = async (filtering: boolean) => {
+  const handleListFeedback = async () => {
     const url = is_public
       ? `feedback/list/${window.location.host}`
       : 'feedback/list-upvote';
@@ -384,18 +374,20 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       useSessionToken: is_public && moderation?.user_login === true,
     })
       .then((res) => {
-        setListing(false);
         const { results } = res ?? {};
         const { data } = results ?? {};
         if (data) {
           setIdeas(data);
-        }
-        if (!filtering) {
-          handleGetStatus(data ?? []);
+          setBoardItems(data);
         }
       })
-      .catch((err) => console.error('handleListFeedback', { err }))
-      .finally(() => dispatch({ type: 'SET_LOADING', payload: false }));
+      .catch((err) => {
+        console.error('handleListFeedback', { err });
+      })
+      .finally(() => {
+        dispatch({ type: 'SET_LOADING', payload: false });
+        setListing(false);
+      });
   };
 
   const handleListTag = () => {
@@ -410,25 +402,27 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const handleGetStatus = (ideas: Feedback[]) => {
+  const handleGetStatus = async () => {
     getApi<Roadmap[]>({
       url: 'roadmaps',
       params: { domain: window.location.host },
     }).then((res) => {
       if (res.results.data) {
         const data = res.results.data;
-        setRoadmaps(
-          data.map((roadmap) => ({
-            ...roadmap,
-            upvotes: ideas.filter(
-              (idea) => idea.status_id === roadmap.id && !idea.deleted
-            ),
-          }))
-        );
-
-        handleListTag();
+        setRoadmaps(data);
       }
     });
+  };
+
+  const setBoardItems = (ideas: Feedback[]) => {
+    const roadmapUpvotes = roadmaps.map((roadmap) => ({
+      ...roadmap,
+      upvotes: ideas
+        .filter((idea) => !idea.deleted && idea.status_id === roadmap.id)
+        .sort((a, b) => a.index - b.index),
+    }));
+
+    setRoadmaps(roadmapUpvotes);
   };
 
   const addIdea = async (idea: Feedback) => {
@@ -492,18 +486,6 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_FILTER', payload: filter });
   };
 
-  const setFilterDefault = async () => {
-    dispatch({ type: 'SET_FILTER_DEFAULT' });
-  };
-
-  const setFilterTags = async (tags: any[]) => {
-    dispatch({ type: 'SET_FILTER_TAGS', payload: tags });
-  };
-
-  const setFilterTitle = async (title: string) => {
-    dispatch({ type: 'SET_FILTER_TITLE', payload: title });
-  };
-
   const setListing = async (listing: boolean) => {
     dispatch({ type: 'SET_LISTING', payload: listing });
   };
@@ -557,6 +539,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       state,
+      handleGetStatus,
       handleListFeedback,
       handleListTag,
       addIdea,
@@ -569,9 +552,6 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       setActiveTab,
       setDefaultFilter,
       setFilter,
-      setFilterDefault,
-      setFilterTags,
-      setFilterTitle,
       setIdeas,
       setListing,
       setRoadmaps,

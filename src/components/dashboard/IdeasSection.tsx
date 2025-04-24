@@ -13,7 +13,7 @@ export function IdeasSection() {
     const fetchData = async () => {
       try {
         // Fetch ideas from the same endpoint as UpvotesPage
-        await handleListFeedback(false);
+        await handleListFeedback();
       } catch (error) {
         console.error('Error fetching data:', error);
       }

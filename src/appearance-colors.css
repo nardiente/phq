@@ -24,7 +24,7 @@
 }
 
 .active-link-color {
-  color: var(--public-view-active-link-color);
+  color: var(--public-view-active-link-color) !important;
 }
 
 .background-color {
@@ -40,9 +40,45 @@
 }
 
 .primary-button-color {
+  color: var(--public-view-button-text-color) !important;
   background-color: var(--public-view-primary-button-color) !important;
+  border-color: var(--public-view-primary-button-border) !important;
 }
 
 .public-view-sign-in-button-color:hover {
   background-color: var(--public-view-sign-in-button-hover-color) !important;
+}
+
+.sign-in-button-color {
+  background-color: var(--public-view-sign-in-button-color) !important;
+  border-color: var(--public-view-sign-in-button-border-color) !important;
+  color: var(--public-view-sign-in-button-text-color) !important;
+
+  &:hover {
+    background-color: var(--public-view-sign-in-button-hover-color) !important;
+    color: var(--public-view-sign-in-button-text-hover-color) !important;
+  }
+}
+
+.sign-up-button-color {
+  background-color: var(--public-view-sign-up-button-color) !important;
+  border-color: var(--public-view-sign-up-button-border-color) !important;
+  color: var(--public-view-sign-up-button-text-color) !important;
+
+  &:hover {
+    background-color: var(--public-view-sign-up-button-hover-color) !important;
+    color: var(--public-view-sign-up-button-text-hover-color) !important;
+  }
+}
+
+.tags-color {
+  background-color: var(--public-view-tags-default-background-color) !important;
+  color: var(--public-view-tags-default-text-color) !important;
+
+  &.active {
+    background-color: var(
+      --public-view-tags-active-background-color
+    ) !important;
+    color: var(--public-view-tags-active-text-color) !important;
+  }
 }

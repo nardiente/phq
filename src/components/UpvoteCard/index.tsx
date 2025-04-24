@@ -277,7 +277,10 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
         </div>
         <div className="upvote-tags">
           {(props.feedback_tags as FeedbackTag[])?.map((feedback_tag, idx) => (
-            <div key={idx} className="upvote-tag">
+            <div
+              key={idx}
+              className={`upvote-tag ${is_admin ? '' : 'tags-color'}`}
+            >
               {feedback_tag.tag?.tag.substring(0, 10).trim()}
               {feedback_tag.tag?.tag && feedback_tag.tag?.tag.length > 10
                 ? '...'

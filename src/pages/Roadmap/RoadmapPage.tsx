@@ -1,5 +1,5 @@
 import './styles.css';
-import { Roadmap, Tag } from './types';
+import { Roadmap } from './types';
 import {
   DragDropContext,
   Droppable,
@@ -12,31 +12,30 @@ import { Feedback, FeedbackTag } from '../../types/feedback';
 import { FadeLoader } from 'react-spinners';
 import ColumnInput from '../../components/ui/column_input/ColumnInput';
 import ColumnOptionDropdown from '../../components/ui/dropdown/column_option_dropdown/ColumnOptionDropdown';
-import { RoadmapColor } from '../../types/roadmap';
 import { Permissions, RbacPermissions } from '../../types/common';
 import { PlusIcon } from '../../components/icons/plus.icon';
 import { useUser } from '../../contexts/UserContext';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
 import { usePanel } from '../../contexts/PanelContext';
-import { getKaslKey, getSessionToken } from '../../utils/localStorage';
 import { useEffect, useState } from 'react';
 import { Settings } from '../../components/Settings';
 import SettingsHeader from '../../components/SettingsHeader';
 import { RoadmapFilter } from '../../components/RoadmapFilter';
 import Button from '../../components/Button';
 import { Plus } from 'lucide-react';
+import { useApp } from '../../contexts/AppContext';
 
 export function RoadmapPage() {
   const { user } = useUser();
-  const { moderation, permissions, rbac_permissions } = user ?? {};
+  const { permissions, rbac_permissions } = user ?? {};
   const {
-    state: { filter, roadmaps, selectedIdea, tags },
-    setFilterTitle,
+    state: { filters, listing, roadmaps: roadmapsContext, selectedIdea },
     addRoadmap,
+    handleListFeedback,
+    setFilter,
     setRoadmaps,
     setSelectedIdea,
-    setTags,
     updateIdea,
     updateIdeaInRoadmap,
     updateRoadmap,
@@ -45,25 +44,23 @@ export function RoadmapPage() {
     state: { socket, tags: socketTags },
     setSocketTags,
   } = useSocket();
-  const { tags: filterTag, title } = filter;
+  const { tags: filterTag, title } = filters;
   const { setActivePage, setActiveTab, setIsOpen } = usePanel();
+  const { roadmap_colors } = useApp();
 
-  const [fetching, setFetching] = useState<boolean>(true);
-  const [editColumnNameId, setEditColumnNameId] = useState<number>(0);
   const [columnName, setColumnName] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [roadmapColors, setRoadmapColors] = useState<RoadmapColor[]>([]);
   const [dragging, setDragging] = useState<boolean>(false);
+  const [editColumnNameId, setEditColumnNameId] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [roadmaps, setCurrRoadmaps] = useState<Roadmap[]>(roadmapsContext);
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-  const is_logged_in =
-    getKaslKey() !== undefined ||
-    (is_public &&
-      moderation?.user_login === true &&
-      getSessionToken() !== undefined &&
-      user?.user?.id);
   const isRestricted =
-    !fetching && is_public && permissions && permissions.length === 0;
+    !listing && is_public && permissions && permissions.length === 0;
+
+  useEffect(() => {
+    setCurrRoadmaps(roadmapsContext);
+  }, [roadmapsContext]);
 
   const getFeedback = (id: number) => {
     getApi<Feedback>({ url: `feedback/${id}` }).then((res) => {
@@ -82,66 +79,51 @@ export function RoadmapPage() {
     });
   };
 
-  const handleListTag = () => {
-    getApi<Tag[]>({
-      url: 'tags',
-      params: is_public ? { domain: window.location.host } : undefined,
-      useCustomerKey: moderation?.user_login === true && is_public,
-    }).then((res) => {
-      if (res.results.data) {
-        setTags(res.results.data);
-      }
-    });
-  };
+  // const handleGetStatus = () => {
+  //   const url = is_public
+  //     ? `roadmaps/upvotes/${window.location.host}`
+  //     : 'roadmaps/upvotes';
 
-  const handleGetStatus = () => {
-    const url = is_public
-      ? `roadmaps/upvotes/${window.location.host}`
-      : 'roadmaps/upvotes';
+  //   setFetching(true);
+  //   getApi<Roadmap[]>({
+  //     url,
+  //     params: { tags: filterTag.join(','), title },
+  //     useSessionToken: is_public && moderation?.user_login === true,
+  //   })
+  //     .then((res) => {
+  //       if (res.results.data) {
+  //         const data = res.results.data;
+  //         setRoadmaps(data);
 
-    setFetching(true);
-    getApi<Roadmap[]>({
-      url,
-      params: { tags: filterTag.join(','), title },
-      useSessionToken: is_public && moderation?.user_login === true,
-    })
-      .then((res) => {
-        if (res.results.data) {
-          const data = res.results.data;
-          setRoadmaps(data);
+  //         const ideas: Feedback[] = [];
+  //         data.forEach((roadmap) => {
+  //           roadmap.upvotes?.forEach((upvote) => {
+  //             if (upvote.created_at) {
+  //               const createdAtDate = new Date(upvote.created_at);
+  //               ideas.push({ ...upvote, created_at: createdAtDate });
+  //             }
+  //           });
+  //         });
 
-          const ideas: Feedback[] = [];
-          data.forEach((roadmap) => {
-            roadmap.upvotes?.forEach((upvote) => {
-              if (upvote.created_at) {
-                const createdAtDate = new Date(upvote.created_at);
-                ideas.push({ ...upvote, created_at: createdAtDate });
-              }
-            });
-          });
-
-          // Sorting ideas by created_at date (Newest first)
-          ideas.sort((a, b) => {
-            const dateA = a.created_at ? new Date(a.created_at) : new Date();
-            const dateB = b.created_at ? new Date(b.created_at) : new Date();
-            return dateB.getTime() - dateA.getTime();
-          });
-        }
-        if (!tags || tags.length === 0) {
-          handleListTag();
-        }
-      })
-      .catch(() => setFetching(false))
-      .finally(() => setFetching(false));
-  };
+  //         // Sorting ideas by created_at date (Newest first)
+  //         ideas.sort((a, b) => {
+  //           const dateA = a.created_at ? new Date(a.created_at) : new Date();
+  //           const dateB = b.created_at ? new Date(b.created_at) : new Date();
+  //           return dateB.getTime() - dateA.getTime();
+  //         });
+  //       }
+  //     })
+  //     .catch(() => setFetching(false))
+  //     .finally(() => setFetching(false));
+  // };
 
   const handleFilterData = (data: Roadmap) => {
-    if (!filter.title && !filter.tags.length) {
+    if (!filters.title && !filters.tags.length) {
       return data;
     }
 
-    const filterTitleLower = filter.title.toLowerCase();
-    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
+    const filterTitleLower = filters.title.toLowerCase();
+    const filterTagLower = filters.tags.map((tag) => tag.toLowerCase());
 
     const filteredUpvotes =
       data.upvotes?.filter((upvote) => {
@@ -163,13 +145,14 @@ export function RoadmapPage() {
 
     return dataWithFilteredUpvotes;
   };
+
   const handleFilterRoadmaps = (data: Roadmap[]) => {
-    if (!filter.title && !filter.tags.length) {
+    if (!filters.title && !filters.tags.length) {
       return data;
     }
 
-    const filterTitleLower = filter.title.toLowerCase();
-    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
+    const filterTitleLower = filters.title.toLowerCase();
+    const filterTagLower = filters.tags.map((tag) => tag.toLowerCase());
 
     const filteredRoadmaps = data.map((roadmap) => {
       const filteredUpvotes =
@@ -352,31 +335,20 @@ export function RoadmapPage() {
     });
   };
 
-  const handleGetRoadmapColors = () => {
-    getApi<RoadmapColor[]>({ url: 'roadmaps/colors' }).then((res) => {
-      if (res.results.data) {
-        setRoadmapColors(res.results.data);
-      }
-    });
-  };
-
   useEffect(() => {
     setActiveTab('/roadmap');
-    if (is_logged_in) {
-      handleGetRoadmapColors();
-    }
   }, []);
 
   useEffect(() => {
-    handleGetStatus();
-  }, [filter]);
+    handleListFeedback();
+  }, [filters]);
 
   useEffect(() => {
     if (socketTags) {
       if (selectedIdea?.id) {
         getFeedback(selectedIdea.id);
       }
-      handleGetStatus();
+      handleListFeedback();
       setSocketTags(false);
     }
   }, [socketTags]);
@@ -392,10 +364,21 @@ export function RoadmapPage() {
                 <input
                   id="search-field"
                   className="input border-t-0 border-r-0 border-l-0 rounded-none border-[#c5c5da] bg-transparent text-[#3d3d5e] p-2 shadow-none"
-                  onChange={(e) => setFilterTitle(e.target.value)}
+                  onChange={(e) => {
+                    const titleFilter = e.target.value;
+                    setFilter({
+                      ...filters,
+                      filtering: titleFilter.length > 0,
+                      title: titleFilter,
+                    });
+                  }}
                   onKeyDown={(e) => {
                     if (e.keyCode === 13) {
-                      setFilterTitle(title);
+                      setFilter({
+                        ...filters,
+                        filtering: title.length > 0,
+                        title,
+                      });
                     }
                   }}
                   placeholder="Search ideas"
@@ -405,7 +388,13 @@ export function RoadmapPage() {
                 <span className="icon is-right">
                   <figure className="image is-16x16">
                     <img
-                      onClick={() => setFilterTitle(title)}
+                      onClick={() =>
+                        setFilter({
+                          ...filters,
+                          filtering: title.length > 0,
+                          title,
+                        })
+                      }
                       src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/search.svg"
                     />
                   </figure>
@@ -424,20 +413,15 @@ export function RoadmapPage() {
             }
             onClick={() => setIsOpen(true)}
           >
-            <div className="flex gap-2 text-white">
+            <div
+              className={`flex gap-2 ${is_public ? 'primary-button-color' : 'text-white'}`}
+            >
               <Plus size={16} />
               New Idea
             </div>
           </Button>
         }
       />
-      {fetching &&
-        (!roadmaps ||
-          roadmaps?.every((r) => !r.upvotes || r.upvotes.length === 0)) && (
-          <div className="flex justify-center items-center">
-            <FadeLoader height={5} width={2} radius={2} margin={-10} />
-          </div>
-        )}
       <div
         id="RoadmapPublicView"
         className={`${isRestricted ? 'flex justify-center' : ''} px-8`}
@@ -455,9 +439,9 @@ export function RoadmapPage() {
             </div>
           ) : (
             <>
-              {!fetching && (!roadmaps || roadmaps.length === 0) && (
+              {!listing && (!roadmaps || roadmaps.length === 0) && (
                 <>
-                  <div className="container no-roadmap-background">
+                  <div className="container no-roadmap-background w-full">
                     {filterTag.length === 0 && title.length === 0 ? (
                       <>
                         <div className="flex justify-center mb-2 sad-face">
@@ -506,7 +490,7 @@ export function RoadmapPage() {
                                   Permissions.DRAG_COLUMN
                                 ) ||
                                 dragging ||
-                                fetching ||
+                                listing ||
                                 !rbac_permissions?.includes(
                                   RbacPermissions.CHANGE_ORDER_COLUMNS
                                 )
@@ -514,7 +498,7 @@ export function RoadmapPage() {
                             >
                               {(provided) => (
                                 <div
-                                  className="bg-[#fafafa]"
+                                  className="bg-[#fafafa] rounded"
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                 >
@@ -522,7 +506,7 @@ export function RoadmapPage() {
                                     {...provided.dragHandleProps}
                                     style={{
                                       position: 'relative',
-                                      width: '380px',
+                                      width: '416px',
                                       display: 'flex',
                                       justifyContent: 'space-between',
                                       marginBottom: '16px',
@@ -584,7 +568,7 @@ export function RoadmapPage() {
                                     {!is_public && (
                                       <ColumnOptionDropdown
                                         roadmap={roadmap}
-                                        roadmapColors={roadmapColors}
+                                        roadmapColors={roadmap_colors}
                                       />
                                     )}
                                   </div>
@@ -616,7 +600,7 @@ export function RoadmapPage() {
                                                   ) ||
                                                   upvote.not_administer ||
                                                   dragging ||
-                                                  fetching ||
+                                                  listing ||
                                                   !rbac_permissions?.includes(
                                                     RbacPermissions.CHANGE_UPVOTE_PRIORITISATION_ROADMAP
                                                   )
@@ -699,6 +683,13 @@ export function RoadmapPage() {
             </>
           )}
         </div>
+        {listing &&
+          (!roadmaps ||
+            roadmaps?.every((r) => !r.upvotes || r.upvotes.length === 0)) && (
+            <div className="flex justify-center items-center w-full mt-5">
+              <FadeLoader height={5} width={2} radius={2} margin={-10} />
+            </div>
+          )}
       </div>
     </Settings>
   );

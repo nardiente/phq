@@ -891,6 +891,7 @@ export const Comment = ({
                 />
               </div>
               <button
+                className={`${is_public ? 'primary-button-color' : 'text-white'}`}
                 id="AddReplyButton"
                 onClick={() =>
                   attachments.length > 0

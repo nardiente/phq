@@ -3,44 +3,76 @@ import { UpvoteFiltersProps } from './types';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { Dropdown } from '../DropDown';
 import { ChevronDownIcon } from '../icons/chevron-down.icon';
-import { Fragment, useEffect } from 'react';
+import { Fragment } from 'react';
 
 export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
   const {
-    state: { filters, tags },
+    state: { filters, tags: feedbackTags },
     setFilter,
   } = useFeedback();
-  const { sort, status, title } = filters;
+  const { sort, status, tags, title } = filters;
 
-  useEffect(() => {
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+
+  const handleUpvoteSearch = () => {
     setFilter({
       ...filters,
       filtering:
         sort !== 'Newest' ||
         status.length > 0 ||
-        filters.tags.length > 0 ||
+        tags.length > 0 ||
         title.length > 0,
+      title,
     });
-  }, [sort, status, filters.tags, title]);
-
-  const handleUpvoteSearch = () => {
-    setFilter({ ...filters, title });
   };
 
   const handleUpvoteSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter({ ...filters, title: e.target.value });
+    const value = e.target.value;
+    setFilter({
+      ...filters,
+      filtering:
+        sort !== 'Newest' ||
+        status.length > 0 ||
+        tags.length > 0 ||
+        value.length > 0,
+      title: value,
+    });
   };
 
   const onFilterStatus = (status: string) => {
-    setFilter({ ...filters, status });
+    setFilter({
+      ...filters,
+      filtering:
+        sort !== 'Newest' ||
+        status.length > 0 ||
+        tags.length > 0 ||
+        title.length > 0,
+      status,
+    });
   };
 
   const onFilterTags = (tags: string[]) => {
-    setFilter({ ...filters, tags });
+    setFilter({
+      ...filters,
+      filtering:
+        sort !== 'Newest' ||
+        status.length > 0 ||
+        tags.length > 0 ||
+        title.length > 0,
+      tags,
+    });
   };
 
   const onSort = (sort: string) => {
-    setFilter({ ...filters, sort });
+    setFilter({
+      ...filters,
+      filtering:
+        sort !== 'Newest' ||
+        status.length > 0 ||
+        tags.length > 0 ||
+        title.length > 0,
+      sort,
+    });
   };
 
   return (
@@ -52,31 +84,31 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
               <Fragment>
                 <span
                   onClick={() => onSort('Newest')}
-                  className="dropdown-item is-clickable drop-down-font text-[#110733]"
+                  className={`dropdown-item is-clickable drop-down-font ${is_public ? 'default-text-color' : 'text-[#110733]'}`}
                 >
                   Newest
                 </span>
                 <span
                   onClick={() => onSort('Trending')}
-                  className="dropdown-item is-clickable drop-down-font text-[#110733]"
+                  className={`dropdown-item is-clickable drop-down-font ${is_public ? 'default-text-color' : 'text-[#110733]'}`}
                 >
                   Trending
                 </span>
                 <span
                   onClick={() => onSort('Oldest')}
-                  className="dropdown-item is-clickable drop-down-font text-[#110733]"
+                  className={`dropdown-item is-clickable drop-down-font ${is_public ? 'default-text-color' : 'text-[#110733]'}`}
                 >
                   Oldest
                 </span>
                 <span
                   onClick={() => onSort('Most Comments')}
-                  className="dropdown-item is-clickable drop-down-font text-[#110733]"
+                  className={`dropdown-item is-clickable drop-down-font ${is_public ? 'default-text-color' : 'text-[#110733]'}`}
                 >
                   Most Comments
                 </span>
                 <span
                   onClick={() => onSort('Most Votes')}
-                  className="dropdown-item is-clickable drop-down-font text-[#110733]"
+                  className={`dropdown-item is-clickable drop-down-font ${is_public ? 'default-text-color' : 'text-[#110733]'}`}
                 >
                   Most Votes
                 </span>
@@ -84,7 +116,11 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
             }
             label={
               <Fragment>
-                <span className="for-dropdown">{filters.sort}</span>
+                <span
+                  className={`for-dropdown ${is_public ? 'default-text-color' : 'text-[#09041a]'}`}
+                >
+                  {filters.sort}
+                </span>
                 <span className="icon is-small" style={{ marginTop: '2px' }}>
                   <ChevronDownIcon />
                 </span>
@@ -151,7 +187,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
                     {props.roadmaps.map((roadmap, idx) => (
                       <span
                         key={idx}
-                        className="dropdown-item is-clickable drop-down-font text-[#110733]"
+                        className={`dropdown-item is-clickable drop-down-font ${is_public ? 'default-text-color' : 'text-[#110733]'}`}
                         onClick={() =>
                           onFilterStatus(
                             roadmap.name === filters.status ? '' : roadmap.name
@@ -183,7 +219,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
                   </div>
                   <div
                     className={
-                      props.roadmaps.length === 0 || tags.length === 0
+                      props.roadmaps.length === 0 || feedbackTags.length === 0
                         ? 'is-hidden'
                         : ''
                     }
@@ -206,16 +242,16 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
                   </div>
                   <div
                     className={`drop-down-status${
-                      tags.length > 0 ? '' : ' is-hidden'
+                      feedbackTags.length > 0 ? '' : ' is-hidden'
                     }`}
                   >
                     <span className="drop-down-label">Tags</span>
-                    {tags.map((tag, idx) => (
+                    {feedbackTags.map((tag, idx) => (
                       <span
                         key={idx}
-                        className="dropdown-item is-clickable drop-down-font text-[#110733]"
+                        className={`dropdown-item is-clickable drop-down-font ${is_public ? 'default-text-color' : 'text-[#110733]'}`}
                         onClick={() => {
-                          let copy_active_tags = filters.tags;
+                          let copy_active_tags = tags;
                           if (
                             copy_active_tags.find(
                               (active_tag) => active_tag === tag.tag
@@ -243,9 +279,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
                         {tag.tag}
                         <span
                           className={`selected${
-                            filters.tags.find(
-                              (active_tag) => active_tag === tag.tag
-                            )
+                            tags.find((active_tag) => active_tag === tag.tag)
                               ? ''
                               : ' is-hidden'
                           }`}
@@ -279,7 +313,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
             container_class="right-filter"
             content_class="dropdown-content"
             content_container_class="dropdown-menu"
-            label_class="right-drop-down-button"
+            label_class={`right-drop-down-button ${is_public ? 'default-text-color' : 'text-[#110733]'}`}
           />
         </div>
       </div>

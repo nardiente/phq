@@ -32,7 +32,7 @@ export const UpVoteEachList = ({
   handleListFeedback,
 }: {
   props: Feedback;
-  handleListFeedback: (filtering: boolean) => void;
+  handleListFeedback: () => void;
 }) => {
   const { user } = useUser();
   const {
@@ -56,7 +56,7 @@ export const UpVoteEachList = ({
     patchApi<Feedback>(`feedback/${props.id}/pin`).then((res) => {
       setPinning((prev) => !prev);
       if (res.results.data) {
-        handleListFeedback(true);
+        handleListFeedback();
       }
     });
   };
@@ -72,7 +72,7 @@ export const UpVoteEachList = ({
         <div className="upvote-details">
           <UpvoteLabelLink
             id={(props.id ?? 0).toString()}
-            className="active-link-color is-clickable idea-h"
+            className={`is-clickable idea-h ${is_admin ? 'text-[#110733]' : 'default-text-color'}`}
             onClick={() => handleClickIdea(props)}
           >
             {props.title}
@@ -116,7 +116,10 @@ export const UpVoteEachList = ({
             <div className="upvote-tags">
               {(props.feedback_tags as FeedbackTag[])?.map(
                 (feedback_tag, idx) => (
-                  <div key={idx} className="upvote-tag">
+                  <div
+                    key={idx}
+                    className={`upvote-tag ${is_admin ? '' : 'tags-color'}`}
+                  >
                     {feedback_tag.tag?.tag.substring(0, 10).trim()}
                     {feedback_tag.tag?.tag && feedback_tag.tag?.tag.length > 10
                       ? '...'

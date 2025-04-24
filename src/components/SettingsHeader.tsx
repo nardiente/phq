@@ -15,10 +15,14 @@ const SettingsHeader: React.FC<SettingsHeaderProps> = ({
   secondaryButton,
   primaryButton,
 }) => {
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+
   return (
     <div className="flex items-center justify-between mb-8 px-8">
       <div>
-        <h1 className="text-[28px] font-semibold text-gray-900 leading-none">
+        <h1
+          className={`text-[28px] font-semibold ${is_public ? 'default-text-color' : 'text-gray-900'} leading-none`}
+        >
           {title}
         </h1>
         <p className="mt-1 text-sm text-gray-500">{description}</p>

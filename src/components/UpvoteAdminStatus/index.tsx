@@ -3,8 +3,13 @@ import * as React from 'react';
 import { UpvoteAdminStatusProps } from './types';
 import { ChevronDownIcon } from '../icons/chevron-down.icon';
 import { DropdownAdmin } from '../DropDownAdmin';
+import { useFeedback } from '../../contexts/FeedbackContext';
 
 export const UpvoteAdminStatus: React.FC<UpvoteAdminStatusProps> = (props) => {
+  const {
+    state: { roadmaps },
+  } = useFeedback();
+
   return (
     <div id="upvote-admin-status">
       <div className="upvote-admin-status-container">
@@ -20,11 +25,11 @@ export const UpvoteAdminStatus: React.FC<UpvoteAdminStatusProps> = (props) => {
               >
                 <div
                   className={`drop-down-status${
-                    props.roadmaps.length === 0 ? ' is-hidden' : ''
+                    roadmaps.length === 0 ? ' is-hidden' : ''
                   }`}
                 >
                   <span className="drop-down-label">Statuses</span>
-                  {props.roadmaps.map((roadmap, idx) => (
+                  {roadmaps.map((roadmap, idx) => (
                     <span
                       key={idx}
                       className="dropdown-item is-clickable drop-down-font"

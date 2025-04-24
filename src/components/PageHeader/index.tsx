@@ -18,7 +18,10 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
     state: { active_tab },
     setIsOpen,
   } = usePanel();
-  const { setFilterTitle } = useFeedback();
+  const {
+    state: { filters },
+    setFilter,
+  } = useFeedback();
 
   const has_new_idea_button =
     active_tab === '/upvotes' || active_tab === '/roadmap';
@@ -46,7 +49,9 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
   }, []);
 
   return (
-    <div className="max-h-screen bg-[#fafafa]">
+    <div
+      className={`max-h-screen ${is_public ? 'background-color' : 'bg-[#fafafa]'}`}
+    >
       <div id="page-header">
         <div
           className={`page-container ${props.pageContainerClass || ''} flex items-center justify-between mb-8`}
@@ -59,14 +64,23 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
                   id="search-field"
                   className="input border-t-0 border-r-0 border-l-0 rounded-none border-[#c5c5da] bg-transparent text-[#3d3d5e] p-2 shadow-none"
                   onChange={(e) => {
-                    setTitle(e.target.value);
-                    if (e.target.value.length === 0) {
-                      setFilterTitle(e.target.value);
+                    const titleFilter = e.target.value;
+                    setTitle(titleFilter);
+                    if (titleFilter.length === 0) {
+                      setFilter({
+                        ...filters,
+                        filtering: titleFilter.length > 0,
+                        title: titleFilter,
+                      });
                     }
                   }}
                   onKeyDown={(e) => {
                     if (e.keyCode === 13) {
-                      setFilterTitle(title);
+                      setFilter({
+                        ...filters,
+                        filtering: title.length > 0,
+                        title,
+                      });
                     }
                   }}
                   placeholder="Search ideas"
@@ -76,7 +90,13 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
                 <span className="icon is-right">
                   <figure className="image is-16x16">
                     <img
-                      onClick={() => setFilterTitle(title)}
+                      onClick={() =>
+                        setFilter({
+                          ...filters,
+                          filtering: title.length > 0,
+                          title,
+                        })
+                      }
                       src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/search.svg"
                     />
                   </figure>

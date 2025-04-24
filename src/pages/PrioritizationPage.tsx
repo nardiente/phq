@@ -16,7 +16,7 @@ const PrioritizationPage = () => {
   const { setIsOpen, setActivePage } = usePanel();
 
   useEffect(() => {
-    handleListFeedback(false);
+    handleListFeedback();
   }, []);
 
   const handleItemsChange = async (item: Feedback) => {

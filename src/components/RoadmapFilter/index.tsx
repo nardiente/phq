@@ -5,12 +5,12 @@ import * as React from 'react';
 
 export const RoadmapFilter = () => {
   const {
-    state: {
-      filter: { tags: filterTags },
-      tags,
-    },
-    setFilterTags,
+    state: { filters, tags },
+    setFilter,
   } = useFeedback();
+  const { tags: filterTags, title } = filters;
+
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   return (
     <DropdownRoadmap
@@ -62,7 +62,12 @@ export const RoadmapFilter = () => {
                     } else {
                       copy_active_tags.push(tag.tag);
                     }
-                    setFilterTags(copy_active_tags);
+                    setFilter({
+                      ...filters,
+                      filtering:
+                        copy_active_tags.length > 0 || title.length > 0,
+                      tags: copy_active_tags,
+                    });
                   }}
                 >
                   <svg
@@ -112,7 +117,7 @@ export const RoadmapFilter = () => {
       container_class="right-filter"
       content_class="dropdown-content"
       content_container_class="dropdown-menu"
-      label_class="right-drop-down-button border-transparent"
+      label_class={`right-drop-down-button border-0 ${is_public ? 'default-text-color' : 'text-[#110733]'}`}
     />
   );
 };

@@ -48,7 +48,7 @@ export const Header: FC = () => {
     state: { active_tab },
     setActiveTab,
   } = usePanel();
-  const { setDefaultFilter, setFilterDefault } = useFeedback();
+  const { setDefaultFilter } = useFeedback();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const header_exceptions = [
@@ -237,7 +237,6 @@ export const Header: FC = () => {
 
   useEffect(() => {
     setDefaultFilter();
-    setFilterDefault();
   }, [active_tab]);
 
   useEffect(() => {

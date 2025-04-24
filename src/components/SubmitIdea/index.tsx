@@ -4,12 +4,11 @@ import { Link } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
 import { getKaslKey, getSessionToken } from '../../utils/localStorage';
 import { ApiFieldError } from '../../utils/api/types';
-import { Roadmap } from '../../types/roadmap';
 import { Feedback, Tag } from '../../types/feedback';
 import { usePanel } from '../../contexts/PanelContext';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { Option } from '../../types/dropdown';
-import { getApi, postApi, putApi } from '../../utils/api/api';
+import { postApi, putApi } from '../../utils/api/api';
 import { UserTypes } from '../../types/user';
 import { toast } from 'react-toastify';
 import { RbacPermissions } from '../../types/common';
@@ -36,7 +35,7 @@ export const SubmitIdea = () => {
     setActivePage,
   } = usePanel();
   const {
-    state: { ideas, selectedIdea, tags, filter, filters },
+    state: { ideas, selectedIdea, tags, filters },
     addIdea,
     addIdeaInRoadmap,
     deleteIdeaInRoadmapById,
@@ -77,7 +76,6 @@ export const SubmitIdea = () => {
   const [password_match, setPasswordMatch] = useState<boolean | undefined>(
     false
   );
-  const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
   const [selected_tags, setSelectedTags] = useState<(Tag | undefined)[]>([]);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [is_admin, setIsAdmin] = useState(false);
@@ -140,26 +138,13 @@ export const SubmitIdea = () => {
     }
   }, [tags]);
 
-  const handleGetStatus = () => {
-    getApi<Roadmap[]>({
-      url: 'roadmaps',
-    }).then((res) => {
-      if (res.results.data) {
-        const data = res.results.data;
-        setRoadmaps(data);
-      }
-    });
-  };
-
-  const handleFilterData = (data: Feedback, filterType: string) => {
-    const ideaFilterType = filterType === 'Add Idea' ? filters : filter;
-
-    if (!ideaFilterType.title && ideaFilterType.tags.length === 0) {
+  const handleFilterData = (data: Feedback) => {
+    if (!filters.title && filters.tags.length === 0) {
       return data;
     }
 
-    const filterTitleLower = ideaFilterType.title.toLowerCase();
-    const filterTagLower = ideaFilterType.tags.map((tag) => tag.toLowerCase());
+    const filterTitleLower = filters.title.toLowerCase();
+    const filterTagLower = filters.tags.map((tag) => tag.toLowerCase());
 
     const titleMatch =
       !filterTitleLower || data.title?.toLowerCase().includes(filterTitleLower);
@@ -220,11 +205,8 @@ export const SubmitIdea = () => {
           setActivePage('success');
           if (is_logged_in) {
             const data = res.results.data as Feedback;
-            const filteredData = handleFilterData(data, 'Add Idea');
-            const filteredDataInRoadmap = handleFilterData(
-              data,
-              'Add Idea in Roadmap'
-            );
+            const filteredData = handleFilterData(data);
+            const filteredDataInRoadmap = handleFilterData(data);
 
             if (filteredData && filteredDataInRoadmap) {
               addIdea(filteredData);
@@ -314,7 +296,7 @@ export const SubmitIdea = () => {
         if (idea?.status_id === data.status_id) {
           updateIdeaInRoadmap(data.status_id ?? 0, data);
         } else {
-          const filteredData = handleFilterData(data, 'Add Idea in Roadmap');
+          const filteredData = handleFilterData(data);
           if (filteredData) {
             deleteIdeaInRoadmapById(idea?.status_id ?? 0, data.id ?? 0);
             addIdeaInRoadmap(data.status_id ?? 0, filteredData);
@@ -332,7 +314,6 @@ export const SubmitIdea = () => {
 
   useEffect(() => {
     if (import.meta.env.VITE_SYSTEM_TYPE === 'admin') {
-      handleGetStatus();
       setIsAdmin(true);
     }
   }, []);
@@ -495,11 +476,11 @@ export const SubmitIdea = () => {
                 selected_tags && selected_tags.length > 0 ? selected_tags : [];
               return (
                 <span
-                  className={`is-clickable${
+                  className={`is-clickable ${is_public ? 'tags-color' : ''} ${
                     sel_tag_array.find(
                       (selected_tag) => selected_tag?.id === tag.id
                     )
-                      ? ' active'
+                      ? 'active'
                       : ''
                   }`}
                   key={idx}
@@ -581,7 +562,6 @@ export const SubmitIdea = () => {
           <>
             <UpvoteAdminStatus
               active_status={active_status}
-              roadmaps={roadmaps}
               setActiveStatus={setActiveStatus}
             />
             <Calendar
@@ -907,7 +887,7 @@ export const SubmitIdea = () => {
             </>
           ) : (
             <button
-              className={`${!disabled_button ? 'is-clickable' : ''}`}
+              className={`${!disabled_button ? 'is-clickable' : ''} ${is_public ? 'primary-button-color' : 'text-white'}`}
               disabled={disabled_button}
               onClick={handleOnSubmitIdea}
               type="button"

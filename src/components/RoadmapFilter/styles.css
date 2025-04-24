@@ -227,7 +227,6 @@
   background: var(--public-view-background-color);
   border: none;
   border-radius: 6px !important;
-  color: #110733 !important;
   display: flex !important;
   flex-direction: row;
   font-family: 'Satoshi-Variable';

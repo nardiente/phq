@@ -6,12 +6,14 @@ import { SidebarMenu } from '../components/layout/SidebarMenu';
 import { SidePanel } from '../components/SidePanel';
 import Footer from '../components/Footer';
 import { onbordingPaths, PageType, pathExceptions } from '../types/app';
+import { useFeedback } from '../contexts/FeedbackContext';
 
 const AppRoute = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname, search } = location;
 
+  const { handleGetStatus, handleListTag } = useFeedback();
   const {
     loaded,
     user: userDetails,
@@ -66,11 +68,20 @@ const AppRoute = () => {
     }
   }, [loaded]);
 
+  useEffect(() => {
+    if (project?.id) {
+      handleGetStatus();
+      handleListTag();
+    }
+  }, [project]);
+
   return (
-    <div className="bg-white">
+    <div className={is_public ? 'background-color' : 'bg-white'}>
       {isAuthenticated() || (!isAuthenticated() && is_public) ? (
         <>
-          <div className="min-h-screen bg-[#fafafa] flex">
+          <div
+            className={`min-h-screen flex ${is_public ? '' : 'bg-[#fafafa]'}`}
+          >
             {!pathExceptions.includes(pathname) && !is_public && (
               <SidebarMenu
                 activeItem={

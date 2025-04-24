@@ -11,6 +11,8 @@ export const UpvoteComponent = ({ upvote }: { upvote: Feedback }) => {
   const { setSelectedIdea } = useFeedback();
   const { setActivePage, setIsOpen } = usePanel();
 
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+
   const handleClickIdea = (feedback: Feedback) => {
     setSelectedIdea(feedback);
     setActivePage('add_comment');
@@ -43,7 +45,10 @@ export const UpvoteComponent = ({ upvote }: { upvote: Feedback }) => {
             <div className="upvote-tags">
               {(upvote.feedback_tags || ([] as FeedbackTag[]))?.map(
                 (feedback_tag, idx) => (
-                  <div key={idx} className="upvote-tag">
+                  <div
+                    key={idx}
+                    className={`upvote-tag ${is_public ? 'tags-color' : ''}`}
+                  >
                     {feedback_tag.tag?.tag.substring(0, 10).trim()}
                     {feedback_tag.tag?.tag && feedback_tag.tag?.tag.length > 10
                       ? '...'

@@ -25,7 +25,7 @@ export default function UpvotesPage() {
   const { admin_profile, permissions, project, user } = userDetails ?? {};
   const {
     state: {
-      filters: { filtering, sort },
+      filters: { filtering, sort, status, tags, title },
       ideas,
       loading,
       roadmaps,
@@ -41,7 +41,7 @@ export default function UpvotesPage() {
   const { setIsContinueReading, setWhatsNewId, setWhatsNewPreviewId } =
     useWhatsNew();
   const {
-    state: { socket, tags },
+    state: { socket, tags: socketTags },
     setSocketTags,
   } = useSocket();
 
@@ -101,25 +101,25 @@ export default function UpvotesPage() {
     }
 
     if (userInfo?.id) {
-      handleListFeedback(false);
+      handleListFeedback();
     }
   }, [userInfo]);
 
   useEffect(() => {
-    if (sort.length > 0 && userInfo?.id) {
-      handleListFeedback(filtering);
+    if (userInfo?.id) {
+      handleListFeedback();
     }
-  }, [sort, userInfo]);
+  }, [sort, status, tags.length, title, userInfo]);
 
   useEffect(() => {
-    if (tags && userInfo?.id) {
+    if (socketTags && userInfo?.id) {
       if (selectedIdea?.id) {
         getFeedback(selectedIdea.id);
       }
-      handleListFeedback(true);
+      handleListFeedback();
       setSocketTags(false);
     }
-  }, [tags, userInfo]);
+  }, [socketTags, userInfo]);
 
   const getFeedback = (id: number) => {
     getApi<Feedback>({ url: `feedback/${id}` }).then((res) => {
@@ -151,7 +151,9 @@ export default function UpvotesPage() {
             }
             onClick={() => setIsOpen(true)}
           >
-            <div className="flex gap-2 text-white">
+            <div
+              className={`flex gap-2 ${is_public ? 'primary-button-color' : 'text-white'}`}
+            >
               <Plus size={16} />
               New Idea
             </div>

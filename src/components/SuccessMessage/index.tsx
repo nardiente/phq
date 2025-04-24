@@ -45,7 +45,7 @@ const SuccessMessage = () => {
                 View idea
               </button>
               <button
-                className="is-clickable primary-button"
+                className={`is-clickable primary-button ${is_public ? 'primary-button-color' : 'text-white'}`}
                 disabled={
                   !user?.permissions.includes(Permissions.ADD_IDEA) ||
                   panel_loading

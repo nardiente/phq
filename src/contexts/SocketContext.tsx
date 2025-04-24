@@ -105,7 +105,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         if (projectId === project?.id) {
           switch (action) {
             case 'updateIdea':
-              handleListFeedback(false);
+              handleListFeedback();
               break;
             case 'updateNotification':
               getNotifications();

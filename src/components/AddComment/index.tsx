@@ -875,6 +875,7 @@ const AddComment = () => {
           />
           <div className="add-comment-button">
             <button
+              className={`${is_public ? 'primary-button-color' : 'text-white'}`}
               disabled={
                 comment.trim().length == 0 ||
                 validateFullName(first_name) != null ||

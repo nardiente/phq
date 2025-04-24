@@ -32,7 +32,7 @@ export const UIField: React.FC<UIFieldProps> = (props) => {
             required={props.required}
             placeholder={props.placeholder}
             value={props.value}
-            className={`textarea ${props.class_name} border rounded-md p-2 border-textarea`}
+            className={`${props.class_name} border rounded-md p-2 border-textarea`}
             tabIndex={props.tab_index}
             aria-label={props.label}
             onChange={props.onChangeArea}

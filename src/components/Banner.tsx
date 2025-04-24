@@ -28,7 +28,7 @@ function Banner({ activeItem, onNavigate }: BannerProps) {
 
   return (
     <div
-      className={`w-full h-[60px] bg-white border-b border-gray-200 flex items-center ${is_public ? 'justify-between pl-5' : 'justify-end'} sticky top-0 z-50 pr-5`}
+      className={`w-full h-[60px] border-b border-gray-200 flex items-center ${is_public ? 'justify-between pl-5' : 'justify-end bg-white'} sticky top-0 z-50 pr-5`}
     >
       {is_public && (
         <>
@@ -85,10 +85,10 @@ function Banner({ activeItem, onNavigate }: BannerProps) {
                 onClick={() => onNavigate(item.id as PageType)}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
                   activeItem === item.id
-                    ? 'bg-purple-50 text-purple-700'
+                    ? `bg-purple-50 text-purple-700 ${is_public ? 'active-link-color' : ''}`
                     : item.disabled
                       ? 'opacity-50 cursor-not-allowed'
-                      : 'text-[#4b5563] hover:bg-gray-50'
+                      : `${is_public ? 'default-text-color' : 'text-[#4b5563]'} hover:bg-gray-50`
                 }`}
                 disabled={item.disabled && item.id !== 'widgets'}
               >
@@ -113,14 +113,19 @@ function Banner({ activeItem, onNavigate }: BannerProps) {
         ) : (
           <>
             <Button
+              className={`${is_public ? 'sign-in-button-color' : ''}`}
               onClick={() => navigate('/sign-in')}
               state="outline"
               variant="blue"
             >
               Sign in
             </Button>
-            <Button onClick={() => navigate('/sign-up')} variant="blue">
-              <div className="text-white">Sign up</div>
+            <Button
+              className={`${is_public ? 'sign-up-button-color' : ''}`}
+              onClick={() => navigate('/sign-up')}
+              variant="blue"
+            >
+              Sign up
             </Button>
           </>
         )}
