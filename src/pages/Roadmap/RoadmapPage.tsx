@@ -385,7 +385,7 @@ export function RoadmapPage() {
         }
         primaryButton={
           <Button
-            className="px-4 py-2"
+            className={`px-4 py-2 ${is_public ? 'primary-button-color' : ''}`}
             disabled={
               (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
               permissions?.length === 0

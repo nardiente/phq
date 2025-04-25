@@ -147,6 +147,7 @@ export default function UpvotesPage() {
         filter={<UpvoteFilters roadmaps={roadmaps ?? []} />}
         primaryButton={
           <Button
+            className={`${is_public ? 'primary-button-color' : ''}`}
             disabled={
               (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
               permissions?.length === 0
