@@ -426,7 +426,7 @@ export function RoadmapPage() {
         id="RoadmapPublicView"
         className={`${isRestricted ? 'flex justify-center' : ''} px-8`}
       >
-        <div className={`pt-8 w-[${is_public ? '100' : '75'}vw]`}>
+        <div className="pt-8" style={{ width: is_public ? '100vw' : '75vw' }}>
           {isRestricted ? (
             <div className="container no-roadmap-background">
               <div className="flex justify-center mb-2 sad-face">
