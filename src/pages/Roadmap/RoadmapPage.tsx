@@ -206,6 +206,10 @@ export function RoadmapPage() {
         putApi<Roadmap[]>('roadmaps/re-sort', { ids }).then((res) => {
           if (res.results.data) {
             setRoadmaps(handleFilterRoadmaps(res.results.data));
+            socket?.emit('message', {
+              action: 'updateIdea',
+              data: { user_id: user?.user?.id, projectId: user?.project?.id },
+            });
           }
           setDragging(false);
         });
@@ -245,6 +249,10 @@ export function RoadmapPage() {
           if (res.results.data) {
             const data = res.results.data;
             updateRoadmap(handleFilterData(data));
+            socket?.emit('message', {
+              action: 'updateIdea',
+              data: { user_id: user?.user?.id, projectId: user?.project?.id },
+            });
           }
           setDragging(false);
         });
@@ -298,6 +306,10 @@ export function RoadmapPage() {
             draggable;
           updateRoadmap(handleFilterData(data));
           updateIdea(idea);
+          socket?.emit('message', {
+            action: 'updateIdea',
+            data: { user_id: user?.user?.id, projectId: user?.project?.id },
+          });
         }
         setDragging(false);
       });

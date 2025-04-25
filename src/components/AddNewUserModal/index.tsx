@@ -135,6 +135,7 @@ export const AddNewUserModal = ({ open, title, onClose }: Props) => {
         vote: idea.vote,
         vote_on_behalf: idea.vote_on_behalf,
         vote_on_behalf_id: idea.vote_on_behalf_id,
+        index: selectedIdea?.index ?? 0,
       };
       updateIdea(updated_idea);
       updateIdeaInRoadmap(updated_idea.status_id ?? 0, updated_idea);
