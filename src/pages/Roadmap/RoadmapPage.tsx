@@ -426,7 +426,7 @@ export function RoadmapPage() {
         id="RoadmapPublicView"
         className={`${isRestricted ? 'flex justify-center' : ''} px-8`}
       >
-        <div className="pt-8" style={{ width: is_public ? '100vw' : '75vw' }}>
+        <div className="pt-8 w-[75vw]">
           {isRestricted ? (
             <div className="container no-roadmap-background">
               <div className="flex justify-center mb-2 sad-face">
@@ -439,33 +439,6 @@ export function RoadmapPage() {
             </div>
           ) : (
             <>
-              {!listing && (!roadmaps || roadmaps.length === 0) && (
-                <>
-                  <div className="container no-roadmap-background w-full">
-                    {filterTag.length === 0 && title.length === 0 ? (
-                      <>
-                        <div className="flex justify-center mb-2 sad-face">
-                          <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
-                        </div>
-                        <h3 className="no-roadmap-header">
-                          {is_public && permissions && permissions.length === 0
-                            ? 'This public board is no longer available. Please contact the admin.'
-                            : 'No upvotes have been created… yet.'}
-                        </h3>
-                        {!is_public &&
-                          permissions &&
-                          permissions.length > 0 && (
-                            <h4 className="no-roadmap-sub">
-                              Now is a great time to add your first entry!
-                            </h4>
-                          )}
-                      </>
-                    ) : (
-                      'Crickets and tumbleweeds. Please try again.'
-                    )}
-                  </div>
-                </>
-              )}
               {roadmaps &&
                 roadmaps.length > 0 &&
                 (!is_public ||
@@ -690,6 +663,31 @@ export function RoadmapPage() {
               <FadeLoader height={5} width={2} radius={2} margin={-10} />
             </div>
           )}
+        {!isRestricted && !listing && (!roadmaps || roadmaps.length === 0) && (
+          <>
+            <div className="container no-roadmap-background w-full">
+              {filterTag.length === 0 && title.length === 0 ? (
+                <>
+                  <div className="flex justify-center mb-2 sad-face">
+                    <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
+                  </div>
+                  <h3 className="no-roadmap-header">
+                    {is_public && permissions && permissions.length === 0
+                      ? 'This public board is no longer available. Please contact the admin.'
+                      : 'No upvotes have been created… yet.'}
+                  </h3>
+                  {!is_public && permissions && permissions.length > 0 && (
+                    <h4 className="no-roadmap-sub">
+                      Now is a great time to add your first entry!
+                    </h4>
+                  )}
+                </>
+              ) : (
+                'Crickets and tumbleweeds. Please try again.'
+              )}
+            </div>
+          </>
+        )}
       </div>
     </Settings>
   );

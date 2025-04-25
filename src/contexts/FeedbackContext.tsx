@@ -405,19 +405,22 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   };
 
   const handleGetStatus = async () => {
+    setListing(true);
     getApi<Roadmap[]>({
       url: 'roadmaps',
       params: { domain: window.location.host },
-    }).then((res) => {
-      if (res.results.data) {
-        const data = res.results.data;
-        if (ideas.length > 0) {
-          setBoardItems(ideas, data);
-        } else {
-          setRoadmaps(data);
+    })
+      .then((res) => {
+        if (res.results.data) {
+          const data = res.results.data;
+          if (ideas.length > 0) {
+            setBoardItems(ideas, data);
+          } else {
+            setRoadmaps(data);
+          }
         }
-      }
-    });
+      })
+      .finally(() => setListing(false));
   };
 
   const setBoardItems = (ideas: Feedback[], roadmaps: Roadmap[]) => {
