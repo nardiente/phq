@@ -8,7 +8,6 @@ import type { SelectOption } from '../types/dropdown';
 import { SelectDropdown } from './ui/dropdown/select/SelectDropdown';
 import { WidgetTargetingForm } from './WidgetPreview/widgets/WidgetTargetingForm';
 import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { FormField } from './ui/FormField';
 import { Toggle } from './ui/Toggle';
 
@@ -162,7 +161,6 @@ export default function WidgetsSidebar({
   const [activeSection, setActiveSection] = useState<string | null>('launcher');
   const [isEditing, setIsEditing] = useState(false);
   const [widgetName, setWidgetName] = useState(config.name || '');
-  const navigate = useNavigate();
 
   useEffect(() => {
     setWidgetName(config.name || '');
@@ -1047,7 +1045,7 @@ export default function WidgetsSidebar({
           ) : (
             <div className="flex items-center gap-2">
               <button
-                onClick={() => navigate('/widgets')}
+                onClick={onClose}
                 className="p-1 hover:bg-gray-100 rounded-md text-gray-600"
               >
                 <ArrowLeft size={18} />
