@@ -7,6 +7,8 @@ import { SidePanel } from '../components/SidePanel';
 import Footer from '../components/Footer';
 import { onbordingPaths, PageType, pathExceptions } from '../types/app';
 import { useFeedback } from '../contexts/FeedbackContext';
+import { useSocket } from '../contexts/SocketContext';
+import { SocketAction } from '../types/socket';
 
 const AppRoute = () => {
   const navigate = useNavigate();
@@ -22,6 +24,10 @@ const AppRoute = () => {
     isAuthenticated,
   } = useUser();
   const { project } = userDetails ?? {};
+  const {
+    state: { action },
+    setAction,
+  } = useSocket();
 
   const [currentPage, setCurrentPage] = useState<PageType>(
     pathname.slice(1) as PageType
@@ -40,6 +46,13 @@ const AppRoute = () => {
   useEffect(() => {
     handleGetUser();
   }, []);
+
+  useEffect(() => {
+    if (is_public && action === SocketAction.UPDATE_APPEARANCE) {
+      handleGetUser();
+    }
+    setAction();
+  }, [action]);
 
   useEffect(() => {
     setCurrentPage(pathname.slice(1).split('/')[0] as PageType);

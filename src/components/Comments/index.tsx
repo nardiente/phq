@@ -9,6 +9,7 @@ import { deleteApi } from '../../utils/api/api';
 import { PinFillIcon } from '../icons/pin-fill.icon';
 import { Comment } from '../Comment';
 import { useUser } from '../../contexts/UserContext';
+import { SocketAction } from '../../types/socket';
 
 export const Comments = ({
   comments,
@@ -56,7 +57,7 @@ export const Comments = ({
               comment_count: (idea?.comment_count ?? 0) - 1,
             });
             socket?.emit('message', {
-              action: 'updateIdea',
+              action: SocketAction.UPDATE_IDEA,
               data: { user_id: user?.user?.id, projectId: user?.project?.id },
             });
           }

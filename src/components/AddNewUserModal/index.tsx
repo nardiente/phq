@@ -18,6 +18,7 @@ import { PlusIcon } from '../icons/plus.icon';
 import { Checkbox } from '../Checkbox';
 import { useUser } from '../../contexts/UserContext';
 import { useSocket } from '../../contexts/SocketContext';
+import { SocketAction } from '../../types/socket';
 
 interface Props {
   open: boolean;
@@ -141,7 +142,7 @@ export const AddNewUserModal = ({ open, title, onClose }: Props) => {
       updateIdeaInRoadmap(updated_idea.status_id ?? 0, updated_idea);
       setSelectedIdea(updated_idea);
       socket?.emit('message', {
-        action: 'updateIdea',
+        action: SocketAction.UPDATE_IDEA,
         data: { user_id: user?.user?.id, projectId: user?.project?.id },
       });
     });

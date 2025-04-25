@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { ProjectAppearance, UserNameFormat } from '../../types/appearance';
 import { useUnsavedChanges } from '../../contexts/UnsavedChangesContext';
-import { getApi, postApi } from '../../utils/api/api';
+import { postApi } from '../../utils/api/api';
 import { toast } from 'react-toastify';
 import { useUser } from '../../contexts/UserContext';
 import { RbacPermissions, Permissions } from '../../types/common';
@@ -14,13 +14,18 @@ import Button from '../../components/Button';
 import SettingsContainer from '../../components/SettingsContainer';
 import SectionHeader from '../../components/SectionHeader';
 import ColorPicker from '../../components/ColorPicker';
+import { SocketAction } from '../../types/socket';
+import { useSocket } from '../../contexts/SocketContext';
 
 export default function AppearancePage() {
   const navigate = useNavigate();
 
   const { setHasUnsavedChanges } = useUnsavedChanges();
-  const { user, setUser } = useUser();
-  const { appearance } = user ?? {};
+  const { user, handleGetAppearance, setUser } = useUser();
+  const { appearance, project } = user ?? {};
+  const {
+    state: { socket },
+  } = useSocket();
 
   const [active_link_color, setActiveLinkColor] = useState(
     appearance?.active_link_color ?? ''
@@ -164,6 +169,39 @@ export default function AppearancePage() {
   const is_admin = import.meta.env.VITE_SYSTEM_TYPE === 'admin';
 
   useEffect(() => {
+    setActiveLinkColor(appearance?.active_link_color ?? '');
+    setAppearanceId(appearance?.id ?? 0);
+    setBackgroundColor(appearance?.background_color ?? '');
+    setButtonTextColor(appearance?.button_text_color ?? '');
+    setDefaultTextColor(appearance?.default_text_color ?? '');
+    setIconColor(appearance?.icon_color ?? '');
+    setPrimaryButtonBorder(appearance?.primary_button_border ?? '');
+    setPrimaryButtonColor(appearance?.primary_button_color ?? '');
+    setInButtonColor(appearance?.sign_in_button_color ?? '');
+    setInButtonBorderColor(appearance?.sign_in_button_border_color ?? '');
+    setInButtonHoverColor(appearance?.sign_in_button_hover_color ?? '');
+    setInButtonTextColor(appearance?.sign_in_button_text_color ?? '');
+    setInButtonTextHoverColor(
+      appearance?.sign_in_button_text_hover_color ?? ''
+    );
+    setUpButtonColor(appearance?.sign_up_button_color ?? '');
+    setUpButtonBorderColor(appearance?.sign_up_button_border_color ?? '');
+    setUpButtonHoverColor(appearance?.sign_up_button_hover_color ?? '');
+    setUpButtonTextColor(appearance?.sign_up_button_text_color ?? '');
+    setUpButtonTextHoverColor(
+      appearance?.sign_up_button_text_hover_color ?? ''
+    );
+    setTagsActiveBackgroundColor(
+      appearance?.tags_active_background_color ?? ''
+    );
+    setTagsActiveTextColor(appearance?.tags_active_text_color ?? '');
+    setTagsDefaultBackgroundColor(
+      appearance?.tags_default_background_color ?? ''
+    );
+    setTagsDefaultTextColor(appearance?.tags_default_text_color ?? '');
+  }, [appearance]);
+
+  useEffect(() => {
     setHasUnsavedChanges(
       (appearance &&
         ((appearance.active_link_color &&
@@ -246,48 +284,6 @@ export default function AppearancePage() {
     tags_default_text_color,
     user_name_display_format,
   ]);
-
-  const handleGetAppearance = () => {
-    getApi<ProjectAppearance>({
-      url: 'projects/appearance',
-    }).then((appearance) => {
-      const data = appearance.results.data;
-      setUser((prev) => ({ ...prev, appearance: data }));
-      setActiveLinkColor(data?.active_link_color || '#913187');
-      setAppearanceId(data?.id || appearance_id);
-      setBackgroundColor(data?.background_color || '#ffffff');
-      setButtonTextColor(data?.button_text_color || '#ffffff');
-      setDefaultTextColor(data?.default_text_color || '#3d3d5e');
-      setIconColor(data?.icon_color || '#913187');
-      setPrimaryButtonBorder(data?.primary_button_border || '#e5e7eb');
-      setPrimaryButtonColor(data?.primary_button_color || '#913187');
-      setInButtonColor(data?.sign_in_button_color || '#ffffff');
-      setInButtonBorderColor(data?.sign_in_button_border_color || '#e5e7eb');
-      setInButtonHoverColor(data?.sign_in_button_hover_color || '#5a00cd');
-      setInButtonTextColor(data?.sign_in_button_text_color || '#5a00cd');
-      setInButtonTextHoverColor(
-        data?.sign_in_button_text_hover_color || '#ffffff'
-      );
-      setUpButtonColor(data?.sign_up_button_color || '#5a00cd');
-      setUpButtonBorderColor(data?.sign_up_button_border_color || '#e5e7eb');
-      setUpButtonHoverColor(data?.sign_up_button_hover_color || '#5a00cd');
-      setUpButtonTextColor(data?.sign_up_button_text_color || '#ffffff');
-      setUpButtonTextHoverColor(
-        data?.sign_up_button_text_hover_color || '#5a00cd'
-      );
-      setTagsActiveBackgroundColor(
-        data?.tags_active_background_color || '#ebdff9'
-      );
-      setTagsActiveTextColor(data?.tags_active_text_color || '#5a00cd');
-      setTagsDefaultBackgroundColor(
-        data?.tags_default_background_color || '#f3f4f6'
-      );
-      setTagsDefaultTextColor(data?.tags_default_text_color || '#110733');
-      setUserNameDisplayFormat(
-        data?.user_name_display_format ?? UserNameFormat.FF_FL
-      );
-    });
-  };
 
   const handleOnActiveLinkColor = (e: any) => {
     const value = e.target.value;
@@ -636,6 +632,11 @@ export default function AppearancePage() {
           bodyClassName: 'p-2',
           pauseOnFocusLoss: false,
         });
+
+        socket?.emit('message', {
+          action: SocketAction.UPDATE_APPEARANCE,
+          data: { user_id: user?.user?.id, projectId: project?.id },
+        });
       }
 
       setLoading(false);
@@ -649,11 +650,11 @@ export default function AppearancePage() {
         setIsMember(true);
       }
       setLoadingUser(false);
+      handleGetAppearance();
     }
-  }, [user]);
+  }, [user?.user]);
 
   useEffect(() => {
-    handleGetAppearance();
     setHasUnsavedChanges(false);
   }, []);
 

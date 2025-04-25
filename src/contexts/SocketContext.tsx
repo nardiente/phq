@@ -8,43 +8,38 @@ import {
 } from 'react';
 import { useUser } from './UserContext';
 import { io, Socket } from 'socket.io-client';
-import { useFeedback } from './FeedbackContext';
-import { useUserNotification } from './UserNotificationContext';
+import { SocketAction } from '../types/socket';
 
 interface SocketState {
+  action?: SocketAction;
   socket: Socket | null;
-  tags: boolean;
 }
 
-type SocketAction =
-  | { type: 'SET_SOCKET'; payload: any }
-  | { type: 'SET_SOCKET_TAGS'; payload: boolean };
+type Action =
+  | { type: 'SET_ACTION'; payload?: SocketAction }
+  | { type: 'SET_SOCKET'; payload: any };
 
 interface SocketContextType {
   state: SocketState;
+  setAction: (action?: SocketAction) => void;
   setSocket: (socket: any) => void;
-  setSocketTags: (value: boolean) => void;
 }
 
 const initialState: SocketState = {
   socket: null,
-  tags: false,
 };
 
 function socketReducer(
   state: SocketState = initialState,
-  action: SocketAction
+  action: Action
 ): SocketState {
   switch (action.type) {
+    case 'SET_ACTION':
+      return { ...state, action: action.payload };
     case 'SET_SOCKET':
       return {
         ...state,
         socket: action.payload,
-      };
-    case 'SET_SOCKET_TAGS':
-      return {
-        ...state,
-        tags: action.payload,
       };
     default:
       return state;
@@ -56,8 +51,6 @@ const SocketContext = createContext<SocketContextType | undefined>(undefined);
 export function SocketProvider({ children }: { children: ReactNode }) {
   const { user } = useUser();
   const { admin_profile, project, user: user_profile } = user ?? {};
-  const { handleListFeedback, handleListTag } = useFeedback();
-  const { getNotifications } = useUserNotification();
 
   const [state, dispatch] = useReducer(socketReducer, initialState);
   const { socket } = state;
@@ -103,38 +96,25 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         } = msg;
 
         if (projectId === project?.id) {
-          switch (action) {
-            case 'updateIdea':
-              handleListFeedback();
-              break;
-            case 'updateNotification':
-              getNotifications();
-              break;
-            case 'updateTag':
-              handleListTag();
-              setSocketTags(true);
-              break;
-            default:
-              break;
-          }
+          setAction(action);
         }
       });
     }
   }, [socket]);
 
-  const setSocket = (socket: any) => {
-    dispatch({ type: 'SET_SOCKET', payload: socket });
+  const setAction = (action?: SocketAction) => {
+    dispatch({ type: 'SET_ACTION', payload: action });
   };
 
-  const setSocketTags = (value: boolean) => {
-    dispatch({ type: 'SET_SOCKET_TAGS', payload: value });
+  const setSocket = (socket: any) => {
+    dispatch({ type: 'SET_SOCKET', payload: socket });
   };
 
   const value = useMemo(
     () => ({
       state,
+      setAction,
       setSocket,
-      setSocketTags,
     }),
     [state]
   );

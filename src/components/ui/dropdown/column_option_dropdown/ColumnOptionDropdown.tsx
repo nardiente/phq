@@ -7,6 +7,8 @@ import { Permissions, RbacPermissions } from '../../../../types/common';
 import { CheckIcon } from '../../../icons/check.icon';
 import { Roadmap, RoadmapColor } from '../../../../types/roadmap';
 import { usePanel } from '../../../../contexts/PanelContext';
+import { useSocket } from '../../../../contexts/SocketContext';
+import { SocketAction } from '../../../../types/socket';
 
 const ColumnOptionDropdown = ({
   roadmap,
@@ -19,10 +21,13 @@ const ColumnOptionDropdown = ({
 
   const { user } = useUser();
   const {
-    state: { filter, roadmaps },
+    state: { filters, roadmaps },
     updateRoadmap,
   } = useFeedback();
   const { setActivePage, setDeleteId, setDeleteType, setIsOpen } = usePanel();
+  const {
+    state: { socket },
+  } = useSocket();
 
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -53,12 +58,12 @@ const ColumnOptionDropdown = ({
   };
 
   const handleFilterData = (data: Roadmap) => {
-    if (!filter.title && !filter.tags.length) {
+    if (!filters.title && !filters.tags.length) {
       return data;
     }
 
-    const filterTitleLower = filter.title.toLowerCase();
-    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
+    const filterTitleLower = filters.title.toLowerCase();
+    const filterTagLower = filters.tags.map((tag) => tag.toLowerCase());
 
     const filteredUpvotes =
       data.upvotes?.filter((upvote) => {
@@ -91,8 +96,11 @@ const ColumnOptionDropdown = ({
       setLoading(false);
       if (res.results.data) {
         updateRoadmap(handleFilterData(res.results.data));
-
         setShowOptions(false);
+        socket?.emit('message', {
+          action: SocketAction.UPDATE_ROADMAP,
+          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+        });
       }
     });
   };

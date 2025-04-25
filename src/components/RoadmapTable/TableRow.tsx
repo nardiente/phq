@@ -15,6 +15,7 @@ import { useFeedback } from '../../contexts/FeedbackContext';
 import { putApi } from '../../utils/api/api';
 import { useSocket } from '../../contexts/SocketContext';
 import { useUser } from '../../contexts/UserContext';
+import { SocketAction } from '../../types/socket';
 
 interface TableRowProps {
   item: Feedback;
@@ -137,7 +138,7 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
           updateIdea(res.results.data);
           setSaveStatus('saved');
           socket?.emit('message', {
-            action: 'updateIdea',
+            action: SocketAction.UPDATE_IDEA,
             data: { user_id: user?.user?.id, projectId: user?.project?.id },
           });
         }

@@ -20,6 +20,7 @@ import { ImageType } from '../../types/user';
 import { ArchiveFillIcon } from '../icons/archive-fill.icon';
 import { ArchiveOffIcon } from '../icons/archive-off.icon';
 import { toast } from 'react-toastify';
+import { SocketAction } from '../../types/socket';
 
 const UpvoteLabelLink = styled.span`
   align-items: center;
@@ -67,7 +68,7 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
           updateIdeaInRoadmap(props.status_id, data);
         }
         socket?.emit('message', {
-          action: 'updateIdea',
+          action: SocketAction.UPDATE_IDEA,
           data: { user_id: user?.user?.id, projectId: user?.project?.id },
         });
         toast(
@@ -105,7 +106,7 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
         updateIdea(data);
         updateIdeaInRoadmap(data.status_id ?? 0, data);
         socket?.emit('message', {
-          action: 'updateIdea',
+          action: SocketAction.UPDATE_IDEA,
           data: { user_id: user?.user?.id, projectId: user?.project?.id },
         });
       }

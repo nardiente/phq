@@ -54,6 +54,7 @@ interface UserContextType {
   user?: UserContextConfig;
   setFetching: Dispatch<SetStateAction<boolean>>;
   setUser: Dispatch<React.SetStateAction<UserContextConfig>>;
+  handleGetAppearance: () => Promise<void>;
   handleGetUser: () => Promise<void>;
   first_name: string;
   setFirstName: Dispatch<React.SetStateAction<string>>;
@@ -91,6 +92,7 @@ const UserContext = createContext<UserContextType>({
   fetching: false,
   first_name: '',
   githubCode: '',
+  handleGetAppearance: async () => Promise.resolve(),
   handleGetUser: async () => Promise.resolve(),
   last_name: '',
   loading_social: false,
@@ -130,6 +132,15 @@ export function UserProvider({ children }: UserProviderProps) {
   useEffect(() => {
     setAppearanceColors(user.appearance);
   }, [user.appearance]);
+
+  const handleGetAppearance = async () => {
+    getApi<ProjectAppearance>({
+      url: 'projects/appearance',
+    }).then((appearance) => {
+      const data = appearance.results.data;
+      setUser((prev) => ({ ...prev, appearance: data }));
+    });
+  };
 
   const handleGetUser = async () => {
     setFetching(true);
@@ -268,6 +279,7 @@ export function UserProvider({ children }: UserProviderProps) {
         setFetching,
         user,
         setUser,
+        handleGetAppearance,
         handleGetUser,
         first_name,
         setFirstName,

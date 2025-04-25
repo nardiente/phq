@@ -10,6 +10,8 @@ import { RbacPermissions } from '../../types/common';
 import { Publications } from '../../types/whats-new';
 import { useWhatsNew } from '../../contexts/WhatsNewContext';
 import { Roadmap } from '../../types/roadmap';
+import { useSocket } from '../../contexts/SocketContext';
+import { SocketAction } from '../../types/socket';
 
 const DeleteConfirmation = () => {
   const {
@@ -30,6 +32,9 @@ const DeleteConfirmation = () => {
     setRoadmaps,
   } = useFeedback();
   const { handleGetUser, user } = useUser();
+  const {
+    state: { socket },
+  } = useSocket();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [draftLoading, setDraftLoading] = useState<boolean>(false);
@@ -102,6 +107,10 @@ const DeleteConfirmation = () => {
             deleteId
           );
           setIsOpen(false);
+          socket?.emit('message', {
+            action: SocketAction.UPDATE_IDEA,
+            data: { user_id: user?.user?.id, projectId: user?.project?.id },
+          });
         }
       });
       return;
@@ -110,6 +119,10 @@ const DeleteConfirmation = () => {
       deleteApi({ url: `roadmaps/${deleteId}` }).then((res) => {
         setRoadmaps(handleFilterRoadmaps(res.results.data));
         setIsOpen(false);
+        socket?.emit('message', {
+          action: SocketAction.UPDATE_ROADMAP,
+          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+        });
       });
     }
     if (deleteType == 'post') {

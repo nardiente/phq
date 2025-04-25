@@ -2,11 +2,14 @@ import {
   createContext,
   ReactNode,
   useContext,
+  useEffect,
   useMemo,
   useReducer,
 } from 'react';
 import { UserNotification } from '../types/notification';
 import { getApi } from '../utils/api/api';
+import { useSocket } from './SocketContext';
+import { SocketAction } from '../types/socket';
 
 interface UserNotificationState {
   fetching: boolean;
@@ -59,6 +62,22 @@ export function UserNotificationProvider({
   children: ReactNode;
 }) {
   const [state, dispatch] = useReducer(userNotificationReducer, initialState);
+
+  const {
+    state: { action },
+    setAction,
+  } = useSocket();
+
+  useEffect(() => {
+    switch (action) {
+      case SocketAction.UPDATE_NOTIFICATION:
+        getNotifications();
+        break;
+      default:
+        break;
+    }
+    setAction();
+  }, [action]);
 
   const getNotifications = (seeMore?: boolean) => {
     setFetching(true);

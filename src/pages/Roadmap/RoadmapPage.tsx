@@ -25,6 +25,7 @@ import { RoadmapFilter } from '../../components/RoadmapFilter';
 import Button from '../../components/Button';
 import { Plus } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
+import { SocketAction } from '../../types/socket';
 
 export function RoadmapPage() {
   const { user } = useUser();
@@ -41,8 +42,8 @@ export function RoadmapPage() {
     updateRoadmap,
   } = useFeedback();
   const {
-    state: { socket, tags: socketTags },
-    setSocketTags,
+    state: { action, socket },
+    setAction,
   } = useSocket();
   const { tags: filterTag, title } = filters;
   const { setActivePage, setActiveTab, setIsOpen } = usePanel();
@@ -72,50 +73,12 @@ export function RoadmapPage() {
         setActivePage('add_comment');
         setIsOpen(true);
         socket?.emit('message', {
-          action: 'updateIdea',
+          action: SocketAction.UPDATE_IDEA,
           data: { user_id: user?.user?.id, projectId: user?.project?.id },
         });
       }
     });
   };
-
-  // const handleGetStatus = () => {
-  //   const url = is_public
-  //     ? `roadmaps/upvotes/${window.location.host}`
-  //     : 'roadmaps/upvotes';
-
-  //   setFetching(true);
-  //   getApi<Roadmap[]>({
-  //     url,
-  //     params: { tags: filterTag.join(','), title },
-  //     useSessionToken: is_public && moderation?.user_login === true,
-  //   })
-  //     .then((res) => {
-  //       if (res.results.data) {
-  //         const data = res.results.data;
-  //         setRoadmaps(data);
-
-  //         const ideas: Feedback[] = [];
-  //         data.forEach((roadmap) => {
-  //           roadmap.upvotes?.forEach((upvote) => {
-  //             if (upvote.created_at) {
-  //               const createdAtDate = new Date(upvote.created_at);
-  //               ideas.push({ ...upvote, created_at: createdAtDate });
-  //             }
-  //           });
-  //         });
-
-  //         // Sorting ideas by created_at date (Newest first)
-  //         ideas.sort((a, b) => {
-  //           const dateA = a.created_at ? new Date(a.created_at) : new Date();
-  //           const dateB = b.created_at ? new Date(b.created_at) : new Date();
-  //           return dateB.getTime() - dateA.getTime();
-  //         });
-  //       }
-  //     })
-  //     .catch(() => setFetching(false))
-  //     .finally(() => setFetching(false));
-  // };
 
   const handleFilterData = (data: Roadmap) => {
     if (!filters.title && !filters.tags.length) {
@@ -207,7 +170,7 @@ export function RoadmapPage() {
           if (res.results.data) {
             setRoadmaps(handleFilterRoadmaps(res.results.data));
             socket?.emit('message', {
-              action: 'updateIdea',
+              action: SocketAction.UPDATE_ROADMAP,
               data: { user_id: user?.user?.id, projectId: user?.project?.id },
             });
           }
@@ -250,7 +213,7 @@ export function RoadmapPage() {
             const data = res.results.data;
             updateRoadmap(handleFilterData(data));
             socket?.emit('message', {
-              action: 'updateIdea',
+              action: SocketAction.UPDATE_IDEA,
               data: { user_id: user?.user?.id, projectId: user?.project?.id },
             });
           }
@@ -307,7 +270,7 @@ export function RoadmapPage() {
           updateRoadmap(handleFilterData(data));
           updateIdea(idea);
           socket?.emit('message', {
-            action: 'updateIdea',
+            action: SocketAction.UPDATE_IDEA,
             data: { user_id: user?.user?.id, projectId: user?.project?.id },
           });
         }
@@ -323,6 +286,10 @@ export function RoadmapPage() {
       if (res.results.data) {
         addRoadmap(res.results.data);
         setEditColumnNameId(0);
+        socket?.emit('message', {
+          action: SocketAction.UPDATE_ROADMAP,
+          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+        });
       }
     });
   };
@@ -341,8 +308,11 @@ export function RoadmapPage() {
       setLoading(false);
       if (res.results.data) {
         updateRoadmap(handleFilterData(res.results.data));
-
         setEditColumnNameId(0);
+        socket?.emit('message', {
+          action: SocketAction.UPDATE_ROADMAP,
+          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+        });
       }
     });
   };
@@ -356,14 +326,11 @@ export function RoadmapPage() {
   }, [filters]);
 
   useEffect(() => {
-    if (socketTags) {
-      if (selectedIdea?.id) {
-        getFeedback(selectedIdea.id);
-      }
-      handleListFeedback();
-      setSocketTags(false);
+    if (action === SocketAction.UPDATE_TAG && selectedIdea?.id) {
+      getFeedback(selectedIdea.id);
     }
-  }, [socketTags]);
+    setAction();
+  }, [action]);
 
   return (
     <Settings className="pb-0">

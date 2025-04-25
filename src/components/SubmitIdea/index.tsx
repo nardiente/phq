@@ -23,6 +23,7 @@ import { UpvoteAdminStatus } from '../UpvoteAdminStatus';
 import { Calendar } from '../Calendar';
 import { PrivacyPolicyField } from '../PrivacyPolicyField';
 import { useSocket } from '../../contexts/SocketContext';
+import { SocketAction } from '../../types/socket';
 
 export const SubmitIdea = () => {
   const { handleGetUser, user: userDetails } = useUser();
@@ -214,6 +215,11 @@ export const SubmitIdea = () => {
             }
             setSelectedIdea(data);
           }
+
+          socket?.emit('message', {
+            action: SocketAction.UPDATE_IDEA,
+            data: { projectId: project?.id },
+          });
         }
       })
       .finally(() => setPanelLoading(false));
@@ -271,7 +277,7 @@ export const SubmitIdea = () => {
           }
         );
         socket?.emit('message', {
-          action: 'updateIdea',
+          action: SocketAction.UPDATE_IDEA,
           data: { user_id: user?.id, projectId: project?.id },
         });
       }
@@ -308,6 +314,11 @@ export const SubmitIdea = () => {
         }
         setSubmitting(false);
         setActivePage('add_comment');
+
+        socket?.emit('message', {
+          action: SocketAction.UPDATE_IDEA,
+          data: { projectId: project?.id },
+        });
       }
     });
   };

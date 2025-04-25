@@ -8,6 +8,7 @@ import { Permissions, RbacPermissions } from '../../types/common';
 import { deleteApi, postApi } from '../../utils/api/api';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
+import { SocketAction } from '../../types/socket';
 
 const UpvoteBoxDiv = styled.button`
   align-items: center;
@@ -119,7 +120,7 @@ export const UpVoteCounter = ({
     }
 
     socket?.emit('message', {
-      action: 'updateIdea',
+      action: SocketAction.UPDATE_IDEA,
       data: { user_id: user?.user?.id, projectId: user?.project?.id },
     });
 

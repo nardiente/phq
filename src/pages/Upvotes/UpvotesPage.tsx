@@ -17,6 +17,7 @@ import { Settings } from '../../components/Settings';
 import SettingsHeader from '../../components/SettingsHeader';
 import Button from '../../components/Button';
 import { Plus } from 'lucide-react';
+import { SocketAction } from '../../types/socket';
 
 export default function UpvotesPage() {
   const location = useLocation();
@@ -41,8 +42,8 @@ export default function UpvotesPage() {
   const { setIsContinueReading, setWhatsNewId, setWhatsNewPreviewId } =
     useWhatsNew();
   const {
-    state: { socket, tags: socketTags },
-    setSocketTags,
+    state: { action, socket },
+    setAction,
   } = useSocket();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
@@ -112,14 +113,15 @@ export default function UpvotesPage() {
   }, [sort, status, tags.length, title, userInfo]);
 
   useEffect(() => {
-    if (socketTags && userInfo?.id) {
-      if (selectedIdea?.id) {
-        getFeedback(selectedIdea.id);
-      }
-      handleListFeedback();
-      setSocketTags(false);
+    if (
+      action === SocketAction.UPDATE_TAG &&
+      userInfo?.id &&
+      selectedIdea?.id
+    ) {
+      getFeedback(selectedIdea.id);
     }
-  }, [socketTags, userInfo]);
+    setAction();
+  }, [action, userInfo]);
 
   const getFeedback = (id: number) => {
     getApi<Feedback>({ url: `feedback/${id}` }).then((res) => {
@@ -131,7 +133,7 @@ export default function UpvotesPage() {
         setActivePage('add_comment');
         setIsOpen(true);
         socket?.emit('message', {
-          action: 'updateIdea',
+          action: SocketAction.UPDATE_IDEA,
           data: { user_id: user?.id, projectId: project?.id },
         });
       }

@@ -4,11 +4,14 @@ import {
   useReducer,
   useMemo,
   ReactNode,
+  useEffect,
 } from 'react';
 import { Feedback, FeedbackComment, Tag, UpvoteLog } from '../types/feedback';
 import { Roadmap } from '../types/roadmap';
 import { getApi } from '../utils/api/api';
 import { useUser } from './UserContext';
+import { useSocket } from './SocketContext';
+import { SocketAction } from '../types/socket';
 
 interface FeedbackState {
   activeTab: 'ideas' | 'comments';
@@ -334,8 +337,27 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
 
   const { user } = useUser();
   const { moderation } = user ?? {};
+  const {
+    state: { action },
+    setAction,
+  } = useSocket();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+
+  useEffect(() => {
+    switch (action) {
+      case SocketAction.UPDATE_IDEA:
+      case SocketAction.UPDATE_TAG:
+        handleListFeedback();
+        break;
+      case SocketAction.UPDATE_ROADMAP:
+        handleGetStatus();
+        break;
+      default:
+        break;
+    }
+    setAction();
+  }, [action]);
 
   const fetchItems = async (tab: 'ideas' | 'comments') => {
     dispatch({ type: 'SET_LOADING', payload: true });

@@ -32,6 +32,7 @@ import { Comments } from '../Comments';
 import { FiPaperclip } from 'react-icons/fi';
 import { fileToBase64 } from '../../utils/file';
 import { toast } from 'react-toastify';
+import { SocketAction } from '../../types/socket';
 
 const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
@@ -259,7 +260,7 @@ const AddComment = () => {
                 comment_count: (idea.comment_count ?? 0) + 1,
               });
               socket?.emit('message', {
-                action: 'updateIdea',
+                action: SocketAction.UPDATE_IDEA,
                 data: { projectId: user?.project?.id },
               });
             }

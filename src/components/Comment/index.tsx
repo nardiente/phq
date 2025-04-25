@@ -25,6 +25,7 @@ import EmojiList from '../EmojiList';
 import { FiPaperclip } from 'react-icons/fi';
 import { fileToBase64 } from '../../utils/file';
 import { toast } from 'react-toastify';
+import { SocketAction } from '../../types/socket';
 
 const mentionSource = async (searchTerm: any, renderList: any) => {
   postApi({
@@ -298,7 +299,7 @@ export const Comment = ({
             comment_count: (idea.comment_count ?? 0) + 1,
           });
           socket?.emit('message', {
-            action: 'updateIdea',
+            action: SocketAction.UPDATE_IDEA,
             data: { user_id: user?.user?.id, projectId: user?.project?.id },
           });
         }
