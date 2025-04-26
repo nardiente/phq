@@ -3,7 +3,6 @@ import { WidgetConfig } from '../../types/widget';
 import { TabLauncher } from './TabLauncher';
 import { FloatingLauncher } from './FloatingLauncher';
 import { WidgetContent } from './WidgetContent';
-import { mockIdeas } from '../../data/mockData';
 
 // Type guard to ensure config is complete
 const validateConfig = (config: WidgetConfig): boolean => {
@@ -26,7 +25,7 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
     sections: config.sections ?? {
       ideas: true,
       roadmap: true,
-      announcements: true
+      announcements: true,
     },
     appearance: {
       // Start with user's appearance settings
@@ -34,9 +33,10 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
       // Only set defaults if values are missing
       width: config.appearance?.width || '450px',
       height: config.appearance?.height || '600px',
-      position: config.appearance?.position || config.launcherPosition || 'Right',
+      position:
+        config.appearance?.position || config.launcherPosition || 'Right',
       placement: config.appearance?.placement || 'Bottom right',
-    }
+    },
   };
 
   // Add debug log
@@ -56,25 +56,34 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
 
   // Simple widget content wrapper with close button
   const WidgetContainer = ({ children }: { children: React.ReactNode }) => (
-    <div 
+    <div
       className="relative rounded-lg shadow-xl overflow-hidden"
-      style={{ 
-        height: config.widgetType === 'Sidebar' ? '100%' : configWithDefaults.appearance.height,
+      style={{
+        height:
+          config.widgetType === 'Sidebar'
+            ? '100%'
+            : configWithDefaults.appearance.height,
         width: configWithDefaults.appearance.width,
-        maxWidth: config.widgetType === 'Sidebar' ? 'calc(100vw - 64px)' : undefined,
+        maxWidth:
+          config.widgetType === 'Sidebar' ? 'calc(100vw - 64px)' : undefined,
       }}
     >
       {/* Main content */}
-      <div className="bg-white">
-        {children}
-      </div>
+      <div className="bg-white">{children}</div>
 
       {!config.appearance?.hideCloseButton && (
-        <button 
+        <button
           onClick={() => setIsVisible(false)}
           className="absolute top-4 right-4 hover:opacity-75"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
@@ -86,18 +95,21 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
     <div className="flex-1 relative">
       {/* Launcher */}
       {config.launcherType === 'Tab' && (
-        <TabLauncher config={configWithDefaults} onClick={() => setIsVisible(!isVisible)} />
+        <TabLauncher
+          config={configWithDefaults}
+          onClick={() => setIsVisible(!isVisible)}
+        />
       )}
       {config.launcherType === 'Floating' && (
-        <FloatingLauncher 
+        <FloatingLauncher
           config={configWithDefaults}
           onClick={() => setIsVisible(!isVisible)}
         />
       )}
 
       {/* Widget */}
-      {isVisible && (
-        config.widgetType === 'Modal' ? (
+      {isVisible &&
+        (config.widgetType === 'Modal' ? (
           // Modal: Centered
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="pointer-events-auto">
@@ -108,7 +120,7 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
           </div>
         ) : config.widgetType === 'Sidebar' ? (
           // Sidebar: Full height, left/right edge
-          <div 
+          <div
             className={`absolute top-0 bottom-0 ${
               config.appearance?.position === 'Left' ? 'left-0' : 'right-0'
             } pointer-events-auto h-full`}
@@ -118,40 +130,42 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
             </WidgetContainer>
           </div>
         ) : config.widgetType === 'Popover' ? (
-          <div className={`
+          <div
+            className={`
             absolute
             ${config.appearance?.placement === 'Top left' ? 'top-0 left-0' : ''}
             ${config.appearance?.placement === 'Top right' ? 'top-0 right-0' : ''}
             ${config.appearance?.placement === 'Bottom left' ? 'bottom-0 left-0' : ''}
             ${config.appearance?.placement === 'Bottom right' ? 'bottom-0 right-0' : 'bottom-0 right-0'}
           `}
-          style={{ 
-            margin: config.appearance?.offset || '64px',
-            width: config.appearance?.width,
-            height: config.appearance?.height
-          }}>
-            <WidgetContainer>
-              <WidgetContent config={configWithDefaults} />
-            </WidgetContainer>
-          </div>
-        ) : (
-          // Popover: Positioned
-          <div className={`
-            absolute 
-            ${config.appearance?.placement?.includes('Top') ? 'top-0' : 'bottom-0'}
-            ${config.appearance?.placement?.includes('left') ? 'left-0' : 'right-0'}
-            pointer-events-auto
-          `}
             style={{
-              margin: config.appearance?.offset || '64px'
+              margin: config.appearance?.offset || '64px',
+              width: config.appearance?.width,
+              height: config.appearance?.height,
             }}
           >
             <WidgetContainer>
               <WidgetContent config={configWithDefaults} />
             </WidgetContainer>
           </div>
-        )
-      )}
+        ) : (
+          // Popover: Positioned
+          <div
+            className={`
+            absolute 
+            ${config.appearance?.placement?.includes('Top') ? 'top-0' : 'bottom-0'}
+            ${config.appearance?.placement?.includes('left') ? 'left-0' : 'right-0'}
+            pointer-events-auto
+          `}
+            style={{
+              margin: config.appearance?.offset || '64px',
+            }}
+          >
+            <WidgetContainer>
+              <WidgetContent config={configWithDefaults} />
+            </WidgetContainer>
+          </div>
+        ))}
     </div>
   );
-}; 
+};
