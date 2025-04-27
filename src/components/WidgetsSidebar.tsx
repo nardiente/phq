@@ -636,9 +636,10 @@ export default function WidgetsSidebar({
                   value={config.appearance?.width?.replace(/[^\d]/g, '') || ''}
                   onChange={(e) => {
                     const inputValue = e.target.value;
-                    if (/^\d*$/.test(inputValue)) {
+                    if (inputValue === '' || inputValue.match(/^\d+$/)) {
                       handleAppearanceUpdate({
-                        width: inputValue ? `${inputValue}px` : '450px',
+                        ...config.appearance,
+                        width: inputValue ? `${inputValue}px` : undefined,
                       });
                     }
                   }}
@@ -646,15 +647,16 @@ export default function WidgetsSidebar({
                     const value = parseInt(e.target.value || '450');
                     if (value >= 300 && value <= 800) {
                       handleAppearanceUpdate({
+                        ...config.appearance,
                         width: `${value}px`,
                       });
                     }
                   }}
                   placeholder="450"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi"
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi ${config.appearance?.width ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p
-                  className={`text-xs ${parseInt(config.appearance?.width?.replace(/[^\d]/g, '') || '0') < 300 || parseInt(config.appearance?.width?.replace(/[^\d]/g, '') || '0') > 800 ? 'text-red-500' : 'text-gray-500'}`}
+                  className={`text-xs ${parseInt(config.appearance?.width || '0') < 300 || parseInt(config.appearance?.width || '0') > 800 ? 'text-red-500' : 'text-gray-500'}`}
                 >
                   Min: 300px, Max: 800px
                 </p>
@@ -762,13 +764,13 @@ export default function WidgetsSidebar({
                 </p>
                 <input
                   type="text"
-                  value={config.appearance.width.replace(/[^\d]/g, '')}
+                  value={config.appearance?.width?.replace(/[^\d]/g, '') || ''}
                   onChange={(e) => {
                     const inputValue = e.target.value;
-                    if (/^\d*$/.test(inputValue)) {
+                    if (inputValue === '' || inputValue.match(/^\d+$/)) {
                       handleAppearanceUpdate({
                         ...config.appearance,
-                        width: `${inputValue}px`,
+                        width: inputValue ? `${inputValue}px` : undefined,
                       });
                     }
                   }}
@@ -782,10 +784,10 @@ export default function WidgetsSidebar({
                     }
                   }}
                   placeholder="450"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi"
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi ${config.appearance?.width ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p
-                  className={`text-xs ${parseInt(config.appearance.width.replace(/[^\d]/g, '') || '0') < 300 || parseInt(config.appearance.width.replace(/[^\d]/g, '') || '0') > 800 ? 'text-red-500' : 'text-gray-500'}`}
+                  className={`text-xs ${parseInt(config.appearance.width || '0') < 300 || parseInt(config.appearance.width || '0') > 800 ? 'text-red-500' : 'text-gray-500'}`}
                 >
                   Min: 300px, Max: 800px
                 </p>
@@ -831,9 +833,19 @@ export default function WidgetsSidebar({
                   value={config.appearance?.width?.replace(/[^\d]/g, '') || ''}
                   onChange={(e) => {
                     const inputValue = e.target.value;
-                    if (/^\d*$/.test(inputValue)) {
+                    if (inputValue === '' || inputValue.match(/^\d+$/)) {
                       handleAppearanceUpdate({
-                        width: inputValue ? `${inputValue}px` : '450px',
+                        ...config.appearance,
+                        width: inputValue ? `${inputValue}px` : undefined,
+                      });
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const value = parseInt(e.target.value || '450');
+                    if (value >= 300 && value <= 800) {
+                      handleAppearanceUpdate({
+                        ...config.appearance,
+                        width: `${value}px`,
                       });
                     }
                   }}
@@ -842,7 +854,7 @@ export default function WidgetsSidebar({
                     ${config.appearance?.width ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p
-                  className={`text-xs ${parseInt(config.appearance?.width?.replace(/[^\d]/g, '') || '0') < 300 || parseInt(config.appearance?.width?.replace(/[^\d]/g, '') || '0') > 800 ? 'text-red-500' : 'text-gray-500'}`}
+                  className={`text-xs ${parseInt(config.appearance?.width || '0') < 300 || parseInt(config.appearance?.width || '0') > 800 ? 'text-red-500' : 'text-gray-500'}`}
                 >
                   Min: 300px, Max: 800px
                 </p>

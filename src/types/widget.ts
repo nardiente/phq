@@ -3,7 +3,7 @@ export interface WidgetAppearance {
   description?: string;
   placement?: 'Top left' | 'Top right' | 'Bottom left' | 'Bottom right';
   offset?: string;
-  width: string;
+  width?: string;
   height?: string;
   preventScroll?: boolean;
   hideCloseButton?: boolean;
