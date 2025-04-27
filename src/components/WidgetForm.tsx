@@ -55,7 +55,6 @@ export const WidgetForm = ({
           setEditingWidgetId(widgetId);
           setWidgetConfig((prev) => ({
             ...prev,
-            name: prev.name,
             ...{ ...data.config, notificationCount: countUnreadPosts() },
           }));
         }

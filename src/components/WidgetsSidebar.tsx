@@ -182,13 +182,13 @@ export default function WidgetsSidebar({
     console.log('New value:', value);
     console.log('Full config before:', config);
 
-    onConfigUpdate((prev) => ({
-      ...prev,
-      [field]: value,
-      appearance: {
-        [field]: value,
-      },
-    }));
+    onConfigUpdate((prev) => {
+      prev = { ...prev, [field]: value };
+      if (field === 'backgroundColor') {
+        prev = { ...prev, appearance: { ...prev.appearance, [field]: value } };
+      }
+      return prev;
+    });
 
     console.log('Full config after:', {
       ...config,
@@ -546,9 +546,10 @@ export default function WidgetsSidebar({
 
               <div className="p-4 bg-blue-50 rounded-lg">
                 <p className="text-sm text-blue-800">
-                  <span className="font-medium">Note:</span> Launchers are not
-                  available with this Widget type. You will need to place the
-                  embed code in the location you want your Widget to appear.
+                  <span className="font-medium">Note:</span> You cannot use
+                  launcher types with this widget type. You need to copy and
+                  paste the code above on to the page where you'd like this
+                  widget type to appear on your site.
                 </p>
               </div>
             </>

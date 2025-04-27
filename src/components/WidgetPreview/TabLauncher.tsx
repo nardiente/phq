@@ -32,9 +32,7 @@ export const TabLauncher = ({ config, onClick }: TabLauncherProps) => {
         <button
           onClick={handleClick}
           className={`flex items-center gap-2 px-4 py-3 text-sm font-medium shadow-lg ${
-            isLeft
-              ? 'rounded-r-lg -translate-x-1'
-              : 'rounded-l-lg translate-x-1'
+            isLeft ? 'rounded-r-lg' : 'rounded-l-lg translate-x-1'
           }`}
           style={{
             backgroundColor: config.backgroundColor || '#ff6334',

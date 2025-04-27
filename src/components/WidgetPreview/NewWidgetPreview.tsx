@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { WidgetConfig } from '../../types/widget';
 import { TabLauncher } from './TabLauncher';
 import { FloatingLauncher } from './FloatingLauncher';
@@ -55,6 +55,12 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
   console.log('Final sections:', configWithDefaults.sections);
   console.groupEnd();
 
+  useEffect(() => {
+    if (config.widgetType === 'Embed') {
+      setIsVisible(true);
+    }
+  }, [config.widgetType]);
+
   // Simple widget content wrapper with close button
   const WidgetContainer = ({ children }: { children: React.ReactNode }) => (
     <div
@@ -72,7 +78,7 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
       {/* Main content */}
       <div className="bg-white">{children}</div>
 
-      {!config.appearance?.hideCloseButton && (
+      {!config.appearance?.hideCloseButton && config.widgetType !== 'Embed' && (
         <button
           onClick={() => setIsVisible(false)}
           className="absolute top-4 right-4 hover:opacity-75"
@@ -95,17 +101,21 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
   return (
     <div className="flex-1 relative">
       {/* Launcher */}
-      {config.launcherType === 'Tab' && (
-        <TabLauncher
-          config={configWithDefaults}
-          onClick={() => setIsVisible(!isVisible)}
-        />
-      )}
-      {config.launcherType === 'Floating' && (
-        <FloatingLauncher
-          config={configWithDefaults}
-          onClick={() => setIsVisible(!isVisible)}
-        />
+      {config.widgetType !== 'Embed' && (
+        <>
+          {config.launcherType === 'Tab' && (
+            <TabLauncher
+              config={configWithDefaults}
+              onClick={() => setIsVisible(!isVisible)}
+            />
+          )}
+          {config.launcherType === 'Floating' && (
+            <FloatingLauncher
+              config={configWithDefaults}
+              onClick={() => setIsVisible(!isVisible)}
+            />
+          )}
+        </>
       )}
 
       {/* Widget */}
