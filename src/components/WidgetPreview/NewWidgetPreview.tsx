@@ -57,7 +57,7 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
   // Simple widget content wrapper with close button
   const WidgetContainer = ({ children }: { children: React.ReactNode }) => (
     <div
-      className="relative rounded-lg shadow-xl overflow-hidden"
+      className={`relative rounded-lg shadow-xl ${configWithDefaults.appearance.preventScroll ? 'overflow-hidden' : 'overflow-y-auto'}`}
       style={{
         height:
           config.widgetType === 'Sidebar'

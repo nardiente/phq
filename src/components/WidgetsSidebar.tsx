@@ -653,7 +653,7 @@ export default function WidgetsSidebar({
                     }
                   }}
                   placeholder="450"
-                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi ${config.appearance?.width ? 'text-gray-900' : 'text-gray-400'}`}
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-satoshi ${config.appearance?.width ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p
                   className={`text-xs ${parseInt(config.appearance?.width || '0') < 300 || parseInt(config.appearance?.width || '0') > 800 ? 'text-red-500' : 'text-gray-500'}`}
@@ -691,7 +691,7 @@ export default function WidgetsSidebar({
                     }
                   }}
                   placeholder="e.g., 500"
-                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-satoshi
                     ${config.appearance.height ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p
@@ -784,7 +784,7 @@ export default function WidgetsSidebar({
                     }
                   }}
                   placeholder="450"
-                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi ${config.appearance?.width ? 'text-gray-900' : 'text-gray-400'}`}
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-satoshi ${config.appearance?.width ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p
                   className={`text-xs ${parseInt(config.appearance.width || '0') < 300 || parseInt(config.appearance.width || '0') > 800 ? 'text-red-500' : 'text-gray-500'}`}
@@ -795,17 +795,6 @@ export default function WidgetsSidebar({
 
               <div className="space-y-4">
                 <Checkbox
-                  checked={config.appearance?.preventScroll || false}
-                  onChange={(checked) => {
-                    handleAppearanceUpdate({
-                      ...config.appearance,
-                      preventScroll: checked,
-                    });
-                  }}
-                  label="Prevent window scroll"
-                />
-
-                <Checkbox
                   checked={config.appearance?.hideCloseButton || false}
                   onChange={(checked) => {
                     handleAppearanceUpdate({
@@ -814,6 +803,16 @@ export default function WidgetsSidebar({
                     });
                   }}
                   label="Hide close button"
+                />
+                <Checkbox
+                  checked={config.appearance?.preventScroll || false}
+                  onChange={(checked) => {
+                    handleAppearanceUpdate({
+                      ...config.appearance,
+                      preventScroll: checked,
+                    });
+                  }}
+                  label="Prevent window scroll"
                 />
               </div>
             </>
@@ -850,7 +849,7 @@ export default function WidgetsSidebar({
                     }
                   }}
                   placeholder="e.g., 450"
-                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-satoshi
                     ${config.appearance?.width ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p
@@ -889,7 +888,7 @@ export default function WidgetsSidebar({
                     }
                   }}
                   placeholder="e.g., 500"
-                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-satoshi
                     ${config.appearance.height ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p

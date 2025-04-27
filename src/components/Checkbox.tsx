@@ -1,15 +1,19 @@
-export const Checkbox = ({ checked, onChange, label }: { 
+export const Checkbox = ({
+  checked,
+  onChange,
+  label,
+}: {
   checked: boolean;
   onChange: (checked: boolean) => void;
   label: string;
 }) => (
-  <label className="flex gap-2">
+  <label className="flex gap-2 text-sm text-gray-900">
     <input
       type="checkbox"
       checked={checked}
-      onChange={e => onChange(e.target.checked)}
+      onChange={(e) => onChange(e.target.checked)}
       className="accent-[#5a00cd]"
     />
     {label}
   </label>
-); 
+);
