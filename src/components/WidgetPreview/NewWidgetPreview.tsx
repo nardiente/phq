@@ -19,19 +19,39 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
 
   const [isVisible, setIsVisible] = useState(false);
 
+  // Single config with defaults
+  const configWithDefaults = {
+    ...config,
+    sections: config.sections ?? {
+      ideas: true,
+      roadmap: true,
+      announcements: true,
+    },
+    appearance: {
+      // Start with user's appearance settings
+      ...config.appearance,
+      // Only set defaults if values are missing
+      width: config.appearance?.width || '450px',
+      height: config.appearance?.height || '600px',
+      position:
+        config.appearance?.position || config.launcherPosition || 'Right',
+      placement: config.appearance?.placement || 'Bottom right',
+    },
+  };
+
   // Add debug log
   console.group('=== Config Update Debug ===');
   console.log('Original config:', config);
   console.log('Original placement:', config.appearance?.placement);
-  console.log('Config with defaults:', config);
-  console.log('Final placement:', config.appearance.placement);
+  console.log('Config with defaults:', configWithDefaults);
+  console.log('Final placement:', configWithDefaults.appearance.placement);
   console.groupEnd();
 
   // Add more specific debug logging
   console.group('=== Sections Debug ===');
   console.log('Config received:', config);
   console.log('Section toggles:', config.sections);
-  console.log('Final sections:', config.sections);
+  console.log('Final sections:', configWithDefaults.sections);
   console.groupEnd();
 
   // Simple widget content wrapper with close button
@@ -40,8 +60,10 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
       className="relative rounded-lg shadow-xl overflow-hidden"
       style={{
         height:
-          config.widgetType === 'Sidebar' ? '100%' : config.appearance.height,
-        width: config.appearance.width,
+          config.widgetType === 'Sidebar'
+            ? '100%'
+            : configWithDefaults.appearance.height,
+        width: configWithDefaults.appearance.width,
         maxWidth:
           config.widgetType === 'Sidebar' ? 'calc(100vw - 64px)' : undefined,
       }}
@@ -73,11 +95,14 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
     <div className="flex-1 relative">
       {/* Launcher */}
       {config.launcherType === 'Tab' && (
-        <TabLauncher config={config} onClick={() => setIsVisible(!isVisible)} />
+        <TabLauncher
+          config={configWithDefaults}
+          onClick={() => setIsVisible(!isVisible)}
+        />
       )}
       {config.launcherType === 'Floating' && (
         <FloatingLauncher
-          config={config}
+          config={configWithDefaults}
           onClick={() => setIsVisible(!isVisible)}
         />
       )}
@@ -89,7 +114,7 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="pointer-events-auto">
               <WidgetContainer>
-                <WidgetContent config={config} />
+                <WidgetContent config={configWithDefaults} />
               </WidgetContainer>
             </div>
           </div>
@@ -101,7 +126,7 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
             } pointer-events-auto h-full`}
           >
             <WidgetContainer>
-              <WidgetContent config={config} />
+              <WidgetContent config={configWithDefaults} />
             </WidgetContainer>
           </div>
         ) : config.widgetType === 'Popover' ? (
@@ -120,7 +145,7 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
             }}
           >
             <WidgetContainer>
-              <WidgetContent config={config} />
+              <WidgetContent config={configWithDefaults} />
             </WidgetContainer>
           </div>
         ) : (
@@ -137,7 +162,7 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
             }}
           >
             <WidgetContainer>
-              <WidgetContent config={config} />
+              <WidgetContent config={configWithDefaults} />
             </WidgetContainer>
           </div>
         ))}
