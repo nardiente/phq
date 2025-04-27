@@ -28,6 +28,7 @@ export const WidgetForm = ({
     launcherPosition: 'Right',
     backgroundColor: '#FF6334',
     appearance: {
+      backgroundColor: '#ff6334',
       width: '450px',
       height: '600px',
       position: 'Right',

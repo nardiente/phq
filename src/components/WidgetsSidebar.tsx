@@ -185,6 +185,9 @@ export default function WidgetsSidebar({
     onConfigUpdate((prev) => ({
       ...prev,
       [field]: value,
+      appearance: {
+        [field]: value,
+      },
     }));
 
     console.log('Full config after:', {

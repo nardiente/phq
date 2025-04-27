@@ -31,6 +31,7 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
       // Start with user's appearance settings
       ...config.appearance,
       // Only set defaults if values are missing
+      backgroundColor: config.appearance.backgroundColor || '#ff6334',
       width: config.appearance?.width || '450px',
       height: config.appearance?.height || '600px',
       position:
