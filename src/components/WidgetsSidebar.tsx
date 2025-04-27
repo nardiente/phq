@@ -900,17 +900,6 @@ export default function WidgetsSidebar({
 
               <div className="space-y-4">
                 <Checkbox
-                  checked={config.appearance?.preventScroll || false}
-                  onChange={(checked) => {
-                    handleAppearanceUpdate({
-                      ...config.appearance,
-                      preventScroll: checked,
-                    });
-                  }}
-                  label="Prevent window scroll"
-                />
-
-                <Checkbox
                   checked={config.appearance?.hideCloseButton || false}
                   onChange={(checked) => {
                     handleAppearanceUpdate({
@@ -919,6 +908,16 @@ export default function WidgetsSidebar({
                     });
                   }}
                   label="Hide close button"
+                />
+                <Checkbox
+                  checked={config.appearance?.preventScroll || false}
+                  onChange={(checked) => {
+                    handleAppearanceUpdate({
+                      ...config.appearance,
+                      preventScroll: checked,
+                    });
+                  }}
+                  label="Prevent window scroll"
                 />
               </div>
             </>
