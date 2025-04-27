@@ -22,6 +22,7 @@ export interface WidgetConfig {
   launcherText?: string;
   iconColor?: 'Light' | 'Dark';
   backgroundColor?: string;
+  notificationCount?: number;
   notificationType?: 'Count' | 'Dot' | 'None';
   appearance: WidgetAppearance;
   sections?: {
@@ -54,7 +55,7 @@ export const defaultWidgetConfig: WidgetConfig = {
   launcherIcon: 'Bolt',
   iconColor: 'Light',
   backgroundColor: '#ff6334',
-  notificationType: 'None',
+  notificationType: 'Count',
   appearance: {
     width: '450px',
     height: '600px',

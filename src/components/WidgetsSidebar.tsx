@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, ReactNode } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  ReactNode,
+  SetStateAction,
+} from 'react';
 import { Checkbox } from './Checkbox';
 import { ChevronDownIcon } from './icons/chevron-down.icon';
 import { HexColorPicker } from 'react-colorful';
@@ -72,7 +78,7 @@ const POSITION_OPTIONS: { value: 'Right' | 'Left'; label: string }[] = [
 // ===============================
 interface WidgetsSidebarProps {
   config: WidgetConfig;
-  onConfigUpdate: (newConfig: WidgetConfig) => void;
+  onConfigUpdate: (value: SetStateAction<WidgetConfig>) => void;
   onSave: () => void;
   onClose: () => void;
   onSectionChange: (section: string | null) => void;
@@ -176,10 +182,10 @@ export default function WidgetsSidebar({
     console.log('New value:', value);
     console.log('Full config before:', config);
 
-    onConfigUpdate({
-      ...config,
+    onConfigUpdate((prev) => ({
+      ...prev,
       [field]: value,
-    });
+    }));
 
     console.log('Full config after:', {
       ...config,
@@ -193,14 +199,14 @@ export default function WidgetsSidebar({
     console.log('Current config:', config);
     console.log('Updates:', updates);
 
-    onConfigUpdate({
-      ...config,
+    onConfigUpdate((prev) => ({
+      ...prev,
       appearance: {
-        ...config.appearance,
+        ...prev.appearance,
         ...updates,
         placement: updates.placement,
       },
-    });
+    }));
 
     console.log('New config:', {
       ...config,
@@ -221,26 +227,27 @@ export default function WidgetsSidebar({
   };
   const handleCancel = () => {
     if (typeof onConfigUpdate === 'function') {
-      onConfigUpdate({
+      onConfigUpdate((prev) => ({
         ...defaultWidgetConfig,
-        widgetType: config.widgetType,
-        launcherType: config.launcherType,
-      });
+        launcherType: prev.launcherType,
+        notificationCount: prev.notificationCount,
+        widgetType: prev.widgetType,
+      }));
     }
     setWidgetName(config.name || '');
     setActiveSection('launcher');
   };
   const handleSectionToggle = (section: string, enabled: boolean) => {
     const sections = config.sections;
-    onConfigUpdate({
-      ...config,
+    onConfigUpdate((prev) => ({
+      ...prev,
       sections: {
         ideas: sections?.ideas ?? true,
         roadmap: sections?.roadmap ?? true,
         announcements: sections?.announcements ?? true,
         [section]: enabled,
       },
-    });
+    }));
   };
 
   // ===============================
@@ -352,6 +359,27 @@ export default function WidgetsSidebar({
                   }
                   onChange={(option) =>
                     handleConfigUpdate('iconColor', option.value)
+                  }
+                  containerClass="w-full bg-white border border-gray-300 rounded-md"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Count
+                </label>
+                <SelectDropdown
+                  options={COUNT_OPTIONS}
+                  value={
+                    config.notificationType
+                      ? {
+                          value: config.notificationType,
+                          label: config.notificationType,
+                        }
+                      : null
+                  }
+                  onChange={(option) =>
+                    handleConfigUpdate('notificationType', option.value)
                   }
                   containerClass="w-full bg-white border border-gray-300 rounded-md"
                 />
@@ -1017,7 +1045,7 @@ export default function WidgetsSidebar({
   // Render
   // ===============================
   return (
-    <div className="h-screen flex flex-col">
+    <div className="flex flex-col" style={{ height: 'calc(100vh - 60px)' }}>
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
           {isEditing ? (
