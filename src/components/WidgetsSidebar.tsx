@@ -245,6 +245,7 @@ export default function WidgetsSidebar({
     onConfigUpdate((prev) => ({
       ...prev,
       sections: {
+        active: sections?.active ?? 'ideas',
         ideas: sections?.ideas ?? true,
         roadmap: sections?.roadmap ?? true,
         announcements: sections?.announcements ?? true,

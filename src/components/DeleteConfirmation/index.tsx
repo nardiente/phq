@@ -26,7 +26,7 @@ const DeleteConfirmation = () => {
   } = useWhatsNew();
   const post = posts?.find((post) => post.id === deleteId);
   const {
-    state: { filters },
+    state: { filter },
     deleteIdeaById,
     deleteIdeaInRoadmapById,
     setRoadmaps,
@@ -40,12 +40,12 @@ const DeleteConfirmation = () => {
   const [draftLoading, setDraftLoading] = useState<boolean>(false);
 
   const handleFilterRoadmaps = (data: Roadmap[]) => {
-    if (!filters.title && !filters.tags.length) {
+    if (!filter.title && !filter.tags.length) {
       return data;
     }
 
-    const filterTitleLower = filters.title.toLowerCase();
-    const filterTagLower = filters.tags.map((tag) => tag.toLowerCase());
+    const filterTitleLower = filter.title.toLowerCase();
+    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
 
     const filteredRoadmaps = data.map((roadmap: Roadmap) => {
       const filteredUpvotes =

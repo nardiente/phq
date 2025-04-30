@@ -31,7 +31,7 @@ export function RoadmapPage() {
   const { user } = useUser();
   const { permissions, rbac_permissions } = user ?? {};
   const {
-    state: { filters, listing, roadmaps: roadmapsContext, selectedIdea },
+    state: { filter, listing, roadmaps: roadmapsContext, selectedIdea },
     addRoadmap,
     handleListFeedback,
     setFilter,
@@ -45,7 +45,7 @@ export function RoadmapPage() {
     state: { action, socket },
     setAction,
   } = useSocket();
-  const { tags: filterTag, title } = filters;
+  const { tags: filterTag, title } = filter;
   const { setActivePage, setActiveTab, setIsOpen } = usePanel();
   const { roadmap_colors } = useApp();
 
@@ -81,12 +81,12 @@ export function RoadmapPage() {
   };
 
   const handleFilterData = (data: Roadmap) => {
-    if (!filters.title && !filters.tags.length) {
+    if (!filter.title && !filter.tags.length) {
       return data;
     }
 
-    const filterTitleLower = filters.title.toLowerCase();
-    const filterTagLower = filters.tags.map((tag) => tag.toLowerCase());
+    const filterTitleLower = filter.title.toLowerCase();
+    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
 
     const filteredUpvotes =
       data.upvotes?.filter((upvote) => {
@@ -110,12 +110,12 @@ export function RoadmapPage() {
   };
 
   const handleFilterRoadmaps = (data: Roadmap[]) => {
-    if (!filters.title && !filters.tags.length) {
+    if (!filter.title && !filter.tags.length) {
       return data;
     }
 
-    const filterTitleLower = filters.title.toLowerCase();
-    const filterTagLower = filters.tags.map((tag) => tag.toLowerCase());
+    const filterTitleLower = filter.title.toLowerCase();
+    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
 
     const filteredRoadmaps = data.map((roadmap) => {
       const filteredUpvotes =
@@ -323,7 +323,7 @@ export function RoadmapPage() {
 
   useEffect(() => {
     handleListFeedback();
-  }, [filters]);
+  }, [filter]);
 
   useEffect(() => {
     if (action === SocketAction.UPDATE_TAG && selectedIdea?.id) {
@@ -346,7 +346,7 @@ export function RoadmapPage() {
                   onChange={(e) => {
                     const titleFilter = e.target.value;
                     setFilter({
-                      ...filters,
+                      ...filter,
                       filtering: titleFilter.length > 0,
                       title: titleFilter,
                     });
@@ -354,7 +354,7 @@ export function RoadmapPage() {
                   onKeyDown={(e) => {
                     if (e.keyCode === 13) {
                       setFilter({
-                        ...filters,
+                        ...filter,
                         filtering: title.length > 0,
                         title,
                       });
@@ -369,7 +369,7 @@ export function RoadmapPage() {
                     <img
                       onClick={() =>
                         setFilter({
-                          ...filters,
+                          ...filter,
                           filtering: title.length > 0,
                           title,
                         })

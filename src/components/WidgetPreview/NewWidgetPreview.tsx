@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { WidgetConfig } from '../../types/widget';
 import { TabLauncher } from './TabLauncher';
 import { FloatingLauncher } from './FloatingLauncher';
@@ -13,7 +13,13 @@ const validateConfig = (config: WidgetConfig): boolean => {
   return true;
 };
 
-export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
+export const NewWidgetPreview = ({
+  config,
+  setWidgetConfig,
+}: {
+  config: WidgetConfig;
+  setWidgetConfig: Dispatch<SetStateAction<WidgetConfig>>;
+}) => {
   // Validate config early
   validateConfig(config);
 
@@ -22,11 +28,7 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
   // Single config with defaults
   const configWithDefaults = {
     ...config,
-    sections: config.sections ?? {
-      ideas: true,
-      roadmap: true,
-      announcements: true,
-    },
+    sections: config.sections,
     appearance: {
       // Start with user's appearance settings
       ...config.appearance,
@@ -64,7 +66,7 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
   // Simple widget content wrapper with close button
   const WidgetContainer = ({ children }: { children: React.ReactNode }) => (
     <div
-      className={`relative rounded-lg shadow-xl ${configWithDefaults.appearance.preventScroll ? 'overflow-hidden' : 'overflow-y-auto'}`}
+      className={`bg-white relative rounded-lg shadow-xl ${configWithDefaults.appearance.preventScroll ? 'overflow-hidden' : 'overflow-y-auto'}`}
       style={{
         height:
           config.widgetType === 'Sidebar'
@@ -76,7 +78,7 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
       }}
     >
       {/* Main content */}
-      <div className="bg-white">{children}</div>
+      <div>{children}</div>
 
       {!config.appearance?.hideCloseButton && config.widgetType !== 'Embed' && (
         <button
@@ -125,7 +127,10 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="pointer-events-auto">
               <WidgetContainer>
-                <WidgetContent config={configWithDefaults} />
+                <WidgetContent
+                  config={configWithDefaults}
+                  setWidgetConfig={setWidgetConfig}
+                />
               </WidgetContainer>
             </div>
           </div>
@@ -137,7 +142,10 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
             } pointer-events-auto h-full`}
           >
             <WidgetContainer>
-              <WidgetContent config={configWithDefaults} />
+              <WidgetContent
+                config={configWithDefaults}
+                setWidgetConfig={setWidgetConfig}
+              />
             </WidgetContainer>
           </div>
         ) : config.widgetType === 'Popover' ? (
@@ -156,7 +164,10 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
             }}
           >
             <WidgetContainer>
-              <WidgetContent config={configWithDefaults} />
+              <WidgetContent
+                config={configWithDefaults}
+                setWidgetConfig={setWidgetConfig}
+              />
             </WidgetContainer>
           </div>
         ) : (
@@ -173,7 +184,10 @@ export const NewWidgetPreview = ({ config }: { config: WidgetConfig }) => {
             }}
           >
             <WidgetContainer>
-              <WidgetContent config={configWithDefaults} />
+              <WidgetContent
+                config={configWithDefaults}
+                setWidgetConfig={setWidgetConfig}
+              />
             </WidgetContainer>
           </div>
         ))}

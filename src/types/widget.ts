@@ -29,6 +29,7 @@ export interface WidgetConfig {
     ideas: boolean;
     roadmap: boolean;
     announcements: boolean;
+    active: 'ideas' | 'roadmap' | 'announcements';
   };
   targeting?: {
     timing: string;
@@ -66,6 +67,7 @@ export const defaultWidgetConfig: WidgetConfig = {
     placement: 'Bottom right',
   },
   sections: {
+    active: 'ideas',
     ideas: true,
     roadmap: true,
     announcements: true,

@@ -17,20 +17,21 @@ interface FeedbackState {
   activeTab: 'ideas' | 'comments';
   comments: FeedbackComment[];
   error: string | null;
-  filters: {
+  filter: {
     filtering: boolean;
     sort: string;
     status: string;
     tags: string[];
     title: string;
   };
+  filteredIdeas: Feedback[];
   ideas: Feedback[];
   items: (Partial<Feedback> & { content?: string; date?: string })[];
   listing: boolean;
   loading: boolean;
   roadmaps: Roadmap[];
   selectedIdea: Feedback | null;
-  tags: any[];
+  tags: Tag[];
   upvotes: UpvoteLog[];
 }
 
@@ -58,6 +59,7 @@ type FeedbackAction =
         title: string;
       };
     }
+  | { type: 'SET_FILTERED_IDEAS'; payload: Feedback[] }
   | { type: 'SET_IDEAS'; payload: Feedback[] }
   | {
       type: 'SET_ITEMS';
@@ -103,7 +105,7 @@ interface FeedbackContextType {
     filtering: boolean;
     sort: string;
     status: string;
-    tags: any[];
+    tags: string[];
     title: string;
   }) => Promise<void>;
   setIdeas: (ideas: Feedback[]) => Promise<void>;
@@ -124,13 +126,14 @@ const initialState: FeedbackState = {
   activeTab: 'ideas',
   comments: [],
   error: null,
-  filters: {
+  filter: {
     filtering: false,
     sort: 'Newest',
     status: '',
     tags: [],
     title: '',
   },
+  filteredIdeas: [],
   ideas: [],
   items: [],
   listing: false,
@@ -257,7 +260,7 @@ function feedbackReducer(
     case 'FILTER_SET_DEFAULT':
       return {
         ...state,
-        filters: {
+        filter: {
           filtering: false,
           sort: '',
           status: '',
@@ -270,7 +273,9 @@ function feedbackReducer(
     case 'SET_ERROR':
       return { ...state, error: action.payload };
     case 'SET_FILTER':
-      return { ...state, filters: action.payload };
+      return { ...state, filter: action.payload };
+    case 'SET_FILTERED_IDEAS':
+      return { ...state, filteredIdeas: action.payload };
     case 'SET_IDEAS':
       return { ...state, ideas: action.payload };
     case 'SET_ITEMS':
@@ -359,6 +364,10 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     setAction();
   }, [action]);
 
+  useEffect(() => {
+    setFilteredIdeas(ideas.filter((idea) => !idea.deleted));
+  }, [ideas]);
+
   const fetchItems = async (tab: 'ideas' | 'comments') => {
     dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: null });
@@ -385,7 +394,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       : 'feedback/list-upvote';
 
     const {
-      filters: { sort, status, tags, title },
+      filter: { sort, status, tags, title },
     } = state;
 
     dispatch({ type: 'SET_LOADING', payload: true });
@@ -515,6 +524,10 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     title: string;
   }) => {
     dispatch({ type: 'SET_FILTER', payload: filter });
+  };
+
+  const setFilteredIdeas = async (filteredIdeas: Feedback[]) => {
+    dispatch({ type: 'SET_FILTERED_IDEAS', payload: filteredIdeas });
   };
 
   const setListing = async (listing: boolean) => {

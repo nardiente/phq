@@ -36,6 +36,12 @@ export const WidgetForm = ({
       hideCloseButton: false,
     },
     notificationType: 'Count',
+    sections: {
+      active: 'ideas',
+      announcements: true,
+      ideas: true,
+      roadmap: true,
+    },
   });
   const [, setActiveSection] = useState<string | null>('widget-type');
   const [editingWidgetId, setEditingWidgetId] = useState<number>();
@@ -127,7 +133,10 @@ export const WidgetForm = ({
         />
       </div>
 
-      <NewWidgetPreview config={widgetConfig} />
+      <NewWidgetPreview
+        config={widgetConfig}
+        setWidgetConfig={setWidgetConfig}
+      />
     </div>
   );
 };

@@ -36,7 +36,7 @@ export const SubmitIdea = () => {
     setActivePage,
   } = usePanel();
   const {
-    state: { ideas, selectedIdea, tags, filters },
+    state: { ideas, selectedIdea, tags, filter },
     addIdea,
     addIdeaInRoadmap,
     deleteIdeaInRoadmapById,
@@ -140,12 +140,12 @@ export const SubmitIdea = () => {
   }, [tags]);
 
   const handleFilterData = (data: Feedback) => {
-    if (!filters.title && filters.tags.length === 0) {
+    if (!filter.title && filter.tags.length === 0) {
       return data;
     }
 
-    const filterTitleLower = filters.title.toLowerCase();
-    const filterTagLower = filters.tags.map((tag) => tag.toLowerCase());
+    const filterTitleLower = filter.title.toLowerCase();
+    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
 
     const titleMatch =
       !filterTitleLower || data.title?.toLowerCase().includes(filterTitleLower);

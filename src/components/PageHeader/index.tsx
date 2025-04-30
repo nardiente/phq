@@ -19,7 +19,7 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
     setIsOpen,
   } = usePanel();
   const {
-    state: { filters },
+    state: { filter },
     setFilter,
   } = useFeedback();
 
@@ -68,7 +68,7 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
                     setTitle(titleFilter);
                     if (titleFilter.length === 0) {
                       setFilter({
-                        ...filters,
+                        ...filter,
                         filtering: titleFilter.length > 0,
                         title: titleFilter,
                       });
@@ -77,7 +77,7 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
                   onKeyDown={(e) => {
                     if (e.keyCode === 13) {
                       setFilter({
-                        ...filters,
+                        ...filter,
                         filtering: title.length > 0,
                         title,
                       });
@@ -92,7 +92,7 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
                     <img
                       onClick={() =>
                         setFilter({
-                          ...filters,
+                          ...filter,
                           filtering: title.length > 0,
                           title,
                         })

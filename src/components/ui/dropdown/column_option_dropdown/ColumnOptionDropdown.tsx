@@ -21,7 +21,7 @@ const ColumnOptionDropdown = ({
 
   const { user } = useUser();
   const {
-    state: { filters, roadmaps },
+    state: { filter, roadmaps },
     updateRoadmap,
   } = useFeedback();
   const { setActivePage, setDeleteId, setDeleteType, setIsOpen } = usePanel();
@@ -58,12 +58,12 @@ const ColumnOptionDropdown = ({
   };
 
   const handleFilterData = (data: Roadmap) => {
-    if (!filters.title && !filters.tags.length) {
+    if (!filter.title && !filter.tags.length) {
       return data;
     }
 
-    const filterTitleLower = filters.title.toLowerCase();
-    const filterTagLower = filters.tags.map((tag) => tag.toLowerCase());
+    const filterTitleLower = filter.title.toLowerCase();
+    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
 
     const filteredUpvotes =
       data.upvotes?.filter((upvote) => {

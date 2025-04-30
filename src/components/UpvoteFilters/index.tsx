@@ -7,16 +7,16 @@ import { Fragment } from 'react';
 
 export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
   const {
-    state: { filters, tags: feedbackTags },
+    state: { filter, tags: feedbackTags },
     setFilter,
   } = useFeedback();
-  const { sort, status, tags, title } = filters;
+  const { sort, status, tags, title } = filter;
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const handleUpvoteSearch = () => {
     setFilter({
-      ...filters,
+      ...filter,
       filtering:
         sort !== 'Newest' ||
         status.length > 0 ||
@@ -29,7 +29,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
   const handleUpvoteSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setFilter({
-      ...filters,
+      ...filter,
       filtering:
         sort !== 'Newest' ||
         status.length > 0 ||
@@ -41,7 +41,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
 
   const onFilterStatus = (status: string) => {
     setFilter({
-      ...filters,
+      ...filter,
       filtering:
         sort !== 'Newest' ||
         status.length > 0 ||
@@ -53,7 +53,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
 
   const onFilterTags = (tags: string[]) => {
     setFilter({
-      ...filters,
+      ...filter,
       filtering:
         sort !== 'Newest' ||
         status.length > 0 ||
@@ -65,7 +65,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
 
   const onSort = (sort: string) => {
     setFilter({
-      ...filters,
+      ...filter,
       filtering:
         sort !== 'Newest' ||
         status.length > 0 ||
@@ -119,7 +119,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
                 <span
                   className={`for-dropdown ${is_public ? 'default-text-color' : 'text-[#09041a]'}`}
                 >
-                  {filters.sort}
+                  {filter.sort}
                 </span>
                 <span className="icon is-small" style={{ marginTop: '2px' }}>
                   <ChevronDownIcon />
@@ -190,7 +190,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
                         className={`dropdown-item is-clickable drop-down-font ${is_public ? 'default-text-color' : 'text-[#110733]'}`}
                         onClick={() =>
                           onFilterStatus(
-                            roadmap.name === filters.status ? '' : roadmap.name
+                            roadmap.name === filter.status ? '' : roadmap.name
                           )
                         }
                       >
@@ -207,7 +207,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
                         {roadmap.name}
                         <span
                           className={`selected${
-                            filters.status === roadmap.name ? '' : ' is-hidden'
+                            filter.status === roadmap.name ? '' : ' is-hidden'
                           }`}
                         >
                           <figure className="image is-16x16">

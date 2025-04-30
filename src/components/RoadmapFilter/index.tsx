@@ -5,10 +5,10 @@ import * as React from 'react';
 
 export const RoadmapFilter = () => {
   const {
-    state: { filters, tags },
+    state: { filter, tags },
     setFilter,
   } = useFeedback();
-  const { tags: filterTags, title } = filters;
+  const { tags: filterTags, title } = filter;
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
@@ -63,7 +63,7 @@ export const RoadmapFilter = () => {
                       copy_active_tags.push(tag.tag);
                     }
                     setFilter({
-                      ...filters,
+                      ...filter,
                       filtering:
                         copy_active_tags.length > 0 || title.length > 0,
                       tags: copy_active_tags,

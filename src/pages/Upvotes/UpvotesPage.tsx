@@ -26,8 +26,8 @@ export default function UpvotesPage() {
   const { admin_profile, permissions, project, user } = userDetails ?? {};
   const {
     state: {
-      filters: { filtering, sort, status, tags, title },
-      ideas,
+      filteredIdeas,
+      filter: { filtering, sort, status, tags, title },
       loading,
       roadmaps,
       selectedIdea,
@@ -48,8 +48,6 @@ export default function UpvotesPage() {
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const userInfo = is_public ? admin_profile : user;
-
-  const filteredIdeas = ideas.filter((idea) => !idea.deleted);
 
   useEffect(() => {
     setActiveTab('/upvotes');
