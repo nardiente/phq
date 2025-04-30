@@ -18,6 +18,7 @@ import Button from '../../components/Button';
 import SettingsContainer from '../../components/SettingsContainer';
 import SectionHeader from '../../components/SectionHeader';
 import InputField from '../../components/InputField';
+import { SocketAction } from '../../types/socket';
 
 export default function TagsPage() {
   const { t } = useTranslation();
@@ -69,7 +70,7 @@ export default function TagsPage() {
         setTagList(data);
 
         socket?.emit('message', {
-          action: 'updateTag',
+          action: SocketAction.UPDATE_TAG,
           data: {
             created_by: data.length > 0 ? data[0].created_by || 0 : 0,
             projectId: user?.project?.id,

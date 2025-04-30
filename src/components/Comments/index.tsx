@@ -64,7 +64,7 @@ export const Comments = ({
           setPanelCommentIdToDelete(0);
           handleGetComments();
           socket?.emit('message', {
-            action: 'updateTag',
+            action: SocketAction.UPDATE_TAG,
             data: {
               created_by: idea?.customer_id || 0,
               projectId: user?.project?.id,

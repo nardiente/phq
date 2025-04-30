@@ -13,6 +13,7 @@ import Button from '../../components/Button';
 import SettingsContainer from '../../components/SettingsContainer';
 import SectionHeader from '../../components/SectionHeader';
 import { useUser } from '../../contexts/UserContext';
+import { SocketAction } from '../../types/socket';
 
 export default function ModerationPage() {
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ export default function ModerationPage() {
           });
           if (data.data.notified === true) {
             socket?.emit('message', {
-              action: 'updateNotification',
+              action: SocketAction.UPDATE_NOTIFICATION,
               data: {
                 user_id: data.data.user_id,
                 projectId: user?.project?.id,

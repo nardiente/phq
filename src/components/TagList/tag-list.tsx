@@ -9,6 +9,7 @@ import { deleteApi, patchApi } from '../../utils/api/api';
 import { Permissions } from '../../types/common';
 import styled from 'styled-components';
 import InputField from '../InputField';
+import { SocketAction } from '../../types/socket';
 
 const IconImg = styled.img`
   vertical-align: middle;
@@ -90,7 +91,7 @@ export const EditableTag: React.FC<Tag> = (props: Tag) => {
           setUpdatedTagDescription(tag_description);
 
           socket?.emit('message', {
-            action: 'updateTag',
+            action: SocketAction.UPDATE_TAG,
             data: {
               created_by:
                 res.results.data && res.results.data.length > 0
@@ -266,7 +267,7 @@ const TagList = ({ data }: { data: Tag[] }) => {
         setTags(tags.filter((tag) => tag.id !== Number(id)));
 
         socket?.emit('message', {
-          action: 'updateTag',
+          action: SocketAction.UPDATE_TAG,
           data: { created_by, projectId: user?.project?.id },
         });
       }
