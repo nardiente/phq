@@ -13,15 +13,17 @@ import { Image, WhatsNew } from '../../../types/whats-new';
 import { PinFillIcon } from '../../../components/icons/pin-fill.icon';
 import { TrashIcon } from '../../../components/icons/trash.icon';
 import { useUser } from '../../../contexts/UserContext';
-import { useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import { useWhatsNew } from '../../../contexts/WhatsNewContext';
 import { usePanel } from '../../../contexts/PanelContext';
 import { getIPAddress } from '../../../utils/token';
 
 const PostItem = ({
+  style,
   whats_new,
   openPostForm,
 }: {
+  style?: CSSProperties;
   whats_new: WhatsNew;
   openPostForm: (post: WhatsNew) => void;
 }) => {
@@ -190,7 +192,7 @@ const PostItem = ({
   }, [whats_new.images]);
 
   return (
-    <div className="whats-new">
+    <div className="whats-new" style={style}>
       {!whats_new.scheduled_date && (
         <div className="date-container">
           <label className="date">

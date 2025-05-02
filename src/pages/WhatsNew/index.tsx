@@ -1,6 +1,6 @@
 import './styles.css';
 import { getApi } from '../../utils/api/api';
-import { ChangeType, Image, WhatsNew } from '../../types/whats-new';
+import { WhatsNew } from '../../types/whats-new';
 import { FadeLoader } from 'react-spinners';
 import { Permissions } from '../../types/common';
 import { useUser } from '../../contexts/UserContext';
@@ -19,32 +19,24 @@ export const WhatsNewPage = () => {
   const { user } = useUser();
   const { permissions } = user ?? {};
   const {
-    state: { posts, whats_new_id, whats_new_preview_id },
+    state: {
+      fetching,
+      posts,
+      showAddForm,
+      statusFilter,
+      whats_new_id,
+      whats_new_preview_id,
+    },
+    listWhatsNew,
     setIsContinueReading,
-    setPosts,
+    setSelectedPost,
+    setShowAddForm,
   } = useWhatsNew();
   const { setActiveTab } = usePanel();
 
-  const [change_types, setChangeTypes] = useState<ChangeType[]>([]);
-  const [fetching, setFetching] = useState<boolean>(true);
-  const [statusFilter, setStatusFilter] = useState<number[]>([]);
   const [whats_new, setWhatsNew] = useState<WhatsNew>();
 
-  const [showAddForm, setShowAddForm] = useState<boolean>(false);
-  const [selectedPost, setSelectedPost] = useState<WhatsNew | undefined>(
-    undefined
-  );
-
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-
-  const listChangeType = () => {
-    getApi<ChangeType[]>({ url: 'whatsnew/change-types' }).then((res) => {
-      if (res.results.data) {
-        const data = res.results.data;
-        setChangeTypes(data);
-      }
-    });
-  };
 
   const retrieveWhatsNew = (id?: number) => {
     getApi<WhatsNew>({
@@ -62,39 +54,6 @@ export const WhatsNewPage = () => {
     });
   };
 
-  const listWhatsNew = (filters: number[]) => {
-    setStatusFilter(filters);
-    const url = is_public
-      ? `whatsnew/public/${window.location.host}`
-      : 'whatsnew';
-
-    setFetching(true);
-    getApi<WhatsNew[]>({
-      url,
-      params: { change_type_id: filters.join(',') },
-    }).then((res) => {
-      setFetching(false);
-      if (res.results.data) {
-        const data = res.results.data;
-        setPosts(
-          data.map((datum) => {
-            if (!datum.images) {
-              datum.images = [
-                {
-                  image: datum.image,
-                  image_height: datum.image_height,
-                  image_width: datum.image_width,
-                },
-              ] as Image[];
-            }
-            return datum;
-          })
-        );
-        setIsContinueReading(false);
-      }
-    });
-  };
-
   const openPostForm = (post?: WhatsNew) => {
     setShowAddForm(true);
     setSelectedPost(post);
@@ -102,8 +61,8 @@ export const WhatsNewPage = () => {
 
   useEffect(() => {
     setActiveTab('/whatsnew');
+    setShowAddForm(false);
     listWhatsNew([]);
-    listChangeType();
   }, []);
 
   useEffect(() => {
@@ -160,11 +119,7 @@ export const WhatsNewPage = () => {
             title="What's New"
             primaryButton={
               <>
-                <WhatsNewFilter
-                  listChangeType={listChangeType}
-                  change_types={change_types}
-                  listWhatsNew={listWhatsNew}
-                />
+                <WhatsNewFilter />
                 {!is_public && (
                   <Button
                     disabled={
@@ -183,7 +138,9 @@ export const WhatsNewPage = () => {
             }
           />
           {(!posts ||
-            (posts && posts.length === 0 && statusFilter.length === 0)) &&
+            (posts &&
+              posts.length === 0 &&
+              (!statusFilter || statusFilter.length === 0))) &&
             fetching && (
               <div className="flex justify-center items-center">
                 <FadeLoader height={5} width={2} radius={2} margin={-10} />
@@ -196,7 +153,8 @@ export const WhatsNewPage = () => {
                   (is_public && permissions?.length === 0)) &&
                   !fetching && (
                     <div className="flex flex-col items-center">
-                      {statusFilter.length === 0 ||
+                      {!statusFilter ||
+                      statusFilter.length === 0 ||
                       (is_public && permissions?.length === 0) ? (
                         <>
                           {' '}
@@ -252,11 +210,7 @@ export const WhatsNewPage = () => {
           </div>
         </Settings>
       ) : (
-        <AddPostForm
-          post={selectedPost}
-          setShowAddForm={setShowAddForm}
-          listWhatsNew={listWhatsNew}
-        />
+        <AddPostForm />
       )}
     </Fragment>
   );

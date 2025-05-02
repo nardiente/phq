@@ -10,8 +10,6 @@
 
     width: 706px;
 
-    border-bottom: 1px solid #8340d9;
-
     input {
       width: 100%;
       border: none;
@@ -25,6 +23,7 @@
       align-items: center;
       letter-spacing: 0.005em;
       color: #110733;
+      border-bottom: 1px solid #8340d9;
 
       &::placeholder {
         color: #c3c1cc;
@@ -36,7 +35,6 @@
     }
 
     .close-button {
-      position: absolute;
       top: 10px;
       right: -70px;
 

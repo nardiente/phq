@@ -6,6 +6,7 @@ import { getApi, postApi, putApi } from '../utils/api/api';
 import { SavedWidget } from '../types/savedWidget';
 import { useWhatsNew } from '../contexts/WhatsNewContext';
 import { useUser } from '../contexts/UserContext';
+import AddPostForm from './whats_new/add_post_form/AddPostForm';
 
 export const WidgetForm = ({
   id,
@@ -15,8 +16,9 @@ export const WidgetForm = ({
   setShowWidgetForm: Dispatch<SetStateAction<boolean>>;
 }) => {
   const {
-    state: { posts },
+    state: { posts, showAddForm },
     listWhatsNew,
+    setShowAddForm,
   } = useWhatsNew();
   const { user: userDetails } = useUser();
   const { user } = userDetails ?? {};
@@ -48,6 +50,7 @@ export const WidgetForm = ({
 
   useEffect(() => {
     getNotificationCount();
+    setShowAddForm(false);
   }, []);
 
   useEffect(() => {
@@ -137,6 +140,8 @@ export const WidgetForm = ({
         config={widgetConfig}
         setWidgetConfig={setWidgetConfig}
       />
+
+      {showAddForm && <AddPostForm />}
     </div>
   );
 };

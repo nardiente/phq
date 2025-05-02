@@ -15,6 +15,7 @@ import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../../../contexts/UserContext';
+import { useWhatsNew } from '../../../contexts/WhatsNewContext';
 
 Quill.register('modules/imageResize', ImageResize);
 
@@ -55,22 +56,17 @@ const formats = [
 
 let selected_image = '';
 
-interface PostFormInterface {
-  post?: WhatsNew;
-  setShowAddForm: any;
-  listWhatsNew: any;
-}
-
-const AddPostForm = ({
-  post,
-  setShowAddForm,
-  listWhatsNew,
-}: PostFormInterface) => {
+const AddPostForm = () => {
   const quillRef = useRef<ReactQuill>(null);
 
   const { t } = useTranslation();
 
   const { user } = useUser();
+  const {
+    state: { selectedPost: post },
+    listWhatsNew,
+    setShowAddForm,
+  } = useWhatsNew();
 
   const [field_errors, setFieldErrors] = useState<ApiFieldError[]>([]);
   const [changeTypes, setChangeTypes] = useState<ChangeType[]>([]);
@@ -347,87 +343,15 @@ const AddPostForm = ({
   }, [image_uploaded]);
 
   return (
-    <div id="AddPostForm" className="pt-5">
-      <div className="title-container">
-        <input
-          type="text"
-          placeholder="Write title here..."
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          onClick={() => setFieldErrors([])}
-          readOnly={
-            post &&
-            post.created_by !== user?.user?.id &&
-            !user?.rbac_permissions.includes(
-              RbacPermissions.EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_OTHERS_POST
-            )
-          }
-        />
-        <button
-          type="button"
-          className="close-button"
-          onClick={() => setShowAddForm(false)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            className="bi bi-x-lg"
-            viewBox="0 0 16 16"
-          >
-            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
-          </svg>
-          Close
-        </button>
-      </div>
-      {field_errors.some((field_error) => field_error.field === 'title') ? (
-        <label id="TitleError" className="error">
-          {t(
-            field_errors
-              .find((field_error) => field_error.field === 'title')
-              ?.message.replace('"title"', 'Title') ?? ''
-          )}
-        </label>
-      ) : (
-        ''
-      )}
-      <div className="type-of-change-container">
-        <TypeOfChangeDropdown
-          changeTypes={changeTypes}
-          disabled={
-            (post &&
-              post.created_by !== user?.user?.id &&
-              !user?.rbac_permissions.includes(
-                RbacPermissions.EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_OTHERS_POST
-              )) ??
-            false
-          }
-          selectedChangeTypes={selectedChangeTypes}
-          setSelectedChangeTypes={setSelectedChangeTypes}
-        />
-      </div>
-      <hr className="divider"></hr>
-      <div className="description-container">
-        <div className="description">
-          <ReactQuill
-            className={`quill-wrapper word-break ${
-              post &&
-              post.created_by !== user?.user?.id &&
-              !user?.rbac_permissions.includes(
-                RbacPermissions.EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_OTHERS_POST
-              )
-                ? 'no-pointer-events'
-                : ''
-            }`}
-            formats={formats}
-            modules={modules}
-            onChange={setDescription}
-            placeholder="Start writing here..."
-            ref={quillRef}
-            tabIndex={4}
-            theme="snow"
-            value={description}
+    <div className="fixed left-1/2 -translate-x-1/2 animate-fade-in w-max bg-white rounded shadow-lg p-4">
+      <div id="AddPostForm">
+        <div className="title-container flex gap-2">
+          <input
+            type="text"
+            placeholder="Write title here..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            onClick={() => setFieldErrors([])}
             readOnly={
               post &&
               post.created_by !== user?.user?.id &&
@@ -436,186 +360,263 @@ const AddPostForm = ({
               )
             }
           />
+          <button
+            type="button"
+            className="close-button"
+            onClick={() => setShowAddForm(false)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              className="bi bi-x-lg"
+              viewBox="0 0 16 16"
+            >
+              <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+            </svg>
+            Close
+          </button>
         </div>
-      </div>
-      {field_errors.some(
-        (field_error) => field_error.field === 'formatted_description'
-      ) ? (
-        <label id="DescriptionError" className="error">
-          {t(
-            field_errors
-              .find(
-                (field_error) => field_error.field === 'formatted_description'
-              )
-              ?.message.replace('"formatted_description"', 'Description') ?? ''
-          )}
-        </label>
-      ) : (
-        ''
-      )}
-      <div className="bottom-container">
-        <div className="bottom">
-          {(!post ||
-            (post &&
-              ((post.created_by == user?.user?.id &&
-                user.rbac_permissions.includes(
-                  RbacPermissions.CREATE_EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_YOUR_OWN_POST
-                )) ||
-                (post.created_by != user?.user?.id &&
-                  [
-                    RbacPermissions.EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_OTHERS_POST,
-                    RbacPermissions.MOVE_ANY_POST_FROM_PUBLISHED_TO_DRAFT,
-                    RbacPermissions.SCHEDULE_OTHERS_POST,
-                  ].some((rbac_permission) =>
-                    user?.rbac_permissions.includes(rbac_permission)
-                  ))))) && (
-            <>
-              {/* <button className="preview-button is-clickable" type="button">
+        {field_errors.some((field_error) => field_error.field === 'title') ? (
+          <label id="TitleError" className="error">
+            {t(
+              field_errors
+                .find((field_error) => field_error.field === 'title')
+                ?.message.replace('"title"', 'Title') ?? ''
+            )}
+          </label>
+        ) : (
+          ''
+        )}
+        <div className="type-of-change-container">
+          <TypeOfChangeDropdown
+            changeTypes={changeTypes}
+            disabled={
+              (post &&
+                post.created_by !== user?.user?.id &&
+                !user?.rbac_permissions.includes(
+                  RbacPermissions.EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_OTHERS_POST
+                )) ??
+              false
+            }
+            selectedChangeTypes={selectedChangeTypes}
+            setSelectedChangeTypes={setSelectedChangeTypes}
+          />
+        </div>
+        <hr className="divider"></hr>
+        <div className="description-container">
+          <div className="description">
+            <ReactQuill
+              className={`quill-wrapper word-break ${
+                post &&
+                post.created_by !== user?.user?.id &&
+                !user?.rbac_permissions.includes(
+                  RbacPermissions.EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_OTHERS_POST
+                )
+                  ? 'no-pointer-events'
+                  : ''
+              }`}
+              formats={formats}
+              modules={modules}
+              onChange={setDescription}
+              placeholder="Start writing here..."
+              ref={quillRef}
+              tabIndex={4}
+              theme="snow"
+              value={description}
+              readOnly={
+                post &&
+                post.created_by !== user?.user?.id &&
+                !user?.rbac_permissions.includes(
+                  RbacPermissions.EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_OTHERS_POST
+                )
+              }
+            />
+          </div>
+        </div>
+        {field_errors.some(
+          (field_error) => field_error.field === 'formatted_description'
+        ) ? (
+          <label id="DescriptionError" className="error">
+            {t(
+              field_errors
+                .find(
+                  (field_error) => field_error.field === 'formatted_description'
+                )
+                ?.message.replace('"formatted_description"', 'Description') ??
+                ''
+            )}
+          </label>
+        ) : (
+          ''
+        )}
+        <div className="bottom-container">
+          <div className="bottom">
+            {(!post ||
+              (post &&
+                ((post.created_by == user?.user?.id &&
+                  user.rbac_permissions.includes(
+                    RbacPermissions.CREATE_EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_YOUR_OWN_POST
+                  )) ||
+                  (post.created_by != user?.user?.id &&
+                    [
+                      RbacPermissions.EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_OTHERS_POST,
+                      RbacPermissions.MOVE_ANY_POST_FROM_PUBLISHED_TO_DRAFT,
+                      RbacPermissions.SCHEDULE_OTHERS_POST,
+                    ].some((rbac_permission) =>
+                      user?.rbac_permissions.includes(rbac_permission)
+                    ))))) && (
+              <>
+                {/* <button className="preview-button is-clickable" type="button">
                 Preview
               </button> */}
-              <div className="post-buttons">
-                <div className="button-group">
-                  {(!post ||
-                    (post &&
-                      user?.rbac_permissions.includes(
-                        RbacPermissions.MOVE_ANY_POST_FROM_PUBLISHED_TO_DRAFT
-                      ))) && (
+                <div className="post-buttons">
+                  <div className="button-group">
+                    {(!post ||
+                      (post &&
+                        user?.rbac_permissions.includes(
+                          RbacPermissions.MOVE_ANY_POST_FROM_PUBLISHED_TO_DRAFT
+                        ))) && (
+                      <button
+                        className={`draft-button${
+                          loading || draftLoading ? '' : ' is-clickable'
+                        }`}
+                        type="button"
+                        onClick={() =>
+                          post
+                            ? updatePost(Publications.DRAFT)
+                            : save(Publications.DRAFT)
+                        }
+                        disabled={!enable_button}
+                      >
+                        {draftLoading ? 'Loading...' : 'Save as draft'}
+                      </button>
+                    )}
                     <button
-                      className={`draft-button${
+                      className={`publish-button${
                         loading || draftLoading ? '' : ' is-clickable'
+                      }${
+                        !post ||
+                        (post &&
+                          ((post.created_by != user?.user?.id &&
+                            user?.rbac_permissions.includes(
+                              RbacPermissions.SCHEDULE_OTHERS_POST
+                            )) ||
+                            (post.created_by == user?.user?.id &&
+                              user.rbac_permissions.includes(
+                                RbacPermissions.CREATE_EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_YOUR_OWN_POST
+                              ))))
+                          ? ''
+                          : ' no-schedule-post'
                       }`}
                       type="button"
-                      onClick={() =>
-                        post
-                          ? updatePost(Publications.DRAFT)
-                          : save(Publications.DRAFT)
+                      onClick={() => {
+                        const is_scheduled = post?.scheduled_date
+                          ? true
+                          : false;
+                        if (post)
+                          updatePost(Publications.PUBLISHED, is_scheduled);
+                        else save(Publications.PUBLISHED, is_scheduled);
+                      }}
+                      disabled={
+                        !enable_button ||
+                        (post &&
+                          post.created_by !== user?.user?.id &&
+                          !user?.rbac_permissions.includes(
+                            RbacPermissions.EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_OTHERS_POST
+                          ))
                       }
-                      disabled={!enable_button}
                     >
-                      {draftLoading ? 'Loading...' : 'Save as draft'}
+                      {loading
+                        ? 'Loading...'
+                        : post?.scheduled_date
+                          ? 'Save'
+                          : 'Publish Now'}
                     </button>
-                  )}
-                  <button
-                    className={`publish-button${
-                      loading || draftLoading ? '' : ' is-clickable'
-                    }${
-                      !post ||
+                    {(!post ||
                       (post &&
                         ((post.created_by != user?.user?.id &&
                           user?.rbac_permissions.includes(
                             RbacPermissions.SCHEDULE_OTHERS_POST
                           )) ||
                           (post.created_by == user?.user?.id &&
-                            user.rbac_permissions.includes(
+                            user?.rbac_permissions.includes(
                               RbacPermissions.CREATE_EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_YOUR_OWN_POST
-                            ))))
-                        ? ''
-                        : ' no-schedule-post'
-                    }`}
-                    type="button"
-                    onClick={() => {
-                      const is_scheduled = post?.scheduled_date ? true : false;
-                      if (post)
-                        updatePost(Publications.PUBLISHED, is_scheduled);
-                      else save(Publications.PUBLISHED, is_scheduled);
-                    }}
-                    disabled={
-                      !enable_button ||
-                      (post &&
-                        post.created_by !== user?.user?.id &&
-                        !user?.rbac_permissions.includes(
-                          RbacPermissions.EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_OTHERS_POST
-                        ))
-                    }
-                  >
-                    {loading
-                      ? 'Loading...'
-                      : post?.scheduled_date
-                        ? 'Save'
-                        : 'Publish Now'}
-                  </button>
-                  {(!post ||
-                    (post &&
-                      ((post.created_by != user?.user?.id &&
-                        user?.rbac_permissions.includes(
-                          RbacPermissions.SCHEDULE_OTHERS_POST
-                        )) ||
-                        (post.created_by == user?.user?.id &&
-                          user?.rbac_permissions.includes(
-                            RbacPermissions.CREATE_EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_YOUR_OWN_POST
-                          ))))) && (
-                    <button
-                      className={`schedule-button${
-                        loading || draftLoading ? '' : ' is-clickable'
-                      }`}
-                      type="button"
-                      onClick={() => setShowDatePicker(true)}
-                      disabled={!enable_button}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="15"
-                        height="15"
-                        fill="currentColor"
-                        className="bi bi-calendar-x"
-                        viewBox="0 0 16 16"
+                            ))))) && (
+                      <button
+                        className={`schedule-button${
+                          loading || draftLoading ? '' : ' is-clickable'
+                        }`}
+                        type="button"
+                        onClick={() => setShowDatePicker(true)}
+                        disabled={!enable_button}
                       >
-                        <path d="M6.146 7.146a.5.5 0 0 1 .708 0L8 8.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 9l1.147 1.146a.5.5 0 0 1-.708.708L8 9.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 9 6.146 7.854a.5.5 0 0 1 0-.708z" />
-                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
-                      </svg>
-                    </button>
-                  )}
-                  {showDatePicker && (
-                    <div>
-                      <DatePicker
-                        className="example-datepicker"
-                        shouldCloseOnSelect={false}
-                        selected={publish_on}
-                        onChange={(date) => setPublishOn(date ?? new Date())}
-                        inline
-                        timeInputLabel=""
-                        showTimeInput
-                      >
-                        <button
-                          className={`datepicker-schedule-btn${
-                            loading || draftLoading
-                              ? ' is-not-clickable'
-                              : ' is-clickable'
-                          }`}
-                          onClick={() => {
-                            setShowDatePicker(false);
-                            if (post) {
-                              updatePost(Publications.PUBLISHED, true);
-                            } else {
-                              save(Publications.PUBLISHED, true);
-                            }
-                          }}
-                          disabled={loading || draftLoading}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="15"
+                          height="15"
+                          fill="currentColor"
+                          className="bi bi-calendar-x"
+                          viewBox="0 0 16 16"
                         >
-                          Schedule
-                        </button>
-                        <button
-                          className="datepicker-cancel-btn is-clickable"
-                          onClick={() => setShowDatePicker(false)}
+                          <path d="M6.146 7.146a.5.5 0 0 1 .708 0L8 8.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 9l1.147 1.146a.5.5 0 0 1-.708.708L8 9.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 9 6.146 7.854a.5.5 0 0 1 0-.708z" />
+                          <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
+                        </svg>
+                      </button>
+                    )}
+                    {showDatePicker && (
+                      <div>
+                        <DatePicker
+                          className="example-datepicker"
+                          shouldCloseOnSelect={false}
+                          selected={publish_on}
+                          onChange={(date) => setPublishOn(date ?? new Date())}
+                          inline
+                          timeInputLabel=""
+                          showTimeInput
                         >
-                          Cancel
-                        </button>
-                      </DatePicker>
-                    </div>
-                  )}
+                          <button
+                            className={`datepicker-schedule-btn${
+                              loading || draftLoading
+                                ? ' is-not-clickable'
+                                : ' is-clickable'
+                            }`}
+                            onClick={() => {
+                              setShowDatePicker(false);
+                              if (post) {
+                                updatePost(Publications.PUBLISHED, true);
+                              } else {
+                                save(Publications.PUBLISHED, true);
+                              }
+                            }}
+                            disabled={loading || draftLoading}
+                          >
+                            Schedule
+                          </button>
+                          <button
+                            className="datepicker-cancel-btn is-clickable"
+                            onClick={() => setShowDatePicker(false)}
+                          >
+                            Cancel
+                          </button>
+                        </DatePicker>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
+        <UploadPhoto
+          image_type={ImageType.WHATS_NEW_IMAGES}
+          maxFileSize={2097152}
+          setModal={setModal}
+          setPhoto={setImageUploaded}
+          show_modal={show_modal}
+        />
       </div>
-      <UploadPhoto
-        image_type={ImageType.WHATS_NEW_IMAGES}
-        maxFileSize={2097152}
-        setModal={setModal}
-        setPhoto={setImageUploaded}
-        show_modal={show_modal}
-      />
     </div>
   );
 };

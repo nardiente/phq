@@ -8,6 +8,7 @@ import {
 } from '../../utils/configHelpers';
 import { IdeasContent } from './Ideas/IdeasContent';
 import { RoadmapContent } from './Roadmap/RoadmapContent';
+import { WhatsNewContent } from './WhatsNew/WhatsNewContent';
 
 interface WidgetContentProps {
   config: WidgetConfig;
@@ -82,6 +83,9 @@ const WidgetInterface: React.FC<WidgetContentProps> = ({
           {/* Only show Ideas section for now since it's fully implemented */}
           {config.sections?.active === 'ideas' && <IdeasContent />}
           {config.sections?.active === 'roadmap' && <RoadmapContent />}
+          {config.sections?.active === 'announcements' && (
+            <WhatsNewContent config={config} />
+          )}
         </div>
       </div>
     </>

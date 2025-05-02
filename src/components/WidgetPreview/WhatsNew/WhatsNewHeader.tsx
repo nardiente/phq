@@ -1,34 +1,62 @@
-import './styles.css';
-import { DropdownWhatsNew } from '../DropDownWhatsNew';
+import { useRef, useState } from 'react';
+import { useWhatsNew } from '../../../contexts/WhatsNewContext';
 import { Check } from 'lucide-react';
-import { Fragment } from 'react/jsx-runtime';
-import { useState } from 'react';
-import { useWhatsNew } from '../../contexts/WhatsNewContext';
 
-export const WhatsNewFilter = () => {
+export const WhatsNewHeader = () => {
+  const ref = useRef<HTMLElement>();
+
   const {
     state: { change_types },
     listWhatsNew,
+    setShowAddForm,
   } = useWhatsNew();
 
   const [active_change_types, setActiveChangeTypes] = useState<number[]>([]);
+  const [is_expanded, setExpanded] = useState(false);
+
+  const toggle = () => setExpanded(!is_expanded);
 
   return (
-    <DropdownWhatsNew
-      content={
-        <Fragment>
-          <div
-            style={{
-              maxHeight: '290px',
-              overflowY: 'auto',
-              width: '100%',
-            }}
+    <div
+      className="flex justify-between items-center mb-4"
+      ref={ref as React.LegacyRef<HTMLDivElement>}
+    >
+      <div className="relative text-gray-900">
+        <button
+          className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md"
+          onClick={toggle}
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
           >
-            <div
-              className={`drop-down-status${
-                change_types.length > 0 ? '' : ' is-hidden'
-              }`}
-            >
+            <path d="M3 4h18M3 8h18M3 12h18M3 16h18M3 20h18" />
+          </svg>
+          Filter
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </button>
+        {is_expanded && (
+          <div
+            aria-hidden={!is_expanded}
+            className={`z-10 dropdown-menu ${is_expanded ? 'block' : ''}`}
+            id="dropdown-menu"
+            onClick={toggle}
+            role="menu"
+          >
+            <div className="dropdown-content rounded">
               {change_types.map((change_type, idx) => (
                 <span
                   key={idx}
@@ -85,29 +113,14 @@ export const WhatsNewFilter = () => {
               ))}
             </div>
           </div>
-        </Fragment>
-      }
-      label={
-        <Fragment>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            className="bi bi-filter"
-            style={{ marginRight: 8 }}
-            viewBox="0 0 16 16"
-          >
-            <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
-          </svg>
-          Filter
-          <span className="counter-font">{active_change_types.length}</span>
-        </Fragment>
-      }
-      container_class="right-filter"
-      content_class="dropdown-content"
-      content_container_class="dropdown-menu"
-      label_class="whats-new-filter-button"
-    />
+        )}
+      </div>
+      <button
+        className="px-4 py-2 bg-[#FF6334] text-white rounded-md font-medium"
+        onClick={() => setShowAddForm(true)}
+      >
+        + New Post
+      </button>
+    </div>
   );
 };
