@@ -6,10 +6,6 @@ import { WidgetContent } from './WidgetContent';
 
 // Type guard to ensure config is complete
 const validateConfig = (config: WidgetConfig): boolean => {
-  console.group('=== Config Validation ===');
-  console.log('LauncherPosition:', config.launcherPosition);
-  console.log('Appearance:', config.appearance);
-  console.groupEnd();
   return true;
 };
 
@@ -41,21 +37,6 @@ export const NewWidgetPreview = ({
       placement: config.appearance?.placement || 'Bottom right',
     },
   };
-
-  // Add debug log
-  console.group('=== Config Update Debug ===');
-  console.log('Original config:', config);
-  console.log('Original placement:', config.appearance?.placement);
-  console.log('Config with defaults:', configWithDefaults);
-  console.log('Final placement:', configWithDefaults.appearance.placement);
-  console.groupEnd();
-
-  // Add more specific debug logging
-  console.group('=== Sections Debug ===');
-  console.log('Config received:', config);
-  console.log('Section toggles:', config.sections);
-  console.log('Final sections:', configWithDefaults.sections);
-  console.groupEnd();
 
   useEffect(() => {
     if (config.widgetType === 'Embed') {

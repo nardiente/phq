@@ -20,13 +20,6 @@ export const WidgetPreview = ({ config }: WidgetPreviewProps) => {
 
   useEffect(() => {
     if (config.widgetType === 'Popover') {
-      console.group('=== WidgetPreview Render ===');
-      console.log('Is Visible:', isVisible);
-      console.log('Config:', config);
-      console.log('Widget Type:', config.widgetType);
-      console.log('Placement:', config.appearance?.placement);
-      console.log('Generated Class:', getWidgetClassName(config));
-      console.groupEnd();
     }
   }, [config, isVisible]);
 
@@ -34,9 +27,19 @@ export const WidgetPreview = ({ config }: WidgetPreviewProps) => {
   const renderLauncher = () => {
     switch (config.launcherType) {
       case 'Tab':
-        return <TabLauncher config={config} onClick={() => setIsVisible(!isVisible)} />;
+        return (
+          <TabLauncher
+            config={config}
+            onClick={() => setIsVisible(!isVisible)}
+          />
+        );
       case 'Floating':
-        return <FloatingLauncher config={config} onClick={() => setIsVisible(!isVisible)} />;
+        return (
+          <FloatingLauncher
+            config={config}
+            onClick={() => setIsVisible(!isVisible)}
+          />
+        );
       default:
         return null;
     }
@@ -46,12 +49,16 @@ export const WidgetPreview = ({ config }: WidgetPreviewProps) => {
     <div className="flex-1 h-full">
       <div className="h-full">
         {renderLauncher()}
-        
+
         {isVisible && (
           <div className={getWidgetClassName(config)}>
             {config.widgetType === 'Modal' && <ModalWidget config={config} />}
-            {config.widgetType === 'Popover' && <PopoverWidget config={config} />}
-            {config.widgetType === 'Sidebar' && <SidebarWidget config={config} />}
+            {config.widgetType === 'Popover' && (
+              <PopoverWidget config={config} />
+            )}
+            {config.widgetType === 'Sidebar' && (
+              <SidebarWidget config={config} />
+            )}
             {config.widgetType === 'Embed' && <WidgetContent config={config} />}
           </div>
         )}
@@ -69,10 +76,14 @@ const getWidgetClassName = (config: WidgetConfig) => {
     case 'Popover':
       const placement = config.appearance?.placement || 'Bottom right';
       switch (placement) {
-        case 'Top left': return 'absolute top-24 left-24';
-        case 'Top right': return 'absolute top-24 right-24';
-        case 'Bottom left': return 'absolute bottom-24 left-24';
-        case 'Bottom right': return 'absolute bottom-24 right-24';
+        case 'Top left':
+          return 'absolute top-24 left-24';
+        case 'Top right':
+          return 'absolute top-24 right-24';
+        case 'Bottom left':
+          return 'absolute bottom-24 left-24';
+        case 'Bottom right':
+          return 'absolute bottom-24 right-24';
       }
     default:
       return '';
@@ -81,7 +92,7 @@ const getWidgetClassName = (config: WidgetConfig) => {
 
 const getWidgetStyles = (config: WidgetConfig) => {
   const baseStyles = {
-    backgroundColor: config.backgroundColor
+    backgroundColor: config.backgroundColor,
   };
 
   switch (config.widgetType) {

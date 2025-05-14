@@ -35,7 +35,6 @@ export const WidgetSectionsForm = ({
             <Toggle
               checked={!!formState.sections?.[section.id]}
               onChange={(checked) => {
-                console.log(`Section ${section.id} toggled: ${checked}`);
                 onChange({
                   sections: {
                     ...formState.sections,

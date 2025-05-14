@@ -176,12 +176,6 @@ export default function WidgetsSidebar({
   // Handlers
   // ===============================
   const handleConfigUpdate = (field: keyof WidgetConfig, value: any) => {
-    console.group('=== Config Update ===');
-    console.log('Field being updated:', field);
-    console.log('Current value:', config[field]);
-    console.log('New value:', value);
-    console.log('Full config before:', config);
-
     onConfigUpdate((prev) => {
       prev = { ...prev, [field]: value };
       if (field === 'backgroundColor') {
@@ -189,19 +183,9 @@ export default function WidgetsSidebar({
       }
       return prev;
     });
-
-    console.log('Full config after:', {
-      ...config,
-      [field]: value,
-    });
-    console.groupEnd();
   };
 
   const handleAppearanceUpdate = (updates: Partial<WidgetAppearance>) => {
-    console.group('=== Placement Update ===');
-    console.log('Current config:', config);
-    console.log('Updates:', updates);
-
     onConfigUpdate((prev) => ({
       ...prev,
       appearance: {
@@ -210,16 +194,6 @@ export default function WidgetsSidebar({
         placement: updates.placement,
       },
     }));
-
-    console.log('New config:', {
-      ...config,
-      appearance: {
-        ...config.appearance,
-        ...updates,
-        placement: updates.placement,
-      },
-    });
-    console.groupEnd();
   };
 
   const handleSectionChange = (sectionId: string | null) => {
@@ -285,12 +259,7 @@ export default function WidgetsSidebar({
                     : null
                 }
                 onChange={(option) => {
-                  console.group('=== Launcher Type Change ===');
-                  console.log('Before - Full config:', config);
-                  console.log('Changing to:', option.value);
                   handleConfigUpdate('launcherType', option.value);
-                  console.log('After - Full config:', config);
-                  console.groupEnd();
                 }}
                 containerClass="w-full bg-white border border-gray-300 rounded-md"
               />

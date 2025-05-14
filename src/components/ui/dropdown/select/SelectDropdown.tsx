@@ -84,18 +84,12 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    console.group('=== SelectDropdown State ===');
-    console.log('Current value:', value);
-    console.log('Available options:', options);
-    console.groupEnd();
-  }, [value, options]);
+  useEffect(() => {}, [value, options]);
 
   return (
     <div className={`relative ${containerClass}`} ref={dropdownRef}>
       <button
         onClick={() => {
-          console.log('Dropdown clicked, current value:', value);
           setIsOpen(!isOpen);
         }}
         className="w-full flex items-center justify-between px-3 py-2 text-sm font-satoshi text-gray-900"
@@ -113,7 +107,6 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = ({
               key={option.value}
               className="w-full px-3 py-2 text-left text-sm font-satoshi hover:bg-blue-50 focus:outline-none text-gray-900"
               onClick={() => {
-                console.log('Option selected:', option);
                 onChange(option);
                 setIsOpen(false);
               }}

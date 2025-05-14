@@ -20,21 +20,13 @@ export const WidgetContent: React.FC<WidgetContentProps> = ({
   config,
   setWidgetConfig,
 }) => {
-  // Add debug logging
-  console.log('Config in WidgetContent:', {
-    backgroundColor: config.appearance.backgroundColor,
-    rawConfig: config,
-  });
-
   // Validate required props
   if (!config) {
-    console.warn('WidgetContent: Missing required config');
     return null;
   }
 
   // Validate required config properties
   if (!config.sections) {
-    console.warn('WidgetContent: Missing sections configuration');
     return null;
   }
 

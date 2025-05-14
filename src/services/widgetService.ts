@@ -7,13 +7,7 @@ export const widgetService = {
   // Get all widgets
   async getAllWidgets(): Promise<SavedWidget[]> {
     try {
-      console.log(
-        '🚀 WidgetService: Starting fetch from:',
-        `${API_URL}/widgets`
-      );
       const response = await axios.get(`${API_URL}/widgets`);
-      console.log('📡 WidgetService: Response status:', response.status);
-      console.log('📦 WidgetService: Raw data:', response.data);
       return response.data.widgets || [];
     } catch (error) {
       console.error('❌ WidgetService: Error:', error);

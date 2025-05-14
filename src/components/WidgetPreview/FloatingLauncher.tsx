@@ -12,7 +12,6 @@ export const FloatingLauncher = ({
 }: FloatingLauncherProps) => {
   // Validate required props
   if (!config || !onClick) {
-    console.warn('FloatingLauncher: Missing required props');
     return null;
   }
 
@@ -102,12 +101,7 @@ export const FloatingLauncher = ({
   const handleClick = (e: React.MouseEvent) => {
     try {
       e.stopPropagation();
-      console.group('=== FloatingLauncher Click ===');
-      console.log('1. Click event triggered');
-      console.log('2. Current config:', config);
       onClick();
-      console.log('3. onClick handler called');
-      console.groupEnd();
     } catch (error) {
       console.error('Error in FloatingLauncher click:', error);
     }

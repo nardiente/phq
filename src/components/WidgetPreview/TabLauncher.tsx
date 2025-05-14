@@ -10,17 +10,12 @@ export const TabLauncher = ({ config, onClick }: TabLauncherProps) => {
 
   // Validate required props
   if (!config || !onClick) {
-    console.warn('TabLauncher: Missing required props');
     return null;
   }
 
   const handleClick = (e: React.MouseEvent) => {
-    console.group('=== TabLauncher Click ===');
-    console.log('Click event triggered');
     e.stopPropagation();
     onClick();
-    console.log('onClick callback called');
-    console.groupEnd();
   };
 
   return (
