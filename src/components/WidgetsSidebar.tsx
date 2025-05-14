@@ -9,7 +9,11 @@ import { Checkbox } from './Checkbox';
 import { ChevronDownIcon } from './icons/chevron-down.icon';
 import { HexColorPicker } from 'react-colorful';
 import { defaultWidgetConfig } from '../types/widget';
-import type { WidgetConfig, WidgetAppearance } from '../types/widget';
+import type {
+  WidgetConfig,
+  WidgetAppearance,
+  Targeting,
+} from '../types/widget';
 import type { SelectOption } from '../types/dropdown';
 import { SelectDropdown } from './ui/dropdown/select/SelectDropdown';
 import { WidgetTargetingForm } from './WidgetPreview/widgets/WidgetTargetingForm';
@@ -196,12 +200,26 @@ export default function WidgetsSidebar({
     }));
   };
 
+  const handleTargetingUpdate = (
+    field: keyof Targeting,
+    value: string | number
+  ) => {
+    onConfigUpdate((prev) => ({
+      ...prev,
+      targeting: {
+        ...prev.targeting,
+        [field]: field === 'delay' ? Number(value) : value,
+      },
+    }));
+  };
+
   const handleSectionChange = (sectionId: string | null) => {
     setActiveSection(sectionId);
     if (typeof onSectionChange === 'function') {
       onSectionChange(sectionId);
     }
   };
+
   const handleCancel = () => {
     if (typeof onConfigUpdate === 'function') {
       onConfigUpdate((prev) => ({
@@ -1017,9 +1035,7 @@ export default function WidgetsSidebar({
       content: (
         <WidgetTargetingForm
           formState={config}
-          onChange={(field, value) =>
-            handleAppearanceUpdate({ [field]: value })
-          }
+          onChange={(field, value) => handleTargetingUpdate(field, value)}
         />
       ),
     },

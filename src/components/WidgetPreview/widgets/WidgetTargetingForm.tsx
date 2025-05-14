@@ -1,12 +1,15 @@
 import React from 'react';
-import { WidgetConfig } from '../../types/widget';
+import { Targeting, WidgetConfig } from '../../../types/widget';
 
 interface WidgetTargetingFormProps {
   formState: WidgetConfig;
-  onChange: (field: keyof WidgetConfig, value: any) => void;
+  onChange: (field: keyof Targeting, value: string | number) => void;
 }
 
-export const WidgetTargetingForm: React.FC<WidgetTargetingFormProps> = ({ formState, onChange }) => {
+export const WidgetTargetingForm: React.FC<WidgetTargetingFormProps> = ({
+  formState,
+  onChange,
+}) => {
   return (
     <div className="space-y-6">
       <p className="text-sm text-gray-500">
@@ -18,36 +21,34 @@ export const WidgetTargetingForm: React.FC<WidgetTargetingFormProps> = ({ formSt
           <h3 className="text-sm font-medium text-gray-900">
             When would you like to show the Widget
           </h3>
-          
+
           <div className="space-y-3">
             <label className="flex items-center">
               <input
                 type="radio"
                 className="w-4 h-4 text-[#5a00cd] border-gray-300 focus:ring-[#5a00cd]"
                 checked={formState.targeting?.timing === 'on-load'}
-                onChange={() =>
-                  onChange('targeting', {
-                    ...formState.targeting,
-                    timing: 'on-load',
-                  })
-                }
+                onChange={() => onChange('timing', 'on-load')}
               />
-              <span className="ml-2 text-gray-700">When the user lands on the page</span>
+              <span
+                className={`ml-2 ${formState.targeting?.timing === 'on-load' ? 'text-gray-900' : 'text-gray-700'}`}
+              >
+                When the user lands on the page
+              </span>
             </label>
-            
+
             <label className="flex items-center">
               <input
                 type="radio"
                 className="w-4 h-4 text-[#5a00cd] border-gray-300 focus:ring-[#5a00cd]"
                 checked={formState.targeting?.timing === 'on-exit'}
-                onChange={() =>
-                  onChange('targeting', {
-                    ...formState.targeting,
-                    timing: 'on-exit',
-                  })
-                }
+                onChange={() => onChange('timing', 'on-exit')}
               />
-              <span className="ml-2 text-gray-700">When a user leaves the page</span>
+              <span
+                className={`ml-2 ${formState.targeting?.timing === 'on-exit' ? 'text-gray-900' : 'text-gray-700'}`}
+              >
+                When a user leaves the page
+              </span>
             </label>
 
             <label className="flex items-center">
@@ -55,14 +56,13 @@ export const WidgetTargetingForm: React.FC<WidgetTargetingFormProps> = ({ formSt
                 type="radio"
                 className="w-4 h-4 text-[#5a00cd] border-gray-300 focus:ring-[#5a00cd]"
                 checked={formState.targeting?.timing === 'on-scroll'}
-                onChange={() =>
-                  onChange('targeting', {
-                    ...formState.targeting,
-                    timing: 'on-scroll',
-                  })
-                }
+                onChange={() => onChange('timing', 'on-scroll')}
               />
-              <span className="ml-2 text-gray-700">When the user has scrolled the page (soon)</span>
+              <span
+                className={`ml-2 ${formState.targeting?.timing === 'on-scroll' ? 'text-gray-900' : 'text-gray-700'}`}
+              >
+                When the user has scrolled the page (soon)
+              </span>
             </label>
           </div>
         </div>
@@ -71,15 +71,16 @@ export const WidgetTargetingForm: React.FC<WidgetTargetingFormProps> = ({ formSt
           <span className="text-sm text-gray-700">Show after</span>
           <input
             type="number"
-            min="0"
-            value={formState.targeting?.delay || 0}
-            onChange={(e) =>
-              onChange('targeting', {
-                ...formState.targeting,
-                delay: parseInt(e.target.value),
-              })
+            min={0}
+            value={
+              Number(formState.targeting?.delay) > 0
+                ? String(Number(formState.targeting?.delay)).replace(/^0+/, '')
+                : '0'
             }
-            className="w-16 px-3 py-2 border border-gray-300 rounded-md focus:outline-none text-sm"
+            onChange={(e) =>
+              onChange('delay', e.target.value ? parseInt(e.target.value) : 0)
+            }
+            className={`w-16 px-3 py-2 border border-gray-300 rounded-md focus:outline-none text-sm ${Number(formState.targeting?.delay) > 0 ? 'text-gray-900' : ''}`}
           />
           <span className="text-sm text-gray-700">seconds</span>
         </div>

@@ -1,3 +1,11 @@
+export interface Targeting {
+  delay?: number;
+  devices?: string;
+  hostnames?: string[];
+  location?: string;
+  timing?: string;
+}
+
 export interface WidgetAppearance {
   title?: string;
   description?: string;
@@ -31,13 +39,7 @@ export interface WidgetConfig {
     announcements: boolean;
     active: 'ideas' | 'roadmap' | 'announcements';
   };
-  targeting?: {
-    timing: string;
-    location: string;
-    delay: number;
-    hostnames?: string[];
-    devices?: string;
-  };
+  targeting?: Targeting;
   matchAllElements?: boolean;
   cssSelector?: string;
   advanced?: {
