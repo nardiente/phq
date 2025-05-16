@@ -23,6 +23,7 @@ export const WidgetForm = ({
   const { user: userDetails } = useUser();
   const { user } = userDetails ?? {};
 
+  const [savedWidget, setSavedWidget] = useState<SavedWidget>();
   const [widgetConfig, setWidgetConfig] = useState<WidgetConfig>({
     name: 'My first widget',
     widgetType: 'Modal',
@@ -62,6 +63,7 @@ export const WidgetForm = ({
 
         if (data) {
           setEditingWidgetId(widgetId);
+          setSavedWidget(data);
           setWidgetConfig((prev) => ({
             ...prev,
             ...{ ...data.config, notificationCount: countUnreadPosts() },
@@ -98,12 +100,12 @@ export const WidgetForm = ({
     }));
   };
 
-  const handleSave = async () => {
+  const handleSave = async (shouldClose: boolean = false) => {
     const widgetData: SavedWidget = {
       id: editingWidgetId,
       name: widgetConfig.name ?? '',
       config: widgetConfig,
-      status: 'draft',
+      status: savedWidget?.status ?? 'draft',
       createdAt: new Date().toISOString(),
       lastUpdated: new Date().toISOString(),
     };
@@ -111,16 +113,21 @@ export const WidgetForm = ({
     if (editingWidgetId) {
       delete widgetData.id;
       putApi(`widgets/${editingWidgetId}`, widgetData).then((res) => {
-        if (res.results.data) {
+        if (res.results.data && shouldClose) {
           setShowWidgetForm(false);
         }
       });
     } else {
-      postApi({ url: 'widgets', payload: widgetData }).then((res) => {
-        if (res.results.data) {
-          setShowWidgetForm(false);
+      postApi<SavedWidget>({ url: 'widgets', payload: widgetData }).then(
+        (res) => {
+          if (res.results.data) {
+            setEditingWidgetId(res.results.data.id);
+            if (shouldClose) {
+              setShowWidgetForm(false);
+            }
+          }
         }
-      });
+      );
     }
   };
 
@@ -129,8 +136,10 @@ export const WidgetForm = ({
       <div className="w-[400px] border-r border-gray-200 bg-white">
         <WidgetsSidebar
           config={widgetConfig}
+          editingWidgetId={editingWidgetId}
+          onCancel={() => setEditingWidgetId(undefined)}
           onConfigUpdate={setWidgetConfig}
-          onSave={handleSave}
+          onSave={(shouldClose) => handleSave(shouldClose)}
           onClose={() => setShowWidgetForm(false)}
           onSectionChange={setActiveSection}
         />

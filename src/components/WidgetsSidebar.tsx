@@ -82,8 +82,10 @@ const POSITION_OPTIONS: { value: 'Right' | 'Left'; label: string }[] = [
 // ===============================
 interface WidgetsSidebarProps {
   config: WidgetConfig;
+  editingWidgetId?: number;
+  onCancel: () => void;
   onConfigUpdate: (value: SetStateAction<WidgetConfig>) => void;
-  onSave: () => void;
+  onSave: (shouldClose?: boolean) => void;
   onClose: () => void;
   onSectionChange: (section: string | null) => void;
 }
@@ -160,6 +162,8 @@ const getEmbedCode = (config: WidgetConfig) => {
 // ===============================
 export default function WidgetsSidebar({
   config,
+  editingWidgetId,
+  onCancel,
   onConfigUpdate,
   onSave,
   onClose,
@@ -169,8 +173,28 @@ export default function WidgetsSidebar({
   // State & Refs
   // ===============================
   const [activeSection, setActiveSection] = useState<string | null>('launcher');
+  const [isCanceled, setIsCanceled] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState(false);
   const [widgetName, setWidgetName] = useState(config.name || '');
+  const timerRef = useRef<NodeJS.Timeout>();
+
+  useEffect(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    if (!isCanceled && editingWidgetId) {
+      timerRef.current = setTimeout(() => {
+        onSave();
+      }, 5000);
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [config, isCanceled]);
 
   useEffect(() => {
     setWidgetName(config.name || '');
@@ -221,6 +245,11 @@ export default function WidgetsSidebar({
   };
 
   const handleCancel = () => {
+    setIsCanceled(true);
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
     if (typeof onConfigUpdate === 'function') {
       onConfigUpdate((prev) => ({
         ...defaultWidgetConfig,
@@ -231,7 +260,9 @@ export default function WidgetsSidebar({
     }
     setWidgetName(config.name || '');
     setActiveSection('launcher');
+    onCancel();
   };
+
   const handleSectionToggle = (section: string, enabled: boolean) => {
     const sections = config.sections;
     onConfigUpdate((prev) => ({
@@ -1160,7 +1191,7 @@ export default function WidgetsSidebar({
             Cancel
           </button>
           <button
-            onClick={onSave}
+            onClick={() => onSave(true)}
             className="flex-1 px-4 py-2 text-sm font-medium text-white bg-[#FF6334] rounded-md hover:bg-[#e5592f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF6334]"
           >
             Save
