@@ -26,10 +26,13 @@ import Button from '../../components/Button';
 import { Plus } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import { SocketAction } from '../../types/socket';
+import { useWidget } from '../../contexts/WidgetContext/WidgetProvider';
+import { NewWidgetPreview } from '../../components/WidgetPreview/NewWidgetPreview';
 
 export function RoadmapPage() {
-  const { user } = useUser();
-  const { permissions, rbac_permissions } = user ?? {};
+  const { user: userContext } = useUser();
+  const { admin_profile, permissions, project, rbac_permissions, user } =
+    userContext ?? {};
   const {
     state: { filter, listing, roadmaps: roadmapsContext, selectedIdea },
     addRoadmap,
@@ -48,6 +51,10 @@ export function RoadmapPage() {
   const { tags: filterTag, title } = filter;
   const { setActivePage, setActiveTab, setIsOpen } = usePanel();
   const { roadmap_colors } = useApp();
+  const {
+    state: { widget },
+    loadPublishedWidget,
+  } = useWidget();
 
   const [columnName, setColumnName] = useState<string>('');
   const [dragging, setDragging] = useState<boolean>(false);
@@ -58,10 +65,17 @@ export function RoadmapPage() {
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const isRestricted =
     !listing && is_public && permissions && permissions.length === 0;
+  const userInfo = is_public ? admin_profile : user;
 
   useEffect(() => {
     setCurrRoadmaps(roadmapsContext);
   }, [roadmapsContext]);
+
+  useEffect(() => {
+    if (userInfo?.id) {
+      loadPublishedWidget();
+    }
+  }, [userInfo]);
 
   const getFeedback = (id: number) => {
     getApi<Feedback>({ url: `feedback/${id}` }).then((res) => {
@@ -74,7 +88,7 @@ export function RoadmapPage() {
         setIsOpen(true);
         socket?.emit('message', {
           action: SocketAction.UPDATE_IDEA,
-          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+          data: { user_id: user?.id, projectId: project?.id },
         });
       }
     });
@@ -171,7 +185,7 @@ export function RoadmapPage() {
             setRoadmaps(handleFilterRoadmaps(res.results.data));
             socket?.emit('message', {
               action: SocketAction.UPDATE_ROADMAP,
-              data: { user_id: user?.user?.id, projectId: user?.project?.id },
+              data: { user_id: user?.id, projectId: project?.id },
             });
           }
           setDragging(false);
@@ -214,7 +228,7 @@ export function RoadmapPage() {
             updateRoadmap(handleFilterData(data));
             socket?.emit('message', {
               action: SocketAction.UPDATE_IDEA,
-              data: { user_id: user?.user?.id, projectId: user?.project?.id },
+              data: { user_id: user?.id, projectId: project?.id },
             });
           }
           setDragging(false);
@@ -271,7 +285,7 @@ export function RoadmapPage() {
           updateIdea(idea);
           socket?.emit('message', {
             action: SocketAction.UPDATE_IDEA,
-            data: { user_id: user?.user?.id, projectId: user?.project?.id },
+            data: { user_id: user?.id, projectId: project?.id },
           });
         }
         setDragging(false);
@@ -288,7 +302,7 @@ export function RoadmapPage() {
         setEditColumnNameId(0);
         socket?.emit('message', {
           action: SocketAction.UPDATE_ROADMAP,
-          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+          data: { user_id: user?.id, projectId: project?.id },
         });
       }
     });
@@ -311,7 +325,7 @@ export function RoadmapPage() {
         setEditColumnNameId(0);
         socket?.emit('message', {
           action: SocketAction.UPDATE_ROADMAP,
-          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+          data: { user_id: user?.id, projectId: project?.id },
         });
       }
     });
@@ -333,341 +347,350 @@ export function RoadmapPage() {
   }, [action]);
 
   return (
-    <Settings className="pb-0">
-      <SettingsHeader
-        title="Roadmap"
-        filter={
-          <div className="flex gap-8">
-            <div id="RoadmapFilter" className="search">
-              <div className="control has-icons-right input-field">
-                <input
-                  id="search-field"
-                  className="input border-t-0 border-r-0 border-l-0 rounded-none border-[#c5c5da] bg-transparent text-[#3d3d5e] p-2 shadow-none"
-                  onChange={(e) => {
-                    const titleFilter = e.target.value;
-                    setFilter({
-                      ...filter,
-                      filtering: titleFilter.length > 0,
-                      title: titleFilter,
-                    });
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.keyCode === 13) {
+    <>
+      <Settings className="pb-0">
+        <SettingsHeader
+          title="Roadmap"
+          filter={
+            <div className="flex gap-8">
+              <div id="RoadmapFilter" className="search">
+                <div className="control has-icons-right input-field">
+                  <input
+                    id="search-field"
+                    className="input border-t-0 border-r-0 border-l-0 rounded-none border-[#c5c5da] bg-transparent text-[#3d3d5e] p-2 shadow-none"
+                    onChange={(e) => {
+                      const titleFilter = e.target.value;
                       setFilter({
                         ...filter,
-                        filtering: title.length > 0,
-                        title,
+                        filtering: titleFilter.length > 0,
+                        title: titleFilter,
                       });
-                    }
-                  }}
-                  placeholder="Search ideas"
-                  type="text"
-                  value={title}
-                />
-                <span className="icon is-right">
-                  <figure className="image is-16x16">
-                    <img
-                      onClick={() =>
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.keyCode === 13) {
                         setFilter({
                           ...filter,
                           filtering: title.length > 0,
                           title,
-                        })
+                        });
                       }
-                      src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/search.svg"
-                    />
-                  </figure>
-                </span>
+                    }}
+                    placeholder="Search ideas"
+                    type="text"
+                    value={title}
+                  />
+                  <span className="icon is-right">
+                    <figure className="image is-16x16">
+                      <img
+                        onClick={() =>
+                          setFilter({
+                            ...filter,
+                            filtering: title.length > 0,
+                            title,
+                          })
+                        }
+                        src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/search.svg"
+                      />
+                    </figure>
+                  </span>
+                </div>
               </div>
+              <RoadmapFilter />
             </div>
-            <RoadmapFilter />
-          </div>
-        }
-        primaryButton={
-          <Button
-            className={`px-4 py-2 ${is_public ? 'primary-button-color' : ''}`}
-            disabled={
-              (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
-              permissions?.length === 0
-            }
-            onClick={() => setIsOpen(true)}
-          >
-            <div
-              className={`flex gap-2 ${is_public ? 'primary-button-color' : 'text-white'}`}
+          }
+          primaryButton={
+            <Button
+              className={`px-4 py-2 ${is_public ? 'primary-button-color' : ''}`}
+              disabled={
+                (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
+                permissions?.length === 0
+              }
+              onClick={() => setIsOpen(true)}
             >
-              <Plus size={16} />
-              New Idea
-            </div>
-          </Button>
-        }
-      />
-      <div
-        id="RoadmapPublicView"
-        className={`${isRestricted ? 'flex justify-center' : ''} px-8`}
-      >
-        <div className="pt-8 w-[75vw]">
-          {isRestricted ? (
-            <div className="container no-roadmap-background">
-              <div className="flex justify-center mb-2 sad-face">
-                <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
+              <div
+                className={`flex gap-2 ${is_public ? 'primary-button-color' : 'text-white'}`}
+              >
+                <Plus size={16} />
+                New Idea
               </div>
-              <h3 className="no-roadmap-header">
-                This public board is no longer available. Please contact the
-                admin.
-              </h3>
-            </div>
-          ) : (
-            <>
-              {roadmaps &&
-                roadmaps.length > 0 &&
-                (!is_public ||
-                  (is_public && permissions && permissions.length > 0)) && (
-                  <DragDropContext onDragEnd={onDragEnd}>
-                    <Droppable
-                      droppableId="all-columns"
-                      direction="horizontal"
-                      type="column"
-                    >
-                      {(provided) => (
-                        /* Container */
-                        <div ref={provided.innerRef} className="flex gap-6">
-                          {roadmaps.map((roadmap, idx) => (
-                            <Draggable
-                              draggableId={`roadmap-${roadmap.id.toString()}`}
-                              key={roadmap.id}
-                              index={idx}
-                              isDragDisabled={
-                                is_public ||
-                                !permissions?.includes(
-                                  Permissions.DRAG_COLUMN
-                                ) ||
-                                dragging ||
-                                listing ||
-                                !rbac_permissions?.includes(
-                                  RbacPermissions.CHANGE_ORDER_COLUMNS
-                                )
-                              }
-                            >
-                              {(provided) => (
-                                <div
-                                  className="bg-[#fafafa] rounded"
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                >
+            </Button>
+          }
+        />
+        <div
+          id="RoadmapPublicView"
+          className={`${isRestricted ? 'flex justify-center' : ''} px-8`}
+        >
+          <div className="pt-8 w-[75vw]">
+            {isRestricted ? (
+              <div className="container no-roadmap-background">
+                <div className="flex justify-center mb-2 sad-face">
+                  <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
+                </div>
+                <h3 className="no-roadmap-header">
+                  This public board is no longer available. Please contact the
+                  admin.
+                </h3>
+              </div>
+            ) : (
+              <>
+                {roadmaps &&
+                  roadmaps.length > 0 &&
+                  (!is_public ||
+                    (is_public && permissions && permissions.length > 0)) && (
+                    <DragDropContext onDragEnd={onDragEnd}>
+                      <Droppable
+                        droppableId="all-columns"
+                        direction="horizontal"
+                        type="column"
+                      >
+                        {(provided) => (
+                          /* Container */
+                          <div ref={provided.innerRef} className="flex gap-6">
+                            {roadmaps.map((roadmap, idx) => (
+                              <Draggable
+                                draggableId={`roadmap-${roadmap.id.toString()}`}
+                                key={roadmap.id}
+                                index={idx}
+                                isDragDisabled={
+                                  is_public ||
+                                  !permissions?.includes(
+                                    Permissions.DRAG_COLUMN
+                                  ) ||
+                                  dragging ||
+                                  listing ||
+                                  !rbac_permissions?.includes(
+                                    RbacPermissions.CHANGE_ORDER_COLUMNS
+                                  )
+                                }
+                              >
+                                {(provided) => (
                                   <div
-                                    {...provided.dragHandleProps}
-                                    style={{
-                                      position: 'relative',
-                                      width: '416px',
-                                      display: 'flex',
-                                      justifyContent: 'space-between',
-                                      marginBottom: '16px',
-                                    }}
+                                    className="bg-[#fafafa] rounded"
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
                                   >
                                     <div
+                                      {...provided.dragHandleProps}
                                       style={{
-                                        background: `${roadmap.background_color}`,
-                                        borderRadius: '5px',
-                                        padding: '8px 10px 8px 10px',
+                                        position: 'relative',
+                                        width: '416px',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        marginBottom: '16px',
                                       }}
                                     >
-                                      <span
-                                        className="roadmap-pf"
-                                        style={{
-                                          cursor:
-                                            !is_public &&
-                                            permissions?.includes(
-                                              Permissions.EDIT_COLUMN
-                                            ) &&
-                                            rbac_permissions?.includes(
-                                              RbacPermissions.CHANGE_COLUMN_NAMES
-                                            )
-                                              ? 'pointer'
-                                              : '',
-                                        }}
-                                        onClick={() => {
-                                          if (
-                                            !is_public &&
-                                            permissions?.includes(
-                                              Permissions.EDIT_COLUMN
-                                            ) &&
-                                            rbac_permissions?.includes(
-                                              RbacPermissions.CHANGE_COLUMN_NAMES
-                                            )
-                                          ) {
-                                            setEditColumnNameId(roadmap.id);
-                                            setColumnName(roadmap.name);
-                                          }
-                                        }}
-                                      >
-                                        {roadmap.name}
-                                      </span>
-                                      {editColumnNameId == roadmap.id &&
-                                        rbac_permissions?.includes(
-                                          RbacPermissions.CHANGE_COLUMN_NAMES
-                                        ) && (
-                                          <ColumnInput
-                                            value={columnName}
-                                            setEditColumnNameId={
-                                              setEditColumnNameId
-                                            }
-                                            setColumnName={setColumnName}
-                                            handleConfirm={handleUpdateColumn}
-                                            disable={loading}
-                                          />
-                                        )}
-                                    </div>
-                                    {!is_public && (
-                                      <ColumnOptionDropdown
-                                        roadmap={roadmap}
-                                        roadmapColors={roadmap_colors}
-                                      />
-                                    )}
-                                  </div>
-                                  <Droppable
-                                    droppableId={roadmap.id.toString()}
-                                  >
-                                    {(provided) => (
                                       <div
-                                        ref={provided.innerRef}
-                                        className="idea-list-container"
+                                        style={{
+                                          background: `${roadmap.background_color}`,
+                                          borderRadius: '5px',
+                                          padding: '8px 10px 8px 10px',
+                                        }}
                                       >
-                                        {roadmap.upvotes
-                                          ?.sort((a, b) => a.index - b.index)
-                                          .filter(
+                                        <span
+                                          className="roadmap-pf"
+                                          style={{
+                                            cursor:
+                                              !is_public &&
+                                              permissions?.includes(
+                                                Permissions.EDIT_COLUMN
+                                              ) &&
+                                              rbac_permissions?.includes(
+                                                RbacPermissions.CHANGE_COLUMN_NAMES
+                                              )
+                                                ? 'pointer'
+                                                : '',
+                                          }}
+                                          onClick={() => {
+                                            if (
+                                              !is_public &&
+                                              permissions?.includes(
+                                                Permissions.EDIT_COLUMN
+                                              ) &&
+                                              rbac_permissions?.includes(
+                                                RbacPermissions.CHANGE_COLUMN_NAMES
+                                              )
+                                            ) {
+                                              setEditColumnNameId(roadmap.id);
+                                              setColumnName(roadmap.name);
+                                            }
+                                          }}
+                                        >
+                                          {roadmap.name}
+                                        </span>
+                                        {editColumnNameId == roadmap.id &&
+                                          rbac_permissions?.includes(
+                                            RbacPermissions.CHANGE_COLUMN_NAMES
+                                          ) && (
+                                            <ColumnInput
+                                              value={columnName}
+                                              setEditColumnNameId={
+                                                setEditColumnNameId
+                                              }
+                                              setColumnName={setColumnName}
+                                              handleConfirm={handleUpdateColumn}
+                                              disable={loading}
+                                            />
+                                          )}
+                                      </div>
+                                      {!is_public && (
+                                        <ColumnOptionDropdown
+                                          roadmap={roadmap}
+                                          roadmapColors={roadmap_colors}
+                                        />
+                                      )}
+                                    </div>
+                                    <Droppable
+                                      droppableId={roadmap.id.toString()}
+                                    >
+                                      {(provided) => (
+                                        <div
+                                          ref={provided.innerRef}
+                                          className="idea-list-container"
+                                        >
+                                          {roadmap.upvotes
+                                            ?.sort((a, b) => a.index - b.index)
+                                            .filter(
+                                              (upvote) =>
+                                                !upvote.draft &&
+                                                !upvote.hide_on_roadmap
+                                            )
+                                            .map((upvote, idx) => {
+                                              return (
+                                                <Draggable
+                                                  draggableId={`idea-${upvote.id?.toString()}`}
+                                                  key={upvote.id}
+                                                  index={idx}
+                                                  isDragDisabled={
+                                                    is_public ||
+                                                    !permissions?.includes(
+                                                      Permissions.DRAG_IDEA
+                                                    ) ||
+                                                    upvote.not_administer ||
+                                                    dragging ||
+                                                    listing ||
+                                                    !rbac_permissions?.includes(
+                                                      RbacPermissions.CHANGE_UPVOTE_PRIORITISATION_ROADMAP
+                                                    )
+                                                  }
+                                                >
+                                                  {(provided) => (
+                                                    <div
+                                                      {...provided.draggableProps}
+                                                      {...provided.dragHandleProps}
+                                                      ref={provided.innerRef}
+                                                    >
+                                                      <UpvoteComponent
+                                                        upvote={upvote}
+                                                      />
+                                                    </div>
+                                                  )}
+                                                </Draggable>
+                                              );
+                                            })}
+                                          {roadmap.upvotes?.filter(
                                             (upvote) =>
                                               !upvote.draft &&
                                               !upvote.hide_on_roadmap
-                                          )
-                                          .map((upvote, idx) => {
-                                            return (
-                                              <Draggable
-                                                draggableId={`idea-${upvote.id?.toString()}`}
-                                                key={upvote.id}
-                                                index={idx}
-                                                isDragDisabled={
-                                                  is_public ||
-                                                  !permissions?.includes(
-                                                    Permissions.DRAG_IDEA
-                                                  ) ||
-                                                  upvote.not_administer ||
-                                                  dragging ||
-                                                  listing ||
-                                                  !rbac_permissions?.includes(
-                                                    RbacPermissions.CHANGE_UPVOTE_PRIORITISATION_ROADMAP
-                                                  )
-                                                }
-                                              >
-                                                {(provided) => (
-                                                  <div
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                    ref={provided.innerRef}
-                                                  >
-                                                    <UpvoteComponent
-                                                      upvote={upvote}
-                                                    />
-                                                  </div>
-                                                )}
-                                              </Draggable>
-                                            );
-                                          })}
-                                        {roadmap.upvotes?.filter(
-                                          (upvote) =>
-                                            !upvote.draft &&
-                                            !upvote.hide_on_roadmap
-                                        ).length === 0 && (
-                                          <div className="empty-message">
-                                            Empty
-                                          </div>
-                                        )}
-                                        {provided.placeholder}
-                                      </div>
-                                    )}
-                                  </Droppable>
-                                </div>
-                              )}
-                            </Draggable>
-                          ))}
-                          {!is_public && (
-                            <div className="add-column-btn-container">
-                              {rbac_permissions?.includes(
-                                RbacPermissions.ADD_DELETE_COLUMNS
-                              ) && (
-                                <>
-                                  <button
-                                    className="add-column-btn w-[380px] flex"
-                                    onClick={() => {
-                                      if (!is_public) {
-                                        setEditColumnNameId(-1);
-                                        setColumnName('');
+                                          ).length === 0 && (
+                                            <div className="empty-message">
+                                              Empty
+                                            </div>
+                                          )}
+                                          {provided.placeholder}
+                                        </div>
+                                      )}
+                                    </Droppable>
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {!is_public && (
+                              <div className="add-column-btn-container">
+                                {rbac_permissions?.includes(
+                                  RbacPermissions.ADD_DELETE_COLUMNS
+                                ) && (
+                                  <>
+                                    <button
+                                      className="add-column-btn w-[380px] flex"
+                                      onClick={() => {
+                                        if (!is_public) {
+                                          setEditColumnNameId(-1);
+                                          setColumnName('');
+                                        }
+                                      }}
+                                      disabled={
+                                        !permissions?.includes(
+                                          Permissions.ADD_COLUMN
+                                        )
                                       }
-                                    }}
-                                    disabled={
-                                      !permissions?.includes(
-                                        Permissions.ADD_COLUMN
-                                      )
-                                    }
-                                  >
-                                    <PlusIcon />
-                                    Add Column
-                                  </button>
-                                  {editColumnNameId == -1 && (
-                                    <ColumnInput
-                                      value={columnName}
-                                      setEditColumnNameId={setEditColumnNameId}
-                                      setColumnName={setColumnName}
-                                      handleConfirm={handleAddColumn}
-                                      disable={loading}
-                                      isAddColumn={true}
-                                    />
-                                  )}
-                                </>
-                              )}
-                            </div>
-                          )}
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
-                  </DragDropContext>
-                )}
-            </>
-          )}
-        </div>
-        {listing &&
-          (!roadmaps ||
-            roadmaps?.every((r) => !r.upvotes || r.upvotes.length === 0)) && (
-            <div className="flex justify-center items-center w-full mt-5">
-              <FadeLoader height={5} width={2} radius={2} margin={-10} />
-            </div>
-          )}
-        {!isRestricted && !listing && (!roadmaps || roadmaps.length === 0) && (
-          <>
-            <div className="container no-roadmap-background w-full">
-              {filterTag.length === 0 && title.length === 0 ? (
-                <>
-                  <div className="flex justify-center mb-2 sad-face">
-                    <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
-                  </div>
-                  <h3 className="no-roadmap-header">
-                    {is_public && permissions && permissions.length === 0
-                      ? 'This public board is no longer available. Please contact the admin.'
-                      : 'No upvotes have been created… yet.'}
-                  </h3>
-                  {!is_public && permissions && permissions.length > 0 && (
-                    <h4 className="no-roadmap-sub">
-                      Now is a great time to add your first entry!
-                    </h4>
+                                    >
+                                      <PlusIcon />
+                                      Add Column
+                                    </button>
+                                    {editColumnNameId == -1 && (
+                                      <ColumnInput
+                                        value={columnName}
+                                        setEditColumnNameId={
+                                          setEditColumnNameId
+                                        }
+                                        setColumnName={setColumnName}
+                                        handleConfirm={handleAddColumn}
+                                        disable={loading}
+                                        isAddColumn={true}
+                                      />
+                                    )}
+                                  </>
+                                )}
+                              </div>
+                            )}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    </DragDropContext>
                   )}
-                </>
-              ) : (
-                'Crickets and tumbleweeds. Please try again.'
-              )}
-            </div>
-          </>
-        )}
-      </div>
-    </Settings>
+              </>
+            )}
+          </div>
+          {listing &&
+            (!roadmaps ||
+              roadmaps?.every((r) => !r.upvotes || r.upvotes.length === 0)) && (
+              <div className="flex justify-center items-center w-full mt-5">
+                <FadeLoader height={5} width={2} radius={2} margin={-10} />
+              </div>
+            )}
+          {!isRestricted &&
+            !listing &&
+            (!roadmaps || roadmaps.length === 0) && (
+              <>
+                <div className="container no-roadmap-background w-full">
+                  {filterTag.length === 0 && title.length === 0 ? (
+                    <>
+                      <div className="flex justify-center mb-2 sad-face">
+                        <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
+                      </div>
+                      <h3 className="no-roadmap-header">
+                        {is_public && permissions && permissions.length === 0
+                          ? 'This public board is no longer available. Please contact the admin.'
+                          : 'No upvotes have been created… yet.'}
+                      </h3>
+                      {!is_public && permissions && permissions.length > 0 && (
+                        <h4 className="no-roadmap-sub">
+                          Now is a great time to add your first entry!
+                        </h4>
+                      )}
+                    </>
+                  ) : (
+                    'Crickets and tumbleweeds. Please try again.'
+                  )}
+                </div>
+              </>
+            )}
+        </div>
+      </Settings>
+      {is_public && widget?.config.sections?.roadmap === true && (
+        <NewWidgetPreview />
+      )}
+    </>
   );
 }

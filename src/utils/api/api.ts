@@ -7,8 +7,8 @@ import {
 } from './types';
 import { parseResponse, prepHeaders, processErrors } from './utils';
 import { Moderation } from '../../types/moderation';
-import { SavedWidget } from '../../types/savedWidget';
 import { Segment } from '../../types/segment';
+import { Widget } from '../../contexts/WidgetContext/type';
 
 export const api_url = import.meta.env.VITE_API_HOST;
 export const api_public_url = import.meta.env.VITE_API_HOST_PUBLIC;
@@ -63,7 +63,7 @@ export const postApi = async <Data = any>({
   url: string;
   payload?:
     | Payload
-    | SavedWidget
+    | Widget
     | Partial<Segment>
     | {
         attachments: (
@@ -145,7 +145,7 @@ export const patchApi = async <Data = any>(url: string, payload?: Payload) => {
 
 export const putApi = async <Data = any>(
   url: string,
-  payload?: Payload | Moderation | Partial<SavedWidget | Segment>
+  payload?: Payload | Moderation | Partial<Widget | Segment>
 ) => {
   let results: ApiResponseBody<Data> = {};
   let headers: ApiResponseHeaders;

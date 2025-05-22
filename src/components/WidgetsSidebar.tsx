@@ -1,25 +1,20 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  ReactNode,
-  SetStateAction,
-} from 'react';
+import React, { useState, useEffect, useRef, ReactNode } from 'react';
 import { Checkbox } from './Checkbox';
 import { ChevronDownIcon } from './icons/chevron-down.icon';
 import { HexColorPicker } from 'react-colorful';
-import { defaultWidgetConfig } from '../types/widget';
-import type {
-  WidgetConfig,
-  WidgetAppearance,
-  Targeting,
-} from '../types/widget';
 import type { SelectOption } from '../types/dropdown';
 import { SelectDropdown } from './ui/dropdown/select/SelectDropdown';
 import { WidgetTargetingForm } from './WidgetPreview/widgets/WidgetTargetingForm';
 import { ArrowLeft } from 'lucide-react';
 import { FormField } from './ui/FormField';
 import { Toggle } from './ui/Toggle';
+import {
+  defaultWidgetConfig,
+  Targeting,
+  WidgetAppearance,
+  WidgetConfig,
+} from '../contexts/WidgetContext/type';
+import { useWidget } from '../contexts/WidgetContext/WidgetProvider';
 
 // Constants with proper type definitions
 const WIDGET_TYPE_OPTIONS: SelectOption[] = [
@@ -81,10 +76,6 @@ const POSITION_OPTIONS: { value: 'Right' | 'Left'; label: string }[] = [
 // Types & Interfaces
 // ===============================
 interface WidgetsSidebarProps {
-  config: WidgetConfig;
-  editingWidgetId?: number;
-  onCancel: () => void;
-  onConfigUpdate: (value: SetStateAction<WidgetConfig>) => void;
   onSave: (shouldClose?: boolean) => void;
   onClose: () => void;
   onSectionChange: (section: string | null) => void;
@@ -160,22 +151,22 @@ const getEmbedCode = (config: WidgetConfig) => {
 // ===============================
 // Main Component
 // ===============================
-export default function WidgetsSidebar({
-  config,
-  editingWidgetId,
-  onCancel,
-  onConfigUpdate,
+export const WidgetsSidebar = ({
   onSave,
   onClose,
   onSectionChange,
-}: WidgetsSidebarProps) {
+}: WidgetsSidebarProps) => {
+  const {
+    state: { config, editingWidgetId },
+    setWidgetConfig: onConfigUpdate,
+  } = useWidget();
+
   // ===============================
   // State & Refs
   // ===============================
   const [activeSection, setActiveSection] = useState<string | null>('launcher');
   const [isCanceled, setIsCanceled] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [widgetName, setWidgetName] = useState(config.name || '');
   const timerRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
@@ -196,45 +187,42 @@ export default function WidgetsSidebar({
     };
   }, [config, isCanceled]);
 
-  useEffect(() => {
-    setWidgetName(config.name || '');
-  }, [config.name]);
-
   // ===============================
   // Handlers
   // ===============================
   const handleConfigUpdate = (field: keyof WidgetConfig, value: any) => {
-    onConfigUpdate((prev) => {
-      prev = { ...prev, [field]: value };
-      if (field === 'backgroundColor') {
-        prev = { ...prev, appearance: { ...prev.appearance, [field]: value } };
-      }
-      return prev;
-    });
+    let newConfig = { ...config, [field]: value };
+    if (field === 'backgroundColor') {
+      newConfig = {
+        ...newConfig,
+        appearance: { ...newConfig.appearance, [field]: value },
+      };
+    }
+    onConfigUpdate(newConfig);
   };
 
   const handleAppearanceUpdate = (updates: Partial<WidgetAppearance>) => {
-    onConfigUpdate((prev) => ({
-      ...prev,
+    onConfigUpdate({
+      ...config,
       appearance: {
-        ...prev.appearance,
+        ...config.appearance,
         ...updates,
         placement: updates.placement,
       },
-    }));
+    });
   };
 
   const handleTargetingUpdate = (
     field: keyof Targeting,
     value: string | number
   ) => {
-    onConfigUpdate((prev) => ({
-      ...prev,
+    onConfigUpdate({
+      ...config,
       targeting: {
-        ...prev.targeting,
+        ...config.targeting,
         [field]: field === 'delay' ? Number(value) : value,
       },
-    }));
+    });
   };
 
   const handleSectionChange = (sectionId: string | null) => {
@@ -251,22 +239,21 @@ export default function WidgetsSidebar({
     }
 
     if (typeof onConfigUpdate === 'function') {
-      onConfigUpdate((prev) => ({
+      onConfigUpdate({
         ...defaultWidgetConfig,
-        launcherType: prev.launcherType,
-        notificationCount: prev.notificationCount,
-        widgetType: prev.widgetType,
-      }));
+        launcherType: config.launcherType,
+        notificationCount: config.notificationCount,
+        widgetType: config.widgetType,
+      });
     }
-    setWidgetName(config.name || '');
     setActiveSection('launcher');
-    onCancel();
+    onClose();
   };
 
   const handleSectionToggle = (section: string, enabled: boolean) => {
     const sections = config.sections;
-    onConfigUpdate((prev) => ({
-      ...prev,
+    onConfigUpdate({
+      ...config,
       sections: {
         active: sections?.active ?? 'ideas',
         ideas: sections?.ideas ?? true,
@@ -274,7 +261,7 @@ export default function WidgetsSidebar({
         announcements: sections?.announcements ?? true,
         [section]: enabled,
       },
-    }));
+    });
   };
 
   // ===============================
@@ -1066,7 +1053,9 @@ export default function WidgetsSidebar({
       content: (
         <WidgetTargetingForm
           formState={config}
-          onChange={(field, value) => handleTargetingUpdate(field, value)}
+          onChange={(field, value) =>
+            handleTargetingUpdate(field as keyof Targeting, value)
+          }
         />
       ),
     },
@@ -1082,18 +1071,15 @@ export default function WidgetsSidebar({
           {isEditing ? (
             <input
               type="text"
-              value={widgetName}
+              value={config.name ?? ''}
               onChange={(e) => {
-                setWidgetName(e.target.value);
                 handleConfigUpdate('name', e.target.value);
               }}
               onFocus={() => {
-                setWidgetName('');
-                handleConfigUpdate('name', '');
+                handleConfigUpdate('name', config.name ?? '');
               }}
               onBlur={(e) => {
                 if (!e.target.value) {
-                  setWidgetName('My first widget');
                   handleConfigUpdate('name', 'My first widget');
                 }
                 setIsEditing(false);
@@ -1110,7 +1096,7 @@ export default function WidgetsSidebar({
                 <ArrowLeft size={18} />
               </button>
               <span className="text-lg font-medium text-gray-900">
-                {widgetName}
+                {config.name ?? 'My first widget'}
               </span>
               <button
                 onClick={() => setIsEditing(true)}
@@ -1200,4 +1186,4 @@ export default function WidgetsSidebar({
       </div>
     </div>
   );
-}
+};

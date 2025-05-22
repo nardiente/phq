@@ -1,12 +1,11 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
-import WidgetsSidebar from './WidgetsSidebar';
-import { WidgetConfig } from '../types/widget';
+import { WidgetsSidebar } from './WidgetsSidebar';
 import { NewWidgetPreview } from './WidgetPreview/NewWidgetPreview';
-import { getApi, postApi, putApi } from '../utils/api/api';
-import { SavedWidget } from '../types/savedWidget';
 import { useWhatsNew } from '../contexts/WhatsNewContext';
 import { useUser } from '../contexts/UserContext';
 import AddPostForm from './whats_new/add_post_form/AddPostForm';
+import { defaultWidgetConfig, Widget } from '../contexts/WidgetContext/type';
+import { useWidget } from '../contexts/WidgetContext/WidgetProvider';
 
 export const WidgetForm = ({
   id,
@@ -17,91 +16,42 @@ export const WidgetForm = ({
 }) => {
   const {
     state: { posts, showAddForm },
-    listWhatsNew,
     setShowAddForm,
   } = useWhatsNew();
+  const {
+    state: { editingWidgetId, config: widgetConfig, widget: savedWidget },
+    addWidget,
+    getNotificationCount,
+    loadWidget,
+    setWidgetConfig,
+    updateWidget,
+  } = useWidget();
   const { user: userDetails } = useUser();
-  const { user } = userDetails ?? {};
+  const { admin_profile, user } = userDetails ?? {};
 
-  const [savedWidget, setSavedWidget] = useState<SavedWidget>();
-  const [widgetConfig, setWidgetConfig] = useState<WidgetConfig>({
-    name: 'My first widget',
-    widgetType: 'Modal',
-    launcherType: 'Tab',
-    launcherPosition: 'Right',
-    backgroundColor: '#FF6334',
-    appearance: {
-      backgroundColor: '#ff6334',
-      width: '450px',
-      height: '600px',
-      position: 'Right',
-      preventScroll: false,
-      hideCloseButton: false,
-    },
-    notificationType: 'Count',
-    sections: {
-      active: 'ideas',
-      announcements: true,
-      ideas: true,
-      roadmap: true,
-    },
-  });
   const [, setActiveSection] = useState<string | null>('widget-type');
-  const [editingWidgetId, setEditingWidgetId] = useState<number>();
+
+  const userInfo =
+    import.meta.env.VITE_SYSTEM_TYPE === 'public' ? admin_profile : user;
 
   useEffect(() => {
-    getNotificationCount();
     setShowAddForm(false);
   }, []);
 
   useEffect(() => {
-    const loadWidget = async (widgetId: number) => {
-      getApi<SavedWidget>({ url: `widgets/${widgetId}` }).then((res) => {
-        const {
-          results: { data },
-        } = res;
-
-        if (data) {
-          setEditingWidgetId(widgetId);
-          setSavedWidget(data);
-          setWidgetConfig((prev) => ({
-            ...prev,
-            ...{ ...data.config, notificationCount: countUnreadPosts() },
-          }));
-        }
-      });
-    };
-
     if (id) {
       loadWidget(id);
     }
   }, [id]);
 
   useEffect(() => {
-    if (user?.id) {
+    if (userInfo?.id) {
       getNotificationCount();
     }
-  }, [posts.length, user]);
-
-  const countUnreadPosts = () => {
-    return posts.filter(
-      (post) => !post.views.some((view) => view.created_by === user?.id)
-    ).length;
-  };
-
-  const getNotificationCount = async () => {
-    if (posts.length === 0) {
-      await listWhatsNew();
-    }
-
-    setWidgetConfig((prev) => ({
-      ...prev,
-      notificationCount: countUnreadPosts(),
-    }));
-  };
+  }, [posts.length, userInfo]);
 
   const handleSave = async (shouldClose: boolean = false) => {
-    const widgetData: SavedWidget = {
+    const widgetData: Widget = {
       id: editingWidgetId,
       name: widgetConfig.name ?? '',
       config: widgetConfig,
@@ -111,23 +61,13 @@ export const WidgetForm = ({
     };
 
     if (editingWidgetId) {
-      delete widgetData.id;
-      putApi(`widgets/${editingWidgetId}`, widgetData).then((res) => {
-        if (res.results.data && shouldClose) {
-          setShowWidgetForm(false);
-        }
-      });
+      await updateWidget(widgetData);
     } else {
-      postApi<SavedWidget>({ url: 'widgets', payload: widgetData }).then(
-        (res) => {
-          if (res.results.data) {
-            setEditingWidgetId(res.results.data.id);
-            if (shouldClose) {
-              setShowWidgetForm(false);
-            }
-          }
-        }
-      );
+      await addWidget(widgetData);
+    }
+    if (shouldClose) {
+      setWidgetConfig(defaultWidgetConfig);
+      setShowWidgetForm(false);
     }
   };
 
@@ -135,20 +75,13 @@ export const WidgetForm = ({
     <div className="flex">
       <div className="w-[400px] border-r border-gray-200 bg-white">
         <WidgetsSidebar
-          config={widgetConfig}
-          editingWidgetId={editingWidgetId}
-          onCancel={() => setEditingWidgetId(undefined)}
-          onConfigUpdate={setWidgetConfig}
-          onSave={(shouldClose) => handleSave(shouldClose)}
+          onSave={handleSave}
           onClose={() => setShowWidgetForm(false)}
           onSectionChange={setActiveSection}
         />
       </div>
 
-      <NewWidgetPreview
-        config={widgetConfig}
-        setWidgetConfig={setWidgetConfig}
-      />
+      <NewWidgetPreview className="flex-1 relative" />
 
       {showAddForm && <AddPostForm />}
     </div>

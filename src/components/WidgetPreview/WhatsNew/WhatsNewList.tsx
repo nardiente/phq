@@ -1,15 +1,18 @@
 import { Fragment } from 'react/jsx-runtime';
 import { useWhatsNew } from '../../../contexts/WhatsNewContext';
 import PostItem from '../../whats_new/post/PostItem';
-import { WidgetConfig } from '../../../types/widget';
 import { getDigits } from '../../../utils/string';
+import { useWidget } from '../../../contexts/WidgetContext/WidgetProvider';
 
-export const WhatsNewList = ({ config }: { config: WidgetConfig }) => {
+export const WhatsNewList = () => {
   const {
     state: { posts },
     setSelectedPost,
     setShowAddForm,
   } = useWhatsNew();
+  const {
+    state: { config },
+  } = useWidget();
 
   const width = (getDigits(config.appearance.width) ?? 450) - 90;
 

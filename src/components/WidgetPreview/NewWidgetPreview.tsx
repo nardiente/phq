@@ -1,23 +1,36 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { WidgetConfig } from '../../types/widget';
+import { useEffect, useState } from 'react';
 import { TabLauncher } from './TabLauncher';
 import { FloatingLauncher } from './FloatingLauncher';
 import { WidgetContent } from './WidgetContent';
+import { useWidget } from '../../contexts/WidgetContext/WidgetProvider';
+import { useFeedback } from '../../contexts/FeedbackContext';
+import { useUser } from '../../contexts/UserContext';
 
 // Type guard to ensure config is complete
-const validateConfig = (config: WidgetConfig): boolean => {
+const validateConfig = (/*config: WidgetConfig*/): boolean => {
   return true;
 };
 
 export const NewWidgetPreview = ({
-  config,
-  setWidgetConfig,
+  className = '',
 }: {
-  config: WidgetConfig;
-  setWidgetConfig: Dispatch<SetStateAction<WidgetConfig>>;
+  className?: string;
 }) => {
+  const {
+    state: { config },
+    getNotificationCount,
+  } = useWidget();
+  const {
+    state: {
+      filter: { sort, tags },
+    },
+    handleListFeedback,
+  } = useFeedback();
+  const { user: userContext } = useUser();
+  const { project } = userContext ?? {};
+
   // Validate config early
-  validateConfig(config);
+  validateConfig(/*config*/);
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -37,6 +50,7 @@ export const NewWidgetPreview = ({
       placement: config.appearance?.placement || 'Bottom right',
     },
   };
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
     if (config.widgetType === 'Embed') {
@@ -44,10 +58,20 @@ export const NewWidgetPreview = ({
     }
   }, [config.widgetType]);
 
+  useEffect(() => {
+    if (is_public && project?.id) {
+      getNotificationCount();
+    }
+  }, [project]);
+
+  useEffect(() => {
+    handleListFeedback();
+  }, [sort, tags.length]);
+
   // Simple widget content wrapper with close button
   const WidgetContainer = ({ children }: { children: React.ReactNode }) => (
     <div
-      className={`bg-white relative rounded-lg shadow-xl ${configWithDefaults.appearance.preventScroll ? 'overflow-hidden' : 'overflow-y-auto'}`}
+      className={`bg-white relative rounded-lg shadow-xl z-[50] ${configWithDefaults.appearance.preventScroll ? 'overflow-hidden' : 'overflow-y-auto'}`}
       style={{
         height:
           config.widgetType === 'Sidebar'
@@ -82,21 +106,15 @@ export const NewWidgetPreview = ({
   );
 
   return (
-    <div className="flex-1 relative">
+    <div className={className}>
       {/* Launcher */}
       {config.widgetType !== 'Embed' && (
         <>
           {config.launcherType === 'Tab' && (
-            <TabLauncher
-              config={configWithDefaults}
-              onClick={() => setIsVisible(!isVisible)}
-            />
+            <TabLauncher onClick={() => setIsVisible(!isVisible)} />
           )}
           {config.launcherType === 'Floating' && (
-            <FloatingLauncher
-              config={configWithDefaults}
-              onClick={() => setIsVisible(!isVisible)}
-            />
+            <FloatingLauncher onClick={() => setIsVisible(!isVisible)} />
           )}
         </>
       )}
@@ -108,10 +126,7 @@ export const NewWidgetPreview = ({
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="pointer-events-auto">
               <WidgetContainer>
-                <WidgetContent
-                  config={configWithDefaults}
-                  setWidgetConfig={setWidgetConfig}
-                />
+                <WidgetContent />
               </WidgetContainer>
             </div>
           </div>
@@ -123,10 +138,7 @@ export const NewWidgetPreview = ({
             } pointer-events-auto h-full`}
           >
             <WidgetContainer>
-              <WidgetContent
-                config={configWithDefaults}
-                setWidgetConfig={setWidgetConfig}
-              />
+              <WidgetContent />
             </WidgetContainer>
           </div>
         ) : config.widgetType === 'Popover' ? (
@@ -145,10 +157,7 @@ export const NewWidgetPreview = ({
             }}
           >
             <WidgetContainer>
-              <WidgetContent
-                config={configWithDefaults}
-                setWidgetConfig={setWidgetConfig}
-              />
+              <WidgetContent />
             </WidgetContainer>
           </div>
         ) : (
@@ -165,10 +174,7 @@ export const NewWidgetPreview = ({
             }}
           >
             <WidgetContainer>
-              <WidgetContent
-                config={configWithDefaults}
-                setWidgetConfig={setWidgetConfig}
-              />
+              <WidgetContent />
             </WidgetContainer>
           </div>
         ))}

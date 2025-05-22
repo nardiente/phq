@@ -14,6 +14,8 @@ import SettingsHeader from '../../components/SettingsHeader';
 import { WhatsNewFilter } from '../../components/WhatsNewFilter';
 import Button from '../../components/Button';
 import { Plus } from 'lucide-react';
+import { useWidget } from '../../contexts/WidgetContext/WidgetProvider';
+import { NewWidgetPreview } from '../../components/WidgetPreview/NewWidgetPreview';
 
 export const WhatsNewPage = () => {
   const { user } = useUser();
@@ -33,6 +35,9 @@ export const WhatsNewPage = () => {
     setShowAddForm,
   } = useWhatsNew();
   const { setActiveTab } = usePanel();
+  const {
+    state: { widget },
+  } = useWidget();
 
   const [whats_new, setWhatsNew] = useState<WhatsNew>();
 
@@ -211,6 +216,9 @@ export const WhatsNewPage = () => {
         </Settings>
       ) : (
         <AddPostForm />
+      )}
+      {is_public && widget?.config.sections?.announcements === true && (
+        <NewWidgetPreview />
       )}
     </Fragment>
   );

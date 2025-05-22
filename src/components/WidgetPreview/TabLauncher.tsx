@@ -1,24 +1,22 @@
-import { WidgetConfig } from '../../types/widget';
+import { useWidget } from '../../contexts/WidgetContext/WidgetProvider';
 
 interface TabLauncherProps {
-  config: WidgetConfig;
   onClick: () => void;
 }
 
-export const TabLauncher = ({ config, onClick }: TabLauncherProps) => {
-  const isLeft = config.launcherPosition === 'Left';
+export const TabLauncher = ({ onClick }: TabLauncherProps) => {
+  const {
+    state: { config },
+  } = useWidget();
 
-  // Validate required props
-  if (!config || !onClick) {
-    return null;
-  }
+  const isLeft = config.launcherPosition === 'Left';
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onClick();
   };
 
-  return (
+  return !config || !onClick ? null : (
     <div
       className="absolute top-1/2 -translate-y-1/2"
       style={{ [isLeft ? 'left' : 'right']: 0 }}

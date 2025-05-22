@@ -9,6 +9,7 @@ import { SegmentActionTypes, SegmentContextType, SegmentState } from './types';
 import { segmentReducer } from './reducer';
 import { Segment } from '../../types/segment';
 import { deleteApi, getApi, postApi, putApi } from '../../utils/api/api';
+import { WidgetProvider } from '../WidgetContext/WidgetProvider';
 
 const initialState: SegmentState = {
   fetching: false,
@@ -88,7 +89,11 @@ export function SegmentProvider({ children }: { children: ReactNode }) {
     [state]
   );
 
-  return <Context.Provider value={value}>{children}</Context.Provider>;
+  return (
+    <Context.Provider value={value}>
+      <WidgetProvider>{children}</WidgetProvider>
+    </Context.Provider>
+  );
 }
 
 export function useSegment() {

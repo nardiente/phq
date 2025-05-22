@@ -1,15 +1,15 @@
 import React from 'react';
-import { WidgetConfig } from '../../types/widget';
+import { useWidget } from '../../contexts/WidgetContext/WidgetProvider';
 
 interface FloatingLauncherProps {
-  config: WidgetConfig;
   onClick?: () => void;
 }
 
-export const FloatingLauncher = ({
-  config,
-  onClick,
-}: FloatingLauncherProps) => {
+export const FloatingLauncher = ({ onClick }: FloatingLauncherProps) => {
+  const {
+    state: { config },
+  } = useWidget();
+
   // Validate required props
   if (!config || !onClick) {
     return null;

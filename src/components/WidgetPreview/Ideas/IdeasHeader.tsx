@@ -7,7 +7,6 @@ export const IdeasHeader = () => {
 
   const {
     state: { filter },
-    handleListFeedback,
     setFilter,
   } = useFeedback();
   const { sort } = filter;
@@ -31,10 +30,6 @@ export const IdeasHeader = () => {
       document.removeEventListener('mousedown', expand);
     };
   }, []);
-
-  useEffect(() => {
-    handleListFeedback();
-  }, [sort]);
 
   const onSort = (sort: string) => {
     setFilter({

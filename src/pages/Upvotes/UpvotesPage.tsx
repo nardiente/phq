@@ -18,6 +18,8 @@ import SettingsHeader from '../../components/SettingsHeader';
 import Button from '../../components/Button';
 import { Plus } from 'lucide-react';
 import { SocketAction } from '../../types/socket';
+import { useWidget } from '../../contexts/WidgetContext/WidgetProvider';
+import { NewWidgetPreview } from '../../components/WidgetPreview/NewWidgetPreview';
 
 export default function UpvotesPage() {
   const location = useLocation();
@@ -45,6 +47,10 @@ export default function UpvotesPage() {
     state: { action, socket },
     setAction,
   } = useSocket();
+  const {
+    state: { widget },
+    loadPublishedWidget,
+  } = useWidget();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const userInfo = is_public ? admin_profile : user;
@@ -101,6 +107,9 @@ export default function UpvotesPage() {
 
     if (userInfo?.id) {
       handleListFeedback();
+      if (is_public) {
+        loadPublishedWidget();
+      }
     }
   }, [userInfo]);
 
@@ -139,137 +148,142 @@ export default function UpvotesPage() {
   };
 
   return (
-    <Settings className="pb-0">
-      <SettingsHeader
-        title="Upvotes"
-        filter={<UpvoteFilters roadmaps={roadmaps ?? []} />}
-        primaryButton={
-          <Button
-            className={`${is_public ? 'primary-button-color' : ''}`}
-            disabled={
-              (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
-              permissions?.length === 0
-            }
-            onClick={() => setIsOpen(true)}
-          >
-            <div
-              className={`flex gap-2 ${is_public ? 'primary-button-color' : 'text-white'}`}
+    <>
+      <Settings className="pb-0">
+        <SettingsHeader
+          title="Upvotes"
+          filter={<UpvoteFilters roadmaps={roadmaps ?? []} />}
+          primaryButton={
+            <Button
+              className={`${is_public ? 'primary-button-color' : ''}`}
+              disabled={
+                (!is_public && !permissions?.includes(Permissions.ADD_IDEA)) ||
+                permissions?.length === 0
+              }
+              onClick={() => setIsOpen(true)}
             >
-              <Plus size={16} />
-              New Idea
+              <div
+                className={`flex gap-2 ${is_public ? 'primary-button-color' : 'text-white'}`}
+              >
+                <Plus size={16} />
+                New Idea
+              </div>
+            </Button>
+          }
+        />
+        <div id="UpVoteList">
+          {loading && filteredIdeas.length === 0 && (
+            <div style={{ paddingTop: '50px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <FadeLoader height={5} width={2} radius={2} margin={-10} />
+              </div>
             </div>
-          </Button>
-        }
-      />
-      <div id="UpVoteList">
-        {loading && filteredIdeas.length === 0 && (
-          <div style={{ paddingTop: '50px' }}>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <FadeLoader height={5} width={2} radius={2} margin={-10} />
-            </div>
-          </div>
-        )}
-        {!loading && is_public && permissions && permissions.length === 0 ? (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              paddingLeft: '30px',
-              paddingRight: '30px',
-            }}
-          >
+          )}
+          {!loading && is_public && permissions && permissions.length === 0 ? (
             <div
               style={{
                 display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingTop: '10%',
+                justifyContent: 'center',
+                paddingLeft: '30px',
+                paddingRight: '30px',
               }}
             >
-              <h4>
-                <div className="container no-upvote-background">
-                  <div className="flex items-center justify-center mb-2 sad-face">
-                    <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
-                  </div>
-                  <h3 className="no-upvote-header">
-                    This public board is no longer available. Please contact the
-                    admin.
-                  </h3>
-                </div>
-              </h4>
-            </div>
-          </div>
-        ) : (
-          <>
-            {!loading && filteredIdeas.length === 0 && (
               <div
                 style={{
                   display: 'flex',
-                  justifyContent: 'center',
-                  paddingLeft: '30px',
-                  paddingRight: '30px',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingTop: '10%',
                 }}
               >
+                <h4>
+                  <div className="container no-upvote-background">
+                    <div className="flex items-center justify-center mb-2 sad-face">
+                      <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
+                    </div>
+                    <h3 className="no-upvote-header">
+                      This public board is no longer available. Please contact
+                      the admin.
+                    </h3>
+                  </div>
+                </h4>
+              </div>
+            </div>
+          ) : (
+            <>
+              {!loading && filteredIdeas.length === 0 && (
                 <div
                   style={{
                     display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingTop: '10%',
+                    justifyContent: 'center',
+                    paddingLeft: '30px',
+                    paddingRight: '30px',
                   }}
                 >
-                  <h4>
-                    <div className="container no-upvote-background">
-                      <div className="flex items-center justify-center mb-2 sad-face">
-                        <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      paddingTop: '10%',
+                    }}
+                  >
+                    <h4>
+                      <div className="container no-upvote-background">
+                        <div className="flex items-center justify-center mb-2 sad-face">
+                          <img src="https://s3.amazonaws.com/uat-app.productfeedback.co/icon/emoji-frown.svg"></img>
+                        </div>
+                        <h3 className="no-upvote-header">
+                          {!filtering ? (
+                            <>
+                              {is_public
+                                ? 'No ideas have been created… yet.'
+                                : 'Now is a great time to add your first idea.'}
+                            </>
+                          ) : (
+                            'Crickets and tumbleweeds. Please try again.'
+                          )}
+                        </h3>
                       </div>
-                      <h3 className="no-upvote-header">
-                        {!filtering ? (
-                          <>
-                            {is_public
-                              ? 'No ideas have been created… yet.'
-                              : 'Now is a great time to add your first idea.'}
-                          </>
-                        ) : (
-                          'Crickets and tumbleweeds. Please try again.'
-                        )}
-                      </h3>
-                    </div>
-                  </h4>
-                </div>
-              </div>
-            )}
-            {filteredIdeas.length > 0 &&
-              (!is_public ||
-                (is_public && permissions && permissions.length > 0)) && (
-                <div className="upvote-each-list-container">
-                  {filteredIdeas.find((idea) => idea.pinned) && (
-                    <p className="pinned-label">
-                      Pinned idea
-                      {filteredIdeas.filter((idea) => idea.pinned).length > 1
-                        ? 's'
-                        : ''}
-                    </p>
-                  )}
-                  {filteredIdeas
-                    ?.filter((idea) => !idea.draft)
-                    .map((idea, idx) => (
-                      <Fragment key={idx}>
-                        <UpVoteEachList
-                          props={idea}
-                          handleListFeedback={handleListFeedback}
-                        />
-                        {filteredIdeas.find((idea) => idea.pinned) &&
-                          idea.pinned &&
-                          filteredIdeas.length - 1 > idx &&
-                          !filteredIdeas[idx + 1].pinned && <hr />}
-                      </Fragment>
-                    ))}
+                    </h4>
+                  </div>
                 </div>
               )}
-          </>
-        )}
-      </div>
-    </Settings>
+              {filteredIdeas.length > 0 &&
+                (!is_public ||
+                  (is_public && permissions && permissions.length > 0)) && (
+                  <div className="upvote-each-list-container">
+                    {filteredIdeas.find((idea) => idea.pinned) && (
+                      <p className="pinned-label">
+                        Pinned idea
+                        {filteredIdeas.filter((idea) => idea.pinned).length > 1
+                          ? 's'
+                          : ''}
+                      </p>
+                    )}
+                    {filteredIdeas
+                      ?.filter((idea) => !idea.draft)
+                      .map((idea, idx) => (
+                        <Fragment key={idx}>
+                          <UpVoteEachList
+                            props={idea}
+                            handleListFeedback={handleListFeedback}
+                          />
+                          {filteredIdeas.find((idea) => idea.pinned) &&
+                            idea.pinned &&
+                            filteredIdeas.length - 1 > idx &&
+                            !filteredIdeas[idx + 1].pinned && <hr />}
+                        </Fragment>
+                      ))}
+                  </div>
+                )}
+            </>
+          )}
+        </div>
+      </Settings>
+      {is_public && widget?.config.sections?.ideas === true && (
+        <NewWidgetPreview />
+      )}
+    </>
   );
 }

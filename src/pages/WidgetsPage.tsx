@@ -1,17 +1,26 @@
 import { useState, useEffect, useRef } from 'react';
-import type { SavedWidget, WidgetStatus } from '../types/savedWidget';
 import WidgetDeleteModal from '../components/WidgetPreview/widgets/WidgetDeleteModal';
 import { GetCodeModal } from '../components/WidgetPreview/widgets/GetCodeModal';
-import { deleteApi, getApi, putApi } from '../utils/api/api';
 import { Loader } from 'lucide-react';
 import { Settings } from '../components/Settings';
 import SettingsHeader from '../components/SettingsHeader';
 import Button from '../components/Button';
 import { WidgetForm } from '../components/WidgetForm';
+import {
+  defaultWidgetConfig,
+  WidgetStatus,
+} from '../contexts/WidgetContext/type';
+import { useWidget } from '../contexts/WidgetContext/WidgetProvider';
 
 export default function WidgetsPage() {
-  const [fetching, setFetching] = useState<boolean>(false);
-  const [widgets, setWidgets] = useState<SavedWidget[]>([]);
+  const {
+    state: { fetching, widgets },
+    deleteWidget,
+    listWidgets,
+    setWidgetConfig,
+    updateWidget,
+  } = useWidget();
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [widgetToDelete, setWidgetToDelete] = useState<number>();
   const [openDropdownId, setOpenDropdownId] = useState<number>();
@@ -22,7 +31,7 @@ export default function WidgetsPage() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    loadWidgets();
+    listWidgets();
   }, []);
 
   useEffect(() => {
@@ -32,7 +41,7 @@ export default function WidgetsPage() {
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setOpenDropdownId(undefined);
-        loadWidgets();
+        listWidgets();
       }
     };
 
@@ -41,7 +50,7 @@ export default function WidgetsPage() {
     }
 
     if (!openDropdownId) {
-      loadWidgets();
+      listWidgets();
     }
 
     return () => {
@@ -52,20 +61,10 @@ export default function WidgetsPage() {
   useEffect(() => {
     if (!showWidgetForm) {
       setOpenDropdownId(undefined);
-      loadWidgets();
+      setWidgetConfig(defaultWidgetConfig);
+      listWidgets();
     }
   }, [showWidgetForm]);
-
-  const loadWidgets = async () => {
-    setFetching(true);
-    getApi<SavedWidget[]>({ url: 'widgets' })
-      .then((res) => {
-        if (res.results.data) {
-          setWidgets(res.results.data);
-        }
-      })
-      .finally(() => setFetching(false));
-  };
 
   const handleDeleteClick = (id: number, e: React.MouseEvent) => {
     const dropdown = (e.target as HTMLElement)
@@ -78,24 +77,12 @@ export default function WidgetsPage() {
 
   const handleConfirmDelete = async () => {
     if (!widgetToDelete) return;
-
-    deleteApi({ url: `widgets/${widgetToDelete}` }).then((res) => {
-      if (res.results.data) {
-        setWidgets(widgets.filter((w) => w.id !== widgetToDelete));
-      }
-    });
+    await deleteWidget(widgetToDelete);
   };
 
-  const handlePublish = (id: number, status: WidgetStatus) => {
-    putApi(`widgets/${id}`, { status })
-      .then((res) => {
-        if (res.results.data) {
-          setWidgets((prev) =>
-            prev.map((w) => (w.id === id ? { ...w, status } : w))
-          );
-        }
-      })
-      .finally(() => setOpenDropdownId(undefined));
+  const handlePublish = async (id: number, status: WidgetStatus) => {
+    await updateWidget({ id, status });
+    setOpenDropdownId(undefined);
   };
 
   return !showWidgetForm ? (
@@ -326,11 +313,7 @@ export default function WidgetsPage() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            setOpenDropdownId(
-                              openDropdownId === widget.id
-                                ? undefined
-                                : widget.id
-                            );
+                            setOpenDropdownId(widget.id);
                           }}
                           className="text-gray-500 hover:text-gray-700"
                         >

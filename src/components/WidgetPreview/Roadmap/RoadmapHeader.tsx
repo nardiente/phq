@@ -7,7 +7,6 @@ export const RoadmapHeader = () => {
 
   const {
     state: { filter, tags },
-    handleListFeedback,
     setFilter,
   } = useFeedback();
   const { tags: filterTags } = filter;
@@ -31,10 +30,6 @@ export const RoadmapHeader = () => {
       document.removeEventListener('mousedown', expand);
     };
   }, []);
-
-  useEffect(() => {
-    handleListFeedback();
-  }, [filter]);
 
   const toggle = () => setExpanded(!is_expanded);
 

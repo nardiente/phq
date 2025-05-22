@@ -1,15 +1,11 @@
-import { useState, useEffect } from 'react';
-import { WidgetConfig } from '../../types/widget';
+import { useState } from 'react';
 import { PopoverWidget } from './widgets/PopoverWidget';
 import { ModalWidget } from './widgets/ModalWidget';
 import { SidebarWidget } from './widgets/SidebarWidget';
 import { TabLauncher } from './TabLauncher';
 import { FloatingLauncher } from './FloatingLauncher';
 import { WidgetContent } from './WidgetContent';
-import { WidgetSectionsForm } from './widgets/WidgetSectionsForm';
-import { WidgetTargetingForm } from './widgets/WidgetTargetingForm';
-import { GetCodeModal } from './widgets/GetCodeModal';
-import { WidgetDeleteModal } from './widgets/WidgetDeleteModal';
+import { WidgetConfig } from '../../contexts/WidgetContext/type';
 
 interface WidgetPreviewProps {
   config: WidgetConfig;
@@ -18,28 +14,13 @@ interface WidgetPreviewProps {
 export const WidgetPreview = ({ config }: WidgetPreviewProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    if (config.widgetType === 'Popover') {
-    }
-  }, [config, isVisible]);
-
   // Simple toggle in the launcher
   const renderLauncher = () => {
     switch (config.launcherType) {
       case 'Tab':
-        return (
-          <TabLauncher
-            config={config}
-            onClick={() => setIsVisible(!isVisible)}
-          />
-        );
+        return <TabLauncher onClick={() => setIsVisible(!isVisible)} />;
       case 'Floating':
-        return (
-          <FloatingLauncher
-            config={config}
-            onClick={() => setIsVisible(!isVisible)}
-          />
-        );
+        return <FloatingLauncher onClick={() => setIsVisible(!isVisible)} />;
       default:
         return null;
     }
@@ -59,7 +40,7 @@ export const WidgetPreview = ({ config }: WidgetPreviewProps) => {
             {config.widgetType === 'Sidebar' && (
               <SidebarWidget config={config} />
             )}
-            {config.widgetType === 'Embed' && <WidgetContent config={config} />}
+            {config.widgetType === 'Embed' && <WidgetContent />}
           </div>
         )}
       </div>
@@ -73,7 +54,7 @@ const getWidgetClassName = (config: WidgetConfig) => {
       return `absolute top-0 bottom-0 ${config.appearance?.position === 'Left' ? 'left-0' : 'right-0'} bg-white shadow-xl`;
     case 'Modal':
       return 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
-    case 'Popover':
+    case 'Popover': {
       const placement = config.appearance?.placement || 'Bottom right';
       switch (placement) {
         case 'Top left':
@@ -84,30 +65,11 @@ const getWidgetClassName = (config: WidgetConfig) => {
           return 'absolute bottom-24 left-24';
         case 'Bottom right':
           return 'absolute bottom-24 right-24';
+        default:
+          return '';
       }
+    }
     default:
       return '';
-  }
-};
-
-const getWidgetStyles = (config: WidgetConfig) => {
-  const baseStyles = {
-    backgroundColor: config.backgroundColor,
-  };
-
-  switch (config.widgetType) {
-    case 'Sidebar':
-      return {
-        ...baseStyles,
-        [config.appearance?.position?.toLowerCase() || 'right']: 0,
-        width: config.appearance?.width || '450px',
-        maxWidth: 'calc(100vw - 64px)',
-      };
-    case 'Modal':
-      return baseStyles;
-    case 'Popover':
-      return baseStyles;
-    default:
-      return baseStyles;
   }
 };
