@@ -17,7 +17,8 @@
     "start": "react-scripts start test-design-page.tsx",
     "test": "playwright test",
     "test:debug": "playwright test --debug",
-    "test:headed": "playwright test --headed"
+    "test:headed": "playwright test --headed",
+    "minify:snippet": "npx terser public/static/assets/js/code-snippet.js -o public/static/assets/js/code-snippet.min.js --compress --mangle"
   },
   "dependencies": {
     "@g-six/swiss-knife-lite": "^1.0.4",

@@ -11,6 +11,8 @@ import {
   WidgetStatus,
 } from '../contexts/WidgetContext/type';
 import { useWidget } from '../contexts/WidgetContext/WidgetProvider';
+import { CodeSnippet } from '../types/tracking';
+import { getApi } from '../utils/api/api';
 
 export default function WidgetsPage() {
   const {
@@ -21,6 +23,7 @@ export default function WidgetsPage() {
     updateWidget,
   } = useWidget();
 
+  const [code, setCode] = useState<string>('');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [widgetToDelete, setWidgetToDelete] = useState<number>();
   const [openDropdownId, setOpenDropdownId] = useState<number>();
@@ -80,6 +83,18 @@ export default function WidgetsPage() {
     await deleteWidget(widgetToDelete);
   };
 
+  const handleGetCode = () => {
+    getApi<CodeSnippet>({ url: 'trackings/code-snippet' }).then((res) => {
+      const { results } = res;
+      const { data } = results;
+      if (data) {
+        setCode(data.snippet);
+        setSelectedWidgetKey(data.customer_id.toString()); // We'll need the actual key here
+        setIsGetCodeModalOpen(true);
+      }
+    });
+  };
+
   const handlePublish = async (id: number, status: WidgetStatus) => {
     await updateWidget({ id, status });
     setOpenDropdownId(undefined);
@@ -91,13 +106,7 @@ export default function WidgetsPage() {
         title="Widgets"
         description="Create and manage your widgets."
         secondaryButton={
-          <Button
-            onClick={() => {
-              setIsGetCodeModalOpen(true);
-              setSelectedWidgetKey('your-widget-key'); // We'll need the actual key here
-            }}
-            variant="blue"
-          >
+          <Button onClick={handleGetCode} variant="blue">
             Get Code
           </Button>
         }
@@ -400,6 +409,7 @@ export default function WidgetsPage() {
       )}
 
       <GetCodeModal
+        code={code}
         isOpen={isGetCodeModalOpen}
         onClose={() => setIsGetCodeModalOpen(false)}
         widgetKey={selectedWidgetKey}
