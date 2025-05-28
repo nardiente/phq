@@ -92,7 +92,7 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = ({
         onClick={() => {
           setIsOpen(!isOpen);
         }}
-        className="w-full flex items-center justify-between px-3 py-2 text-sm font-satoshi text-gray-900"
+        className="w-full flex items-center justify-between px-3 py-2 text-sm font-satoshi text-gray-900 focus:outline-none focus:ring-1 focus:ring-indigo-500 rounded-md"
       >
         <span>{safeValue.label}</span>
         <span className="ml-2">

@@ -107,7 +107,7 @@ const ColorPicker: React.FC<{
           type="text"
           value={color}
           onChange={(e) => onChange(e.target.value)}
-          className="flex-1 focus:outline-none"
+          className="flex-1 focus:outline-none focus:ring-1 focus:ring-indigo-500 rounded-md"
         />
       </div>
 
@@ -327,7 +327,7 @@ export const WidgetsSidebar = ({
                   onChange={(option) => {
                     handleConfigUpdate('launcherPosition', option.value);
                   }}
-                  containerClass="w-full bg-white border border-gray-300 rounded-md"
+                  containerClass="w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 />
               </div>
 
@@ -412,7 +412,7 @@ export const WidgetsSidebar = ({
                     handleConfigUpdate('launcherText', e.target.value)
                   }
                   placeholder="What's new"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm"
                 />
               </div>
 
@@ -616,7 +616,7 @@ export const WidgetsSidebar = ({
                     ) > 64
                       ? 'border-red-500'
                       : 'border-gray-300'
-                  } rounded-md`}
+                  } rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500`}
                 />
                 <p
                   className={`text-xs ${
@@ -663,7 +663,7 @@ export const WidgetsSidebar = ({
                     }
                   }}
                   placeholder="450"
-                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-satoshi ${config.appearance?.width ? 'text-gray-900' : 'text-gray-400'}`}
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm font-satoshi ${config.appearance?.width ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p
                   className={`text-xs ${parseInt(config.appearance?.width || '0') < 300 || parseInt(config.appearance?.width || '0') > 800 ? 'text-red-500' : 'text-gray-500'}`}
@@ -701,7 +701,7 @@ export const WidgetsSidebar = ({
                     }
                   }}
                   placeholder="e.g., 500"
-                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-satoshi
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm font-satoshi
                     ${config.appearance.height ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p
@@ -794,7 +794,7 @@ export const WidgetsSidebar = ({
                     }
                   }}
                   placeholder="450"
-                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-satoshi ${config.appearance?.width ? 'text-gray-900' : 'text-gray-400'}`}
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm font-satoshi ${config.appearance?.width ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p
                   className={`text-xs ${parseInt(config.appearance.width || '0') < 300 || parseInt(config.appearance.width || '0') > 800 ? 'text-red-500' : 'text-gray-500'}`}
@@ -859,7 +859,7 @@ export const WidgetsSidebar = ({
                     }
                   }}
                   placeholder="e.g., 450"
-                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-satoshi
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm font-satoshi
                     ${config.appearance?.width ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p
@@ -898,7 +898,7 @@ export const WidgetsSidebar = ({
                     }
                   }}
                   placeholder="e.g., 500"
-                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-satoshi
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm font-satoshi
                     ${config.appearance.height ? 'text-gray-900' : 'text-gray-400'}`}
                 />
                 <p
@@ -959,7 +959,7 @@ export const WidgetsSidebar = ({
                     })
                   }
                   placeholder="Widget Title"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 />
               </FormField>
 
@@ -976,7 +976,7 @@ export const WidgetsSidebar = ({
                     })
                   }
                   placeholder="Suggest a feature, read through our Roadmap and check out our latest feature releases."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 />
               </FormField>
             </>
@@ -1085,7 +1085,7 @@ export const WidgetsSidebar = ({
                 setIsEditing(false);
               }}
               autoFocus
-              className="flex-1 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-satoshi"
+              className="flex-1 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 font-satoshi"
             />
           ) : (
             <div className="flex items-center gap-2">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Targeting, WidgetConfig } from '../../../types/widget';
+import { Targeting, WidgetConfig } from '../../../contexts/WidgetContext/type';
 
 interface WidgetTargetingFormProps {
   formState: WidgetConfig;
@@ -80,7 +80,7 @@ export const WidgetTargetingForm: React.FC<WidgetTargetingFormProps> = ({
             onChange={(e) =>
               onChange('delay', e.target.value ? parseInt(e.target.value) : 0)
             }
-            className={`w-16 px-3 py-2 border border-gray-300 rounded-md focus:outline-none text-sm ${Number(formState.targeting?.delay) > 0 ? 'text-gray-900' : ''}`}
+            className={`w-16 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm ${Number(formState.targeting?.delay) > 0 ? 'text-gray-900' : ''}`}
           />
           <span className="text-sm text-gray-700">seconds</span>
         </div>
