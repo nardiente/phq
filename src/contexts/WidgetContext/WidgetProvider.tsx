@@ -152,7 +152,11 @@ export function WidgetProvider({ children }: { children: ReactNode }) {
         dispatch({ type: WidgetActionTypes.SET_WIDGET, payload: data });
         setWidgetConfig({
           ...data.config,
-          notificationCount: await countUnreadPosts(),
+          notificationCount:
+            !data.config.notificationCount ||
+            data.config.notificationCount === 0
+              ? await countUnreadPosts()
+              : data.config.notificationCount,
         });
       }
     });
@@ -169,7 +173,11 @@ export function WidgetProvider({ children }: { children: ReactNode }) {
         dispatch({ type: WidgetActionTypes.SET_WIDGET, payload: data });
         setWidgetConfig({
           ...data.config,
-          notificationCount: await countUnreadPosts(),
+          notificationCount:
+            !data.config.notificationCount ||
+            data.config.notificationCount === 0
+              ? await countUnreadPosts()
+              : data.config.notificationCount,
         });
       }
     });

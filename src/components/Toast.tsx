@@ -35,7 +35,7 @@ export function Toast({
   }
 
   return (
-    <div className="fixed bottom-24 left-1/2 -translate-x-1/2 animate-fade-in">
+    <div className="fixed bottom-24 left-1/2 -translate-x-1/2 animate-fade-in z-[110]">
       <div className="bg-primary text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2">
         {icon}
         <span>{message}</span>

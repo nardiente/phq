@@ -13,7 +13,7 @@ import { Moderation } from '../types/moderation';
 import { Subscription } from '../types/billing';
 import { Project } from '../types/project';
 import { ProjectAppearance } from '../types/appearance';
-import { getKaslKey } from '../utils/localStorage';
+import { getKaslKey, setCustomerKaslKey } from '../utils/localStorage';
 import {
   default_active_link_color,
   default_background_color,
@@ -132,6 +132,12 @@ export function UserProvider({ children }: UserProviderProps) {
   useEffect(() => {
     setAppearanceColors(user.appearance);
   }, [user.appearance]);
+
+  useEffect(() => {
+    if (user.admin_profile?.kasl_key) {
+      setCustomerKaslKey(user.admin_profile.kasl_key);
+    }
+  }, [user.admin_profile]);
 
   const handleGetAppearance = async () => {
     getApi<ProjectAppearance>({

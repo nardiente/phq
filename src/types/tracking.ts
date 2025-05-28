@@ -7,6 +7,24 @@ export interface CodeSnippet {
   websites: Website[];
 }
 
+export interface Tracking {
+  id: number;
+  customer_id: number;
+  email_address: string;
+  firstname: string;
+  host: string;
+  job_title: string;
+  is_active: boolean;
+  lastname: string;
+  location: string;
+  phone_number: string;
+  role: string;
+  signup_date: Date;
+  website: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
 export interface Website {
   id: number;
   code_snippet_id: number;

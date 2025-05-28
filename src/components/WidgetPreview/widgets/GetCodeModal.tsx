@@ -1,4 +1,8 @@
 import { useState } from 'react';
+import { getApi } from '../../../utils/api/api';
+import { Tracking } from '../../../types/tracking';
+import { Toast } from '../../Toast';
+import { TypeOptions } from 'react-toastify';
 
 interface GetCodeModalProps {
   code: string;
@@ -13,7 +17,11 @@ export const GetCodeModal = ({
   onClose,
   widgetKey,
 }: GetCodeModalProps) => {
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
   const [showCopied, setShowCopied] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [type, setType] = useState<TypeOptions>('default');
 
   if (!isOpen) return null;
 
@@ -28,6 +36,29 @@ export const GetCodeModal = ({
   }
 </script>
 <!-- End ProductHQ -->`;
+
+  const checkCode = () => {
+    setLoading(true);
+    getApi<Tracking>({
+      url: 'trackings/latest',
+      params: { host: window.location.host },
+    })
+      .then((res) => {
+        const { results } = res;
+        const { data } = results;
+        if (data) {
+          setMessage('The code snippet is working.');
+          setType('success');
+        } else {
+          setMessage('The code snippet is not working.');
+          setType('warning');
+        }
+        setShowToast(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(code);
@@ -69,8 +100,12 @@ export const GetCodeModal = ({
 
         <p className="flex justify-between items-center mb-3">
           <span>STEP 3: Test the script</span>
-          <button className="bg-[#22C55E] text-white px-6 py-2 rounded-md relative">
-            Check status
+          <button
+            className="bg-[#22C55E] text-white px-6 py-2 rounded-md relative"
+            disabled={loading}
+            onClick={checkCode}
+          >
+            {loading ? 'Checking status...' : 'Check status'}
           </button>
         </p>
 
@@ -87,6 +122,13 @@ export const GetCodeModal = ({
           for more information or download the HTML example.
         </p>
       </div>
+      {showToast && (
+        <Toast
+          onClose={() => setShowToast(false)}
+          message={message}
+          type={type}
+        />
+      )}
     </>
   );
 };

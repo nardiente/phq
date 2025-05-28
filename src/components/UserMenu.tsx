@@ -94,7 +94,10 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
                   </figure>
                 </span>
               </div>
-              <span className="text-[14px] text-gray-900">
+              <span
+                id={is_public ? 'user-full-name' : ''}
+                className="text-[14px] text-gray-900"
+              >
                 {currentUser?.full_name}
               </span>
             </>
