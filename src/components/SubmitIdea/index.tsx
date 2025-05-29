@@ -31,8 +31,8 @@ export const SubmitIdea = () => {
   // Active Page: add_idea, add_comment, success, delete_idea, delete_column
   const {
     state: { activePage },
+    setIsOpen,
     setPanelLoading,
-    setSuccessType,
     setActivePage,
   } = usePanel();
   const {
@@ -202,8 +202,6 @@ export const SubmitIdea = () => {
           setApiFieldErrors(res.results.errors);
         }
         if (res.results.data) {
-          setSuccessType('idea');
-          setActivePage('success');
           if (is_logged_in) {
             const data = res.results.data as Feedback;
             const filteredData = handleFilterData(data);
@@ -220,6 +218,8 @@ export const SubmitIdea = () => {
             action: SocketAction.UPDATE_IDEA,
             data: { projectId: project?.id },
           });
+
+          setIsOpen(false);
         }
       })
       .finally(() => setPanelLoading(false));
