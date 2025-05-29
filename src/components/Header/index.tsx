@@ -66,7 +66,7 @@ export const Header: FC = () => {
   const is_logged_in =
     getKaslKey() !== undefined ||
     (is_public &&
-      moderation?.user_login === true &&
+      moderation?.allow_anonymous_access === true &&
       getSessionToken() !== undefined &&
       user?.user?.id);
 

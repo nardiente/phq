@@ -121,7 +121,7 @@ export const Comment = ({
     getKaslKey() !== undefined ||
     (getSessionToken() !== undefined &&
       is_public &&
-      user?.moderation?.user_login === true &&
+      user?.moderation?.allow_anonymous_access === true &&
       user.user?.id);
   const is_draft = comment.draft;
   const [currentComment, setCurrentComment] = useState(comment);
@@ -197,7 +197,8 @@ export const Comment = ({
     await postApi({
       url: `feedback/${comment.feedback_id}/comment/${comment.id}/emoji`,
       payload: { type },
-      useSessionToken: is_public && user?.moderation?.user_login === true,
+      useSessionToken:
+        is_public && user?.moderation?.allow_anonymous_access === true,
     }).then((res) => {
       if (res.results.errors) {
         setCurrentComment(oldComment);
@@ -215,7 +216,8 @@ export const Comment = ({
 
     await postApi({
       url: `feedback/${comment.feedback_id}/comment/${comment.id}/visibility`,
-      useSessionToken: is_public && user?.moderation?.user_login === true,
+      useSessionToken:
+        is_public && user?.moderation?.allow_anonymous_access === true,
     }).then((res) => {
       if (res.results.errors) {
         setCurrentComment(oldComment);
@@ -236,7 +238,8 @@ export const Comment = ({
         parent_id: comment.id.toString(),
         direction: 'desc',
       },
-      useSessionToken: is_public && user?.moderation?.user_login === true,
+      useSessionToken:
+        is_public && user?.moderation?.allow_anonymous_access === true,
     })
       .then((res) => {
         if (res.results.data) {
@@ -280,7 +283,8 @@ export const Comment = ({
         mentioning: mentioned_user_ids.length > 0,
         mentioned: mentioned_user_ids,
       },
-      useSessionToken: is_public && user?.moderation?.user_login === true,
+      useSessionToken:
+        is_public && user?.moderation?.allow_anonymous_access === true,
     }).then((res) => {
       setLoading(false);
       if (res.results.data) {

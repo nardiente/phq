@@ -48,7 +48,7 @@ export const UpVoteCounter = ({
   const is_logged_in =
     getKaslKey() !== undefined ||
     (is_public &&
-      moderation?.user_login === true &&
+      moderation?.allow_anonymous_access === true &&
       getSessionToken() !== undefined &&
       user?.user?.id);
   const is_member = !!user?.user?.role_id;
@@ -76,7 +76,8 @@ export const UpVoteCounter = ({
 
       deleteApi<Feedback>({
         url: `feedback/${idea.id}/upvote`,
-        useSessionToken: is_public && user?.moderation?.user_login === true,
+        useSessionToken:
+          is_public && user?.moderation?.allow_anonymous_access === true,
       })
         .then((res) => {
           if (res.results.error) {
@@ -101,7 +102,8 @@ export const UpVoteCounter = ({
 
       await postApi({
         url: `feedback/${idea.id}/upvote`,
-        useSessionToken: is_public && user?.moderation?.user_login === true,
+        useSessionToken:
+          is_public && user?.moderation?.allow_anonymous_access === true,
       })
         .then((res) => {
           if (res.results.error) {

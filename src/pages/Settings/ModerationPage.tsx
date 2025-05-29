@@ -22,16 +22,17 @@ export default function ModerationPage() {
     state: { socket },
   } = useSocket();
   const { user, setUser } = useUser();
+  const { project } = user ?? {};
   const { moderation } = user ?? {
     id: 0,
+    allow_anonymous_access: false,
     moderate_settings: {
       feedback: true,
       votes: true,
       comments: true,
     },
+    project_id: project?.id ?? 0,
     user_feedback: true,
-    user_login: false,
-    user_id: 0,
   };
 
   const [fetching, setFetching] = useState<boolean>(false);
@@ -76,8 +77,7 @@ export default function ModerationPage() {
             socket?.emit('message', {
               action: SocketAction.UPDATE_NOTIFICATION,
               data: {
-                user_id: data.data.user_id,
-                projectId: user?.project?.id,
+                projectId: data.data.project_id,
               },
             });
           }
@@ -110,13 +110,16 @@ export default function ModerationPage() {
           <SectionHeader title="Moderation" />
 
           <TurnoffUserLogin
-            enabled={moderation?.user_login ?? false}
+            enabled={moderation?.allow_anonymous_access ?? false}
             onChange={(enabled) =>
               setUser((prev) => {
                 if (prev.moderation) {
                   return {
                     ...prev,
-                    moderation: { ...prev.moderation, user_login: enabled },
+                    moderation: {
+                      ...prev.moderation,
+                      allow_anonymous_access: enabled,
+                    },
                   };
                 }
                 return prev;

@@ -87,7 +87,7 @@ const App: FC = () => {
 
   const authenticate = async () => {
     const token = getSessionToken();
-    const isNew = moderation?.user_login === true && !token;
+    const isNew = moderation?.allow_anonymous_access === true && !token;
     await checkSession(token ?? (await generateToken()), isNew);
   };
 

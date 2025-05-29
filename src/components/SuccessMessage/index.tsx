@@ -16,7 +16,7 @@ const SuccessMessage = () => {
     getKaslKey() !== undefined ||
     (getSessionToken() !== undefined &&
       is_public &&
-      user?.moderation?.user_login === true &&
+      user?.moderation?.allow_anonymous_access === true &&
       user.user?.id);
 
   return (

@@ -118,7 +118,7 @@ const AddComment = () => {
     getKaslKey() !== undefined ||
     (getSessionToken() !== undefined &&
       is_public &&
-      user?.moderation?.user_login === true &&
+      user?.moderation?.allow_anonymous_access === true &&
       user.user?.id);
 
   const [idea, setIdea] = useState<Feedback | null>(selectedIdea);
@@ -166,7 +166,8 @@ const AddComment = () => {
       params: {
         direction: 'desc',
       },
-      useSessionToken: is_public && user?.moderation?.user_login === true,
+      useSessionToken:
+        is_public && user?.moderation?.allow_anonymous_access === true,
     })
       .then((res) => {
         if (res.results.data) {
@@ -235,11 +236,12 @@ const AddComment = () => {
         mentioning: mentioned_user_ids.length > 0,
         mentioned: mentioned_user_ids,
         token:
-          user?.moderation?.user_login === false
+          user?.moderation?.allow_anonymous_access === false
             ? getSessionToken()
             : undefined,
       },
-      useSessionToken: is_public && user?.moderation?.user_login === true,
+      useSessionToken:
+        is_public && user?.moderation?.allow_anonymous_access === true,
     })
       .then((res) => {
         if (res.results.errors) {
@@ -362,7 +364,9 @@ const AddComment = () => {
         false
     );
 
-    setModerateUserLogin((user?.moderation?.user_login === true).toString());
+    setModerateUserLogin(
+      (user?.moderation?.allow_anonymous_access === true).toString()
+    );
   }, [comment, loading, user, is_public, idea]);
 
   useEffect(() => {

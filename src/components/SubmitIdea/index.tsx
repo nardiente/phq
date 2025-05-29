@@ -53,7 +53,7 @@ export const SubmitIdea = () => {
     getKaslKey() !== undefined ||
     (getSessionToken() !== undefined &&
       is_public &&
-      moderation?.user_login === true &&
+      moderation?.allow_anonymous_access === true &&
       user?.id);
 
   const [active_status, setActiveStatus] = useState<string>('Select status');
@@ -193,7 +193,7 @@ export const SubmitIdea = () => {
     postApi({
       url: 'feedback',
       payload,
-      useSessionToken: !is_admin && moderation?.user_login === true,
+      useSessionToken: !is_admin && moderation?.allow_anonymous_access === true,
     })
       .then(async (res) => {
         setSubmitting(false);

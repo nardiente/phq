@@ -79,7 +79,7 @@ export const DropDownNotification = (props: {
     getApi<UserNotification>({
       url: 'notifications',
       params,
-      // is_public && moderation?.user_login === true,
+      // is_public && moderation?.allow_anonymous_access === true,
     }).then((res) => {
       setFetching(false);
       if (res.results.data) {
@@ -136,7 +136,8 @@ export const DropDownNotification = (props: {
       !is_public ||
       (is_public &&
         (getKaslKey() !== undefined ||
-          (moderation?.user_login === true && getSessionToken() !== undefined)))
+          (moderation?.allow_anonymous_access === true &&
+            getSessionToken() !== undefined)))
     ) {
       getNotifications(seeMore);
     }

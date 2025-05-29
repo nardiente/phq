@@ -89,7 +89,7 @@ export function UserNotificationProvider({
     getApi<UserNotification>({
       url: 'notifications',
       params: params,
-      // useSessionToken: is_public && moderation?.user_login === true, // Uncomment if needed
+      // useSessionToken: is_public && moderation?.allow_anonymous_access === true, // Uncomment if needed
     }).then((res) => {
       setFetching(false);
       if (res.results.data) {

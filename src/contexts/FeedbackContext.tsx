@@ -402,7 +402,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     getApi<Feedback[]>({
       url,
       params: { sort, status, tags: tags.join(','), title },
-      useSessionToken: is_public && moderation?.user_login === true,
+      useSessionToken: is_public && moderation?.allow_anonymous_access === true,
     })
       .then((res) => {
         const { results } = res ?? {};
@@ -427,7 +427,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     getApi<Tag[]>({
       url: 'tags',
       params: is_public ? { domain: window.location.host } : undefined,
-      useCustomerKey: is_public && moderation?.user_login === true,
+      useCustomerKey: is_public && moderation?.allow_anonymous_access === true,
     }).then((res) => {
       if (res.results.data) {
         setTags(res.results.data);

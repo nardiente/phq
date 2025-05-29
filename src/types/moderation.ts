@@ -1,15 +1,15 @@
 export interface Moderation {
   id: number;
-  user_login: boolean;
-  user_feedback: boolean;
+  allow_anonymous_access: boolean;
   moderate_settings: ModerateSettings;
-  user_id: number;
+  project_id: number;
+  user_feedback: boolean;
   created_at?: string;
   updated_at?: string;
 }
 
 export interface ModerateSettings {
+  comments: boolean;
   feedback: boolean;
   votes: boolean;
-  comments: boolean;
 }

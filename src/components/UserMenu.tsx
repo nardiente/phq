@@ -24,9 +24,10 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const currentUser = !is_public
     ? user
-    : moderation?.user_login === true && user?.kasl_key === undefined
+    : moderation?.allow_anonymous_access === true &&
+        user?.kasl_key === undefined
       ? user
-      : !moderation?.user_login &&
+      : !moderation?.allow_anonymous_access &&
           (user?.isAnonymous === false || !!user?.kasl_key)
         ? user
         : undefined;
@@ -51,7 +52,7 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
     eraseKaslKey();
     if (is_public) {
       removeUser();
-      if (!moderation?.user_login) {
+      if (!moderation?.allow_anonymous_access) {
         eraseSessionToken();
       }
     } else {

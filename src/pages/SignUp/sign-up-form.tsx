@@ -338,7 +338,7 @@ export const SignUpForm: FC<SignUpFormProps> = ({ is_mobile, type }) => {
             <>
               {user && (
                 <>
-                  {user.moderation?.user_login === true ? (
+                  {user.moderation?.allow_anonymous_access === true ? (
                     <Badge variant="success" size="lg">
                       Guest login has been turned on. As a new user, you only
                       have to log in once. Once logged on, you will be assigned
