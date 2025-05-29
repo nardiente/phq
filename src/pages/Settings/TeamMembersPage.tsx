@@ -21,6 +21,7 @@ import Button from '../../components/Button';
 import SettingsContainer from '../../components/SettingsContainer';
 import SectionHeader from '../../components/SectionHeader';
 import InputField from '../../components/InputField';
+import * as yup from 'yup';
 
 export default function TeamMembersPage() {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ export default function TeamMembersPage() {
   const { t } = useTranslation();
 
   const { user } = useUser();
-  const { hasUnsavedChanges, setHasUnsavedChanges } = useUnsavedChanges();
+  const { setHasUnsavedChanges } = useUnsavedChanges();
 
   const [first_name, setFirstName] = useState('');
   const [first_name_old, setFirstNameOld] = useState('');
@@ -41,6 +42,7 @@ export default function TeamMembersPage() {
   const [email_address_old, setEmailAddressOld] = useState('');
   const [email_error_message, setEmailErrorMessage] = useState('');
   const [role, setRole] = useState('');
+  const [role_error_msg, setRoleErrorMsg] = useState('');
   const [role_old, setRoleOld] = useState('');
   const [role_id, setRoleId] = useState(0);
   const [member_id, setMemberId] = useState(0);
@@ -133,9 +135,9 @@ export default function TeamMembersPage() {
     const is_valid = isEmailValid(new_email);
 
     if (new_email === '' || new_email.length === 0) {
-      setEmailErrorMessage('error.email.required');
+      setEmailErrorMessage(t('error.email.required'));
     } else if (new_email !== '' && new_email.length > 0 && !is_valid) {
-      setEmailErrorMessage('error.email.invalid');
+      setEmailErrorMessage(t('error.email.invalid'));
     } else {
       setEmailErrorMessage('');
     }
@@ -156,6 +158,7 @@ export default function TeamMembersPage() {
   };
 
   const handleOnChangeRole = (new_role: string) => {
+    setRoleErrorMsg('');
     setRole(new_role);
 
     if (new_role === 'Super Admin') {
@@ -237,7 +240,53 @@ export default function TeamMembersPage() {
     clearErrorMsgs();
   };
 
-  const onSubmitEdit = () => {
+  // Yup schema for team member form validation
+  const teamMemberSchema = yup.object().shape({
+    first_name: yup.string().required('This is a required field.'),
+    last_name: yup.string().required('This is a required field.'),
+    email_address: yup
+      .string()
+      .required('This is a required field.')
+      .email('Please enter a valid email address.'),
+    role: yup.string().required('Please select a role.'),
+  });
+
+  const validateFields = async () => {
+    try {
+      await teamMemberSchema.validate(
+        { first_name, last_name, email_address, role },
+        { abortEarly: false }
+      );
+      setFirstNameErrorMsg('');
+      setLastNameErrorMsg('');
+      setEmailErrorMessage('');
+      setApiFieldError('');
+      return true;
+    } catch (err: any) {
+      setFirstNameErrorMsg('');
+      setLastNameErrorMsg('');
+      setEmailErrorMessage('');
+      setApiFieldError('');
+      if (err.inner && Array.isArray(err.inner)) {
+        err.inner.forEach((validationError: any) => {
+          if (validationError.path === 'first_name')
+            setFirstNameErrorMsg(validationError.message);
+          if (validationError.path === 'last_name')
+            setLastNameErrorMsg(validationError.message);
+          if (validationError.path === 'email_address')
+            setEmailErrorMessage(validationError.message);
+          if (validationError.path === 'role')
+            setRoleErrorMsg(validationError.message);
+        });
+      }
+      return false;
+    }
+  };
+
+  const onSubmitEdit = async () => {
+    if (!(await validateFields())) {
+      return;
+    }
     if (first_name.length > 0 && last_name.length > 0) {
       setLoadingInvite(true);
       putApi<User>(`users/me`, {
@@ -297,7 +346,10 @@ export default function TeamMembersPage() {
     clearErrorMsgs();
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
+    if (!(await validateFields())) {
+      return;
+    }
     if (first_name.length > 0 && last_name.length > 0) {
       setLoadingInvite(true);
       postApi({
@@ -434,7 +486,10 @@ export default function TeamMembersPage() {
                       : 'default'
                   }
                 />
-                <div ref={ref as LegacyRef<HTMLDivElement>}>
+                <div
+                  className="flex flex-col gap-1.5"
+                  ref={ref as LegacyRef<HTMLDivElement>}
+                >
                   <div
                     className={`dropdown ${is_expanded ? ' is-active' : ''}`}
                   >
@@ -442,14 +497,14 @@ export default function TeamMembersPage() {
                       <button
                         aria-controls="dropdown-menu"
                         aria-haspopup="true"
-                        className="button drop-down-button"
+                        className={`button drop-down-button focus:outline-none focus:ring-1 focus:ring-indigo-500 ${role_error_msg.length > 0 ? 'border-red-500' : 'border-gray-200'}`}
                         onClick={toggle}
                         tabIndex={3}
                         disabled={loadingInvite}
                       >
                         <Fragment>
                           <span
-                            className={`for-dropdown ${role ? 'text-gray-600' : 'text-gray-500'}`}
+                            className={`for-dropdown ${role ? 'text-gray-700' : 'text-gray-500'}`}
                           >
                             {role ? role : 'Role'}
                           </span>
@@ -493,36 +548,38 @@ export default function TeamMembersPage() {
                       </div>
                     </div>
                   </div>
+                  {role_error_msg && (
+                    <label className="not-italic font-medium text-sm leading-[17px] tracking-[0.005em] text-red-400 !important">
+                      {role_error_msg}
+                    </label>
+                  )}
                 </div>
               </div>
 
-              <Button
-                className="w-fit text-[13px]"
-                disabled={
-                  email_address === '' ||
-                  first_name === '' ||
-                  last_name === '' ||
-                  role === '' ||
-                  email_error_message !== '' ||
-                  first_name_error_msg !== '' ||
-                  last_name_error_msg !== '' ||
-                  !hasUnsavedChanges
-                }
-                loading={loadingInvite}
-                onClick={button_name === 'Save' ? onSubmitEdit : onSubmit}
-                state="outline"
-                variant="blue"
-              >
-                {loadingInvite
-                  ? `${
-                      button_name === 'Resend'
-                        ? button_name
-                        : button_name === 'Save'
-                          ? 'Sav'
-                          : 'Invit'
-                    }ing...`
-                  : button_name}
-              </Button>
+              <div>
+                <Button
+                  className="max-w-fit text-[13px]"
+                  loading={loadingInvite}
+                  onClick={async () => {
+                    if (button_name === 'Save') {
+                      await onSubmitEdit();
+                    } else {
+                      await onSubmit();
+                    }
+                  }}
+                  variant="blue"
+                >
+                  {loadingInvite
+                    ? `${
+                        button_name === 'Resend'
+                          ? button_name
+                          : button_name === 'Save'
+                            ? 'Sav'
+                            : 'Invit'
+                      }ing...`
+                    : button_name}
+                </Button>
+              </div>
             </>
           )}
         </div>

@@ -1,4 +1,4 @@
-import React, { HTMLInputTypeAttribute, useRef } from 'react';
+import React, { HTMLInputTypeAttribute } from 'react';
 import Button from './Button';
 
 interface InputFieldProps {
@@ -34,23 +34,17 @@ const InputField: React.FC<InputFieldProps> = ({
 }) => {
   const baseStyles = 'w-full px-4 py-2 border rounded-lg text-[14px]';
   const variantStyles = {
-    default: 'border-gray-200 focus:border-[#8340d9]',
+    default: 'border-gray-200 focus:border-indigo-500',
     error: 'border-red-500 focus:border-red-600',
     success: 'border-green-500 focus:border-green-600',
     outline: 'border-gray-300 focus:border-blue-500',
   };
-
-  const ref = useRef<HTMLInputElement>(null);
-  if (error.length > 0) {
-    ref.current?.focus();
-  }
 
   return (
     <div className="flex flex-col gap-1.5">
       <label className="block text-[13px] font-medium m-0">{label}</label>
       <div className="flex">
         <input
-          ref={ref}
           type={type}
           value={value}
           onBlur={onBlur}
