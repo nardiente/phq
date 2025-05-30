@@ -365,7 +365,14 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   }, [action]);
 
   useEffect(() => {
-    setFilteredIdeas(ideas.filter((idea) => !idea.deleted));
+    setFilteredIdeas(
+      ideas.filter(
+        (idea) =>
+          !idea.deleted &&
+          (idea.admin_approval_status === 'approved' ||
+            idea.admin_approval_status === undefined)
+      )
+    );
   }, [ideas]);
 
   const fetchItems = async (tab: 'ideas' | 'comments') => {

@@ -13,6 +13,7 @@ import { useWhatsNew } from '../WhatsNewContext';
 import { useUser } from '../UserContext';
 import { useSocket } from '../SocketContext';
 import { SocketAction } from '../../types/socket';
+import { getCustomerKaslKey } from '../../utils/localStorage';
 
 const initialState: WidgetState = {
   config: {
@@ -65,7 +66,7 @@ export function WidgetProvider({ children }: { children: ReactNode }) {
     listWhatsNew,
   } = useWhatsNew();
   const { user: userContext } = useUser();
-  const { admin_profile, project, user } = userContext ?? {};
+  const { admin_profile, moderation, project, user } = userContext ?? {};
   const {
     state: { action, socket },
     setAction,
@@ -139,9 +140,12 @@ export function WidgetProvider({ children }: { children: ReactNode }) {
   };
 
   const loadPublishedWidget = async () => {
+    const customerKey = getCustomerKaslKey();
     getApi<Widget>({
       url: 'widgets/published',
-      useCustomerKey: true,
+      useCustomerKey:
+        customerKey !== undefined && customerKey.trim().length > 0,
+      useSessionToken: is_public && moderation?.allow_anonymous_access === true,
     }).then(async (res) => {
       const {
         results: { data },

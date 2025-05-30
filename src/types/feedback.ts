@@ -43,6 +43,7 @@ export interface Feedback {
   vote: number;
   vote_on_behalf?: User;
   vote_on_behalf_id?: number;
+  admin_approval_status?: 'approved' | 'rejected' | 'pending';
 }
 
 export interface FeedbackUpload {
@@ -154,7 +155,9 @@ export interface UpvoteLog {
   feedback_id: number;
   user_id?: number;
   anonymous_id?: number;
+  admin_approval_status?: 'approved' | 'rejected' | 'pending';
+  deleted?: boolean;
   on_behalf?: boolean;
-  updated_at?: Date;
   created_at?: Date;
+  updated_at?: Date;
 }
