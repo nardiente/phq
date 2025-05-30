@@ -143,6 +143,7 @@ export function WidgetProvider({ children }: { children: ReactNode }) {
     const customerKey = getCustomerKaslKey();
     getApi<Widget>({
       url: 'widgets/published',
+      params: is_public ? { domain: window.location.host } : undefined,
       useCustomerKey:
         customerKey !== undefined && customerKey.trim().length > 0,
       useSessionToken: is_public && moderation?.allow_anonymous_access === true,
