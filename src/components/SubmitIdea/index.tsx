@@ -215,7 +215,7 @@ export const SubmitIdea = () => {
           }
 
           socket?.emit('message', {
-            action: SocketAction.UPDATE_IDEA,
+            action: SocketAction.ADD_IDEA,
             data: { projectId: project?.id },
           });
 

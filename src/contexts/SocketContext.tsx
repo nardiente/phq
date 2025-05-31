@@ -10,13 +10,20 @@ import { useUser } from './UserContext';
 import { io, Socket } from 'socket.io-client';
 import { SocketAction } from '../types/socket';
 
+interface SocketMessage {
+  action: SocketAction;
+  data: { projectId?: number; [key: string]: any };
+}
+
 interface SocketState {
   action?: SocketAction;
+  message?: SocketMessage;
   socket: Socket | null;
 }
 
 type Action =
   | { type: 'SET_ACTION'; payload?: SocketAction }
+  | { type: 'SET_MESSAGE'; payload?: SocketMessage }
   | { type: 'SET_SOCKET'; payload: any };
 
 interface SocketContextType {
@@ -36,6 +43,8 @@ function socketReducer(
   switch (action.type) {
     case 'SET_ACTION':
       return { ...state, action: action.payload };
+    case 'SET_MESSAGE':
+      return { ...state, message: action.payload };
     case 'SET_SOCKET':
       return {
         ...state,
@@ -89,12 +98,13 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         setSocket(null);
       });
 
-      socket.on('message', (msg: any) => {
+      socket.on('message', (msg: SocketMessage) => {
         const {
           action,
           data: { projectId },
         } = msg;
 
+        setMessage(msg);
         if (projectId === project?.id) {
           setAction(action);
         }
@@ -104,6 +114,10 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
   const setAction = (action?: SocketAction) => {
     dispatch({ type: 'SET_ACTION', payload: action });
+  };
+
+  const setMessage = (action?: SocketMessage) => {
+    dispatch({ type: 'SET_MESSAGE', payload: action });
   };
 
   const setSocket = (socket: any) => {

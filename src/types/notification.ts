@@ -14,6 +14,13 @@ export interface Notification {
   updated_at: string;
 }
 
+export interface NotificationRequest {
+  feedback_id?: number;
+  feedback_comment_id?: number;
+  message?: string;
+  notified_user_id: number;
+}
+
 export interface UserNotification {
   has_unread: boolean;
   notifications: Notification[];

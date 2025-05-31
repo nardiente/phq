@@ -340,17 +340,26 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
 
   const { ideas, roadmaps } = state;
 
-  const { user } = useUser();
-  const { moderation } = user ?? {};
+  const { user: userContext } = useUser();
+  const { moderation, project } = userContext ?? {};
   const {
-    state: { action },
+    state: { action, message },
     setAction,
   } = useSocket();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
+    if (
+      !project?.id ||
+      !message?.data.projectId ||
+      message.data.projectId !== project.id
+    ) {
+      return;
+    }
+
     switch (action) {
+      case SocketAction.ADD_IDEA:
       case SocketAction.UPDATE_IDEA:
       case SocketAction.UPDATE_TAG:
         handleListFeedback();

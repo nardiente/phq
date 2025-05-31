@@ -9,6 +9,7 @@ import { parseResponse, prepHeaders, processErrors } from './utils';
 import { Moderation } from '../../types/moderation';
 import { Segment } from '../../types/segment';
 import { Widget } from '../../contexts/WidgetContext/type';
+import { NotificationRequest } from '../../types/notification';
 
 export const api_url = import.meta.env.VITE_API_HOST;
 export const api_public_url = import.meta.env.VITE_API_HOST_PUBLIC;
@@ -63,6 +64,7 @@ export const postApi = async <Data = any>({
   url: string;
   payload?:
     | Payload
+    | NotificationRequest
     | Widget
     | Partial<Segment>
     | {

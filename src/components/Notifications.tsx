@@ -1,4 +1,4 @@
-import { Bell, Link } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { useUserNotification } from '../contexts/UserNotificationContext';
 import { UserNotification } from '../types/notification';
@@ -9,6 +9,9 @@ import { Notification } from '../types/notification';
 import { useFeedback } from '../contexts/FeedbackContext';
 import { usePanel } from '../contexts/PanelContext';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
+import { getSessionToken } from '../utils/localStorage';
+import { useUser } from '../contexts/UserContext';
 
 export const Notifications = () => {
   const {
@@ -18,14 +21,19 @@ export const Notifications = () => {
   } = useUserNotification();
   const { setSelectedIdea } = useFeedback();
   const { setActivePage, setIsOpen, setPanelCommentId } = usePanel();
+  const { user: userContext } = useUser();
+  const { moderation } = userContext ?? {};
 
   const [is_expanded, setExpanded] = useState(false);
   const [seeMore, setSeeMore] = useState<boolean>(false);
   const [redirecting, setRedirecting] = useState<boolean>(false);
 
   const ref = useRef<HTMLDivElement>(null);
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
+    getNotifications(seeMore);
+
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         setExpanded(false);
@@ -35,6 +43,12 @@ export const Notifications = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (is_expanded) {
+      getNotifications(seeMore);
+    }
+  }, [is_expanded]);
 
   const convertDate = (date: string) => {
     const currentDate = moment(date);
@@ -65,6 +79,10 @@ export const Notifications = () => {
     getApi<UserNotification>({
       url: 'notifications',
       params,
+      useSessionToken:
+        is_public &&
+        getSessionToken() !== undefined &&
+        moderation?.allow_anonymous_access === true,
     }).then((res) => {
       setFetching(false);
       if (res.results.data) {
@@ -137,14 +155,14 @@ export const Notifications = () => {
               <div className="max-h-[calc(100vh-100px)] overflow-y-auto w-full">
                 <div className="flex flex-col items-start w-full px-2">
                   <Fragment>
-                    <div className="flex justify-between w-full">
-                      <span className="flex items-start text-gray-400 flex-row text-[12px] font-medium gap-2.5 leading-4 px-1.5 py-2.5">
+                    <div className="flex justify-between w-full mb-3">
+                      <span className="flex items-start text-gray-700 flex-row text-[12px] font-medium gap-2.5 leading-4 px-1.5 py-2.5">
                         NOTIFICATION
                       </span>
                       <span
                         className={`${
                           userNotification?.has_unread ? '' : 'opacity-50 '
-                        }flex items-center text-[#5a00cd] flex-row text-[12px] font-bold leading-5 p-2`}
+                        }flex items-center text-[#5a00cd] flex-row text-[12px] font-bold leading-5 p-2 cursor-pointer`}
                         onClick={() =>
                           userNotification?.has_unread ? markAllAsRead() : {}
                         }
@@ -161,50 +179,55 @@ export const Notifications = () => {
                                 notification.is_read
                                   ? 'text-gray-400 opacity-40'
                                   : ''
-                              } flex mb-3`}
+                              } flex gap-2`}
                             >
-                              <ChatRightQuoteIcon />
-                              <span className="flex items-center text-[#110733] font-normal text-[14px] leading-4 ml-2">
-                                {notification.message ? (
-                                  notification.message
-                                ) : (
-                                  <>
-                                    {notification.notifier.full_name
-                                      .substring(0, 20)
-                                      .trim()}
-                                    {notification.notifier.full_name.length > 20
-                                      ? '...'
-                                      : ''}
-                                    {' mentioned you in this '}
-                                    <Link
-                                      to="#"
-                                      className={`${redirecting ? 'cursor-default opacity-50' : ''} font-bold underline text-[#110733] hover:text-[#361895]`}
-                                      onClick={() => {
-                                        if (!redirecting) {
-                                          setPanelCommentId(
-                                            notification.feedback_comment_id
-                                          );
-                                          getFeedback(notification);
-                                        }
-                                      }}
-                                      aria-disabled={redirecting}
-                                    >
-                                      idea
-                                    </Link>
-                                    .
-                                  </>
-                                )}
-                                <div className="flex justify-between text-[#9ca3af] font-bold text-[10px] leading-4 mt-2">
+                              <span>
+                                <ChatRightQuoteIcon />
+                              </span>
+                              <span className="flex flex-col gap-2">
+                                <span className="items-center text-[#110733] font-normal text-[14px] leading-4">
+                                  {notification.message ? (
+                                    notification.message
+                                  ) : (
+                                    <>
+                                      {notification.notifier.full_name
+                                        .substring(0, 20)
+                                        .trim()}
+                                      {notification.notifier.full_name.length >
+                                      20
+                                        ? '...'
+                                        : ''}
+                                      {' mentioned you in this '}
+                                      <Link
+                                        to="#"
+                                        className={`${redirecting ? 'cursor-default opacity-50' : ''} font-bold underline text-[#110733] hover:text-[#361895]`}
+                                        onClick={() => {
+                                          if (!redirecting) {
+                                            setPanelCommentId(
+                                              notification.feedback_comment_id
+                                            );
+                                            getFeedback(notification);
+                                          }
+                                        }}
+                                        aria-disabled={redirecting}
+                                      >
+                                        idea
+                                      </Link>
+                                      .
+                                    </>
+                                  )}
+                                </span>
+                                <span className="flex justify-between text-[#9ca3af] font-bold text-[10px] leading-4">
                                   {convertDate(notification.created_at)}
-                                  <span
-                                    className="is-clickable font-normal text-[12px] italic text-[#5a00cd] text-[26px]"
-                                    onClick={() =>
-                                      markAsReadOrUnread(notification.id)
-                                    }
-                                  >
-                                    &#x2022;
-                                  </span>
-                                </div>
+                                </span>
+                              </span>
+                              <span
+                                className="is-clickable font-normal text-[12px] italic text-[#5a00cd] text-[26px]"
+                                onClick={() =>
+                                  markAsReadOrUnread(notification.id)
+                                }
+                              >
+                                &#x2022;
                               </span>
                             </div>
                             {idx <
@@ -219,7 +242,7 @@ export const Notifications = () => {
                 </div>
               </div>
               <div
-                className="is-clickable bg-[#faf8fb] rounded-b-lg text-[#6b7280] font-bold text-[14px] leading-5 text-center w-full py-0.5"
+                className="is-clickable bg-[#faf8fb] rounded-b-lg text-[#6b7280] font-bold text-[14px] leading-5 text-center w-full py-0.5 mt-3"
                 onClick={handleSeeMore}
               >
                 <span>

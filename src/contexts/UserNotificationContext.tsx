@@ -6,25 +6,34 @@ import {
   useMemo,
   useReducer,
 } from 'react';
-import { UserNotification } from '../types/notification';
-import { getApi } from '../utils/api/api';
+import {
+  Notification,
+  NotificationRequest,
+  UserNotification,
+} from '../types/notification';
+import { getApi, postApi } from '../utils/api/api';
 import { useSocket } from './SocketContext';
 import { SocketAction } from '../types/socket';
+import { useUser } from './UserContext';
 
 interface UserNotificationState {
   fetching: boolean;
+  loading: boolean;
   userNotification: UserNotification;
 }
 
 type UserNotificationAction =
   | { type: 'SET_FETCHING'; payload: boolean }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_NOTIFICATION'; payload: Notification }
   | {
-      type: 'SET_NOTIFICATION';
+      type: 'SET_USER_NOTIFICATION';
       payload: UserNotification;
     };
 
 interface UserNotificationContextType {
   state: UserNotificationState;
+  create: (notification: NotificationRequest) => Promise<void>;
   getNotifications: (seeMore?: boolean) => void;
   setFetching: (value: boolean) => Promise<void>;
   setUserNotification: (userNotification: UserNotification) => Promise<void>;
@@ -32,6 +41,7 @@ interface UserNotificationContextType {
 
 const initialState: UserNotificationState = {
   fetching: true,
+  loading: false,
   userNotification: {
     has_unread: false,
     notifications: [],
@@ -45,7 +55,20 @@ function userNotificationReducer(
   switch (action.type) {
     case 'SET_FETCHING':
       return { ...state, fetching: action.payload };
+    case 'SET_LOADING':
+      return { ...state, loading: action.payload };
     case 'SET_NOTIFICATION':
+      return {
+        ...state,
+        userNotification: {
+          ...state.userNotification,
+          notifications: [
+            action.payload,
+            ...state.userNotification.notifications,
+          ],
+        },
+      };
+    case 'SET_USER_NOTIFICATION':
       return { ...state, userNotification: action.payload };
     default:
       return state;
@@ -64,12 +87,36 @@ export function UserNotificationProvider({
   const [state, dispatch] = useReducer(userNotificationReducer, initialState);
 
   const {
-    state: { action },
+    state: { action, message },
     setAction,
   } = useSocket();
+  const { user: userContext } = useUser();
+  const { moderation, project, user } = userContext ?? {};
+
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
+    if (
+      !project?.id ||
+      !message?.data.projectId ||
+      project.id !== message.data.projectId
+    ) {
+      return;
+    }
+
     switch (action) {
+      case SocketAction.ADD_IDEA:
+        if (
+          !is_public &&
+          moderation?.allow_anonymous_access &&
+          moderation.moderate_settings.feedback
+        ) {
+          create({
+            notified_user_id: user?.id ?? 0,
+            message: 'A new idea is submitted and requires approval.',
+          });
+        }
+        break;
       case SocketAction.UPDATE_NOTIFICATION:
         getNotifications();
         break;
@@ -78,6 +125,21 @@ export function UserNotificationProvider({
     }
     setAction();
   }, [action]);
+
+  const create = async (notification: NotificationRequest) => {
+    setLoading(true);
+    postApi<Notification>({ url: 'notifications', payload: notification }).then(
+      (res) => {
+        setLoading(false);
+        if (res.results.data) {
+          dispatch({
+            type: 'SET_NOTIFICATION',
+            payload: res.results.data,
+          });
+        }
+      }
+    );
+  };
 
   const getNotifications = (seeMore?: boolean) => {
     setFetching(true);
@@ -105,9 +167,16 @@ export function UserNotificationProvider({
     });
   };
 
+  const setLoading = async (value: boolean) => {
+    dispatch({
+      type: 'SET_LOADING',
+      payload: value,
+    });
+  };
+
   const setUserNotification = async (userNotification: UserNotification) => {
     dispatch({
-      type: 'SET_NOTIFICATION',
+      type: 'SET_USER_NOTIFICATION',
       payload: userNotification,
     });
   };
@@ -115,6 +184,7 @@ export function UserNotificationProvider({
   const value = useMemo(
     () => ({
       state,
+      create,
       getNotifications,
       setFetching,
       setUserNotification,

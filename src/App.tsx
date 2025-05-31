@@ -4,6 +4,7 @@ import AppRoutes from './routes/routes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
+  getCustomerKaslKey,
   getSessionToken,
   setCustomerKaslKey,
   setKaslKey,
@@ -27,13 +28,14 @@ const App: FC = () => {
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const userProfile = user_profile ?? admin_profile;
-  const { email, favicon, kasl_key } = userProfile ?? {};
+  const { email, favicon } = userProfile ?? {};
 
   useEffect(() => {
-    if (is_public && userProfile?.id) {
+    if (is_public && admin_profile?.kasl_key) {
+      setCustomerKaslKey(admin_profile.kasl_key);
       authenticate();
     }
-  }, [userProfile]);
+  }, [admin_profile]);
 
   useEffect(() => {
     if (!is_public || (is_public && userProfile?.id)) {
@@ -92,12 +94,11 @@ const App: FC = () => {
   };
 
   const checkSession = async (token: string, isNew: boolean) => {
-    setCustomerKaslKey(kasl_key ?? '');
     setFetching(true);
     postApi<User>({
       url: 'auth/check-session',
       payload: { token, isNew },
-      useCustomerKey: true,
+      useCustomerKey: getCustomerKaslKey() !== undefined,
     })
       .then((res) => {
         const {
