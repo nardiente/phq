@@ -21,6 +21,7 @@ jobs:
       - name: Set up local environment variables
         run: |
           touch .env.local
+          echo VITE_ENVIRONMENT=${{vars.ENV_UAT}} >> .env.local
           echo VITE_API_HOST=${{vars.API_HOST_UAT}} >> .env.local
           echo VITE_API_HOST_PUBLIC=${{vars.API_HOST_PUBLIC_UAT}} >> .env.local
           echo VITE_SYSTEM_TYPE=${{vars.SYSTEM_TYPE_ADMIN}} >> .env.local

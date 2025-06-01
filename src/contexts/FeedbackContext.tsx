@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { Feedback, FeedbackComment, Tag, UpvoteLog } from '../types/feedback';
 import { Roadmap } from '../types/roadmap';
-import { getApi } from '../utils/api/api';
+import { getApi, putApi } from '../utils/api/api';
 import { useUser } from './UserContext';
 import { useSocket } from './SocketContext';
 import { SocketAction } from '../types/socket';
@@ -26,6 +26,7 @@ interface FeedbackState {
   };
   filteredIdeas: Feedback[];
   ideas: Feedback[];
+  ideasForApproval: Feedback[];
   items: (Partial<Feedback> & { content?: string; date?: string })[];
   listing: boolean;
   loading: boolean;
@@ -61,6 +62,7 @@ type FeedbackAction =
     }
   | { type: 'SET_FILTERED_IDEAS'; payload: Feedback[] }
   | { type: 'SET_IDEAS'; payload: Feedback[] }
+  | { type: 'SET_IDEAS_FOR_APPROVAL'; payload: Feedback[] }
   | {
       type: 'SET_ITEMS';
       payload: (Partial<Feedback> & { content?: string; date?: string })[];
@@ -80,7 +82,10 @@ type FeedbackAction =
     }
   | {
       type: 'UPDATE_ITEM_STATUS';
-      payload: { id: number; status: 'approved' | 'rejected' };
+      payload: {
+        id: number;
+        admin_approval_status: 'approved' | 'rejected' | 'pending';
+      };
     }
   | { type: 'UPDATE_ROADMAP'; payload: Roadmap };
 
@@ -109,16 +114,14 @@ interface FeedbackContextType {
     title: string;
   }) => Promise<void>;
   setIdeas: (ideas: Feedback[]) => Promise<void>;
+  setIdeasForApproval: (ideas: Feedback[]) => Promise<void>;
   setListing: (listing: boolean) => Promise<void>;
   setRoadmaps: (roadmaps: Roadmap[]) => Promise<void>;
   setSelectedIdea: (idea: Feedback | null) => Promise<void>;
   setTags: (tags: Tag[]) => Promise<void>;
   updateIdea: (idea: Feedback) => Promise<void>;
   updateIdeaInRoadmap: (roadmap_id: number, idea: Feedback) => Promise<void>;
-  updateItemStatus: (
-    id: number,
-    status: 'approved' | 'rejected'
-  ) => Promise<void>;
+  updateItemStatus: (item: Partial<Feedback>) => Promise<void>;
   updateRoadmap: (roadmap: Roadmap) => Promise<void>;
 }
 
@@ -135,6 +138,7 @@ const initialState: FeedbackState = {
   },
   filteredIdeas: [],
   ideas: [],
+  ideasForApproval: [],
   items: [],
   listing: false,
   loading: true,
@@ -148,69 +152,69 @@ const FeedbackContext = createContext<FeedbackContextType | undefined>(
   undefined
 );
 
-const mockItems: {
-  ideas: (Partial<Feedback> & { content?: string; date?: string })[];
-  comments: (Partial<Feedback> & { content?: string; date?: string })[];
-} = {
-  ideas: [
-    {
-      id: 1,
-      title: 'Add dark mode support',
-      description:
-        'It would be great to have a dark mode option for better visibility in low-light conditions. This would help reduce eye strain during night-time usage.',
-      author: { full_name: 'Sarah Chen' },
-      created_at: new Date('Mar 15, 2024'),
-      tags: ['Enhancement'],
-      vote: 1,
-    },
-    {
-      id: 2,
-      title: 'Bulk action support',
-      description:
-        'Please add the ability to perform actions on multiple items at once. This would save a lot of time when managing large numbers of items.',
-      author: { full_name: 'Michael Park' },
-      created_at: new Date('Mar 14, 2024'),
-      tags: ['Feature'],
-      vote: 1,
-    },
-    {
-      id: 3,
-      title: 'Export data to CSV',
-      description:
-        'Would love to have the ability to export our data to CSV format for further analysis in spreadsheet software.',
-      author: { full_name: 'Emma Rodriguez' },
-      created_at: new Date('Mar 13, 2024'),
-      tags: ['Feature'],
-      vote: 1,
-    },
-  ],
-  comments: [
-    {
-      id: 4,
-      title: 'Re: Mobile responsiveness',
-      content:
-        'The mobile experience could be improved. The buttons are too small to tap accurately on my phone.',
-      author: { full_name: 'David Kim' },
-      date: 'Mar 15, 2024',
-    },
-    {
-      id: 5,
-      title: 'Re: Search functionality',
-      content:
-        'The new search feature is great, but it would be even better if we could filter by date range.',
-      author: { full_name: 'Lisa Thompson' },
-      date: 'Mar 14, 2024',
-    },
-    {
-      id: 6,
-      title: 'Re: Dashboard widgets',
-      content:
-        'Love the new dashboard layout! One suggestion: allow us to resize the widgets for better customization.',
-      author: { full_name: 'James Wilson' },
-      date: 'Mar 13, 2024',
-    },
-  ],
-};
+// const mockItems: {
+//   ideas: (Partial<Feedback> & { content?: string; date?: string })[];
+//   comments: (Partial<Feedback> & { content?: string; date?: string })[];
+// } = {
+//   ideas: [
+//     {
+//       id: 1,
+//       title: 'Add dark mode support',
+//       description:
+//         'It would be great to have a dark mode option for better visibility in low-light conditions. This would help reduce eye strain during night-time usage.',
+//       author: { full_name: 'Sarah Chen' },
+//       created_at: new Date('Mar 15, 2024'),
+//       tags: ['Enhancement'],
+//       vote: 1,
+//     },
+//     {
+//       id: 2,
+//       title: 'Bulk action support',
+//       description:
+//         'Please add the ability to perform actions on multiple items at once. This would save a lot of time when managing large numbers of items.',
+//       author: { full_name: 'Michael Park' },
+//       created_at: new Date('Mar 14, 2024'),
+//       tags: ['Feature'],
+//       vote: 1,
+//     },
+//     {
+//       id: 3,
+//       title: 'Export data to CSV',
+//       description:
+//         'Would love to have the ability to export our data to CSV format for further analysis in spreadsheet software.',
+//       author: { full_name: 'Emma Rodriguez' },
+//       created_at: new Date('Mar 13, 2024'),
+//       tags: ['Feature'],
+//       vote: 1,
+//     },
+//   ],
+//   comments: [
+//     {
+//       id: 4,
+//       title: 'Re: Mobile responsiveness',
+//       content:
+//         'The mobile experience could be improved. The buttons are too small to tap accurately on my phone.',
+//       author: { full_name: 'David Kim' },
+//       date: 'Mar 15, 2024',
+//     },
+//     {
+//       id: 5,
+//       title: 'Re: Search functionality',
+//       content:
+//         'The new search feature is great, but it would be even better if we could filter by date range.',
+//       author: { full_name: 'Lisa Thompson' },
+//       date: 'Mar 14, 2024',
+//     },
+//     {
+//       id: 6,
+//       title: 'Re: Dashboard widgets',
+//       content:
+//         'Love the new dashboard layout! One suggestion: allow us to resize the widgets for better customization.',
+//       author: { full_name: 'James Wilson' },
+//       date: 'Mar 13, 2024',
+//     },
+//   ],
+// };
 
 function feedbackReducer(
   state: FeedbackState,
@@ -278,6 +282,8 @@ function feedbackReducer(
       return { ...state, filteredIdeas: action.payload };
     case 'SET_IDEAS':
       return { ...state, ideas: action.payload };
+    case 'SET_IDEAS_FOR_APPROVAL':
+      return { ...state, ideasForApproval: action.payload };
     case 'SET_ITEMS':
       return { ...state, items: action.payload };
     case 'SET_LISTING':
@@ -321,7 +327,11 @@ function feedbackReducer(
     case 'UPDATE_ITEM_STATUS':
       return {
         ...state,
-        ideas: state.ideas.filter((item) => item.id !== action.payload.id),
+        ideas: state.ideas.map((item) =>
+          item.id === action.payload.id
+            ? { ...item, admin_approval_status: item.admin_approval_status }
+            : item
+        ),
       };
     case 'UPDATE_ROADMAP':
       return {
@@ -343,7 +353,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   const { user: userContext } = useUser();
   const { moderation, project } = userContext ?? {};
   const {
-    state: { action, message },
+    state: { action, message, socket },
     setAction,
   } = useSocket();
 
@@ -382,6 +392,11 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
             idea.admin_approval_status === undefined)
       )
     );
+    setIdeasForApproval(
+      ideas.filter(
+        (idea) => !idea.deleted && idea.admin_approval_status === 'pending'
+      )
+    );
   }, [ideas]);
 
   const fetchItems = async (tab: 'ideas' | 'comments') => {
@@ -391,8 +406,9 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 500));
-      const items = mockItems[tab];
-      dispatch({ type: 'SET_ITEMS', payload: items });
+      if (tab === 'ideas') {
+        await handleListFeedback();
+      }
     } catch (error) {
       console.error({ error });
       dispatch({
@@ -554,6 +570,10 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_IDEAS', payload: ideas });
   };
 
+  const setIdeasForApproval = async (ideas: Feedback[]) => {
+    dispatch({ type: 'SET_IDEAS_FOR_APPROVAL', payload: ideas });
+  };
+
   const setRoadmaps = async (roadmaps: Roadmap[]) => {
     dispatch({ type: 'SET_ROADMAPS', payload: roadmaps });
   };
@@ -574,20 +594,40 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'UPDATE_IDEA_IN_ROADMAP', payload: { roadmap_id, idea } });
   };
 
-  const updateItemStatus = async (
-    id: number,
-    status: 'approved' | 'rejected'
-  ) => {
+  const updateItemStatus = async (item: Partial<Feedback>) => {
     dispatch({ type: 'SET_ERROR', payload: null });
+    const { id, admin_approval_status, rejected_reason } = item;
+    if (id === 0) {
+      return;
+    }
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      dispatch({ type: 'UPDATE_ITEM_STATUS', payload: { id, status } });
+      dispatch({ type: 'SET_LOADING', payload: true });
+
+      putApi<Feedback>(`feedback/${id}`, {
+        admin_approval_status,
+        rejected_reason,
+        title: item.title,
+        status: item.status?.name,
+      })
+        .then((res) => {
+          if (res.results.data) {
+            const updatedIdea = res.results.data;
+            updateIdea(updatedIdea);
+            updateIdeaInRoadmap(updatedIdea.status_id ?? 0, updatedIdea);
+            socket?.emit('message', {
+              action: SocketAction.UPDATE_IDEA,
+              data: { projectId: project?.id },
+            });
+          }
+        })
+        .finally(() => {
+          dispatch({ type: 'SET_LOADING', payload: false });
+        });
     } catch (error) {
       console.error({ error });
       dispatch({
         type: 'SET_ERROR',
-        payload: `Failed to ${status} item. Please try again.`,
+        payload: `Failed to ${admin_approval_status} item. Please try again.`,
       });
     }
   };
@@ -613,6 +653,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       setDefaultFilter,
       setFilter,
       setIdeas,
+      setIdeasForApproval,
       setListing,
       setRoadmaps,
       setSelectedIdea,

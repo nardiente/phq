@@ -5,10 +5,7 @@ import { Feedback } from '../../types/feedback';
 
 interface RejectFeedbackModalProps {
   type: 'idea' | 'comment';
-  item: Partial<Feedback> & {
-    content?: string;
-    date?: string;
-  };
+  item: Partial<Feedback>;
   onConfirm: (reason: string) => void;
   onCancel: () => void;
 }
@@ -45,7 +42,7 @@ The ProductHQ team.
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg max-w-xl w-full mx-4">
+      <div className="flex flex-col max-h-screen overflow-auto bg-white rounded-lg shadow-lg max-w-xl w-full mx-4">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <div className="flex items-center gap-4">

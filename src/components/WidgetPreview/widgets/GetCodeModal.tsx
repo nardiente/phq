@@ -32,6 +32,7 @@ export const GetCodeModal = ({
 <script>
   var phq_config = {
     client_id: '${widgetKey}', // This is your assigned client ID. Please do not change this value.
+    environment: ${import.meta.env.VITE_ENVIRONMENT ?? 'integration'}, // This is the environment. Please do not change this value.
     full_name: 'dummy_full_name_id' // Please replace with the HTML Tag/Element ID containing the full name.
   }
 </script>
@@ -69,7 +70,7 @@ export const GetCodeModal = ({
   return (
     <>
       <div className="fixed inset-0 bg-black/30 z-[100]" />
-      <div className="bg-white rounded-lg w-[600px] p-6 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-200 z-[101]">
+      <div className="bg-white rounded-lg w-[600px] p-6 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-200 z-[101] max-h-screen overflow-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">Install Widget</h2>
           <button

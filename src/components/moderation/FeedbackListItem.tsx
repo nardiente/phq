@@ -2,22 +2,9 @@ import { memo } from 'react';
 import { Feedback } from '../../types/feedback';
 
 interface FeedbackListItemProps {
-  item: Partial<Feedback> & {
-    content?: string;
-    date?: string;
-  };
-  onReject: (
-    item: Partial<Feedback> & {
-      content?: string;
-      date?: string;
-    }
-  ) => void;
-  onApprove: (
-    item: Partial<Feedback> & {
-      content?: string;
-      date?: string;
-    }
-  ) => void;
+  item: Partial<Feedback>;
+  onReject: (item: Partial<Feedback>) => void;
+  onApprove: (item: Partial<Feedback>) => void;
 }
 
 export const FeedbackListItem = memo(function FeedbackListItem({
@@ -30,7 +17,7 @@ export const FeedbackListItem = memo(function FeedbackListItem({
       <div className="flex justify-between items-start mb-3">
         <h3 className="text-[15px] font-medium text-gray-900">{item.title}</h3>
         <span className="text-[13px] text-gray-500">
-          {item.created_at?.toLocaleDateString()}
+          {new Date(item.created_at ?? new Date()).toLocaleDateString()}
         </span>
       </div>
       <p className="text-[14px] text-gray-600 mb-4">{item.description}</p>

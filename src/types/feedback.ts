@@ -44,6 +44,7 @@ export interface Feedback {
   vote_on_behalf?: User;
   vote_on_behalf_id?: number;
   admin_approval_status?: 'approved' | 'rejected' | 'pending';
+  rejected_reason?: string;
 }
 
 export interface FeedbackUpload {

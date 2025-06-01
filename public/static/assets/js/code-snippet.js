@@ -1,25 +1,55 @@
 var innerText = '';
 
-document.addEventListener('mousemove', trackInformations);
 document.addEventListener('mousedown', trackInformations);
 
 function trackInformations(e) {
-  var currentText = e.currentTarget.innerText;
-  if (innerText === currentText && e.type !== 'mousedown') {
+  // Ensure phq_config exists and is an object
+  if (typeof phq_config !== 'object' || !phq_config) {
     return;
   }
 
+  // Only track on mousedown for privacy and performance
+  var currentText = e.currentTarget.innerText;
+  if (innerText === currentText) {
+    return;
+  }
+
+  // Use HTTPS in production
+  var endpoint = 'http://localhost:8888/trackings';
+
+  switch (phq_config.environment) {
+    case 'production':
+      endpoint = 'https://app-api.producthq.io/trackings';
+      break;
+    case 'uat':
+      endpoint = 'https://uat-api.producthq.io/trackings';
+      break;
+    case 'integration':
+      endpoint = 'https://intr-api.producthq.io/trackings';
+      break;
+    default:
+      break;
+  }
+
+  // Add CSRF token if available
+  var headers = {};
+  if (window.csrfToken) {
+    headers['X-CSRF-Token'] = window.csrfToken;
+  }
+
   axios
-    .post('https://uat-api.producthq.io/trackings', {
-      customer_id: phq_config.client_id || 0,
-      fullname: getFullName() || '',
-      host: window.location.host,
-    })
-    .then((response) => {
-      console.log('response:', response);
-    })
-    .catch((error) => {
-      console.log('error:', error);
+    .post(
+      endpoint,
+      {
+        customer_id: phq_config.client_id || 0,
+        fullname: getFullName() || '',
+        host: window.location.host,
+      },
+      { headers }
+    )
+    .catch(function (err) {
+      // Optionally log or handle error
+      // console.error('Tracking error:', err);
     });
 
   innerText = currentText;
