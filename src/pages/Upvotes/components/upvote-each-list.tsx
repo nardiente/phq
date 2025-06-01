@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import { Feedback, FeedbackTag } from '../../../types/feedback';
@@ -27,13 +27,13 @@ const UpvoteLabelLink = styled.span`
   width: 77.98%;
 `;
 
-export const UpVoteEachList = ({
+export const UpVoteEachList = memo(function UpVoteEachList({
   props,
   handleListFeedback,
 }: {
   props: Feedback;
   handleListFeedback: () => void;
-}) => {
+}) {
   const { user } = useUser();
   const {
     state: { listing },
@@ -213,4 +213,4 @@ export const UpVoteEachList = ({
       </div>
     </div>
   );
-};
+});

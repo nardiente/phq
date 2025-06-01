@@ -68,18 +68,32 @@ export function WidgetProvider({ children }: { children: ReactNode }) {
   const { user: userContext } = useUser();
   const { admin_profile, moderation, project, user } = userContext ?? {};
   const {
-    state: { action, socket },
+    state: { action, message, socket },
     setAction,
   } = useSocket();
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
+    if (
+      !project?.id ||
+      !message?.data.projectId ||
+      message.data.projectId !== project.id
+    ) {
+      return;
+    }
+
     if (is_public && action === SocketAction.UPDATE_WIDGET) {
       loadPublishedWidget();
     }
     setAction();
   }, [action]);
+
+  useEffect(() => {
+    if (is_public && project?.id) {
+      loadPublishedWidget();
+    }
+  }, [project]);
 
   const addWidget = async (widget: Partial<Widget>) => {
     dispatch({ type: WidgetActionTypes.LOADING, payload: true });

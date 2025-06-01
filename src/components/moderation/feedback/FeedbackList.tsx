@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Feedback } from '../../types/feedback';
+import { Feedback } from '../../../types/feedback';
 import { FeedbackListItem } from './FeedbackListItem';
 
 interface FeedbackListProps {

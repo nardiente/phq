@@ -3,9 +3,13 @@ import { FeedbackTabs } from './feedback/FeedbackTabs';
 import { FeedbackContent } from './feedback/FeedbackContent';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useEffect } from 'react';
+import { CommentContent } from './comment/CommentContent';
 
 export function FeedbackApprovalSection() {
-  const { state, setActiveTab } = useFeedback();
+  const {
+    state: { activeTab },
+    setActiveTab,
+  } = useFeedback();
 
   useEffect(() => {
     setActiveTab('ideas');
@@ -14,8 +18,8 @@ export function FeedbackApprovalSection() {
   return (
     <>
       <FeedbackHeader />
-      <FeedbackTabs activeTab={state.activeTab} onTabChange={setActiveTab} />
-      <FeedbackContent />
+      <FeedbackTabs activeTab={activeTab} onTabChange={setActiveTab} />
+      {activeTab === 'ideas' ? <FeedbackContent /> : <CommentContent />}
     </>
   );
 }

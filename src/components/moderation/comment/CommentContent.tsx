@@ -1,18 +1,18 @@
-import { FeedbackList } from './FeedbackList';
 import { AlertCircle, Loader } from 'lucide-react';
 import { useFeedback } from '../../../contexts/FeedbackContext';
-import { useRejectFeedback } from '../../../hooks/useRejectFeedback';
-import { RejectFeedbackModal } from './RejectFeedbackModal';
-import { Feedback } from '../../../types/feedback';
+import { FeedbackComment } from '../../../types/feedback';
+import { CommentList } from './CommentList';
+import { RejectCommentModal } from './RejectCommentModal';
+import { useRejectComment } from '../../../hooks/useRejectComment';
 
-export function FeedbackContent() {
-  const { state, updateItemStatus } = useFeedback();
-  const { ideasForApproval, loading, error, activeTab } = state;
+export function CommentContent() {
+  const { state, updateCommentStatus } = useFeedback();
+  const { commentsForApproval, loading, error, activeTab } = state;
   const { itemToReject, handleReject, handleConfirmReject, cancelReject } =
-    useRejectFeedback();
+    useRejectComment();
 
-  const handleApprove = async (item: Partial<Feedback>) => {
-    await updateItemStatus({ ...item, admin_approval_status: 'approved' });
+  const handleApprove = async (item: Partial<FeedbackComment>) => {
+    await updateCommentStatus({ ...item, admin_approval_status: 'approved' });
   };
 
   if (loading) {
@@ -32,7 +32,7 @@ export function FeedbackContent() {
     );
   }
 
-  if (activeTab === 'ideas' && ideasForApproval.length === 0) {
+  if (activeTab === 'comments' && commentsForApproval.length === 0) {
     return (
       <div className="text-center py-8">
         <p className="text-gray-500">No items to review</p>
@@ -42,14 +42,14 @@ export function FeedbackContent() {
 
   return (
     <>
-      <FeedbackList
-        items={ideasForApproval}
+      <CommentList
+        items={commentsForApproval}
         onReject={handleReject}
         onApprove={handleApprove}
       />
 
       {itemToReject && (
-        <RejectFeedbackModal
+        <RejectCommentModal
           type={activeTab === 'ideas' ? 'idea' : 'comment'}
           item={itemToReject}
           onConfirm={(reason) => handleConfirmReject(reason)}

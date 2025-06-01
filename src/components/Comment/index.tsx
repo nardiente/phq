@@ -10,7 +10,7 @@ import { usePanel } from '../../contexts/PanelContext';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
 import { getKaslKey, getSessionToken } from '../../utils/localStorage';
-import { Fragment, useEffect, useRef } from 'react';
+import { Fragment, memo, useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { UserTypes } from '../../types/user';
 import { RbacPermissions } from '../../types/common';
@@ -81,7 +81,7 @@ const modules = {
   },
 };
 
-export const Comment = ({
+export const Comment = memo(function Comment({
   comment,
   deleteComment,
   parentComment,
@@ -91,7 +91,7 @@ export const Comment = ({
   deleteComment: (feedback_id: number, comment_id: number) => void;
   parentComment?: FeedbackComment;
   handleGetComments: () => void;
-}) => {
+}) {
   const inputRef = useRef<HTMLInputElement>();
   const quillRef = useRef<ReactQuill>(null);
 
@@ -959,4 +959,4 @@ export const Comment = ({
       )}
     </div>
   );
-};
+});

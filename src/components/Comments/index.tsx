@@ -4,14 +4,14 @@ import { FeedbackComment } from './types';
 import { usePanel } from '../../contexts/PanelContext';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
-import { Fragment, useState } from 'react';
+import { Fragment, memo, useState } from 'react';
 import { deleteApi } from '../../utils/api/api';
 import { PinFillIcon } from '../icons/pin-fill.icon';
 import { Comment } from '../Comment';
 import { useUser } from '../../contexts/UserContext';
 import { SocketAction } from '../../types/socket';
 
-export const Comments = ({
+export const Comments = memo(function Comments({
   comments,
   fetchingComment,
   handleGetComments,
@@ -19,7 +19,7 @@ export const Comments = ({
   comments: FeedbackComment[];
   fetchingComment: boolean;
   handleGetComments: () => void;
-}) => {
+}) {
   const {
     state: { commentIdToDelete },
     setPanelCommentIdToDelete,
@@ -185,4 +185,4 @@ export const Comments = ({
       )}
     </>
   );
-};
+});

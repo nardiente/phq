@@ -16,6 +16,7 @@ import { SocketAction } from '../types/socket';
 interface FeedbackState {
   activeTab: 'ideas' | 'comments';
   comments: FeedbackComment[];
+  commentsForApproval: FeedbackComment[];
   error: string | null;
   filter: {
     filtering: boolean;
@@ -50,6 +51,7 @@ type FeedbackAction =
     }
   | { type: 'FILTER_SET_DEFAULT' }
   | { type: 'SET_COMMENTS'; payload: FeedbackComment[] }
+  | { type: 'SET_COMMENTS_FOR_APPROVAL'; payload: FeedbackComment[] }
   | {
       type: 'SET_FILTER';
       payload: {
@@ -92,7 +94,9 @@ type FeedbackAction =
 interface FeedbackContextType {
   state: FeedbackState;
   handleGetStatus: () => Promise<void>;
-  handleListFeedback: () => Promise<void>;
+  handleListFeedback: (queryStringParameters?: {
+    [name: string]: string;
+  }) => Promise<void>;
   handleListTag: () => void;
   addIdea: (idea: Feedback) => Promise<void>;
   addIdeaInRoadmap: (roadmap_id: number, idea: Feedback) => Promise<void>;
@@ -102,7 +106,9 @@ interface FeedbackContextType {
     roadmap_id: number,
     idea_id: number
   ) => Promise<void>;
-  listComments: () => Promise<void>;
+  listComments: (queryStringParameters?: {
+    [name: string]: string;
+  }) => Promise<void>;
   listUpvotes: () => Promise<void>;
   setActiveTab: (tab: 'ideas' | 'comments') => Promise<void>;
   setDefaultFilter: () => Promise<void>;
@@ -121,6 +127,7 @@ interface FeedbackContextType {
   setTags: (tags: Tag[]) => Promise<void>;
   updateIdea: (idea: Feedback) => Promise<void>;
   updateIdeaInRoadmap: (roadmap_id: number, idea: Feedback) => Promise<void>;
+  updateCommentStatus: (item: Partial<FeedbackComment>) => Promise<void>;
   updateItemStatus: (item: Partial<Feedback>) => Promise<void>;
   updateRoadmap: (roadmap: Roadmap) => Promise<void>;
 }
@@ -128,6 +135,7 @@ interface FeedbackContextType {
 const initialState: FeedbackState = {
   activeTab: 'ideas',
   comments: [],
+  commentsForApproval: [],
   error: null,
   filter: {
     filtering: false,
@@ -274,6 +282,8 @@ function feedbackReducer(
       };
     case 'SET_COMMENTS':
       return { ...state, comments: action.payload };
+    case 'SET_COMMENTS_FOR_APPROVAL':
+      return { ...state, commentsForApproval: action.payload };
     case 'SET_ERROR':
       return { ...state, error: action.payload };
     case 'SET_FILTER':
@@ -348,7 +358,7 @@ function feedbackReducer(
 export function FeedbackProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(feedbackReducer, initialState);
 
-  const { ideas, roadmaps } = state;
+  const { activeTab, comments, ideas, roadmaps } = state;
 
   const { user: userContext } = useUser();
   const { moderation, project } = userContext ?? {};
@@ -369,6 +379,9 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     }
 
     switch (action) {
+      case SocketAction.UPDATE_COMMET:
+        listComments();
+        break;
       case SocketAction.ADD_IDEA:
       case SocketAction.UPDATE_IDEA:
       case SocketAction.UPDATE_TAG:
@@ -382,6 +395,19 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     }
     setAction();
   }, [action]);
+
+  useEffect(() => {
+    fetchItems(activeTab);
+  }, [activeTab]);
+
+  useEffect(() => {
+    setCommentsForApproval(
+      comments.filter(
+        (comment) =>
+          !comment.deleted && comment.admin_approval_status === 'pending'
+      )
+    );
+  }, [comments]);
 
   useEffect(() => {
     setFilteredIdeas(
@@ -406,7 +432,10 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 500));
       if (tab === 'ideas') {
-        await handleListFeedback();
+        await handleListFeedback({ admin_approval_status: 'pending' });
+      }
+      if (tab === 'comments') {
+        await listComments({ admin_approval_status: 'pending' });
       }
     } catch (error) {
       console.error({ error });
@@ -417,7 +446,9 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const handleListFeedback = async () => {
+  const handleListFeedback = async (queryStringParameters?: {
+    [name: string]: string;
+  }) => {
     const url = is_public
       ? `feedback/list/${window.location.host}`
       : 'feedback/list-upvote';
@@ -430,7 +461,13 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     setListing(true);
     getApi<Feedback[]>({
       url,
-      params: { sort, status, tags: tags.join(','), title },
+      params: {
+        ...queryStringParameters,
+        sort,
+        status,
+        tags: tags.join(','),
+        title,
+      },
       useSessionToken: is_public && moderation?.allow_anonymous_access === true,
     })
       .then((res) => {
@@ -520,8 +557,14 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const listComments = async () => {
-    getApi<FeedbackComment[]>({ url: 'feedback/comments' }).then((res) => {
+  const listComments = async (queryStringParameters?: {
+    [name: string]: string;
+  }) => {
+    getApi<FeedbackComment[]>({
+      url: 'feedback/comments',
+      params: queryStringParameters,
+      useSessionToken: is_public && moderation?.allow_anonymous_access === true,
+    }).then((res) => {
       if (res.results.data) {
         dispatch({ type: 'SET_COMMENTS', payload: res.results.data });
       }
@@ -538,7 +581,10 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
 
   const setActiveTab = async (tab: 'ideas' | 'comments') => {
     dispatch({ type: 'SET_TAB', payload: tab });
-    await fetchItems(tab);
+  };
+
+  const setCommentsForApproval = async (comments: FeedbackComment[]) => {
+    dispatch({ type: 'SET_COMMENTS_FOR_APPROVAL', payload: comments });
   };
 
   const setDefaultFilter = async () => {
@@ -589,6 +635,36 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
 
   const updateIdeaInRoadmap = async (roadmap_id: number, idea: Feedback) => {
     dispatch({ type: 'UPDATE_IDEA_IN_ROADMAP', payload: { roadmap_id, idea } });
+  };
+
+  const updateCommentStatus = async (comment: Partial<FeedbackComment>) => {
+    dispatch({ type: 'SET_ERROR', payload: null });
+    const { id, feedback_id, admin_approval_status, rejected_reason } = comment;
+    try {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      putApi<FeedbackComment>(`feedback/${feedback_id}/comment/${id}`, {
+        admin_approval_status,
+        rejected_reason,
+      })
+        .then((res) => {
+          const {
+            results: { data },
+          } = res;
+          if (data) {
+            socket?.emit('message', {
+              action: SocketAction.UPDATE_COMMET,
+              data: { projectId: project?.id },
+            });
+          }
+        })
+        .finally(() => dispatch({ type: 'SET_LOADING', payload: false }));
+    } catch (error) {
+      console.error({ error });
+      dispatch({
+        type: 'SET_ERROR',
+        payload: `Failed to ${admin_approval_status} comment. Please try again.`,
+      });
+    }
   };
 
   const updateItemStatus = async (item: Partial<Feedback>) => {
@@ -655,6 +731,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       setRoadmaps,
       setSelectedIdea,
       setTags,
+      updateCommentStatus,
       updateIdea,
       updateIdeaInRoadmap,
       updateItemStatus,

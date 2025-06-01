@@ -1,26 +1,28 @@
 import { memo } from 'react';
-import { Feedback } from '../../types/feedback';
+import { FeedbackComment } from '../../../types/feedback';
+import { removeHtmlTags } from '../../../utils/string';
 
-interface FeedbackListItemProps {
-  item: Partial<Feedback>;
-  onReject: (item: Partial<Feedback>) => void;
-  onApprove: (item: Partial<Feedback>) => void;
+interface CommentListItemProps {
+  item: Partial<FeedbackComment>;
+  onReject: (item: Partial<FeedbackComment>) => void;
+  onApprove: (item: Partial<FeedbackComment>) => void;
 }
 
-export const FeedbackListItem = memo(function FeedbackListItem({
+export const CommentListItem = memo(function CommentListItem({
   item,
   onReject,
   onApprove,
-}: FeedbackListItemProps) {
+}: CommentListItemProps) {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4 hover:border-gray-300 transition-colors">
       <div className="flex justify-between items-start mb-3">
-        <h3 className="text-[15px] font-medium text-gray-900">{item.title}</h3>
+        <h3 className="text-[15px] font-medium text-gray-900">
+          {removeHtmlTags(item.comment ?? '')}
+        </h3>
         <span className="text-[13px] text-gray-500">
           {new Date(item.created_at ?? new Date()).toLocaleDateString()}
         </span>
       </div>
-      <p className="text-[14px] text-gray-600 mb-4">{item.description}</p>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
@@ -33,11 +35,6 @@ export const FeedbackListItem = memo(function FeedbackListItem({
               {item.author?.full_name}
             </span>
           </div>
-          {item.tags && item.tags.length > 0 && (
-            <span className="text-[13px] text-purple-600 bg-purple-50 px-2 py-1 rounded-full">
-              {item.tags.join(', ')}
-            </span>
-          )}
         </div>
         <div className="flex gap-2">
           <button

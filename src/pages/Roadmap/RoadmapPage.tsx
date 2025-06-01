@@ -31,8 +31,7 @@ import { NewWidgetPreview } from '../../components/WidgetPreview/NewWidgetPrevie
 
 export function RoadmapPage() {
   const { user: userContext } = useUser();
-  const { admin_profile, permissions, project, rbac_permissions, user } =
-    userContext ?? {};
+  const { permissions, project, rbac_permissions, user } = userContext ?? {};
   const {
     state: { filter, listing, roadmaps: roadmapsContext, selectedIdea },
     addRoadmap,
@@ -53,7 +52,6 @@ export function RoadmapPage() {
   const { roadmap_colors } = useApp();
   const {
     state: { widget },
-    loadPublishedWidget,
   } = useWidget();
 
   const [columnName, setColumnName] = useState<string>('');
@@ -65,17 +63,10 @@ export function RoadmapPage() {
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const isRestricted =
     !listing && is_public && permissions && permissions.length === 0;
-  const userInfo = is_public ? admin_profile : user;
 
   useEffect(() => {
     setCurrRoadmaps(roadmapsContext);
   }, [roadmapsContext]);
-
-  useEffect(() => {
-    if (userInfo?.id) {
-      loadPublishedWidget();
-    }
-  }, [userInfo]);
 
   const getFeedback = (id: number) => {
     getApi<Feedback>({ url: `feedback/${id}` }).then((res) => {

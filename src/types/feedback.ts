@@ -115,6 +115,8 @@ export interface FeedbackComment {
   mentioned_users: { id: number; full_name: string }[];
   pinned?: boolean;
   updated_by?: number;
+  admin_approval_status?: 'approved' | 'rejected' | 'pending';
+  rejected_reason?: string;
 }
 
 export interface FeedbackItem {

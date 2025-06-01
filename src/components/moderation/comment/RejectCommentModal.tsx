@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import { X, AlertTriangle, HelpCircle } from 'lucide-react';
-import { Toast } from '../Toast';
-import { Feedback } from '../../types/feedback';
+import { Toast } from '../../Toast';
+import { FeedbackComment } from '../../../types/feedback';
+import { removeHtmlTags } from '../../../utils/string';
 
-interface RejectFeedbackModalProps {
+interface RejectCommentModalProps {
   type: 'idea' | 'comment';
-  item: Partial<Feedback>;
+  item: Partial<FeedbackComment>;
   onConfirm: (reason: string) => void;
   onCancel: () => void;
 }
 
-export function RejectFeedbackModal({
+export function RejectCommentModal({
   type,
   item,
   onConfirm,
   onCancel,
-}: RejectFeedbackModalProps) {
+}: RejectCommentModalProps) {
   const [reason, setReason] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
@@ -33,7 +34,7 @@ Oops. Your ${type} was not approved by the admin.
 
 ${reason}
 
-${item.title}
+${removeHtmlTags(item.comment ?? '')}
 
 Please contact the board administrator for more information.
 
