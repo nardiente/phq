@@ -400,7 +400,6 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   }, [ideas]);
 
   const fetchItems = async (tab: 'ideas' | 'comments') => {
-    dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: null });
 
     try {
@@ -415,8 +414,6 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
         type: 'SET_ERROR',
         payload: 'Failed to load feedback items. Please try again.',
       });
-    } finally {
-      dispatch({ type: 'SET_LOADING', payload: false });
     }
   };
 
