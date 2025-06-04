@@ -386,8 +386,14 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
         }
         break;
       case SocketAction.UPDATE_IDEA:
-        updateIdea(idea);
-        updateIdeaInRoadmap(idea.status_id ?? 0, idea);
+        const updatedIdea = ideas.find((prev) => prev.id === idea.id);
+        if (!updatedIdea) {
+          addIdea(idea);
+          addIdeaInRoadmap(idea.status_id ?? 0, idea);
+        } else {
+          updateIdea(idea);
+          updateIdeaInRoadmap(idea.status_id ?? 0, idea);
+        }
         break;
 
       case SocketAction.UPDATE_TAG:
