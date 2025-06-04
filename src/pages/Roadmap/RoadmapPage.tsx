@@ -79,7 +79,7 @@ export function RoadmapPage() {
         setIsOpen(true);
         socket?.emit('message', {
           action: SocketAction.UPDATE_IDEA,
-          data: { user_id: user?.id, projectId: project?.id },
+          data: { idea: data, user_id: user?.id, projectId: project?.id },
         });
       }
     });
@@ -175,8 +175,12 @@ export function RoadmapPage() {
           if (res.results.data) {
             setRoadmaps(handleFilterRoadmaps(res.results.data));
             socket?.emit('message', {
-              action: SocketAction.UPDATE_ROADMAP,
-              data: { user_id: user?.id, projectId: project?.id },
+              action: SocketAction.SET_ROADMAPS,
+              data: {
+                roadmaps: handleFilterRoadmaps(res.results.data),
+                user_id: user?.id,
+                projectId: project?.id,
+              },
             });
           }
           setDragging(false);
@@ -218,8 +222,12 @@ export function RoadmapPage() {
             const data = res.results.data;
             updateRoadmap(handleFilterData(data));
             socket?.emit('message', {
-              action: SocketAction.UPDATE_IDEA,
-              data: { user_id: user?.id, projectId: project?.id },
+              action: SocketAction.UPDATE_ROADMAP,
+              data: {
+                roadmap: handleFilterData(data),
+                user_id: user?.id,
+                projectId: project?.id,
+              },
             });
           }
           setDragging(false);
@@ -276,7 +284,15 @@ export function RoadmapPage() {
           updateIdea(idea);
           socket?.emit('message', {
             action: SocketAction.UPDATE_IDEA,
-            data: { user_id: user?.id, projectId: project?.id },
+            data: { idea, user_id: user?.id, projectId: project?.id },
+          });
+          socket?.emit('message', {
+            action: SocketAction.UPDATE_ROADMAP,
+            data: {
+              roadmap: handleFilterData(data),
+              user_id: user?.id,
+              projectId: project?.id,
+            },
           });
         }
         setDragging(false);
@@ -292,8 +308,12 @@ export function RoadmapPage() {
         addRoadmap(res.results.data);
         setEditColumnNameId(0);
         socket?.emit('message', {
-          action: SocketAction.UPDATE_ROADMAP,
-          data: { user_id: user?.id, projectId: project?.id },
+          action: SocketAction.ADD_ROADMAP,
+          data: {
+            roadmap: res.results.data,
+            user_id: user?.id,
+            projectId: project?.id,
+          },
         });
       }
     });
@@ -316,7 +336,11 @@ export function RoadmapPage() {
         setEditColumnNameId(0);
         socket?.emit('message', {
           action: SocketAction.UPDATE_ROADMAP,
-          data: { user_id: user?.id, projectId: project?.id },
+          data: {
+            roadmap: handleFilterData(res.results.data),
+            user_id: user?.id,
+            projectId: project?.id,
+          },
         });
       }
     });

@@ -67,9 +67,11 @@ export const UpVoteCounter = ({
   const handleOnClickUpvote = async () => {
     setLoading(true);
 
+    let updated_idea = idea;
+
     if (idea.did_vote) {
       // downvote
-      let updated_idea = { ...idea, vote: idea.vote - 1, did_vote: false };
+      updated_idea = { ...idea, vote: idea.vote - 1, did_vote: false };
       updateIdea(updated_idea);
       updateIdeaInRoadmap(updated_idea.status_id ?? 0, updated_idea);
       setSelectedIdea(updated_idea);
@@ -123,7 +125,11 @@ export const UpVoteCounter = ({
 
     socket?.emit('message', {
       action: SocketAction.UPDATE_IDEA,
-      data: { user_id: user?.user?.id, projectId: user?.project?.id },
+      data: {
+        idea: updated_idea,
+        user_id: user?.user?.id,
+        projectId: user?.project?.id,
+      },
     });
 
     setLoading(false);

@@ -585,7 +585,7 @@ export default function AppearancePage() {
 
   const handleUpdate = () => {
     setLoading(true);
-    postApi({
+    postApi<ProjectAppearance>({
       url: 'projects/appearance',
       payload: {
         id: appearance_id,
@@ -613,7 +613,9 @@ export default function AppearancePage() {
         user_name_display_format,
       },
     }).then((res) => {
-      const data = res.results.data as ProjectAppearance;
+      const {
+        results: { data },
+      } = res;
 
       setUser((prev) => ({ ...prev, appearance: data }));
       setAppearanceId(data?.id || appearance_id);
@@ -635,7 +637,11 @@ export default function AppearancePage() {
 
         socket?.emit('message', {
           action: SocketAction.UPDATE_APPEARANCE,
-          data: { user_id: user?.user?.id, projectId: project?.id },
+          data: {
+            appearance: data,
+            user_id: user?.user?.id,
+            projectId: project?.id,
+          },
         });
       }
 

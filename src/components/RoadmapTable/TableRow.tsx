@@ -28,7 +28,8 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
   const {
     state: { socket },
   } = useSocket();
-  const { user } = useUser();
+  const { user: userContext } = useUser();
+  const { project, user } = userContext ?? {};
 
   const [isImpactOpen, setIsImpactOpen] = useState(false);
   const [isConfidenceOpen, setIsConfidenceOpen] = useState(false);
@@ -131,15 +132,22 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
       score,
     })
       .then((res) => {
-        if (res.results.error || res.results.errors) {
+        const {
+          results: { data, error, errors },
+        } = res;
+        if (error || errors) {
           setSaveStatus('error');
         }
-        if (res.results.data) {
-          updateIdea(res.results.data);
+        if (data) {
+          updateIdea(data);
           setSaveStatus('saved');
           socket?.emit('message', {
             action: SocketAction.UPDATE_IDEA,
-            data: { user_id: user?.user?.id, projectId: user?.project?.id },
+            data: {
+              idea: data,
+              user_id: user?.id,
+              projectId: project?.id,
+            },
           });
         }
       })

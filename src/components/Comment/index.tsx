@@ -95,7 +95,9 @@ export const Comment = memo(function Comment({
   const inputRef = useRef<HTMLInputElement>();
   const quillRef = useRef<ReactQuill>(null);
 
-  const { user } = useUser();
+  const { user: userContext } = useUser();
+  const { moderation, permissions, project, rbac_permissions, user } =
+    userContext ?? {};
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const {
     state: { commentIdToDelete },
@@ -121,8 +123,8 @@ export const Comment = memo(function Comment({
     getKaslKey() !== undefined ||
     (getSessionToken() !== undefined &&
       is_public &&
-      user?.moderation?.allow_anonymous_access === true &&
-      user.user?.id);
+      moderation?.allow_anonymous_access === true &&
+      user?.id);
   const is_draft = comment.draft;
   const [currentComment, setCurrentComment] = useState(comment);
   const [lineHeight, setLightHeight] = useState(0);
@@ -197,8 +199,7 @@ export const Comment = memo(function Comment({
     await postApi({
       url: `feedback/${comment.feedback_id}/comment/${comment.id}/emoji`,
       payload: { type },
-      useSessionToken:
-        is_public && user?.moderation?.allow_anonymous_access === true,
+      useSessionToken: is_public && moderation?.allow_anonymous_access === true,
     }).then((res) => {
       if (res.results.errors) {
         setCurrentComment(oldComment);
@@ -216,8 +217,7 @@ export const Comment = memo(function Comment({
 
     await postApi({
       url: `feedback/${comment.feedback_id}/comment/${comment.id}/visibility`,
-      useSessionToken:
-        is_public && user?.moderation?.allow_anonymous_access === true,
+      useSessionToken: is_public && moderation?.allow_anonymous_access === true,
     }).then((res) => {
       if (res.results.errors) {
         setCurrentComment(oldComment);
@@ -238,8 +238,7 @@ export const Comment = memo(function Comment({
         parent_id: comment.id.toString(),
         direction: 'desc',
       },
-      useSessionToken:
-        is_public && user?.moderation?.allow_anonymous_access === true,
+      useSessionToken: is_public && moderation?.allow_anonymous_access === true,
     })
       .then((res) => {
         if (res.results.data) {
@@ -283,37 +282,45 @@ export const Comment = memo(function Comment({
         mentioning: mentioned_user_ids.length > 0,
         mentioned: mentioned_user_ids,
       },
-      useSessionToken:
-        is_public && user?.moderation?.allow_anonymous_access === true,
+      useSessionToken: is_public && moderation?.allow_anonymous_access === true,
     }).then((res) => {
       setLoading(false);
       if (res.results.data) {
+        socket?.emit('message', {
+          action: SocketAction.ADD_COMMENT,
+          data: {
+            comment: res.results.data,
+            created_by: idea?.customer_id || 0,
+            projectId: project?.id,
+          },
+        });
         setInternal(false);
         setReply('');
         setShowReply(false);
         const newReply: any = res.results.data;
         setReplies([newReply, ...replies]);
         if (idea) {
-          updateIdea({
+          const updatedIdea = {
             ...idea,
             comment_count: (idea.comment_count ?? 0) + 1,
-          });
+          };
+          updateIdea(updatedIdea);
           updateIdeaInRoadmap(idea.status_id ?? 0, {
             ...idea,
             comment_count: (idea.comment_count ?? 0) + 1,
           });
           socket?.emit('message', {
             action: SocketAction.UPDATE_IDEA,
-            data: { user_id: user?.user?.id, projectId: user?.project?.id },
+            data: {
+              idea: {
+                ...idea,
+                comment_count: (idea.comment_count ?? 0) + 1,
+              },
+              user_id: user?.id,
+              projectId: project?.id,
+            },
           });
         }
-        socket?.emit('message', {
-          action: SocketAction.UPDATE_TAG,
-          data: {
-            created_by: idea?.customer_id || 0,
-            projectId: user?.project?.id,
-          },
-        });
       }
     });
   };
@@ -401,7 +408,7 @@ export const Comment = memo(function Comment({
   };
 
   useEffect(() => {
-    if (user?.user?.type === UserTypes.CUSTOMER && user.user?.role_id) {
+    if (user?.type === UserTypes.CUSTOMER && user.role_id) {
       setIsMember(true);
     }
 
@@ -444,11 +451,11 @@ export const Comment = memo(function Comment({
     setEnableReplyButton(
       (trimmed_reply.length > 0 &&
         !loading &&
-        user?.permissions.includes(Permissions.ADD_REPLY) &&
+        permissions?.includes(Permissions.ADD_REPLY) &&
         ((is_admin &&
           !idea?.not_administer &&
           ((is_member &&
-            user.rbac_permissions.includes(
+            rbac_permissions?.includes(
               RbacPermissions.CREATE_EDIT_HIDE_DELETE_OWN_PUBLIC_AND_INTERNAL_COMMENTS
             )) ||
             (is_admin && !is_member))) ||
@@ -551,12 +558,12 @@ export const Comment = memo(function Comment({
                     <div className="hidden-tag">Hidden</div>
                   )}
                   {((is_member &&
-                    ((currentComment.author.id == user?.user?.id &&
-                      user.rbac_permissions.includes(
+                    ((currentComment.author.id == user?.id &&
+                      rbac_permissions?.includes(
                         RbacPermissions.CREATE_EDIT_HIDE_DELETE_OWN_PUBLIC_AND_INTERNAL_COMMENTS
                       )) ||
-                      (currentComment.author.id != user?.user?.id &&
-                        user?.rbac_permissions.includes(
+                      (currentComment.author.id != user?.id &&
+                        rbac_permissions?.includes(
                           RbacPermissions.HIDE_DELETE_OTHERS_COMMENT
                         )))) ||
                     (is_admin && !is_member) ||
@@ -579,7 +586,7 @@ export const Comment = memo(function Comment({
                           <button
                             onClick={toggleVisibility}
                             disabled={
-                              !user?.permissions.includes(
+                              !permissions?.includes(
                                 Permissions.HIDE_COMMENT
                               ) || idea?.not_administer
                             }
@@ -595,7 +602,7 @@ export const Comment = memo(function Comment({
                               setPanelCommentIdToDelete(comment.id)
                             }
                             disabled={
-                              !user?.permissions.includes(
+                              !permissions?.includes(
                                 Permissions.DELETE_COMMENT
                               ) || idea?.not_administer
                             }
@@ -674,7 +681,7 @@ export const Comment = memo(function Comment({
                 >
                   {currentComment.internal ? 'Internal' : 'Public'}
                 </div>
-                {(is_admin || (!is_admin && !user?.project?.hide_datetime)) && (
+                {(is_admin || (!is_admin && !project?.hide_datetime)) && (
                   <>
                     <div className="line">
                       <span></span>
@@ -708,7 +715,7 @@ export const Comment = memo(function Comment({
                         is_draft ||
                         currentComment.deleted ||
                         !is_logged_in ||
-                        !user?.permissions.includes(Permissions.ADD_REPLY) ||
+                        !permissions?.includes(Permissions.ADD_REPLY) ||
                         (is_admin && idea?.not_administer)
                       }
                       type="button"
@@ -738,7 +745,7 @@ export const Comment = memo(function Comment({
                       disabled={
                         is_draft ||
                         !is_logged_in ||
-                        !user?.permissions.includes(Permissions.ADD_REPLY) ||
+                        !permissions?.includes(Permissions.ADD_REPLY) ||
                         (is_admin && idea?.not_administer)
                       }
                       type="button"
@@ -792,7 +799,7 @@ export const Comment = memo(function Comment({
             tabIndex={4}
             value={reply}
             onFocus={() =>
-              user?.permissions.includes(Permissions.ADD_REPLY) &&
+              permissions?.includes(Permissions.ADD_REPLY) &&
               setIsReplyFocused(true)
             }
             onBlur={() => setIsReplyFocused(false)}
@@ -817,7 +824,7 @@ export const Comment = memo(function Comment({
               setMentionedUserIds(mentioned);
             }}
             readOnly={
-              !user?.permissions.includes(Permissions.ADD_REPLY) ||
+              !permissions?.includes(Permissions.ADD_REPLY) ||
               idea?.not_administer
             }
           />
@@ -861,7 +868,7 @@ export const Comment = memo(function Comment({
                     checked={internal}
                     onChange={() => setInternal((prev) => !prev)}
                     disabled={
-                      !user?.permissions.includes(Permissions.ADD_REPLY) ||
+                      !permissions?.includes(Permissions.ADD_REPLY) ||
                       idea?.not_administer
                     }
                   />

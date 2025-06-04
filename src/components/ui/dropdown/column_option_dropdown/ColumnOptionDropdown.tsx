@@ -99,7 +99,11 @@ const ColumnOptionDropdown = ({
         setShowOptions(false);
         socket?.emit('message', {
           action: SocketAction.UPDATE_ROADMAP,
-          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+          data: {
+            roadmap: handleFilterData(res.results.data),
+            user_id: user?.user?.id,
+            projectId: user?.project?.id,
+          },
         });
       }
     });

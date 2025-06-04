@@ -75,8 +75,9 @@ export default function ModerationPage() {
           });
           if (data.data.notified === true) {
             socket?.emit('message', {
-              action: SocketAction.UPDATE_NOTIFICATION,
+              action: SocketAction.UPDATE_MODERATION,
               data: {
+                moderation: data.data,
                 projectId: data.data.project_id,
               },
             });

@@ -6,7 +6,13 @@ import {
   ReactNode,
   useEffect,
 } from 'react';
-import { Feedback, FeedbackComment, Tag, UpvoteLog } from '../types/feedback';
+import {
+  Feedback,
+  FeedbackComment,
+  FeedbackTag,
+  Tag,
+  UpvoteLog,
+} from '../types/feedback';
 import { Roadmap } from '../types/roadmap';
 import { getApi, putApi } from '../utils/api/api';
 import { useUser } from './UserContext';
@@ -44,6 +50,7 @@ type FeedbackAction =
       payload: { roadmap_id: number; idea: Feedback };
     }
   | { type: 'ADD_ROADMAP'; payload: Roadmap }
+  | { type: 'DELETE_ROADMAP'; payload: Roadmap }
   | { type: 'DELETE_BY_ID'; payload: number }
   | {
       type: 'DELETE_IDEA_IN_ROADMAP_BY_ID';
@@ -77,6 +84,7 @@ type FeedbackAction =
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'SET_UPVOTES'; payload: UpvoteLog[] }
+  | { type: 'UPDATE_COMMENT'; payload: FeedbackComment }
   | { type: 'UPDATE_IDEA'; payload: Feedback }
   | {
       type: 'UPDATE_IDEA_IN_ROADMAP';
@@ -93,11 +101,6 @@ type FeedbackAction =
 
 interface FeedbackContextType {
   state: FeedbackState;
-  handleGetStatus: () => Promise<void>;
-  handleListFeedback: (queryStringParameters?: {
-    [name: string]: string;
-  }) => Promise<void>;
-  handleListTag: () => void;
   addIdea: (idea: Feedback) => Promise<void>;
   addIdeaInRoadmap: (roadmap_id: number, idea: Feedback) => Promise<void>;
   addRoadmap: (roadmap: Roadmap) => Promise<void>;
@@ -106,6 +109,13 @@ interface FeedbackContextType {
     roadmap_id: number,
     idea_id: number
   ) => Promise<void>;
+  handleFilterData: (data: Roadmap) => Roadmap;
+  handleFilterRoadmaps: (data: Roadmap[]) => Roadmap[];
+  handleGetStatus: () => Promise<void>;
+  handleListFeedback: (queryStringParameters?: {
+    [name: string]: string;
+  }) => Promise<void>;
+  handleListTag: () => void;
   listComments: (queryStringParameters?: {
     [name: string]: string;
   }) => Promise<void>;
@@ -160,70 +170,6 @@ const FeedbackContext = createContext<FeedbackContextType | undefined>(
   undefined
 );
 
-// const mockItems: {
-//   ideas: (Partial<Feedback> & { content?: string; date?: string })[];
-//   comments: (Partial<Feedback> & { content?: string; date?: string })[];
-// } = {
-//   ideas: [
-//     {
-//       id: 1,
-//       title: 'Add dark mode support',
-//       description:
-//         'It would be great to have a dark mode option for better visibility in low-light conditions. This would help reduce eye strain during night-time usage.',
-//       author: { full_name: 'Sarah Chen' },
-//       created_at: new Date('Mar 15, 2024'),
-//       tags: ['Enhancement'],
-//       vote: 1,
-//     },
-//     {
-//       id: 2,
-//       title: 'Bulk action support',
-//       description:
-//         'Please add the ability to perform actions on multiple items at once. This would save a lot of time when managing large numbers of items.',
-//       author: { full_name: 'Michael Park' },
-//       created_at: new Date('Mar 14, 2024'),
-//       tags: ['Feature'],
-//       vote: 1,
-//     },
-//     {
-//       id: 3,
-//       title: 'Export data to CSV',
-//       description:
-//         'Would love to have the ability to export our data to CSV format for further analysis in spreadsheet software.',
-//       author: { full_name: 'Emma Rodriguez' },
-//       created_at: new Date('Mar 13, 2024'),
-//       tags: ['Feature'],
-//       vote: 1,
-//     },
-//   ],
-//   comments: [
-//     {
-//       id: 4,
-//       title: 'Re: Mobile responsiveness',
-//       content:
-//         'The mobile experience could be improved. The buttons are too small to tap accurately on my phone.',
-//       author: { full_name: 'David Kim' },
-//       date: 'Mar 15, 2024',
-//     },
-//     {
-//       id: 5,
-//       title: 'Re: Search functionality',
-//       content:
-//         'The new search feature is great, but it would be even better if we could filter by date range.',
-//       author: { full_name: 'Lisa Thompson' },
-//       date: 'Mar 14, 2024',
-//     },
-//     {
-//       id: 6,
-//       title: 'Re: Dashboard widgets',
-//       content:
-//         'Love the new dashboard layout! One suggestion: allow us to resize the widgets for better customization.',
-//       author: { full_name: 'James Wilson' },
-//       date: 'Mar 13, 2024',
-//     },
-//   ],
-// };
-
 function feedbackReducer(
   state: FeedbackState,
   action: FeedbackAction
@@ -248,6 +194,13 @@ function feedbackReducer(
       return {
         ...state,
         roadmaps: [...(state.roadmaps || []), action.payload],
+      };
+    case 'DELETE_ROADMAP':
+      return {
+        ...state,
+        roadmaps: state.roadmaps.filter(
+          (roadmap) => roadmap.id !== action.payload.id
+        ),
       };
     case 'DELETE_BY_ID':
       return {
@@ -310,6 +263,13 @@ function feedbackReducer(
       return { ...state, selectedIdea: action.payload };
     case 'SET_UPVOTES':
       return { ...state, upvotes: action.payload };
+    case 'UPDATE_COMMENT':
+      return {
+        ...state,
+        comments: state.comments.map((comment) =>
+          comment.id === action.payload.id ? action.payload : comment
+        ),
+      };
     case 'UPDATE_IDEA':
       return {
         ...state,
@@ -358,7 +318,7 @@ function feedbackReducer(
 export function FeedbackProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(feedbackReducer, initialState);
 
-  const { activeTab, comments, ideas, roadmaps } = state;
+  const { activeTab, comments, filter, ideas, roadmaps } = state;
 
   const { user: userContext } = useUser();
   const { moderation, project } = userContext ?? {};
@@ -378,17 +338,83 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    const comment: FeedbackComment = message.data.comment;
+    const idea: Feedback = message.data.idea;
+    const roadmap: Roadmap = message.data.roadmap;
+    const roadmaps: Roadmap[] = message.data.roadmaps;
+    const tag: Tag = message.data.tag;
+    const tags: Tag[] = message.data.tags;
+
     switch (action) {
-      case SocketAction.UPDATE_COMMET:
-        listComments();
+      case SocketAction.ADD_COMMENT:
+        dispatch({
+          type: 'SET_COMMENTS',
+          payload: [...comments, comment],
+        });
         break;
+      case SocketAction.DELETE_COMMENT:
+        dispatch({
+          type: 'SET_COMMENTS',
+          payload: comments.filter((prev) => prev.id !== comment.id),
+        });
+        break;
+      case SocketAction.UPDATE_COMMENT:
+        dispatch({ type: 'UPDATE_COMMENT', payload: comment });
+        if (message.data.admin_approval_status === 'approved') {
+          const updatedIdea = ideas.find(
+            (idea) => idea.id === comment.feedback_id
+          );
+          if (updatedIdea) {
+            updateIdea({
+              ...updatedIdea,
+              comment_count: (updatedIdea.comment_count ?? 0) + 1,
+            });
+          }
+        }
+        break;
+
       case SocketAction.ADD_IDEA:
+        addIdea(idea);
+        addIdeaInRoadmap(idea.status_id ?? 0, idea);
+        break;
+      case SocketAction.DELETE_IDEA:
+        if (idea.id) {
+          deleteIdeaById(idea.id);
+          if (idea.status_id) {
+            deleteIdeaInRoadmapById(idea.status_id, idea.id);
+          }
+        }
+        break;
       case SocketAction.UPDATE_IDEA:
+        updateIdea(idea);
+        updateIdeaInRoadmap(idea.status_id ?? 0, idea);
+        break;
+
       case SocketAction.UPDATE_TAG:
         handleListFeedback();
         break;
+
+      case SocketAction.ADD_ROADMAP:
+        addRoadmap(roadmap);
+        break;
+      case SocketAction.DELETE_ROADMAP:
+        dispatch({ type: 'DELETE_ROADMAP', payload: roadmap });
+        break;
       case SocketAction.UPDATE_ROADMAP:
-        handleGetStatus();
+        updateRoadmap(roadmap);
+        break;
+      case SocketAction.SET_ROADMAPS:
+        setRoadmaps(roadmaps);
+        break;
+
+      case SocketAction.DELETE_TAG:
+        dispatch({
+          type: 'SET_TAGS',
+          payload: state.tags.filter((prev) => prev.id !== tag.id),
+        });
+        break;
+      case SocketAction.SET_TAGS:
+        setTags(tags);
         break;
       default:
         break;
@@ -397,7 +423,9 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   }, [action]);
 
   useEffect(() => {
-    fetchItems(activeTab);
+    if (window.location.pathname === '/moderation') {
+      fetchItems(activeTab);
+    }
   }, [activeTab]);
 
   useEffect(() => {
@@ -444,6 +472,66 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
         payload: 'Failed to load feedback items. Please try again.',
       });
     }
+  };
+
+  const handleFilterData = (data: Roadmap) => {
+    if (!filter.title && !filter.tags.length) {
+      return data;
+    }
+
+    const filterTitleLower = filter.title.toLowerCase();
+    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
+
+    const filteredUpvotes =
+      data.upvotes?.filter((upvote) => {
+        const titleMatch =
+          !filterTitleLower ||
+          upvote.title?.toLowerCase().includes(filterTitleLower);
+
+        const tagMatch =
+          !filterTagLower.length ||
+          upvote.feedback_tags?.some((feedbackTag: FeedbackTag) => {
+            const tag = feedbackTag.tag;
+            return tag && filterTagLower.includes(tag.tag.toLowerCase());
+          });
+
+        return titleMatch && tagMatch;
+      }) || [];
+
+    const dataWithFilteredUpvotes = { ...data, upvotes: filteredUpvotes };
+
+    return dataWithFilteredUpvotes;
+  };
+
+  const handleFilterRoadmaps = (data: Roadmap[]) => {
+    if (!filter.title && !filter.tags.length) {
+      return data;
+    }
+
+    const filterTitleLower = filter.title.toLowerCase();
+    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
+
+    const filteredRoadmaps = data.map((roadmap) => {
+      const filteredUpvotes =
+        roadmap.upvotes?.filter((upvote) => {
+          const titleMatch =
+            !filterTitleLower ||
+            upvote.title?.toLowerCase().includes(filterTitleLower);
+
+          const tagMatch =
+            !filterTagLower.length ||
+            upvote.feedback_tags?.some((feedbackTag: FeedbackTag) => {
+              const tag = feedbackTag.tag;
+              return tag && filterTagLower.includes(tag.tag.toLowerCase());
+            });
+
+          return titleMatch && tagMatch;
+        }) || [];
+
+      return { ...roadmap, upvotes: filteredUpvotes };
+    });
+
+    return filteredRoadmaps;
   };
 
   const handleListFeedback = async (queryStringParameters?: {
@@ -560,15 +648,18 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   const listComments = async (queryStringParameters?: {
     [name: string]: string;
   }) => {
+    dispatch({ type: 'SET_LOADING', payload: true });
     getApi<FeedbackComment[]>({
       url: 'feedback/comments',
       params: queryStringParameters,
       useSessionToken: is_public && moderation?.allow_anonymous_access === true,
-    }).then((res) => {
-      if (res.results.data) {
-        dispatch({ type: 'SET_COMMENTS', payload: res.results.data });
-      }
-    });
+    })
+      .then((res) => {
+        if (res.results.data) {
+          dispatch({ type: 'SET_COMMENTS', payload: res.results.data });
+        }
+      })
+      .finally(() => dispatch({ type: 'SET_LOADING', payload: false }));
   };
 
   const listUpvotes = async () => {
@@ -652,8 +743,12 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
           } = res;
           if (data) {
             socket?.emit('message', {
-              action: SocketAction.UPDATE_COMMET,
-              data: { projectId: project?.id },
+              action: SocketAction.UPDATE_COMMENT,
+              data: {
+                admin_approval_status,
+                comment: data,
+                projectId: project?.id,
+              },
             });
           }
         })
@@ -689,7 +784,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
             updateIdeaInRoadmap(updatedIdea.status_id ?? 0, updatedIdea);
             socket?.emit('message', {
               action: SocketAction.UPDATE_IDEA,
-              data: { projectId: project?.id },
+              data: { idea: updatedIdea, projectId: project?.id },
             });
           }
         })
@@ -712,13 +807,15 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       state,
-      handleGetStatus,
-      handleListFeedback,
-      handleListTag,
       addIdea,
       addIdeaInRoadmap,
       addRoadmap,
       deleteIdeaById,
+      handleFilterData,
+      handleFilterRoadmaps,
+      handleGetStatus,
+      handleListFeedback,
+      handleListTag,
       deleteIdeaInRoadmapById,
       listComments,
       listUpvotes,

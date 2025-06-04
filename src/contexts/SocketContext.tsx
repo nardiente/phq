@@ -58,13 +58,33 @@ function socketReducer(
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export function SocketProvider({ children }: { children: ReactNode }) {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const { admin_profile, project, user: user_profile } = user ?? {};
 
   const [state, dispatch] = useReducer(socketReducer, initialState);
-  const { socket } = state;
+  const { action, message, socket } = state;
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+
+  useEffect(() => {
+    if (
+      !project?.id ||
+      !message?.data.projectId ||
+      project.id !== message.data.projectId
+    ) {
+      return;
+    }
+
+    switch (action) {
+      case SocketAction.UPDATE_MODERATION:
+        setUser((prev) => ({ ...prev, moderation: message.data.moderation }));
+        break;
+      default:
+        break;
+    }
+
+    setAction();
+  }, [action]);
 
   useEffect(() => {
     if (project?.id && socket === null) {

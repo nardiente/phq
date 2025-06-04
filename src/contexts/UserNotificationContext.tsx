@@ -15,6 +15,7 @@ import { getApi, postApi } from '../utils/api/api';
 import { useSocket } from './SocketContext';
 import { SocketAction } from '../types/socket';
 import { useUser } from './UserContext';
+import { FeedbackComment } from '../types/feedback';
 
 interface UserNotificationState {
   fetching: boolean;
@@ -105,6 +106,22 @@ export function UserNotificationProvider({
     }
 
     switch (action) {
+      case SocketAction.ADD_COMMENT:
+        if (
+          !is_public &&
+          moderation?.allow_anonymous_access &&
+          moderation.moderate_settings.comments
+        ) {
+          const comment: FeedbackComment = message.data.comment;
+          create({
+            feedback_id: comment.feedback_id,
+            feedback_comment_id: comment.id,
+            message:
+              'A new <a class="active-link-color" href="/moderation">comment</a> is added to an idea and requires approval.',
+            notified_user_id: user?.id ?? 0,
+          });
+        }
+        break;
       case SocketAction.ADD_IDEA:
         if (
           !is_public &&
@@ -112,8 +129,10 @@ export function UserNotificationProvider({
           moderation.moderate_settings.feedback
         ) {
           create({
+            feedback_id: message.data.idea.id,
+            message:
+              'A new <a class="active-link-color" href="/moderation">idea</a> is submitted and requires approval.',
             notified_user_id: user?.id ?? 0,
-            message: 'A new idea is submitted and requires approval.',
           });
         }
         break;

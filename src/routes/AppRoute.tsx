@@ -22,10 +22,11 @@ const AppRoute = () => {
     showBanner,
     handleGetUser,
     isAuthenticated,
+    setUser,
   } = useUser();
   const { project } = userDetails ?? {};
   const {
-    state: { action },
+    state: { action, message },
     setAction,
   } = useSocket();
 
@@ -48,8 +49,16 @@ const AppRoute = () => {
   }, []);
 
   useEffect(() => {
-    if (is_public && action === SocketAction.UPDATE_APPEARANCE) {
-      handleGetUser();
+    if (
+      !project?.id ||
+      !message?.data.projectId ||
+      project.id !== message.data.projectId
+    ) {
+      return;
+    }
+
+    if (action === SocketAction.UPDATE_APPEARANCE) {
+      setUser((prev) => ({ ...prev, appearance: message.data.appearance }));
     }
     setAction();
   }, [action]);

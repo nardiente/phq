@@ -70,10 +70,11 @@ export default function TagsPage() {
         setTagList(data);
 
         socket?.emit('message', {
-          action: SocketAction.UPDATE_TAG,
+          action: SocketAction.SET_TAGS,
           data: {
             created_by: data.length > 0 ? data[0].created_by || 0 : 0,
             projectId: user?.project?.id,
+            tags: data,
           },
         });
       }

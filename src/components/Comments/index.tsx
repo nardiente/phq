@@ -32,7 +32,8 @@ export const Comments = memo(function Comments({
   const {
     state: { socket },
   } = useSocket();
-  const { user } = useUser();
+  const { user: userContext } = useUser();
+  const { project, user } = userContext ?? {};
 
   let idea = ideas?.find((idea) => idea.id === selectedIdea?.id);
   if (!idea) {
@@ -47,29 +48,28 @@ export const Comments = memo(function Comments({
       (res) => {
         setLoading(false);
         if (res.results.data) {
+          socket?.emit('message', {
+            action: SocketAction.DELETE_COMMENT,
+            data: { comment: res.results.data, projectId: project?.id },
+          });
           if (idea) {
-            updateIdea({
+            const updatedIdea = {
               ...idea,
               comment_count: (idea?.comment_count ?? 0) - 1,
-            });
-            updateIdeaInRoadmap(idea?.status_id ?? 0, {
-              ...idea,
-              comment_count: (idea?.comment_count ?? 0) - 1,
-            });
+            };
+            updateIdea(updatedIdea);
+            updateIdeaInRoadmap(idea?.status_id ?? 0, updatedIdea);
             socket?.emit('message', {
               action: SocketAction.UPDATE_IDEA,
-              data: { user_id: user?.user?.id, projectId: user?.project?.id },
+              data: {
+                idea: updatedIdea,
+                user_id: user?.id,
+                projectId: project?.id,
+              },
             });
           }
           setPanelCommentIdToDelete(0);
           handleGetComments();
-          socket?.emit('message', {
-            action: SocketAction.UPDATE_TAG,
-            data: {
-              created_by: idea?.customer_id || 0,
-              projectId: user?.project?.id,
-            },
-          });
         }
       }
     );

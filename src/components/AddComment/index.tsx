@@ -95,7 +95,9 @@ const AddComment = () => {
   const inputRef = useRef<HTMLInputElement>();
   const quillRef = useRef<ReactQuill>(null);
 
-  const { user } = useUser();
+  const { user: userContext } = useUser();
+  const { moderation, permissions, project, rbac_permissions, user } =
+    userContext ?? {};
   const {
     state: { comment_id, mentioned_users, panel_loading },
     addMentionedUser,
@@ -118,8 +120,8 @@ const AddComment = () => {
     getKaslKey() !== undefined ||
     (getSessionToken() !== undefined &&
       is_public &&
-      user?.moderation?.allow_anonymous_access === true &&
-      user.user?.id);
+      moderation?.allow_anonymous_access === true &&
+      user?.id);
 
   const [idea, setIdea] = useState<Feedback | null>(selectedIdea);
   const [comments, setComments] = useState<FeedbackComment[]>([]);
@@ -166,8 +168,7 @@ const AddComment = () => {
       params: {
         direction: 'desc',
       },
-      useSessionToken:
-        is_public && user?.moderation?.allow_anonymous_access === true,
+      useSessionToken: is_public && moderation?.allow_anonymous_access === true,
     })
       .then((res) => {
         if (res.results.data) {
@@ -236,47 +237,50 @@ const AddComment = () => {
         mentioning: mentioned_user_ids.length > 0,
         mentioned: mentioned_user_ids,
         token:
-          user?.moderation?.allow_anonymous_access === false
+          moderation?.allow_anonymous_access === false
             ? getSessionToken()
             : undefined,
       },
-      useSessionToken:
-        is_public && user?.moderation?.allow_anonymous_access === true,
+      useSessionToken: is_public && moderation?.allow_anonymous_access === true,
     })
       .then((res) => {
-        if (res.results.errors) {
-          setApiFieldErrors(res.results.errors);
+        const {
+          results: { data, errors },
+        } = res;
+        if (errors) {
+          setApiFieldErrors(errors);
         }
-        if (res.results.data) {
+        if (data) {
+          socket?.emit('message', {
+            action: SocketAction.ADD_COMMENT,
+            data: {
+              comment: data,
+              projectId: project?.id,
+            },
+          });
           if (is_logged_in) {
             setInternal(false);
             setComment(''); // clear the text field
             handleGetComments();
             if (idea) {
-              updateIdea({
+              const updatedIdea = {
                 ...idea,
                 comment_count: (idea.comment_count ?? 0) + 1,
-              });
-              updateIdeaInRoadmap(idea.status_id ?? 0, {
-                ...idea,
-                comment_count: (idea.comment_count ?? 0) + 1,
-              });
+              };
+              updateIdea(updatedIdea);
+              updateIdeaInRoadmap(idea.status_id ?? 0, updatedIdea);
               socket?.emit('message', {
                 action: SocketAction.UPDATE_IDEA,
-                data: { projectId: user?.project?.id },
+                data: {
+                  idea: updatedIdea,
+                  projectId: project?.id,
+                },
               });
             }
           } else {
             setSuccessType('comment');
             setActivePage('success');
           }
-          socket?.emit('message', {
-            action: SocketAction.UPDATE_TAG,
-            data: {
-              created_by: idea?.customer_id ?? 0,
-              projectId: user?.project?.id,
-            },
-          });
         }
       })
       .finally(() => setLoading(false));
@@ -347,7 +351,7 @@ const AddComment = () => {
   useEffect(() => {
     setMentionedUser([]);
     handleGetComments();
-    if (user?.user?.role_id) {
+    if (user?.role_id) {
       setIsMember(true);
     }
   }, []);
@@ -359,15 +363,15 @@ const AddComment = () => {
     setEnableButton(
       (trimmed_comment.length > 0 &&
         !loading &&
-        user?.permissions.includes(Permissions.ADD_COMMENT) &&
+        permissions?.includes(Permissions.ADD_COMMENT) &&
         ((!is_public && !idea?.not_administer) || is_public)) ??
         false
     );
 
     setModerateUserLogin(
-      (user?.moderation?.allow_anonymous_access === true).toString()
+      (moderation?.allow_anonymous_access === true).toString()
     );
-  }, [comment, loading, user, is_public, idea]);
+  }, [comment, loading, permissions, is_public, idea]);
 
   useEffect(() => {
     if (!panel_loading) {
@@ -461,7 +465,7 @@ const AddComment = () => {
               tabIndex={4}
               value={comment}
               onFocus={() =>
-                user?.permissions.includes(Permissions.ADD_COMMENT) &&
+                permissions?.includes(Permissions.ADD_COMMENT) &&
                 setIsCommentFocused(true)
               }
               onBlur={() => setIsCommentFocused(false)}
@@ -486,9 +490,9 @@ const AddComment = () => {
                 setMentionedUserIds(mentioned);
               }}
               readOnly={
-                !user?.permissions.includes(Permissions.ADD_COMMENT) &&
+                !permissions?.includes(Permissions.ADD_COMMENT) &&
                 is_member &&
-                !user?.rbac_permissions.includes(
+                !rbac_permissions?.includes(
                   RbacPermissions.CREATE_EDIT_HIDE_DELETE_OWN_PUBLIC_AND_INTERNAL_COMMENTS
                 )
               }
@@ -534,7 +538,7 @@ const AddComment = () => {
                     checked={internal}
                     onChange={() => setInternal((prev) => !prev)}
                     disabled={
-                      !user?.permissions.includes(Permissions.ADD_COMMENT) ||
+                      !permissions?.includes(Permissions.ADD_COMMENT) ||
                       idea?.not_administer
                     }
                   />
@@ -592,7 +596,7 @@ const AddComment = () => {
             placeholder="Write your comment here..."
             type="textarea"
             value={comment}
-            readOnly={!user?.permissions.includes(Permissions.ADD_COMMENT)}
+            readOnly={!permissions?.includes(Permissions.ADD_COMMENT)}
           />
           <span style={{ color: '#888399', fontFamily: 'Satoshi-Variable' }}>
             To join the conversation, please share with us a little bit about
@@ -643,7 +647,7 @@ const AddComment = () => {
                   setFirstName(e.target.value);
                 }}
                 value={first_name}
-                readOnly={!user?.permissions.includes(Permissions.ADD_COMMENT)}
+                readOnly={!permissions?.includes(Permissions.ADD_COMMENT)}
               />
               <UIField
                 container_class="width-49"
@@ -687,7 +691,7 @@ const AddComment = () => {
                   setLastName(e.target.value);
                 }}
                 value={last_name}
-                readOnly={!user?.permissions.includes(Permissions.ADD_COMMENT)}
+                readOnly={!permissions?.includes(Permissions.ADD_COMMENT)}
               />
               <UIField
                 container_class="width-49"
@@ -733,7 +737,7 @@ const AddComment = () => {
                   setEmail(e.target.value);
                 }}
                 value={email}
-                readOnly={!user?.permissions.includes(Permissions.ADD_COMMENT)}
+                readOnly={!permissions?.includes(Permissions.ADD_COMMENT)}
               />
             </div>
             <span>Set a password</span>
@@ -791,7 +795,7 @@ const AddComment = () => {
               required={true}
               type="password"
               value={password}
-              readOnly={!user?.permissions.includes(Permissions.ADD_COMMENT)}
+              readOnly={!permissions?.includes(Permissions.ADD_COMMENT)}
             />
             <UIField
               error_label={api_field_errors
@@ -871,7 +875,7 @@ const AddComment = () => {
               success_label="Matched!"
               type="password"
               value={confirm_password}
-              readOnly={!user?.permissions.includes(Permissions.ADD_COMMENT)}
+              readOnly={!permissions?.includes(Permissions.ADD_COMMENT)}
             />
           </div>
           <PrivacyPolicyField
@@ -890,7 +894,7 @@ const AddComment = () => {
                 !password_match ||
                 !agreed_privacy_policy ||
                 loading ||
-                !user?.permissions.includes(Permissions.ADD_COMMENT)
+                !permissions?.includes(Permissions.ADD_COMMENT)
               }
               onClick={() =>
                 attachments.length > 0

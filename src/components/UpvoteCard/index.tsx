@@ -36,14 +36,15 @@ const UpvoteLabelLink = styled.span`
 
 const UpvoteCard = ({ props }: { props: Feedback }) => {
   const { setSelectedIdea, updateIdea, updateIdeaInRoadmap } = useFeedback();
-  const { user } = useUser();
+  const { user: userContext } = useUser();
+  const { permissions, project, rbac_permissions, user } = userContext ?? {};
   const { setActivePage, setDeleteId, setDeleteType } = usePanel();
   const {
     state: { socket },
   } = useSocket();
 
   const is_admin = import.meta.env.VITE_SYSTEM_TYPE === 'admin';
-  const is_member = user?.user?.role_id;
+  const is_member = user?.role_id;
 
   const [loading, setLoading] = useState<boolean>(false);
   const [showUpload, setShowUpload] = useState<boolean>(false);
@@ -69,7 +70,11 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
         }
         socket?.emit('message', {
           action: SocketAction.UPDATE_IDEA,
-          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+          data: {
+            idea: data,
+            user_id: user?.id,
+            projectId: project?.id,
+          },
         });
         toast(
           `Idea has been ${!props.is_archived ? 'archived' : 'restored'}.`,
@@ -107,7 +112,7 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
         updateIdeaInRoadmap(data.status_id ?? 0, data);
         socket?.emit('message', {
           action: SocketAction.UPDATE_IDEA,
-          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+          data: { idea: data, user_id: user?.id, projectId: project?.id },
         });
       }
     });
@@ -129,15 +134,13 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
           <>
             <div className="line" />
             {((is_member &&
-              user.rbac_permissions.includes(
-                RbacPermissions.CREATE_EDIT_IDEAS
-              )) ||
+              rbac_permissions?.includes(RbacPermissions.CREATE_EDIT_IDEAS)) ||
               !is_member) && (
               <button
                 className="edit-button"
                 data-tooltip-content="Edit"
                 disabled={
-                  !user?.permissions.includes(Permissions.EDIT_IDEA) ||
+                  !permissions?.includes(Permissions.EDIT_IDEA) ||
                   props.not_administer ||
                   loading
                 }
@@ -162,7 +165,7 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
               className="w-[38px] h-[38px] text-[#6b7280] rounded-md flex items-center justify-center hover:bg-[#f3f4f6] hover:text-[#09041a]"
               data-tooltip-content="Hide on roadmap"
               disabled={
-                !user?.permissions.includes(Permissions.EDIT_IDEA) || loading
+                !permissions?.includes(Permissions.EDIT_IDEA) || loading
               }
               onClick={onHideOnRoadmap}
               title="Hide on roadmap"
@@ -171,14 +174,13 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
             </button>
 
             {((is_member &&
-              user.rbac_permissions.includes(RbacPermissions.DELETE_IDEAS)) ||
+              rbac_permissions?.includes(RbacPermissions.DELETE_IDEAS)) ||
               !is_member) && (
               <button
                 className="delete-btn"
                 data-tooltip-content="Delete"
                 disabled={
-                  !user?.permissions.includes(Permissions.DELETE_IDEA) ||
-                  loading
+                  !permissions?.includes(Permissions.DELETE_IDEA) || loading
                 }
                 onClick={() => {
                   setDeleteType('idea');
@@ -253,7 +255,7 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
                 ? '...'
                 : ''}
             </span>
-            {(is_admin || (!is_admin && !user?.project?.hide_datetime)) && (
+            {(is_admin || (!is_admin && !project?.hide_datetime)) && (
               <>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

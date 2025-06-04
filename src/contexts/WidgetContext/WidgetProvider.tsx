@@ -83,8 +83,29 @@ export function WidgetProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    if (is_public && action === SocketAction.UPDATE_WIDGET) {
-      loadPublishedWidget();
+    const widget: Widget = message.data.widget;
+
+    switch (action) {
+      case SocketAction.ADD_WIDGET:
+        dispatch({
+          type: WidgetActionTypes.ADD,
+          payload: widget,
+        });
+        break;
+      case SocketAction.DELETE_WIDGET:
+        dispatch({
+          type: WidgetActionTypes.DELETE,
+          payload: widget.id ?? 0,
+        });
+        break;
+      case SocketAction.UPDATE_WIDGET:
+        dispatch({
+          type: WidgetActionTypes.UPDATE,
+          payload: widget,
+        });
+        break;
+      default:
+        break;
     }
     setAction();
   }, [action]);
@@ -106,8 +127,12 @@ export function WidgetProvider({ children }: { children: ReactNode }) {
             payload: res.results.data,
           });
           socket?.emit('message', {
-            action: SocketAction.UPDATE_WIDGET,
-            data: { user_id: user?.id, projectId: project?.id },
+            action: SocketAction.ADD_WIDGET,
+            data: {
+              user_id: user?.id,
+              projectId: project?.id,
+              widget: res.results.data,
+            },
           });
         }
       })
@@ -126,8 +151,12 @@ export function WidgetProvider({ children }: { children: ReactNode }) {
             payload: res.results.data.id ?? 0,
           });
           socket?.emit('message', {
-            action: SocketAction.UPDATE_WIDGET,
-            data: { user_id: user?.id, projectId: project?.id },
+            action: SocketAction.DELETE_WIDGET,
+            data: {
+              user_id: user?.id,
+              projectId: project?.id,
+              widget: res.results.data,
+            },
           });
         }
       })
@@ -224,7 +253,11 @@ export function WidgetProvider({ children }: { children: ReactNode }) {
           });
           socket?.emit('message', {
             action: SocketAction.UPDATE_WIDGET,
-            data: { user_id: user?.id, projectId: project?.id },
+            data: {
+              user_id: user?.id,
+              projectId: project?.id,
+              widget: res.results.data,
+            },
           });
         }
       })

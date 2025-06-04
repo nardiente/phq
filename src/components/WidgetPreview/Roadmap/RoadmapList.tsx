@@ -8,7 +8,7 @@ import { useFeedback } from '../../../contexts/FeedbackContext';
 import { useState } from 'react';
 import { postApi, putApi } from '../../../utils/api/api';
 import { Roadmap } from '../../../types/roadmap';
-import { Feedback, FeedbackTag } from '../../../types/feedback';
+import { Feedback } from '../../../types/feedback';
 import { useSocket } from '../../../contexts/SocketContext';
 import { SocketAction } from '../../../types/socket';
 import { useUser } from '../../../contexts/UserContext';
@@ -22,8 +22,10 @@ import '../../../../src/pages/Roadmap/styles.css';
 
 export const RoadmapList = () => {
   const {
-    state: { filter, listing, roadmaps },
+    state: { listing, roadmaps },
     addRoadmap,
+    handleFilterData,
+    handleFilterRoadmaps,
     setRoadmaps,
     updateIdea,
     updateRoadmap,
@@ -50,71 +52,15 @@ export const RoadmapList = () => {
         addRoadmap(res.results.data);
         setEditColumnNameId(0);
         socket?.emit('message', {
-          action: SocketAction.UPDATE_ROADMAP,
-          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+          action: SocketAction.ADD_ROADMAP,
+          data: {
+            roadmap: res.results.data,
+            user_id: user?.user?.id,
+            projectId: user?.project?.id,
+          },
         });
       }
     });
-  };
-
-  const handleFilterData = (data: Roadmap) => {
-    if (!filter.title && !filter.tags.length) {
-      return data;
-    }
-
-    const filterTitleLower = filter.title.toLowerCase();
-    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
-
-    const filteredUpvotes =
-      data.upvotes?.filter((upvote) => {
-        const titleMatch =
-          !filterTitleLower ||
-          upvote.title?.toLowerCase().includes(filterTitleLower);
-
-        const tagMatch =
-          !filterTagLower.length ||
-          upvote.feedback_tags?.some((feedbackTag: FeedbackTag) => {
-            const tag = feedbackTag.tag;
-            return tag && filterTagLower.includes(tag.tag.toLowerCase());
-          });
-
-        return titleMatch && tagMatch;
-      }) || [];
-
-    const dataWithFilteredUpvotes = { ...data, upvotes: filteredUpvotes };
-
-    return dataWithFilteredUpvotes;
-  };
-
-  const handleFilterRoadmaps = (data: Roadmap[]) => {
-    if (!filter.title && !filter.tags.length) {
-      return data;
-    }
-
-    const filterTitleLower = filter.title.toLowerCase();
-    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
-
-    const filteredRoadmaps = data.map((roadmap) => {
-      const filteredUpvotes =
-        roadmap.upvotes?.filter((upvote) => {
-          const titleMatch =
-            !filterTitleLower ||
-            upvote.title?.toLowerCase().includes(filterTitleLower);
-
-          const tagMatch =
-            !filterTagLower.length ||
-            upvote.feedback_tags?.some((feedbackTag: FeedbackTag) => {
-              const tag = feedbackTag.tag;
-              return tag && filterTagLower.includes(tag.tag.toLowerCase());
-            });
-
-          return titleMatch && tagMatch;
-        }) || [];
-
-      return { ...roadmap, upvotes: filteredUpvotes };
-    });
-
-    return filteredRoadmaps;
   };
 
   const handleUpdateColumn = () => {
@@ -134,7 +80,11 @@ export const RoadmapList = () => {
         setEditColumnNameId(0);
         socket?.emit('message', {
           action: SocketAction.UPDATE_ROADMAP,
-          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+          data: {
+            roadmap: handleFilterData(res.results.data),
+            user_id: user?.user?.id,
+            projectId: user?.project?.id,
+          },
         });
       }
     });
@@ -171,7 +121,11 @@ export const RoadmapList = () => {
             setRoadmaps(handleFilterRoadmaps(res.results.data));
             socket?.emit('message', {
               action: SocketAction.UPDATE_ROADMAP,
-              data: { user_id: user?.user?.id, projectId: user?.project?.id },
+              data: {
+                roadmap: handleFilterRoadmaps(res.results.data),
+                user_id: user?.user?.id,
+                projectId: user?.project?.id,
+              },
             });
           }
           setDragging(false);
@@ -213,8 +167,12 @@ export const RoadmapList = () => {
             const data = res.results.data;
             updateRoadmap(handleFilterData(data));
             socket?.emit('message', {
-              action: SocketAction.UPDATE_IDEA,
-              data: { user_id: user?.user?.id, projectId: user?.project?.id },
+              action: SocketAction.UPDATE_ROADMAP,
+              data: {
+                user_id: user?.user?.id,
+                projectId: user?.project?.id,
+                roadmap: handleFilterData(data),
+              },
             });
           }
           setDragging(false);
@@ -271,7 +229,18 @@ export const RoadmapList = () => {
           updateIdea(idea);
           socket?.emit('message', {
             action: SocketAction.UPDATE_IDEA,
-            data: { user_id: user?.user?.id, projectId: user?.project?.id },
+            data: {
+              idea,
+              user_id: user?.user?.id,
+              projectId: user?.project?.id,
+            },
+          });
+          socket?.emit('message', {
+            action: SocketAction.UPDATE_ROADMAP,
+            data: {
+              projectId: user?.project?.id,
+              roadmap: handleFilterData(data),
+            },
           });
         }
         setDragging(false);

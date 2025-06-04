@@ -36,7 +36,8 @@ export const AddNewUserModal = ({ open, title, onClose }: Props) => {
     setSelectedIdea,
   } = useFeedback();
   const { setActivePage } = usePanel();
-  const { user } = useUser();
+  const { user: userContext } = useUser();
+  const { project, user } = userContext ?? {};
   const {
     state: { socket },
   } = useSocket();
@@ -143,7 +144,11 @@ export const AddNewUserModal = ({ open, title, onClose }: Props) => {
       setSelectedIdea(updated_idea);
       socket?.emit('message', {
         action: SocketAction.UPDATE_IDEA,
-        data: { user_id: user?.user?.id, projectId: user?.project?.id },
+        data: {
+          idea: updated_idea,
+          user_id: user?.id,
+          projectId: project?.id,
+        },
       });
     });
   };

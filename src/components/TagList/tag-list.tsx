@@ -83,9 +83,13 @@ export const EditableTag: React.FC<Tag> = (props: Tag) => {
         tag: tag_name,
         description: tag_description,
       }).then((res) => {
-        if (res.results.errors) {
-          setFieldErrors(res.results.errors);
-        } else {
+        const {
+          results: { data, errors },
+        } = res;
+        if (errors) {
+          setFieldErrors(errors);
+        }
+        if (data && data.length > 0) {
           setEditable(false);
           setUpdatedTagName(tag_name);
           setUpdatedTagDescription(tag_description);
@@ -98,6 +102,7 @@ export const EditableTag: React.FC<Tag> = (props: Tag) => {
                   ? res.results.data[0].created_by || 0
                   : 0,
               projectId: user?.project?.id,
+              tag: data[0],
             },
           });
         }
@@ -260,15 +265,19 @@ const TagList = ({ data }: { data: Tag[] }) => {
   const handleOnClickDeleteTag = (e: any) => {
     const id = e.target.id;
     deleteApi({ url: `tags/${id}` }).then((res) => {
-      if (res.results.errors) {
-        setFieldErrors(res.results.errors);
-      } else {
+      const {
+        results: { data, errors },
+      } = res;
+      if (errors) {
+        setFieldErrors(errors);
+      }
+      if (data) {
         const created_by = tags.length > 0 ? tags[0].created_by || 0 : 0;
         setTags(tags.filter((tag) => tag.id !== Number(id)));
 
         socket?.emit('message', {
-          action: SocketAction.UPDATE_TAG,
-          data: { created_by, projectId: user?.project?.id },
+          action: SocketAction.DELETE_TAG,
+          data: { created_by, projectId: user?.project?.id, tag: data },
         });
       }
     });

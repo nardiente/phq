@@ -190,20 +190,22 @@ export const SubmitIdea = () => {
       delete payload.password;
     }
     setPanelLoading(true);
-    postApi({
+    postApi<Feedback>({
       url: 'feedback',
       payload,
       useSessionToken: !is_admin && moderation?.allow_anonymous_access === true,
     })
       .then(async (res) => {
+        const {
+          results: { data, errors },
+        } = res;
         setSubmitting(false);
         await handleGetUser();
-        if (res.results.errors) {
-          setApiFieldErrors(res.results.errors);
+        if (errors) {
+          setApiFieldErrors(errors);
         }
-        if (res.results.data) {
+        if (data) {
           if (is_logged_in) {
-            const data = res.results.data as Feedback;
             const filteredData = handleFilterData(data);
             const filteredDataInRoadmap = handleFilterData(data);
 
@@ -216,7 +218,7 @@ export const SubmitIdea = () => {
 
           socket?.emit('message', {
             action: SocketAction.ADD_IDEA,
-            data: { projectId: project?.id },
+            data: { projectId: project?.id, idea: data },
           });
 
           setIsOpen(false);
@@ -278,7 +280,11 @@ export const SubmitIdea = () => {
         );
         socket?.emit('message', {
           action: SocketAction.UPDATE_IDEA,
-          data: { user_id: user?.id, projectId: project?.id },
+          data: {
+            idea: updated_idea,
+            user_id: user?.id,
+            projectId: project?.id,
+          },
         });
       }
     });
@@ -317,7 +323,7 @@ export const SubmitIdea = () => {
 
         socket?.emit('message', {
           action: SocketAction.UPDATE_IDEA,
-          data: { projectId: project?.id },
+          data: { idea: data, projectId: project?.id },
         });
       }
     });

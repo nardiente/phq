@@ -98,18 +98,22 @@ const DeleteConfirmation = () => {
   const handleOnDelete = () => {
     setLoading(true);
     if (deleteType == 'idea') {
-      deleteApi({ url: `feedback/${deleteId}` }).then(async (res) => {
-        if (res.results.data) {
+      deleteApi<Feedback>({ url: `feedback/${deleteId}` }).then(async (res) => {
+        const {
+          results: { data },
+        } = res;
+        if (data) {
           await handleGetUser();
           deleteIdeaById(deleteId);
-          deleteIdeaInRoadmapById(
-            (res.results.data as Feedback).status_id ?? 0,
-            deleteId
-          );
+          deleteIdeaInRoadmapById(data.status_id ?? 0, deleteId);
           setIsOpen(false);
           socket?.emit('message', {
-            action: SocketAction.UPDATE_IDEA,
-            data: { user_id: user?.user?.id, projectId: user?.project?.id },
+            action: SocketAction.DELETE_IDEA,
+            data: {
+              idea: data,
+              user_id: user?.user?.id,
+              projectId: user?.project?.id,
+            },
           });
         }
       });
@@ -120,8 +124,12 @@ const DeleteConfirmation = () => {
         setRoadmaps(handleFilterRoadmaps(res.results.data));
         setIsOpen(false);
         socket?.emit('message', {
-          action: SocketAction.UPDATE_ROADMAP,
-          data: { user_id: user?.user?.id, projectId: user?.project?.id },
+          action: SocketAction.DELETE_ROADMAP,
+          data: {
+            roadmap: handleFilterRoadmaps(res.results.data),
+            user_id: user?.user?.id,
+            projectId: user?.project?.id,
+          },
         });
       });
     }

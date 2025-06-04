@@ -141,7 +141,7 @@ export default function UpvotesPage() {
         setIsOpen(true);
         socket?.emit('message', {
           action: SocketAction.UPDATE_IDEA,
-          data: { user_id: user?.id, projectId: project?.id },
+          data: { idea: data, user_id: user?.id, projectId: project?.id },
         });
       }
     });

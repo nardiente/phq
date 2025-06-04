@@ -185,38 +185,40 @@ export const Notifications = () => {
                                 <ChatRightQuoteIcon />
                               </span>
                               <span className="flex flex-col gap-2">
-                                <span className="items-center text-[#110733] font-normal text-[14px] leading-4">
-                                  {notification.message ? (
-                                    notification.message
-                                  ) : (
-                                    <>
-                                      {notification.notifier.full_name
-                                        .substring(0, 20)
-                                        .trim()}
-                                      {notification.notifier.full_name.length >
-                                      20
-                                        ? '...'
-                                        : ''}
-                                      {' mentioned you in this '}
-                                      <Link
-                                        to="#"
-                                        className={`${redirecting ? 'cursor-default opacity-50' : ''} font-bold underline text-[#110733] hover:text-[#361895]`}
-                                        onClick={() => {
-                                          if (!redirecting) {
-                                            setPanelCommentId(
-                                              notification.feedback_comment_id
-                                            );
-                                            getFeedback(notification);
-                                          }
-                                        }}
-                                        aria-disabled={redirecting}
-                                      >
-                                        idea
-                                      </Link>
-                                      .
-                                    </>
-                                  )}
-                                </span>
+                                {notification.message ? (
+                                  <span
+                                    className="items-center font-normal text-[14px] leading-4"
+                                    dangerouslySetInnerHTML={{
+                                      __html: notification.message,
+                                    }}
+                                  />
+                                ) : (
+                                  <span className="items-center text-[#110733] font-normal text-[14px] leading-4">
+                                    {notification.notifier.full_name
+                                      .substring(0, 20)
+                                      .trim()}
+                                    {notification.notifier.full_name.length > 20
+                                      ? '...'
+                                      : ''}
+                                    {' mentioned you in this '}
+                                    <Link
+                                      to="#"
+                                      className={`${redirecting ? 'cursor-default opacity-50' : ''} font-bold underline text-[#110733] hover:text-[#361895]`}
+                                      onClick={() => {
+                                        if (!redirecting) {
+                                          setPanelCommentId(
+                                            notification.feedback_comment_id
+                                          );
+                                          getFeedback(notification);
+                                        }
+                                      }}
+                                      aria-disabled={redirecting}
+                                    >
+                                      idea
+                                    </Link>
+                                    .
+                                  </span>
+                                )}
                                 <span className="flex justify-between text-[#9ca3af] font-bold text-[10px] leading-4">
                                   {convertDate(notification.created_at)}
                                 </span>
