@@ -3,6 +3,7 @@ import queryString from 'query-string';
 import { postApi } from '../../utils/api/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './styles.css';
+import { clearQueryString } from '../../utils/uri';
 
 export const SSOVerifyingPage = () => {
   const location = useLocation();
@@ -15,11 +16,7 @@ export const SSOVerifyingPage = () => {
 
       getUserInfo(queries);
 
-      const uri = window.location.toString();
-      if (uri.indexOf('?') > 0) {
-        const clean_uri = uri.substring(0, uri.indexOf('?'));
-        window.history.replaceState({}, document.title, clean_uri);
-      }
+      clearQueryString();
     }
   }, []);
 

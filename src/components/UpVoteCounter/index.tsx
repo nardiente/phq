@@ -35,7 +35,7 @@ export const UpVoteCounter = ({
 
   const { user } = useUser();
   const { moderation, permissions } = user ?? {};
-  const { setSelectedIdea, updateIdea, updateIdeaInRoadmap } = useFeedback();
+  const { setSelectedIdea, updateIdea } = useFeedback();
   const {
     state: { socket },
   } = useSocket();
@@ -73,7 +73,6 @@ export const UpVoteCounter = ({
       // downvote
       updated_idea = { ...idea, vote: idea.vote - 1, did_vote: false };
       updateIdea(updated_idea);
-      updateIdeaInRoadmap(updated_idea.status_id ?? 0, updated_idea);
       setSelectedIdea(updated_idea);
 
       deleteApi<Feedback>({
@@ -85,21 +84,18 @@ export const UpVoteCounter = ({
           if (res.results.error) {
             updated_idea = { ...idea, vote: idea.vote + 1, did_vote: true };
             updateIdea(updated_idea);
-            updateIdeaInRoadmap(updated_idea.status_id ?? 0, updated_idea);
             setSelectedIdea(updated_idea);
           }
         })
         .catch(() => {
           updated_idea = { ...idea, vote: idea.vote + 1, did_vote: true };
           updateIdea(updated_idea);
-          updateIdeaInRoadmap(updated_idea.status_id ?? 0, updated_idea);
           setSelectedIdea(updated_idea);
         });
     } else {
       // upvote
       let updated_idea = { ...idea, vote: idea.vote + 1, did_vote: true };
       updateIdea(updated_idea);
-      updateIdeaInRoadmap(updated_idea.status_id ?? 0, updated_idea);
       setSelectedIdea(updated_idea);
 
       await postApi({
@@ -111,14 +107,12 @@ export const UpVoteCounter = ({
           if (res.results.error) {
             updated_idea = { ...idea, vote: idea.vote - 1, did_vote: false };
             updateIdea(updated_idea);
-            updateIdeaInRoadmap(updated_idea.status_id ?? 0, updated_idea);
             setSelectedIdea(updated_idea);
           }
         })
         .catch(() => {
           updated_idea = { ...idea, vote: idea.vote - 1, did_vote: false };
           updateIdea(updated_idea);
-          updateIdeaInRoadmap(updated_idea.status_id ?? 0, updated_idea);
           setSelectedIdea(updated_idea);
         });
     }

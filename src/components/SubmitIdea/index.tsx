@@ -38,10 +38,8 @@ export const SubmitIdea = () => {
   const {
     state: { ideas, selectedIdea, tags, filter },
     addIdea,
-    addIdeaInRoadmap,
     deleteIdeaInRoadmapById,
     updateIdea,
-    updateIdeaInRoadmap,
     setSelectedIdea,
   } = useFeedback();
   const {
@@ -211,7 +209,6 @@ export const SubmitIdea = () => {
 
             if (filteredData && filteredDataInRoadmap) {
               addIdea(filteredData);
-              addIdeaInRoadmap(data.status_id ?? 0, filteredDataInRoadmap);
             }
             setSelectedIdea(data);
           }
@@ -262,7 +259,6 @@ export const SubmitIdea = () => {
           index: selectedIdea?.index ?? 0,
         };
         updateIdea(updated_idea);
-        updateIdeaInRoadmap(updated_idea.status_id ?? 0, updated_idea);
         setSelectedIdea(updated_idea);
         toast(
           `An upvote has been added to ${selectedIdea?.title} for ${option.value}.`,
@@ -305,13 +301,11 @@ export const SubmitIdea = () => {
       if (res.results.data) {
         const data = res.results.data;
         updateIdea(data);
-        if (idea?.status_id === data.status_id) {
-          updateIdeaInRoadmap(data.status_id ?? 0, data);
-        } else {
+        if (idea?.status_id !== data.status_id) {
           const filteredData = handleFilterData(data);
           if (filteredData) {
             deleteIdeaInRoadmapById(idea?.status_id ?? 0, data.id ?? 0);
-            addIdeaInRoadmap(data.status_id ?? 0, filteredData);
+            addIdea(filteredData);
           }
         }
         setSelectedIdea(data);

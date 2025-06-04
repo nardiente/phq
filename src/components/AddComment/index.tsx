@@ -110,7 +110,6 @@ const AddComment = () => {
   const {
     state: { selectedIdea },
     updateIdea,
-    updateIdeaInRoadmap,
   } = useFeedback();
   const {
     state: { socket },
@@ -268,7 +267,6 @@ const AddComment = () => {
                 comment_count: (idea.comment_count ?? 0) + 1,
               };
               updateIdea(updatedIdea);
-              updateIdeaInRoadmap(idea.status_id ?? 0, updatedIdea);
               socket?.emit('message', {
                 action: SocketAction.UPDATE_IDEA,
                 data: {

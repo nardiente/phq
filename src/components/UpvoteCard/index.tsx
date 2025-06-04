@@ -35,7 +35,7 @@ const UpvoteLabelLink = styled.span`
 `;
 
 const UpvoteCard = ({ props }: { props: Feedback }) => {
-  const { setSelectedIdea, updateIdea, updateIdeaInRoadmap } = useFeedback();
+  const { setSelectedIdea, updateIdea } = useFeedback();
   const { user: userContext } = useUser();
   const { permissions, project, rbac_permissions, user } = userContext ?? {};
   const { setActivePage, setDeleteId, setDeleteType } = usePanel();
@@ -65,9 +65,6 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
       if (data) {
         setSelectedIdea(data);
         updateIdea(data);
-        if (props.status_id) {
-          updateIdeaInRoadmap(props.status_id, data);
-        }
         socket?.emit('message', {
           action: SocketAction.UPDATE_IDEA,
           data: {
@@ -109,7 +106,6 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
       if (data) {
         setSelectedIdea(data);
         updateIdea(data);
-        updateIdeaInRoadmap(data.status_id ?? 0, data);
         socket?.emit('message', {
           action: SocketAction.UPDATE_IDEA,
           data: { idea: data, user_id: user?.id, projectId: project?.id },
@@ -121,9 +117,6 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
   const onSetPhoto = (value: string) => {
     setSelectedIdea({ ...props, cover_photo: value });
     updateIdea({ ...props, cover_photo: value });
-    if (props.status_id) {
-      updateIdeaInRoadmap(props.status_id, { ...props, cover_photo: value });
-    }
   };
 
   return (

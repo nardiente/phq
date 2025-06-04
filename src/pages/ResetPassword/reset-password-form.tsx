@@ -10,6 +10,7 @@ import queryString from 'query-string';
 import { UIField } from '../../components/UIField';
 import { validatePassword } from '../../utils/custom-validation';
 import { UIButton } from '../../components/UIButton';
+import { clearQueryString } from '../../utils/uri';
 
 const ArrowLeftIcon = styled.img`
   vertical-align: middle;
@@ -112,11 +113,7 @@ export const ResetPasswordForm: FC<{
         setResetKey(params['k']);
       }
 
-      const uri = window.location.toString();
-      if (uri.indexOf('?') > 0) {
-        const clean_uri = uri.substring(0, uri.indexOf('?'));
-        window.history.replaceState({}, document.title, clean_uri);
-      }
+      clearQueryString();
     }
   }, []);
 

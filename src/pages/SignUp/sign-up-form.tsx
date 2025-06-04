@@ -25,6 +25,7 @@ import {
 } from '../../utils/custom-validation';
 import { Badge } from '../../components/badge/Badge';
 import { FC, useEffect, useState } from 'react';
+import { clearQueryString } from '../../utils/uri';
 
 const Form = styled.div`
   display: flex;
@@ -278,11 +279,7 @@ export const SignUpForm: FC<SignUpFormProps> = ({ is_mobile, type }) => {
       }
       setPlanId(params['plan']?.toString() ?? '');
       setPlanDescription(params['description']?.toString() ?? '');
-      const uri = window.location.toString();
-      if (uri.indexOf('?') > 0) {
-        const clean_uri = uri.substring(0, uri.indexOf('?'));
-        window.history.replaceState({}, document.title, clean_uri);
-      }
+      clearQueryString();
     }
   }, []);
 

@@ -32,7 +32,6 @@ export const AddNewUserModal = ({ open, title, onClose }: Props) => {
   const {
     state: { selectedIdea },
     updateIdea,
-    updateIdeaInRoadmap,
     setSelectedIdea,
   } = useFeedback();
   const { setActivePage } = usePanel();
@@ -140,7 +139,6 @@ export const AddNewUserModal = ({ open, title, onClose }: Props) => {
         index: selectedIdea?.index ?? 0,
       };
       updateIdea(updated_idea);
-      updateIdeaInRoadmap(updated_idea.status_id ?? 0, updated_idea);
       setSelectedIdea(updated_idea);
       socket?.emit('message', {
         action: SocketAction.UPDATE_IDEA,

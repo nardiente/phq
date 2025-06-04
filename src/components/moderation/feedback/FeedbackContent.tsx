@@ -4,12 +4,54 @@ import { useFeedback } from '../../../contexts/FeedbackContext';
 import { useRejectFeedback } from '../../../hooks/useRejectFeedback';
 import { RejectFeedbackModal } from './RejectFeedbackModal';
 import { Feedback } from '../../../types/feedback';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import queryString from 'query-string';
+import { useUserNotification } from '../../../contexts/UserNotificationContext';
+import { clearQueryString } from '../../../utils/uri';
+import { putApi } from '../../../utils/api/api';
+import { Notification } from '../../../types/notification';
 
 export function FeedbackContent() {
+  const location = useLocation();
+
   const { state, updateItemStatus } = useFeedback();
   const { ideasForApproval, loading, error, activeTab } = state;
+  const {
+    state: {
+      userNotification: { notifications },
+    },
+    updateNotification,
+  } = useUserNotification();
   const { itemToReject, handleReject, handleConfirmReject, cancelReject } =
     useRejectFeedback();
+
+  useEffect(() => {
+    if (location.search) {
+      const params = queryString.parse(location.search);
+      if (Number(params['notification_id'])) {
+        const notification = notifications.find(
+          (notification) =>
+            notification.id === Number(params['notification_id'])
+        );
+        if (notification) {
+          putApi<Notification>(
+            `notifications/${Number(params['notification_id'])}`,
+            { ...notification, is_read: true }
+          ).then((res) => {
+            const {
+              results: { data },
+            } = res;
+            if (data) {
+              updateNotification(data);
+            }
+          });
+        }
+      }
+
+      clearQueryString();
+    }
+  }, [notifications.length]);
 
   const handleApprove = async (item: Partial<Feedback>) => {
     await updateItemStatus({ ...item, admin_approval_status: 'approved' });

@@ -109,7 +109,6 @@ export const Comment = memo(function Comment({
   const {
     state: { ideas, selectedIdea },
     updateIdea,
-    updateIdeaInRoadmap,
   } = useFeedback();
   const {
     state: { socket },
@@ -305,10 +304,6 @@ export const Comment = memo(function Comment({
             comment_count: (idea.comment_count ?? 0) + 1,
           };
           updateIdea(updatedIdea);
-          updateIdeaInRoadmap(idea.status_id ?? 0, {
-            ...idea,
-            comment_count: (idea.comment_count ?? 0) + 1,
-          });
           socket?.emit('message', {
             action: SocketAction.UPDATE_IDEA,
             data: {

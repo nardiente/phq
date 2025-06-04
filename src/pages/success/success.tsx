@@ -9,6 +9,7 @@ import { setKaslKey } from '../../utils/localStorage';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import { useState } from 'react';
+import { clearQueryString } from '../../utils/uri';
 
 interface ItemInterface {
   price: {
@@ -74,11 +75,7 @@ const SuccessPage = () => {
           }
         });
       }
-      const uri = window.location.toString();
-      if (uri.indexOf('?') > 0) {
-        const clean_uri = uri.substring(0, uri.indexOf('?'));
-        window.history.replaceState({}, document.title, clean_uri);
-      }
+      clearQueryString();
     } else {
       navigate('/billing');
     }

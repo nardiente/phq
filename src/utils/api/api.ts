@@ -9,7 +9,7 @@ import { parseResponse, prepHeaders, processErrors } from './utils';
 import { Moderation } from '../../types/moderation';
 import { Segment } from '../../types/segment';
 import { Widget } from '../../contexts/WidgetContext/type';
-import { NotificationRequest } from '../../types/notification';
+import { Notification, NotificationRequest } from '../../types/notification';
 
 export const api_url = import.meta.env.VITE_API_HOST;
 export const api_public_url = import.meta.env.VITE_API_HOST_PUBLIC;
@@ -147,7 +147,7 @@ export const patchApi = async <Data = any>(url: string, payload?: Payload) => {
 
 export const putApi = async <Data = any>(
   url: string,
-  payload?: Payload | Moderation | Partial<Widget | Segment>
+  payload?: Payload | Moderation | Partial<Notification | Widget | Segment>
 ) => {
   let results: ApiResponseBody<Data> = {};
   let headers: ApiResponseHeaders;

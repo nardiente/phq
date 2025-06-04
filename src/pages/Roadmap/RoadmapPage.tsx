@@ -40,7 +40,6 @@ export function RoadmapPage() {
     setRoadmaps,
     setSelectedIdea,
     updateIdea,
-    updateIdeaInRoadmap,
     updateRoadmap,
   } = useFeedback();
   const {
@@ -73,7 +72,6 @@ export function RoadmapPage() {
       if (res.results.data) {
         const data = res.results.data;
         updateIdea(data);
-        updateIdeaInRoadmap(data.status_id ?? 0, data);
         setSelectedIdea(data);
         setActivePage('add_comment');
         setIsOpen(true);

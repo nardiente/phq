@@ -15,7 +15,9 @@ import { useUser } from '../contexts/UserContext';
 
 export const Notifications = () => {
   const {
-    state: { userNotification },
+    state: {
+      userNotification: { has_unread, notifications },
+    },
     setFetching,
     setUserNotification,
   } = useUserNotification();
@@ -161,84 +163,79 @@ export const Notifications = () => {
                       </span>
                       <span
                         className={`${
-                          userNotification?.has_unread ? '' : 'opacity-50 '
+                          has_unread ? '' : 'opacity-50 '
                         }flex items-center text-[#5a00cd] flex-row text-[12px] font-bold leading-5 p-2 cursor-pointer`}
-                        onClick={() =>
-                          userNotification?.has_unread ? markAllAsRead() : {}
-                        }
+                        onClick={() => (has_unread ? markAllAsRead() : {})}
                       >
                         Mark all as read
                       </span>
                     </div>
                     <div className="px-1.5">
-                      {userNotification?.notifications.map(
-                        (notification, idx) => (
-                          <Fragment key={idx}>
-                            <div
-                              className={`${
-                                notification.is_read
-                                  ? 'text-gray-400 opacity-40'
-                                  : ''
-                              } flex gap-2`}
-                            >
-                              <span>
-                                <ChatRightQuoteIcon />
-                              </span>
-                              <span className="flex flex-col gap-2">
-                                {notification.message ? (
-                                  <span
-                                    className="items-center font-normal text-[14px] leading-4"
-                                    dangerouslySetInnerHTML={{
-                                      __html: notification.message,
+                      {notifications.map((notification, idx) => (
+                        <Fragment key={idx}>
+                          <div
+                            className={`${
+                              notification.is_read
+                                ? 'text-gray-400 opacity-40'
+                                : ''
+                            } flex gap-2`}
+                          >
+                            <span>
+                              <ChatRightQuoteIcon />
+                            </span>
+                            <span className="flex flex-col gap-2">
+                              {notification.message ? (
+                                <span
+                                  className={`items-center ${notification.is_read ? '' : 'text-[#110733]'} font-normal text-[14px] leading-4`}
+                                  dangerouslySetInnerHTML={{
+                                    __html: notification.message,
+                                  }}
+                                />
+                              ) : (
+                                <span className="items-center text-[#110733] font-normal text-[14px] leading-4">
+                                  {notification.notifier.full_name
+                                    .substring(0, 20)
+                                    .trim()}
+                                  {notification.notifier.full_name.length > 20
+                                    ? '...'
+                                    : ''}
+                                  {' mentioned you in this '}
+                                  <Link
+                                    to="#"
+                                    className={`${redirecting ? 'cursor-default opacity-50' : ''} font-bold underline text-[#110733] hover:text-[#361895]`}
+                                    onClick={() => {
+                                      if (!redirecting) {
+                                        setPanelCommentId(
+                                          notification.feedback_comment_id
+                                        );
+                                        getFeedback(notification);
+                                      }
                                     }}
-                                  />
-                                ) : (
-                                  <span className="items-center text-[#110733] font-normal text-[14px] leading-4">
-                                    {notification.notifier.full_name
-                                      .substring(0, 20)
-                                      .trim()}
-                                    {notification.notifier.full_name.length > 20
-                                      ? '...'
-                                      : ''}
-                                    {' mentioned you in this '}
-                                    <Link
-                                      to="#"
-                                      className={`${redirecting ? 'cursor-default opacity-50' : ''} font-bold underline text-[#110733] hover:text-[#361895]`}
-                                      onClick={() => {
-                                        if (!redirecting) {
-                                          setPanelCommentId(
-                                            notification.feedback_comment_id
-                                          );
-                                          getFeedback(notification);
-                                        }
-                                      }}
-                                      aria-disabled={redirecting}
-                                    >
-                                      idea
-                                    </Link>
-                                    .
-                                  </span>
-                                )}
-                                <span className="flex justify-between text-[#9ca3af] font-bold text-[10px] leading-4">
-                                  {convertDate(notification.created_at)}
+                                    aria-disabled={redirecting}
+                                  >
+                                    idea
+                                  </Link>
+                                  .
                                 </span>
+                              )}
+                              <span className="flex justify-between text-[#9ca3af] font-bold text-[10px] leading-4">
+                                {convertDate(notification.created_at)}
                               </span>
-                              <span
-                                className="is-clickable font-normal text-[12px] italic text-[#5a00cd] text-[26px]"
-                                onClick={() =>
-                                  markAsReadOrUnread(notification.id)
-                                }
-                              >
-                                &#x2022;
-                              </span>
-                            </div>
-                            {idx <
-                              userNotification.notifications.length - 1 && (
-                              <hr className="bg-[#e1e0e5] border-0 h-px my-3" />
-                            )}
-                          </Fragment>
-                        )
-                      )}
+                            </span>
+                            <span
+                              className={`is-clickable font-normal text-[12px] italic ${notification.is_read ? 'text-gray-400 opacity-40' : 'text-[#5a00cd]'} text-[26px]`}
+                              onClick={() =>
+                                markAsReadOrUnread(notification.id)
+                              }
+                            >
+                              &#x2022;
+                            </span>
+                          </div>
+                          {idx < notifications.length - 1 && (
+                            <hr className="bg-[#e1e0e5] border-0 h-px my-3" />
+                          )}
+                        </Fragment>
+                      ))}
                     </div>
                   </Fragment>
                 </div>

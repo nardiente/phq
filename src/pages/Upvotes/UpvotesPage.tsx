@@ -20,6 +20,7 @@ import { Plus } from 'lucide-react';
 import { SocketAction } from '../../types/socket';
 import { useWidget } from '../../contexts/WidgetContext/WidgetProvider';
 import { NewWidgetPreview } from '../../components/WidgetPreview/NewWidgetPreview';
+import { clearQueryString } from '../../utils/uri';
 
 export default function UpvotesPage() {
   const location = useLocation();
@@ -37,7 +38,6 @@ export default function UpvotesPage() {
     handleListFeedback,
     setSelectedIdea,
     updateIdea,
-    updateIdeaInRoadmap,
   } = useFeedback();
   const { setActivePage, setActiveTab, setIsOpen, setPanelCommentId } =
     usePanel();
@@ -96,11 +96,7 @@ export default function UpvotesPage() {
         getFeedback(Number(params.i));
       }
 
-      const uri = window.location.toString();
-      if (uri.indexOf('?') > 0) {
-        const clean_uri = uri.substring(0, uri.indexOf('?'));
-        window.history.replaceState({}, document.title, clean_uri);
-      }
+      clearQueryString();
 
       return;
     }
@@ -135,7 +131,6 @@ export default function UpvotesPage() {
       if (res.results.data) {
         const data = res.results.data;
         updateIdea(data);
-        updateIdeaInRoadmap(data.status_id ?? 0, data);
         setSelectedIdea(data);
         setActivePage('add_comment');
         setIsOpen(true);

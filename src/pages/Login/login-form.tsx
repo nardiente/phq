@@ -24,6 +24,7 @@ import { useUser } from '../../contexts/UserContext';
 import queryString from 'query-string';
 import { useTranslation } from 'react-i18next';
 import { validateEmail, validatePassword } from '../../utils/custom-validation';
+import { clearQueryString } from '../../utils/uri';
 
 const Form = styled.form`
   display: flex;
@@ -175,11 +176,7 @@ export const LoginForm = (props: LoginFormProps) => {
           is_public ? window.location.host : undefined
         );
       }
-      const uri = window.location.toString();
-      if (uri.indexOf('?') > 0) {
-        const clean_uri = uri.substring(0, uri.indexOf('?'));
-        window.history.replaceState({}, document.title, clean_uri);
-      }
+      clearQueryString();
     }
   }, []);
 

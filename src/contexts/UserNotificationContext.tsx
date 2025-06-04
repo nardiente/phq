@@ -30,7 +30,8 @@ type UserNotificationAction =
   | {
       type: 'SET_USER_NOTIFICATION';
       payload: UserNotification;
-    };
+    }
+  | { type: 'UPDATE_NOTIFICATION'; payload: Notification };
 
 interface UserNotificationContextType {
   state: UserNotificationState;
@@ -38,6 +39,7 @@ interface UserNotificationContextType {
   getNotifications: (seeMore?: boolean) => void;
   setFetching: (value: boolean) => Promise<void>;
   setUserNotification: (userNotification: UserNotification) => Promise<void>;
+  updateNotification: (notification: Notification) => Promise<void>;
 }
 
 const initialState: UserNotificationState = {
@@ -71,6 +73,19 @@ function userNotificationReducer(
       };
     case 'SET_USER_NOTIFICATION':
       return { ...state, userNotification: action.payload };
+    case 'UPDATE_NOTIFICATION':
+      return {
+        ...state,
+        userNotification: {
+          ...state.userNotification,
+          notifications: state.userNotification.notifications.map(
+            (notification) =>
+              notification.id === action.payload.id
+                ? action.payload
+                : notification
+          ),
+        },
+      };
     default:
       return state;
   }
@@ -88,7 +103,7 @@ export function UserNotificationProvider({
   const [state, dispatch] = useReducer(userNotificationReducer, initialState);
 
   const {
-    state: { action, message },
+    state: { action, message, socket },
     setAction,
   } = useSocket();
   const { user: userContext } = useUser();
@@ -138,6 +153,10 @@ export function UserNotificationProvider({
         break;
       case SocketAction.UPDATE_NOTIFICATION:
         getNotifications();
+        dispatch({
+          type: 'UPDATE_NOTIFICATION',
+          payload: message.data.notification,
+        });
         break;
       default:
         break;
@@ -200,6 +219,14 @@ export function UserNotificationProvider({
     });
   };
 
+  const updateNotification = async (notification: Notification) => {
+    dispatch({ type: 'UPDATE_NOTIFICATION', payload: notification });
+    socket?.emit('message', {
+      action: SocketAction.UPDATE_NOTIFICATION,
+      data: { notification, projectId: project?.id },
+    });
+  };
+
   const value = useMemo(
     () => ({
       state,
@@ -207,6 +234,7 @@ export function UserNotificationProvider({
       getNotifications,
       setFetching,
       setUserNotification,
+      updateNotification,
     }),
     [state]
   );

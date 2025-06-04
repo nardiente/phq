@@ -36,6 +36,7 @@ import { useFeedback } from '../../contexts/FeedbackContext';
 import { Notifications } from '../Notifications';
 import { UserMenu } from '../UserMenu';
 import { PageType } from '../../types/app';
+import { clearQueryString } from '../../utils/uri';
 
 export const Header: FC = () => {
   const location = useLocation();
@@ -224,11 +225,7 @@ export const Header: FC = () => {
     }
     if (hash && hash == 'whats_new') {
       setActiveTab('/changelog');
-      const uri = window.location.toString();
-      if (uri.indexOf('#') > 0) {
-        const clean_uri = uri.substring(0, uri.indexOf('#'));
-        window.history.replaceState({}, '', clean_uri);
-      }
+      clearQueryString();
     }
     if (params.post_id) {
       setActiveTab('/changelog');
