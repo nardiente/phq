@@ -18,20 +18,24 @@ export default function EmailsPage() {
         </p>
 
         <div className="space-y-8">
-          <div className="space-y-2">
-            <label className="block text-[14px] font-medium text-gray-700">
-              Reply-to-address
-            </label>
+          <div className="flex justify-between items-center w-full">
+            <div className="flex flex-col">
+              <label
+                className="text-[14px] font-medium text-gray-700"
+                htmlFor="email"
+              >
+                Email address
+              </label>
+              <p className="text-[14px] text-gray-600">Send emails to:</p>
+            </div>
             <input
+              id="email"
+              autoComplete="email"
+              name="email"
               type="email"
-              placeholder="noreply@yourcompany.com"
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg"
+              placeholder="admin@company.com"
+              className="w-[40%] px-4 py-2 border border-gray-200 rounded-lg text-gray-700 text-[14px] focus:outline-none focus:border-primary"
             />
-            <p className="text-[13px] text-gray-500">
-              By default all outgoing emails to your users will be sent from
-              noreply@yourcompany.com, if you want replies to go elsewhere, set
-              reply-to address here.
-            </p>
           </div>
 
           <div className="space-y-6">
