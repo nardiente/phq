@@ -3,11 +3,14 @@ import React from 'react';
 interface TabNavigationProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
+  tabs: string[];
 }
 
-const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onTabChange }) => {
-  const tabs = ['accordion', 'alerts', 'avatar', 'badges', 'colors', 'buttons', 'fonts'];
-
+const TabNavigation: React.FC<TabNavigationProps> = ({
+  activeTab,
+  onTabChange,
+  tabs,
+}) => {
   return (
     <div className="flex gap-8 border-b border-gray-200">
       {tabs.map((tab) => (

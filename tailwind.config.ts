@@ -1,10 +1,7 @@
 import { Config } from 'tailwindcss'
 
 const config: Config = {
-  content: [
-    './src/**/*.{js,jsx,ts,tsx}',
-    './index.html',
-  ],
+  content: ['./src/**/*.{js,jsx,ts,tsx}', './index.html'],
   theme: {
     extend: {
       // COLOR PALETTE
@@ -41,16 +38,9 @@ const config: Config = {
             outlined: '#5A00CD',
             soft: '#5A00CD',
             solid: '#FFFFFF',
-          }
+          },
         },
         // Accordion-specific colors
-        slate: {
-          600: '#475569',
-        },
-        gray: {
-          50: '#F9FAFB',
-          200: '#E5E7EB',
-        },
         custom: {
           purple: {
             DEFAULT: '#44009A',
@@ -59,7 +49,7 @@ const config: Config = {
           text: {
             DEFAULT: '#110733',
             muted: '#4D4566',
-          }
+          },
         },
         'outlined-badge': {
           DEFAULT: '#9CA3AF',
@@ -145,7 +135,7 @@ const config: Config = {
           600: '#80321A',
           700: '#40190D',
         },
-        'topaz': {
+        topaz: {
           100: '#FFF0DA',
           200: '#FEE1B5',
           300: '#FDD390',
@@ -164,7 +154,7 @@ const config: Config = {
         'ghost-white': {
           400: '#F9F9FA',
         },
-        'slate': {
+        slate: {
           50: '#f8fafc',
           100: '#f1f5f9',
           200: '#e2e8f0',
@@ -176,7 +166,7 @@ const config: Config = {
           800: '#1e293b',
           900: '#0f172a',
         },
-        'gray': {
+        gray: {
           50: '#f9fafb',
           100: '#f3f4f6',
           200: '#e5e7eb',
@@ -188,7 +178,7 @@ const config: Config = {
           800: '#1f2937',
           900: '#111827',
         },
-        'zinc': {
+        zinc: {
           50: '#fafafa',
           100: '#f4f4f5',
           200: '#e4e4e7',
@@ -200,7 +190,7 @@ const config: Config = {
           800: '#27272a',
           900: '#18181b',
         },
-        'emerald': {
+        emerald: {
           50: '#ecfdf5',
           100: '#d1fae5',
           200: '#a7f3d0',
@@ -295,8 +285,8 @@ const config: Config = {
         'red-100': '#fecaca',
         'yellow-100': '#fef3c7',
         'white/10': 'rgba(255, 255, 255, 0.2)',
-        'ebdff9': '#c4a4e0',
-        'ffd8cc': '#ff9f7f',
+        ebdff9: '#c4a4e0',
+        ffd8cc: '#ff9f7f',
       },
 
       // TYPOGRAPHY
@@ -311,19 +301,25 @@ const config: Config = {
         lg: '1.25rem',
         xl: '1.5rem',
         '2xl': '2rem',
-        '15': '15px',  // Accordion-specific
+        '15': '15px', // Accordion-specific
         'badge-sm': '10px',
         'badge-base': '12px',
-        'alert-title': ['18px', {
-          lineHeight: '22px',
-          letterSpacing: '0.005em',
-        }],
-        'alert-body': ['16px', {
-          lineHeight: '24px',
-          letterSpacing: '0.005em',
-        }],
+        'alert-title': [
+          '18px',
+          {
+            lineHeight: '22px',
+            letterSpacing: '0.005em',
+          },
+        ],
+        'alert-body': [
+          '16px',
+          {
+            lineHeight: '24px',
+            letterSpacing: '0.005em',
+          },
+        ],
         'button-sm': '0.875rem', // 14px
-        'button-md': '1rem',     // 16px
+        'button-md': '1rem', // 16px
         'button-lg': '1.125rem', // 18px
         'badge-md': ['14px', { lineHeight: '20px' }],
         'badge-lg': ['16px', { lineHeight: '24px' }],
@@ -342,12 +338,12 @@ const config: Config = {
         md: '1rem',
         lg: '1.5rem',
         xl: '2rem',
-        '14': '14px',  // Accordion-specific
-        '15': '15px',  // Accordion-specific
-        '14px': '14px',  // For py-[14px]
-        'alert-p': '16px',    // p-4
-        'alert-px': '20px',   // px-5
-        'alert-py': '14px',   // py-[14px]
+        '14': '14px', // Accordion-specific
+        '15': '15px', // Accordion-specific
+        '14px': '14px', // For py-[14px]
+        'alert-p': '16px', // p-4
+        'alert-px': '20px', // px-5
+        'alert-py': '14px', // py-[14px]
         'button-sm': '8px',
         'button-md': '12px',
         'button-lg': '16px',
@@ -362,13 +358,13 @@ const config: Config = {
         sm: '0.25rem',
         DEFAULT: '0.5rem',
         lg: '0.75rem',
-        xl: '12px',    // Accordion-specific
+        xl: '12px', // Accordion-specific
         full: '9999px',
-        'alert': '6px',      // rounded-md
+        alert: '6px', // rounded-md
         'alert-full': '9999px', // rounded-full
-        'button': '6px',
-        'badge': '9999px',
-        'accordion': '12px',
+        button: '6px',
+        badge: '9999px',
+        accordion: '12px',
         'button-md': '0.375rem', // rounded-md
         'button-full': '9999px', // rounded-full
       },
@@ -379,16 +375,16 @@ const config: Config = {
         DEFAULT: '0 1px 3px rgba(0, 0, 0, 0.1)',
         md: '0 4px 6px rgba(0, 0, 0, 0.1)',
         lg: '0 10px 15px rgba(0, 0, 0, 0.1)',
-        'button': '0px 1px 2px rgba(0, 0, 0, 0.05)',
+        button: '0px 1px 2px rgba(0, 0, 0, 0.05)',
         'button-hover': '0px 2px 4px rgba(0, 0, 0, 0.1)',
-        'badge': '0px 1px 2px rgba(0, 0, 0, 0.05)',
-        'accordion': '0px 1px 3px rgba(0, 0, 0, 0.1)',
+        badge: '0px 1px 2px rgba(0, 0, 0, 0.05)',
+        accordion: '0px 1px 3px rgba(0, 0, 0, 0.1)',
       },
 
       // LETTER SPACING
       letterSpacing: {
-        'wider': '0.005em',  // Accordion-specific
-        'button': '0.005em',  // For tracking-[0.005em]
+        wider: '0.005em', // Accordion-specific
+        button: '0.005em', // For tracking-[0.005em]
       },
 
       // BUTTON STYLES
@@ -425,17 +421,17 @@ const config: Config = {
       },
 
       gap: {
-        '30': '30px',  // For gap-[30px]
-        'alert': '20px',     // gap-5
-        'alert-sm': '10px',  // gap-2.5
-        'button': '8px',
-        'badge': '4px',
-        'accordion': '16px',
+        '30': '30px', // For gap-[30px]
+        alert: '20px', // gap-5
+        'alert-sm': '10px', // gap-2.5
+        button: '8px',
+        badge: '4px',
+        accordion: '16px',
       },
 
       lineHeight: {
-        '18': '18px',  // For leading-[18px]
-        '22': '22px',  // For leading-[22px]
+        '18': '18px', // For leading-[18px]
+        '22': '22px', // For leading-[22px]
       },
 
       animation: {
@@ -459,6 +455,6 @@ const config: Config = {
     extend: {},
   },
   plugins: [],
-}
+};
 
 export default config 

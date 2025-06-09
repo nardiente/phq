@@ -28,7 +28,6 @@ import {
 } from 'lucide-react';
 import { PageType } from '../../types/app';
 import { useUser } from '../../contexts/UserContext';
-import { ComingSoon } from '../ComingSoon';
 import { RbacPermissions } from '../../types/common';
 
 interface SidebarMenuProps {
@@ -88,13 +87,7 @@ export function SidebarMenu({
     { icon: Users2, label: 'Team Members', id: 'team' },
     { icon: CreditCard, label: 'Billing and Invoicing', id: 'billing' },
     { icon: Tag, label: 'Tags', id: 'tags' },
-    {
-      icon: Mail,
-      label: 'Emails',
-      id: 'emails',
-      badge: <ComingSoon />,
-      disabled: false,
-    },
+    { icon: Mail, label: 'Emails', id: 'emails' },
     { icon: Upload, label: 'Import Ideas', id: 'import' },
   ];
 
