@@ -1,8 +1,20 @@
 import { useState } from 'react';
 import TabNavigation from '../components/TabNavigation';
+import { RadioButtonOptions } from '../components/RadioButtonOptions';
 
 export default function EmailsPage() {
   const [activeTab, setActiveTab] = useState<string>('Admin Emails');
+  const [email, setEmail] = useState<string>('');
+  const [frequency, setFrequency] = useState<{ label: string; value: string }>({
+    label: 'Weekly',
+    value: 'weekly',
+  });
+
+  const frequencies = [
+    { label: 'Daily', value: 'daily' },
+    { label: 'Weekly', value: 'weekly' },
+    { label: 'Monthly', value: 'monthly' },
+  ];
 
   return (
     <div className="flex-1 px-8 py-6 flex justify-center">
@@ -19,7 +31,7 @@ export default function EmailsPage() {
 
         <div className="space-y-8">
           <div className="flex justify-between items-center w-full">
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-2">
               <label
                 className="text-[14px] font-medium text-gray-700"
                 htmlFor="email"
@@ -35,6 +47,27 @@ export default function EmailsPage() {
               type="email"
               placeholder="admin@company.com"
               className="w-[40%] px-4 py-2 border border-gray-200 rounded-lg text-gray-700 text-[14px] focus:outline-none focus:border-primary"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+            />
+          </div>
+
+          <div className="flex justify-between items-center w-full">
+            <div className="flex flex-col gap-2">
+              <label
+                className="text-[14px] font-medium text-gray-700"
+                htmlFor="email"
+              >
+                Frequency
+              </label>
+              <p className="text-[14px] text-gray-600">
+                Choose how often you'd like to receive emails
+              </p>
+            </div>
+            <RadioButtonOptions
+              options={frequencies}
+              select={setFrequency}
+              selected={frequency}
             />
           </div>
 

@@ -17,8 +17,10 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
         <button
           key={tab}
           className={`pb-4 text-base font-medium ${
-            activeTab === tab ? 'border-b-2 border-[#5a00cd] text-[#5a00cd]' : 'text-[#4d4566]'
-          }`}
+            activeTab === tab
+              ? 'border-b-2 border-[#5a00cd] text-[#5a00cd]'
+              : 'text-[#4d4566]'
+          } focus:outline-none`}
           onClick={() => onTabChange(tab)}
         >
           {tab.charAt(0).toUpperCase() + tab.slice(1)}
