@@ -9,6 +9,11 @@ export default function EmailsPage() {
     label: 'Weekly',
     value: 'weekly',
   });
+  const [notificationSettings, setNotificationSettings] = useState<{
+    ideas: boolean;
+    feedback: boolean;
+    comments: boolean;
+  }>({ ideas: true, feedback: true, comments: true });
 
   const frequencies = [
     { label: 'Daily', value: 'daily' },
@@ -29,8 +34,8 @@ export default function EmailsPage() {
           Manage your email preferences for this project
         </p>
 
-        <div className="space-y-8">
-          <div className="flex justify-between items-center w-full">
+        <div className="flex flex-col gap-8">
+          <div className="flex justify-between items-center w-full gap-[200px]">
             <div className="flex flex-col gap-2">
               <label
                 className="text-[14px] font-medium text-gray-700"
@@ -52,7 +57,7 @@ export default function EmailsPage() {
             />
           </div>
 
-          <div className="flex justify-between items-center w-full">
+          <div className="flex justify-between items-center w-full gap-[200px]">
             <div className="flex flex-col gap-2">
               <label
                 className="text-[14px] font-medium text-gray-700"
@@ -71,66 +76,79 @@ export default function EmailsPage() {
             />
           </div>
 
-          <div className="space-y-6">
+          <div>
             <div className="flex items-center justify-between py-4">
-              <div>
-                <h3 className="text-[14px] font-medium text-gray-900 mb-1">
-                  Daily activity email
+              <div className="flex flex-col gap-2">
+                <h3 className="text-[14px] font-medium text-gray-900">
+                  New ideas
                 </h3>
                 <p className="text-[13px] text-gray-500">
-                  Get an email at the end of the day with details of new post
-                  and comments made by your customers.
+                  Receive notifications when a new idea is received.
                 </p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" />
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={notificationSettings.ideas}
+                  onChange={() =>
+                    setNotificationSettings((prev) => ({
+                      ...prev,
+                      ideas: !prev.ideas,
+                    }))
+                  }
+                />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
               </label>
             </div>
 
             <div className="flex items-center justify-between py-4 border-t border-gray-100">
-              <div>
-                <h3 className="text-[14px] font-medium text-gray-900 mb-1">
-                  End of week project summary
+              <div className="flex flex-col gap-2">
+                <h3 className="text-[14px] font-medium text-gray-900">
+                  New feedback
                 </h3>
                 <p className="text-[13px] text-gray-500">
-                  Get an email at the end of the week with stats about your
-                  project
+                  Receive notifications when a new response or feedback is
+                  received.
                 </p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" />
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={notificationSettings.feedback}
+                  onChange={() =>
+                    setNotificationSettings((prev) => ({
+                      ...prev,
+                      feedback: !prev.feedback,
+                    }))
+                  }
+                />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
               </label>
             </div>
 
             <div className="flex items-center justify-between py-4 border-t border-gray-100">
-              <div>
-                <h3 className="text-[14px] font-medium text-gray-900 mb-1">
-                  Feedback review reminder
+              <div className="flex flex-col gap-2">
+                <h3 className="text-[14px] font-medium text-gray-900">
+                  New comments
                 </h3>
                 <p className="text-[13px] text-gray-500">
-                  Get an email when there are posts that require review
+                  Receive notifications when a new comment is submitted.
                 </p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-              </label>
-            </div>
-
-            <div className="flex items-center justify-between py-4 border-t border-gray-100">
-              <div>
-                <h3 className="text-[14px] font-medium text-gray-900 mb-1">
-                  New activity email for your customers
-                </h3>
-                <p className="text-[13px] text-gray-500">
-                  Send email to customers who have commented, voted, or added a
-                  post encouraging them to leave feedback on your portal.
-                </p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" />
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={notificationSettings.comments}
+                  onChange={() =>
+                    setNotificationSettings((prev) => ({
+                      ...prev,
+                      comments: !prev.comments,
+                    }))
+                  }
+                />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
               </label>
             </div>
