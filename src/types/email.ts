@@ -12,8 +12,14 @@ export interface Email {
 }
 
 export interface Emails {
+  id?: number;
   admin: Email;
   customer: Email;
+  created_at?: string;
+  created_by?: number;
+  project_id?: number;
+  updated_at?: string;
+  updated_by?: number;
 }
 
 export const frequencies = [

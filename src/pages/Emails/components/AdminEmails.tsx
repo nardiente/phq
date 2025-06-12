@@ -1,23 +1,28 @@
 import moment, { Moment } from 'moment';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFeedback } from '../../../contexts/FeedbackContext';
 import { RadioButtonOptions } from '../../../components/RadioButtonOptions';
 import { removeHtmlTags } from '../../../utils/string';
-import { Email, Emails, frequencies } from '../../../types/email';
+import { Email, frequencies } from '../../../types/email';
 
 export const AdminEmails = ({
   emailContext,
   setEmails,
 }: {
   emailContext: Email;
-  setEmails: Dispatch<SetStateAction<Emails>>;
+  setEmails: (updated: Email) => void;
 }) => {
   const {
     state: { comments, filteredIdeas, upvotes },
   } = useFeedback();
 
+  const [email, setEmail] = useState<string>(emailContext.email);
   const [start, setStart] = useState<Moment>(moment().startOf('day'));
   const end = moment().endOf('day');
+
+  useEffect(() => {
+    setEmail(emailContext.email);
+  }, [emailContext.email]);
 
   useEffect(() => {
     switch (emailContext.frequency.value) {
@@ -79,13 +84,9 @@ export const AdminEmails = ({
           type="email"
           placeholder="admin@company.com"
           className="w-[40%] px-4 py-2 border border-gray-200 rounded-lg text-gray-700 text-[14px] focus:outline-none focus:border-primary"
-          onChange={(e) =>
-            setEmails((prev) => ({
-              ...prev,
-              admin: { ...prev.admin, email: e.target.value },
-            }))
-          }
-          value={emailContext.email}
+          onBlur={() => setEmails({ ...emailContext, email })}
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
         />
       </div>
 
@@ -104,10 +105,7 @@ export const AdminEmails = ({
         <RadioButtonOptions
           options={frequencies}
           select={(selected) =>
-            setEmails((prev) => ({
-              ...prev,
-              admin: { ...prev.admin, frequency: selected },
-            }))
+            setEmails({ ...emailContext, frequency: selected })
           }
           selected={emailContext.frequency}
         />
@@ -127,16 +125,13 @@ export const AdminEmails = ({
               className="sr-only peer"
               checked={emailContext.notificationSettings.ideas}
               onChange={() =>
-                setEmails((prev) => ({
-                  ...prev,
-                  admin: {
-                    ...prev.admin,
-                    notificationSettings: {
-                      ...prev.admin.notificationSettings,
-                      ideas: !prev.admin.notificationSettings.ideas,
-                    },
+                setEmails({
+                  ...emailContext,
+                  notificationSettings: {
+                    ...emailContext.notificationSettings,
+                    ideas: !emailContext.notificationSettings.ideas,
                   },
-                }))
+                })
               }
             />
             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
@@ -158,16 +153,13 @@ export const AdminEmails = ({
               className="sr-only peer"
               checked={emailContext.notificationSettings.feedback}
               onChange={() =>
-                setEmails((prev) => ({
-                  ...prev,
-                  admin: {
-                    ...prev.admin,
-                    notificationSettings: {
-                      ...prev.admin.notificationSettings,
-                      feedback: !prev.admin.notificationSettings.feedback,
-                    },
+                setEmails({
+                  ...emailContext,
+                  notificationSettings: {
+                    ...emailContext.notificationSettings,
+                    feedback: !emailContext.notificationSettings.feedback,
                   },
-                }))
+                })
               }
             />
             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
@@ -189,16 +181,13 @@ export const AdminEmails = ({
               className="sr-only peer"
               checked={emailContext.notificationSettings.comments}
               onChange={() =>
-                setEmails((prev) => ({
-                  ...prev,
-                  admin: {
-                    ...prev.admin,
-                    notificationSettings: {
-                      ...prev.admin.notificationSettings,
-                      comments: !prev.admin.notificationSettings.comments,
-                    },
+                setEmails({
+                  ...emailContext,
+                  notificationSettings: {
+                    ...emailContext.notificationSettings,
+                    comments: !emailContext.notificationSettings.comments,
                   },
-                }))
+                })
               }
             />
             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
@@ -225,8 +214,8 @@ export const AdminEmails = ({
               <>
                 <span className="font-medium">New Ideas</span>
                 <ul className="list-disc pl-5 text-[13px]">
-                  {ideasByFrequency().map((idea) => (
-                    <li>{idea.title}</li>
+                  {ideasByFrequency().map((idea, idx) => (
+                    <li key={idx}>{idea.title}</li>
                   ))}
                 </ul>
               </>
@@ -235,8 +224,8 @@ export const AdminEmails = ({
               <>
                 <span className="font-medium">New Feedbacks</span>
                 <ul className="list-disc pl-5 text-[13px]">
-                  {upvotesByFrequency().map((upvote) => (
-                    <li>{upvote.title}</li>
+                  {upvotesByFrequency().map((upvote, idx) => (
+                    <li key={idx}>{upvote.title}</li>
                   ))}
                 </ul>
               </>
@@ -245,8 +234,8 @@ export const AdminEmails = ({
               <>
                 <span className="font-medium">New Comments</span>
                 <ul className="list-disc pl-5 text-[13px]">
-                  {commentsByFrequency().map((comment) => (
-                    <li>{removeHtmlTags(comment.comment)}</li>
+                  {commentsByFrequency().map((comment, idx) => (
+                    <li key={idx}>{removeHtmlTags(comment.comment)}</li>
                   ))}
                 </ul>
               </>

@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { SavedWidget } from '../types/savedWidget';
+import { Widget } from '../contexts/WidgetContext/type';
 
 const API_URL = import.meta.env.VITE_API_HOST;
 
 export const widgetService = {
   // Get all widgets
-  async getAllWidgets(): Promise<SavedWidget[]> {
+  async getAllWidgets(): Promise<Widget[]> {
     try {
       const response = await axios.get(`${API_URL}/widgets`);
       return response.data.widgets || [];
@@ -16,7 +16,7 @@ export const widgetService = {
   },
 
   // Save widget
-  async saveWidget(widget: SavedWidget): Promise<SavedWidget> {
+  async saveWidget(widget: Widget): Promise<Widget> {
     const response = await axios.post(`${API_URL}/widgets`, widget);
     return response.data;
   },
@@ -27,7 +27,7 @@ export const widgetService = {
   },
 
   // Get single widget
-  async getWidget(id: string): Promise<SavedWidget | undefined> {
+  async getWidget(id: string): Promise<Widget | undefined> {
     const response = await axios.get(`${API_URL}/widgets/${id}`);
     return response.data;
   },
@@ -36,7 +36,7 @@ export const widgetService = {
   async updateWidgetStatus(
     id: string,
     status: 'draft' | 'published'
-  ): Promise<SavedWidget | undefined> {
+  ): Promise<Widget | undefined> {
     const widget = await this.getWidget(id);
     if (widget) {
       const response = await axios.patch(`${API_URL}/widgets/${id}`, {
