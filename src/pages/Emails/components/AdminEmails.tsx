@@ -39,17 +39,26 @@ export const AdminEmails = ({
   }, [emailContext.frequency.value]);
 
   const commentsByFrequency = () => {
-    return comments.filter((comment) => {
-      const created_at = moment(comment.created_at);
-      return created_at.isBetween(start, end, undefined, '[]');
-    });
+    return comments
+      .filter((comment) => {
+        const created_at = moment(comment.created_at);
+        return (
+          created_at.isBetween(start, end, undefined, '[]') &&
+          !comment.deleted &&
+          (!comment.admin_approval_status ||
+            comment.admin_approval_status === 'approved')
+        );
+      })
+      .sort((a, b) => (a.id && b.id ? a.id - b.id : 0));
   };
 
   const ideasByFrequency = () => {
-    return filteredIdeas.filter((idea) => {
-      const created_at = moment(idea.created_at);
-      return created_at.isBetween(start, end, undefined, '[]');
-    });
+    return filteredIdeas
+      .filter((idea) => {
+        const created_at = moment(idea.created_at);
+        return created_at.isBetween(start, end, undefined, '[]');
+      })
+      .sort((a, b) => (a.id && b.id ? a.id - b.id : 0));
   };
 
   const upvotesByFrequency = () => {
@@ -58,11 +67,13 @@ export const AdminEmails = ({
       return created_at.isBetween(start, end, undefined, '[]');
     });
 
-    return filteredIdeas.filter((idea) =>
-      feedbacks
-        .map((feedback) => idea.id && feedback.feedback_id)
-        .includes(idea.id)
-    );
+    return filteredIdeas
+      .filter(
+        (idea) =>
+          idea.id &&
+          feedbacks.map((feedback) => feedback.feedback_id).includes(idea.id)
+      )
+      .sort((a, b) => (a.id && b.id ? a.id - b.id : 0));
   };
 
   return (

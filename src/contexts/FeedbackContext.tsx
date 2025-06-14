@@ -313,6 +313,14 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
+    if (window.location.pathname === '/emails') {
+      handleListFeedback();
+      listComments();
+      listUpvotes();
+    }
+  }, []);
+
+  useEffect(() => {
     if (
       !project?.id ||
       !message?.data.projectId ||

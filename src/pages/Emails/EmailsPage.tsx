@@ -4,8 +4,11 @@ import { AdminEmails } from './components/AdminEmails';
 import { CustomerEmails } from './components/CustomerEmails';
 import { Emails } from '../../types/email';
 import { getApi, putApi } from '../../utils/api/api';
+import { useUser } from '../../contexts/UserContext';
 
 export default function EmailsPage() {
+  const { setUser } = useUser();
+
   const [activeTab, setActiveTab] = useState<
     'Admin Emails' | 'Customer Emails'
   >('Admin Emails');
@@ -34,6 +37,7 @@ export default function EmailsPage() {
       } = res;
       if (data) {
         setEmails(data);
+        setUser((prev) => ({ ...prev, emails: data }));
       }
     });
   }, []);

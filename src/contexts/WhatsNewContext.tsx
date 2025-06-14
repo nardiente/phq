@@ -149,6 +149,9 @@ export function WhatsNewProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     listChangeType();
+    if (window.location.pathname === '/widgets') {
+      listWhatsNew();
+    }
   }, []);
 
   const listChangeType = async () => {

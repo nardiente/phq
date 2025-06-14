@@ -37,6 +37,7 @@ import {
   tags_default_text_color,
   check_box_active_color,
 } from '../types/appearance-colours';
+import { Emails } from '../types/email';
 
 export interface UserContextConfig {
   admin_profile?: User;
@@ -47,6 +48,7 @@ export interface UserContextConfig {
   permissions: any[];
   rbac_permissions: any[];
   moderation?: Moderation;
+  emails?: Emails;
 }
 
 interface UserContextType {
