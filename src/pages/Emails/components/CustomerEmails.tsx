@@ -67,7 +67,7 @@ export const CustomerEmails = ({
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex justify-between items-center w-full gap-[200px]">
+      <div className="flex justify-between items-center w-full gap-10">
         <div className="flex flex-col gap-2">
           <label
             className="text-[14px] font-medium text-gray-700"
@@ -90,7 +90,7 @@ export const CustomerEmails = ({
         />
       </div>
 
-      <div className="flex justify-between items-center w-full gap-[200px]">
+      <div className="flex justify-between items-center w-full gap-10">
         <div className="flex flex-col gap-2">
           <label
             className="text-[14px] font-medium text-gray-700"

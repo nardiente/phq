@@ -66,7 +66,7 @@ export default function EmailsPage() {
   };
 
   return (
-    <div className="flex-1 px-8 py-6 flex justify-center">
+    <div className="flex-1 px-8 py-6 flex justify-center bg-[#fafafa]">
       <div className="max-w-[800px]">
         <h1 className="text-[28px] font-semibold text-gray-900 mb-6">Emails</h1>
         <TabNavigation

@@ -8,7 +8,9 @@ export const Settings = ({
   className?: string;
 }) => {
   return (
-    <div className={`flex-1 ${className !== 'pb-0' ? 'py-6' : 'pt-6'}`}>
+    <div
+      className={`flex-1 bg-[#fafafa] ${className !== 'pb-0' ? 'py-6' : 'pt-6'}`}
+    >
       {children}
     </div>
   );
