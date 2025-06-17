@@ -1,4 +1,4 @@
-import { Config } from 'tailwindcss'
+import { Config } from 'tailwindcss';
 
 const config: Config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}', './index.html'],
@@ -325,6 +325,7 @@ const config: Config = {
         'badge-lg': ['16px', { lineHeight: '24px' }],
         'accordion-title': ['16px', { lineHeight: '24px' }],
         'accordion-content': ['14px', { lineHeight: '20px' }],
+        h1: '28px',
       },
       fontWeight: {
         normal: '400',
@@ -457,4 +458,4 @@ const config: Config = {
   plugins: [],
 };
 
-export default config 
+export default config;

@@ -18,13 +18,11 @@ export const RadioButtonOptions = ({
   select: (selected: Option) => void;
 }) => {
   return (
-    <div
-      className={`flex ${direction === 'column' ? 'flex-col' : ''} gap-[15px]`}
-    >
+    <div className={`flex ${direction === 'column' ? 'flex-col' : ''} gap-15`}>
       {options?.map((option, idx) => (
         <div
           key={idx}
-          className="flex items-center gap-[16px] text-[#110733] text-[14px]"
+          className="flex items-center gap-[16px] text-cetacean-blue-400 text-button-sm"
         >
           <a className="flex" onClick={() => select(option)}>
             {selected.value === option.value ? (
