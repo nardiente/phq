@@ -16,6 +16,7 @@ import { useSocket } from './SocketContext';
 import { SocketAction } from '../types/socket';
 import { useUser } from './UserContext';
 import { FeedbackComment } from '../types/feedback';
+import { useApp } from './AppContext';
 
 interface UserNotificationState {
   fetching: boolean;
@@ -102,14 +103,13 @@ export function UserNotificationProvider({
 }) {
   const [state, dispatch] = useReducer(userNotificationReducer, initialState);
 
+  const { is_public } = useApp();
   const {
     state: { action, message, socket },
     setAction,
   } = useSocket();
   const { user: userContext } = useUser();
   const { moderation, project, user } = userContext ?? {};
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
     if (

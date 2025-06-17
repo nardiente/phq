@@ -14,6 +14,7 @@ import { formatDate } from '../../../utils/date';
 import '../styles.css';
 import StatusBadge from '../../../components/StatusBadge';
 import ArchivedBadge from './ArchivedBadge';
+import { useApp } from '../../../contexts/AppContext';
 
 const UpvoteLabelLink = styled.span`
   align-items: center;
@@ -34,6 +35,7 @@ export const UpVoteEachList = memo(function UpVoteEachList({
   props: Feedback;
   handleListFeedback: () => void;
 }) {
+  const { is_public } = useApp();
   const { user } = useUser();
   const {
     state: { listing },
@@ -43,7 +45,7 @@ export const UpVoteEachList = memo(function UpVoteEachList({
 
   const [pinning, setPinning] = useState<boolean>(false);
 
-  const is_admin = import.meta.env.VITE_SYSTEM_TYPE === 'admin';
+  const is_admin = !is_public;
 
   const handleClickIdea = (feedback: Feedback) => {
     setSelectedIdea(feedback);

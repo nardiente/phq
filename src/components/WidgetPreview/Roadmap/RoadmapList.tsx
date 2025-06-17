@@ -21,6 +21,7 @@ import { PlusIcon } from '../../icons/plus.icon';
 import '../../../../src/pages/Roadmap/styles.css';
 
 export const RoadmapList = () => {
+  const { is_public } = useApp();
   const {
     state: { listing, roadmaps },
     addRoadmap,
@@ -41,8 +42,6 @@ export const RoadmapList = () => {
   const [dragging, setDragging] = useState<boolean>(false);
   const [editColumnNameId, setEditColumnNameId] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const handleAddColumn = () => {
     setLoading(true);
@@ -276,7 +275,7 @@ export const RoadmapList = () => {
                 >
                   {(provided) => (
                     <div
-                      className="bg-[#fafafa] rounded"
+                      className={`${is_public ? 'background-color' : 'bg-[#fafafa]'} rounded`}
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                     >

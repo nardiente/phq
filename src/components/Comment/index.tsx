@@ -27,13 +27,12 @@ import { fileToBase64 } from '../../utils/file';
 import { toast } from 'react-toastify';
 import { SocketAction } from '../../types/socket';
 
+const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+
 const mentionSource = async (searchTerm: any, renderList: any) => {
   postApi({
     url: 'users/search',
-    payload: {
-      name: searchTerm,
-      is_public: import.meta.env.VITE_SYSTEM_TYPE === 'public',
-    },
+    payload: { name: searchTerm, is_public },
   }).then((res) => {
     if (res.results.data) {
       const data: any = res.results.data;
@@ -98,7 +97,6 @@ export const Comment = memo(function Comment({
   const { user: userContext } = useUser();
   const { moderation, permissions, project, rbac_permissions, user } =
     userContext ?? {};
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const {
     state: { commentIdToDelete },
     addMentionedUser,
@@ -407,7 +405,7 @@ export const Comment = memo(function Comment({
       setIsMember(true);
     }
 
-    if (import.meta.env.VITE_SYSTEM_TYPE === 'admin') {
+    if (!is_public) {
       setIsAdmin(true);
     }
 

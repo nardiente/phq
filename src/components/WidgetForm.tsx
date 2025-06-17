@@ -27,12 +27,9 @@ export const WidgetForm = ({
     updateWidget,
   } = useWidget();
   const { user: userDetails } = useUser();
-  const { admin_profile, user } = userDetails ?? {};
+  const { project } = userDetails ?? {};
 
   const [, setActiveSection] = useState<string | null>('widget-type');
-
-  const userInfo =
-    import.meta.env.VITE_SYSTEM_TYPE === 'public' ? admin_profile : user;
 
   useEffect(() => {
     setShowAddForm(false);
@@ -45,10 +42,10 @@ export const WidgetForm = ({
   }, [id]);
 
   useEffect(() => {
-    if (userInfo?.id) {
+    if (project?.id) {
       getNotificationCount();
     }
-  }, [posts.length, userInfo]);
+  }, [posts.length, project]);
 
   const handleSave = async (shouldClose: boolean = false) => {
     const widgetData: Widget = {

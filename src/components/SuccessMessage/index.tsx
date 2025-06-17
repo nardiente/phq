@@ -3,15 +3,16 @@ import { useUser } from '../../contexts/UserContext';
 import { getKaslKey, getSessionToken } from '../../utils/localStorage';
 import './styles.css';
 import { Permissions } from '../../types/common';
+import { useApp } from '../../contexts/AppContext';
 
 const SuccessMessage = () => {
+  const { is_public } = useApp();
   const {
     state: { panel_loading, successType },
     setActivePage,
   } = usePanel();
   const { user } = useUser();
 
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const is_logged_in =
     getKaslKey() !== undefined ||
     (getSessionToken() !== undefined &&

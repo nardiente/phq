@@ -17,6 +17,7 @@ import { CSSProperties, useEffect, useState } from 'react';
 import { useWhatsNew } from '../../../contexts/WhatsNewContext';
 import { usePanel } from '../../../contexts/PanelContext';
 import { getIPAddress } from '../../../utils/token';
+import { useApp } from '../../../contexts/AppContext';
 
 const PostItem = ({
   style,
@@ -27,6 +28,7 @@ const PostItem = ({
   whats_new: WhatsNew;
   openPostForm: (post: WhatsNew) => void;
 }) => {
+  const { is_public } = useApp();
   const { user } = useUser();
   const {
     state: { posts },
@@ -39,7 +41,7 @@ const PostItem = ({
   const [socmed_url, setSocmedUrl] = useState<string>('');
   const [pinning, setPinning] = useState<boolean>(false);
 
-  const is_admin = import.meta.env.VITE_SYSTEM_TYPE === 'admin';
+  const is_admin = !is_public;
 
   const addEmoji = async (type: any) => {
     const { emoji_list, my_emoji } =

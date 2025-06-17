@@ -3,8 +3,11 @@ import { KeyMetrics } from '../components/dashboard/KeyMetrics';
 import { IdeasSection } from '../components/dashboard/IdeasSection';
 import { WhatsNewSection } from '../components/dashboard/WhatsNewSection';
 import { UsersSection } from '../components/dashboard/UsersSection';
+import { useApp } from '../contexts/AppContext';
 
 export default function DashboardPage() {
+  const { is_public } = useApp();
+
   // const filterUsersBySegment = (segment: Segment) => {
   //   return users.filter((user) => {
   //     if (!segment.filters || typeof segment.filters !== 'object') {
@@ -72,7 +75,9 @@ export default function DashboardPage() {
   // }, {});
 
   return (
-    <div className="flex-1 px-8 py-6 bg-[#fafafa]">
+    <div
+      className={`flex-1 px-8 py-6 ${is_public ? 'background-color' : 'bg-[#fafafa]'}`}
+    >
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-[28px] font-semibold text-gray-900">Dashboard</h1>
       </div>

@@ -9,12 +9,14 @@ import { onbordingPaths, PageType, pathExceptions } from '../types/app';
 import { useFeedback } from '../contexts/FeedbackContext';
 import { useSocket } from '../contexts/SocketContext';
 import { SocketAction } from '../types/socket';
+import { useApp } from '../contexts/AppContext';
 
 const AppRoute = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname, search } = location;
 
+  const { is_public } = useApp();
   const { handleGetStatus, handleListTag } = useFeedback();
   const {
     loaded,
@@ -33,8 +35,6 @@ const AppRoute = () => {
   const [currentPage, setCurrentPage] = useState<PageType>(
     pathname.slice(1) as PageType
   );
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const handleNavigation = useCallback(
     (page: PageType) => {
@@ -102,7 +102,7 @@ const AppRoute = () => {
       {isAuthenticated() || (!isAuthenticated() && is_public) ? (
         <>
           <div
-            className={`min-h-screen flex ${is_public ? '' : 'bg-[#fafafa]'}`}
+            className={`min-h-screen flex ${is_public ? 'background-color' : 'bg-[#fafafa]'}`}
           >
             {!pathExceptions.includes(pathname) && !is_public && (
               <SidebarMenu

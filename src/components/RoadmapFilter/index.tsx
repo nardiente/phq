@@ -1,16 +1,16 @@
+import { useApp } from '../../contexts/AppContext';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { DropdownRoadmap } from '../DropDownRoadmap';
 import './styles.css';
 import * as React from 'react';
 
 export const RoadmapFilter = () => {
+  const { is_public } = useApp();
   const {
     state: { filter, tags },
     setFilter,
   } = useFeedback();
   const { tags: filterTags, title } = filter;
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   return (
     <DropdownRoadmap

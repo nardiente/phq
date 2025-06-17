@@ -29,6 +29,7 @@ import {
 import { PageType } from '../../types/app';
 import { useUser } from '../../contexts/UserContext';
 import { RbacPermissions } from '../../types/common';
+import { useApp } from '../../contexts/AppContext';
 
 interface SidebarMenuProps {
   activeItem: string;
@@ -55,13 +56,13 @@ export function SidebarMenu({
   onNavigate,
   setCurrentPage,
 }: SidebarMenuProps) {
+  const { is_public } = useApp();
   const { user } = useUser();
 
   const [isExpanded, setIsExpanded] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const company_info = is_public ? user?.admin_profile : user?.user;
 
   const mainMenuItems: MenuItem[] = [

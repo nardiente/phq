@@ -38,6 +38,7 @@ import {
   check_box_active_color,
 } from '../types/appearance-colours';
 import { Emails } from '../types/email';
+import { useApp } from './AppContext';
 
 export interface UserContextConfig {
   admin_profile?: User;
@@ -120,6 +121,8 @@ interface UserProviderProps {
 }
 
 export function UserProvider({ children }: UserProviderProps) {
+  const { is_public } = useApp();
+
   const [email, setEmail] = useState<string>('');
   const [fetching, setFetching] = useState<boolean>(false);
   const [first_name, setFirstName] = useState<string>('');
@@ -130,6 +133,10 @@ export function UserProvider({ children }: UserProviderProps) {
   const [showBanner, setShowBanner] = useState<boolean>(false);
   const [user, setUser] = useState<UserContextConfig>(initialUser);
   const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    handleGetUser();
+  }, []);
 
   useEffect(() => {
     setAppearanceColors(user.appearance);
@@ -153,11 +160,7 @@ export function UserProvider({ children }: UserProviderProps) {
   const handleGetUser = async () => {
     setFetching(true);
     getApi<UserContextConfig>({
-      url: `users/me${
-        import.meta.env.VITE_SYSTEM_TYPE === 'public'
-          ? `/public/${window.location.host}`
-          : ''
-      }`,
+      url: `users/me${is_public ? `/public/${window.location.host}` : ''}`,
     })
       .then((res) => {
         if (res.results.data) {

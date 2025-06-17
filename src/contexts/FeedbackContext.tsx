@@ -18,6 +18,7 @@ import { getApi, putApi } from '../utils/api/api';
 import { useUser } from './UserContext';
 import { useSocket } from './SocketContext';
 import { SocketAction } from '../types/socket';
+import { useApp } from './AppContext';
 
 interface FeedbackState {
   activeTab: 'ideas' | 'comments';
@@ -303,14 +304,13 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
 
   const { activeTab, comments, filter, ideas, roadmaps } = state;
 
+  const { is_public } = useApp();
   const { user: userContext } = useUser();
   const { moderation, project } = userContext ?? {};
   const {
     state: { action, message, socket },
     setAction,
   } = useSocket();
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
     if (window.location.pathname === '/emails') {

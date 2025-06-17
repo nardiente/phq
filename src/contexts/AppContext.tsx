@@ -18,6 +18,7 @@ interface ContextType {
   setApiFieldErrors: Dispatch<SetStateAction<ApiFieldError[]>>;
   roadmap_colors: RoadmapColor[];
   setRoadmapColors: Dispatch<SetStateAction<RoadmapColor[]>>;
+  is_public: boolean;
 }
 
 const AppContext = createContext<ContextType>({
@@ -27,12 +28,15 @@ const AppContext = createContext<ContextType>({
   setApiFieldErrors: () => {},
   roadmap_colors: [],
   setRoadmapColors: () => {},
+  is_public: import.meta.env.VITE_SYSTEM_TYPE === 'public',
 });
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [api_error, setApiError] = useState<string>('');
   const [api_field_errors, setApiFieldErrors] = useState<ApiFieldError[]>([]);
   const [roadmap_colors, setRoadmapColors] = useState<RoadmapColor[]>([]);
+
+  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
     handleGetRoadmapColors();
@@ -55,6 +59,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setApiFieldErrors,
         roadmap_colors,
         setRoadmapColors,
+        is_public,
       }}
     >
       {children}

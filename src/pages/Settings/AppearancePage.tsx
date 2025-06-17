@@ -16,10 +16,12 @@ import SectionHeader from '../../components/SectionHeader';
 import ColorPicker from '../../components/ColorPicker';
 import { SocketAction } from '../../types/socket';
 import { useSocket } from '../../contexts/SocketContext';
+import { useApp } from '../../contexts/AppContext';
 
 export default function AppearancePage() {
   const navigate = useNavigate();
 
+  const { is_public } = useApp();
   const { setHasUnsavedChanges } = useUnsavedChanges();
   const { user, handleGetAppearance, setUser } = useUser();
   const { appearance, project } = user ?? {};
@@ -166,7 +168,7 @@ export default function AppearancePage() {
   const [loading_user, setLoadingUser] = useState<boolean>(true);
   const [is_member, setIsMember] = useState<boolean>(false);
 
-  const is_admin = import.meta.env.VITE_SYSTEM_TYPE === 'admin';
+  const is_admin = !is_public;
 
   useEffect(() => {
     setActiveLinkColor(appearance?.active_link_color ?? '');

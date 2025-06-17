@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Subscription } from '../types/billing';
 import { getApi } from '../utils/api/api';
+import { useApp } from '../contexts/AppContext';
 
 const Footer = () => {
+  const { is_public } = useApp();
+
   const [fetching, setFetching] = useState<boolean>(true);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
@@ -18,8 +21,6 @@ const Footer = () => {
     '/ob-success',
     '/free-trial-plans',
   ];
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const getSubscription = () => {
     setFetching(true);

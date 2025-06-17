@@ -1,6 +1,7 @@
 import { Calendar4RangeIcon } from '../../components/icons/calendar4-range.icon';
 import StatusBadge from '../../components/StatusBadge';
 import { UpVoteCounter } from '../../components/UpVoteCounter';
+import { useApp } from '../../contexts/AppContext';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { usePanel } from '../../contexts/PanelContext';
 import { Feedback, FeedbackTag } from '../../types/feedback';
@@ -8,10 +9,9 @@ import { formatDate } from '../../utils/date';
 import ArchivedBadge from '../Upvotes/components/ArchivedBadge';
 
 export const UpvoteComponent = ({ upvote }: { upvote: Feedback }) => {
+  const { is_public } = useApp();
   const { setSelectedIdea } = useFeedback();
   const { setActivePage, setIsOpen } = usePanel();
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const handleClickIdea = (feedback: Feedback) => {
     setSelectedIdea(feedback);

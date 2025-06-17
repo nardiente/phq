@@ -3,21 +3,17 @@ import { useUser } from '../contexts/UserContext';
 import { useEffect } from 'react';
 import { onbordingPaths } from '../types/app';
 import { pathExceptions } from '../types/app';
+import { useApp } from '../contexts/AppContext';
 
 const Fallback = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname, search } = location;
 
-  const {
-    loaded,
-    user: userDetails,
-    handleGetUser,
-    isAuthenticated,
-  } = useUser();
+  const { is_public } = useApp();
+  const { loaded, user: userDetails, isAuthenticated } = useUser();
   const { project, user } = userDetails ?? {};
 
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const unprotectedPages = [
     '/',
     '/free-trial-plans',
@@ -26,12 +22,15 @@ const Fallback = () => {
   ];
 
   useEffect(() => {
+    if (is_public && loaded && !project) {
+      navigate('/404');
+    }
     if (
       !is_public &&
       (![...pathExceptions, ...onbordingPaths].includes(pathname) ||
         (pathExceptions.includes(pathname) && search.length === 0))
     ) {
-      if (isAuthenticated() && pathname === '/sign-in') {
+      if (isAuthenticated() && (pathname === '/sign-in' || pathname === '/')) {
         navigate('/dashboard');
         return;
       }
@@ -42,20 +41,10 @@ const Fallback = () => {
     } else if (pathname.slice(1).length === 0 && project) {
       navigate('/upvotes');
     }
-    handleGetUser();
-  }, []);
-
-  useEffect(() => {
-    if (is_public && loaded && !project) {
-      navigate('/404');
-    }
-  }, [loaded]);
-
-  useEffect(() => {
     if (is_public && pathname.slice(1).length === 0) {
       navigate('/upvotes');
     }
-  }, [user]);
+  }, [is_public, loaded, project, user]);
 
   return (
     <div className="h-screen flex items-center justify-center bg-white">

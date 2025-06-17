@@ -16,8 +16,10 @@ import Button from '../../components/Button';
 import { Plus } from 'lucide-react';
 import { useWidget } from '../../contexts/WidgetContext/WidgetProvider';
 import { NewWidgetPreview } from '../../components/WidgetPreview/NewWidgetPreview';
+import { useApp } from '../../contexts/AppContext';
 
 export const WhatsNewPage = () => {
+  const { is_public } = useApp();
   const { user } = useUser();
   const { permissions } = user ?? {};
   const {
@@ -40,8 +42,6 @@ export const WhatsNewPage = () => {
   } = useWidget();
 
   const [whats_new, setWhatsNew] = useState<WhatsNew>();
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const retrieveWhatsNew = (id?: number) => {
     getApi<WhatsNew>({

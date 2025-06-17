@@ -12,8 +12,10 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { getSessionToken } from '../utils/localStorage';
 import { useUser } from '../contexts/UserContext';
+import { useApp } from '../contexts/AppContext';
 
 export const Notifications = () => {
+  const { is_public } = useApp();
   const {
     state: {
       userNotification: { has_unread, notifications },
@@ -31,7 +33,6 @@ export const Notifications = () => {
   const [redirecting, setRedirecting] = useState<boolean>(false);
 
   const ref = useRef<HTMLDivElement>(null);
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
     getNotifications(seeMore);

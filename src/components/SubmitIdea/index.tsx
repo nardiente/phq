@@ -24,8 +24,10 @@ import { Calendar } from '../Calendar';
 import { PrivacyPolicyField } from '../PrivacyPolicyField';
 import { useSocket } from '../../contexts/SocketContext';
 import { SocketAction } from '../../types/socket';
+import { useApp } from '../../contexts/AppContext';
 
 export const SubmitIdea = () => {
+  const { is_public } = useApp();
   const { handleGetUser, user: userDetails } = useUser();
   const { moderation, project, user } = userDetails ?? {};
   // Active Page: add_idea, add_comment, success, delete_idea, delete_column
@@ -46,7 +48,6 @@ export const SubmitIdea = () => {
     state: { socket },
   } = useSocket();
 
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const is_logged_in =
     getKaslKey() !== undefined ||
     (getSessionToken() !== undefined &&
@@ -324,7 +325,7 @@ export const SubmitIdea = () => {
   };
 
   useEffect(() => {
-    if (import.meta.env.VITE_SYSTEM_TYPE === 'admin') {
+    if (!is_public) {
       setIsAdmin(true);
     }
   }, []);

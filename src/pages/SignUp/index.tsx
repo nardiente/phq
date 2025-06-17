@@ -9,8 +9,11 @@ import { SignUpForm } from './sign-up-form';
 import { UserTypes } from '../../types/user';
 import { Testimonials } from '../../components/Testimonials';
 import { useEffect, useState } from 'react';
+import { useApp } from '../../contexts/AppContext';
 
 export const SignUpPage = () => {
+  const { is_public } = useApp();
+
   const [image_height, setImageHeight] = useState<number>(0);
   const [is_mobile, setIsMobile] = useState<boolean>(false);
   const [screen_width, setScreenWidth] = useState<number>(0);
@@ -28,16 +31,11 @@ export const SignUpPage = () => {
   };
 
   useEffect(() => {
-    setType(
-      import.meta.env.VITE_SYSTEM_TYPE === 'public'
-        ? UserTypes.USER
-        : UserTypes.CUSTOMER
-    );
+    setType(is_public ? UserTypes.USER : UserTypes.CUSTOMER);
 
     if (getKaslKey() !== undefined) {
       // has logged in user
-      window.location.href =
-        import.meta.env.VITE_SYSTEM_TYPE !== 'public' ? '/upvotes' : '/';
+      window.location.href = !is_public ? '/upvotes' : '/';
     } else {
       // no logged in user
       const containers = document.getElementsByClassName(

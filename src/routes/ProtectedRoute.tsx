@@ -7,6 +7,7 @@ import moment from 'moment';
 import { AddYourBoardModal } from '../components/AddYourBoardModal';
 import { SidePanel } from '../components/SidePanel';
 import { PageType } from '../types/app';
+import { useApp } from '../contexts/AppContext';
 
 type ProtectedRouteProps = {
   redirectTo?: string;
@@ -18,13 +19,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { is_public } = useApp();
   const { isAuthenticated, user: userDetails, showBanner } = useUser();
   const { project, user } = userDetails ?? {};
 
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
   const [remindAddBoard, setRemindAddBoard] = useState<boolean | undefined>();
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const handleNavigation = useCallback(
     (page: PageType) => {
@@ -68,7 +68,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   return (
     <>
-      <div className="min-h-screen bg-[#fafafa] flex">
+      <div
+        className={`min-h-screen ${is_public ? 'background-color' : 'bg-[#fafafa]'} flex`}
+      >
         <SidebarMenu
           activeItem={currentPage === 'settings' ? 'account' : currentPage}
           onNavigate={handleNavigation}

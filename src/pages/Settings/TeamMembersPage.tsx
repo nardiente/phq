@@ -22,6 +22,7 @@ import SettingsContainer from '../../components/SettingsContainer';
 import SectionHeader from '../../components/SectionHeader';
 import InputField from '../../components/InputField';
 import * as yup from 'yup';
+import { useApp } from '../../contexts/AppContext';
 
 export default function TeamMembersPage() {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ export default function TeamMembersPage() {
 
   const { t } = useTranslation();
 
+  const { is_public } = useApp();
   const { user } = useUser();
   const { setHasUnsavedChanges } = useUnsavedChanges();
 
@@ -60,7 +62,7 @@ export default function TeamMembersPage() {
   const [is_expanded, setExpanded] = useState(false);
   const [resend, setResend] = useState<boolean>(false);
 
-  const is_admin = import.meta.env.VITE_SYSTEM_TYPE === 'admin';
+  const is_admin = !is_public;
 
   const toggle = () => setExpanded(!is_expanded);
 

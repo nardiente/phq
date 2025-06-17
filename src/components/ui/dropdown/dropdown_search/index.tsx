@@ -16,6 +16,7 @@ import { ChevronDownIcon } from '../../../icons/chevron-down.icon';
 import { UserTypes } from '../../../../types/user';
 import { PlusIcon } from '../../../icons/plus.icon';
 import { AddNewUserModal } from '../../../AddNewUserModal';
+import { useApp } from '../../../../contexts/AppContext';
 
 interface Props {
   label?: string;
@@ -41,8 +42,7 @@ export const CustomDropdown = ({
 }: Props) => {
   const ref = useRef<HTMLElement>();
 
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-
+  const { is_public } = useApp();
   const { user } = useUser();
   const {
     state: { selectedIdea },

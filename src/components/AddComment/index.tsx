@@ -39,10 +39,7 @@ const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 const mentionSource = async (searchTerm: any, renderList: any) => {
   postApi({
     url: 'users/search',
-    payload: {
-      name: searchTerm,
-      is_public: import.meta.env.VITE_SYSTEM_TYPE === 'public',
-    },
+    payload: { name: searchTerm, is_public },
     useSessionToken: is_public && getModerateUserLogin() === true,
   }).then((res) => {
     if (res.results.data) {

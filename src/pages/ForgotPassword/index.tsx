@@ -10,8 +10,11 @@ import {
   mobile_image_width,
 } from '../../utils/constants';
 import { UserTypes } from '../../types/user';
+import { useApp } from '../../contexts/AppContext';
 
 export const ForgotPasswordPage: React.FC = () => {
+  const { is_public } = useApp();
+
   const [image_height, setImageHeight] = React.useState<number>(0);
   const [is_mobile, setIsMobile] = React.useState<boolean>(false);
   const [left_image, setLeftImage] = React.useState<string>(login_image_web);
@@ -30,16 +33,11 @@ export const ForgotPasswordPage: React.FC = () => {
   };
 
   React.useEffect(() => {
-    setType(
-      import.meta.env.VITE_SYSTEM_TYPE === 'public'
-        ? UserTypes.USER
-        : UserTypes.CUSTOMER
-    );
+    setType(is_public ? UserTypes.USER : UserTypes.CUSTOMER);
 
     if (getKaslKey() !== undefined) {
       // has logged in user
-      window.location.href =
-        import.meta.env.VITE_SYSTEM_TYPE !== 'public' ? '/dashboard' : '/';
+      window.location.href = !is_public ? '/dashboard' : '/';
     } else {
       // no logged in user
       const containers = document.getElementsByClassName(

@@ -4,15 +4,14 @@ import { PageHeaderProps } from './types';
 import { RoadmapFilter } from '../RoadmapFilter';
 import { useUser } from '../../contexts/UserContext';
 import { usePanel } from '../../contexts/PanelContext';
-import { useState } from 'react';
-import { ChangeType } from '../../types/whats-new';
-import { getApi } from '../../utils/api/api';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { WhatsNewFilter } from '../WhatsNewFilter';
 import { RbacPermissions } from '../../types/common';
 import { PlusIcon } from '../icons/plus.icon';
+import { useApp } from '../../contexts/AppContext';
 
 export const PageHeader: React.FC<PageHeaderProps> = (props) => {
+  const { is_public } = useApp();
   const { user } = useUser();
   const {
     state: { active_tab },
@@ -26,27 +25,8 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
   const has_new_idea_button =
     active_tab === '/upvotes' || active_tab === '/roadmap';
   const is_member = user?.user?.role_id;
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
-  const [change_types, setChangeTypes] = useState<ChangeType[]>([]);
   const [title, setTitle] = React.useState<string>('');
-
-  const listChangeType = () => {
-    getApi<ChangeType[]>({
-      url: 'whatsnew/change-types',
-    }).then((res) => {
-      if (res.results.data) {
-        const data = res.results.data;
-        setChangeTypes(data);
-      }
-    });
-  };
-
-  React.useEffect(() => {
-    if (props.listWhatsNew) {
-      listChangeType();
-    }
-  }, []);
 
   return (
     <div
@@ -109,11 +89,7 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
             {props.listWhatsNew && (
               <div>
                 <div className="field is-grouped">
-                  <WhatsNewFilter
-                    listChangeType={listChangeType}
-                    change_types={change_types}
-                    listWhatsNew={props.listWhatsNew}
-                  />
+                  <WhatsNewFilter />
                   {!is_public &&
                     user?.rbac_permissions.includes(
                       RbacPermissions.CREATE_EDIT_SAVE_DRAFT_SCHEDULE_POST_AND_DELETE_YOUR_OWN_POST

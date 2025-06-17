@@ -9,6 +9,7 @@ import {
 import { useUser } from './UserContext';
 import { io, Socket } from 'socket.io-client';
 import { SocketAction } from '../types/socket';
+import { useApp } from './AppContext';
 
 interface SocketMessage {
   action: SocketAction;
@@ -58,13 +59,12 @@ function socketReducer(
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export function SocketProvider({ children }: { children: ReactNode }) {
+  const { is_public } = useApp();
   const { user, setUser } = useUser();
   const { admin_profile, project, user: user_profile } = user ?? {};
 
   const [state, dispatch] = useReducer(socketReducer, initialState);
   const { action, message, socket } = state;
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
     if (

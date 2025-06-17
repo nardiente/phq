@@ -10,9 +10,10 @@ import {
 } from '../../utils/constants';
 import './styles.css';
 import { UserTypes } from '../../types/user';
+import { useApp } from '../../contexts/AppContext';
 
 export const LoginPage = () => {
-  const isPublicSite = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+  const { is_public: isPublicSite } = useApp();
 
   const [image_height, setImageHeight] = React.useState<number>(0);
   const [is_mobile, setIsMobile] = React.useState<boolean>(false);

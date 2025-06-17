@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { useApp } from '../contexts/AppContext';
 
 interface SettingsHeaderProps {
   title: string;
@@ -15,7 +16,7 @@ const SettingsHeader: React.FC<SettingsHeaderProps> = ({
   secondaryButton,
   primaryButton,
 }) => {
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+  const { is_public } = useApp();
 
   return (
     <div className="flex items-center justify-between mb-8 px-8">

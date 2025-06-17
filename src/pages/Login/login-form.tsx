@@ -25,6 +25,7 @@ import queryString from 'query-string';
 import { useTranslation } from 'react-i18next';
 import { validateEmail, validatePassword } from '../../utils/custom-validation';
 import { clearQueryString } from '../../utils/uri';
+import { useApp } from '../../contexts/AppContext';
 
 const Form = styled.form`
   display: flex;
@@ -60,6 +61,7 @@ export const LoginForm = (props: LoginFormProps) => {
   const location = useLocation();
   const { t } = useTranslation();
 
+  const { is_public } = useApp();
   const {
     setFirstName,
     setGithubCode,
@@ -81,8 +83,6 @@ export const LoginForm = (props: LoginFormProps) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [loading_social, setLoadingSocial] = React.useState<boolean>(false);
   const [verifying, setVerifying] = React.useState<boolean>(false);
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   React.useEffect(() => {
     if (location.search.length > 0) {

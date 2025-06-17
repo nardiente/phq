@@ -5,6 +5,7 @@ import { User, UserTypes } from '../types/user';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import { RbacPermissions } from '../types/common';
+import { useApp } from '../contexts/AppContext';
 
 interface UserMenuProps {
   user: User | undefined;
@@ -14,6 +15,7 @@ interface UserMenuProps {
 export function UserMenu({ onNavigate }: UserMenuProps) {
   const navigate = useNavigate();
 
+  const { is_public } = useApp();
   const { user: userDetails, removeUser } = useUser();
   const { moderation, user } = userDetails ?? {};
 
@@ -21,7 +23,6 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
 
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const currentUser = !is_public
     ? user
     : moderation?.allow_anonymous_access === true &&

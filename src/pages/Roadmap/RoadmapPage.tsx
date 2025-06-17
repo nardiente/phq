@@ -48,7 +48,7 @@ export function RoadmapPage() {
   } = useSocket();
   const { tags: filterTag, title } = filter;
   const { setActivePage, setActiveTab, setIsOpen } = usePanel();
-  const { roadmap_colors } = useApp();
+  const { is_public, roadmap_colors } = useApp();
   const {
     state: { widget },
   } = useWidget();
@@ -59,7 +59,6 @@ export function RoadmapPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [roadmaps, setCurrRoadmaps] = useState<Roadmap[]>(roadmapsContext);
 
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const isRestricted =
     !listing && is_public && permissions && permissions.length === 0;
 
@@ -478,7 +477,7 @@ export function RoadmapPage() {
                               >
                                 {(provided) => (
                                   <div
-                                    className="bg-[#fafafa] rounded"
+                                    className={`${is_public ? 'background-color' : 'bg-[#fafafa]'} rounded`}
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
                                   >

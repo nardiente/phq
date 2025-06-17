@@ -11,11 +11,12 @@ import AddTopicsOnboarding from '../../components/onboarding/add_topics_onboardi
 import { Success } from '../../components/onboarding/success/Success';
 import { Testimonials } from '../../components/Testimonials';
 import { getOnboardingToken } from '../../utils/localStorage';
+import { useApp } from '../../contexts/AppContext';
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
 
-  // welcome, add_idea, add_topics, survey, success
+  const { is_public } = useApp();
   const {
     state: { activePage },
     setActivePage,
@@ -24,7 +25,7 @@ const OnboardingPage = () => {
 
   useEffect(() => {
     if (
-      import.meta.env.VITE_SYSTEM_TYPE === 'public' ||
+      is_public ||
       localStorage.getItem('onboarding_page') == null ||
       getOnboardingToken() === undefined
     ) {

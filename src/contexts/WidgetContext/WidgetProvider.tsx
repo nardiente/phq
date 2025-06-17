@@ -14,6 +14,7 @@ import { useUser } from '../UserContext';
 import { useSocket } from '../SocketContext';
 import { SocketAction } from '../../types/socket';
 import { getCustomerKaslKey } from '../../utils/localStorage';
+import { useApp } from '../AppContext';
 
 const initialState: WidgetState = {
   config: {
@@ -61,6 +62,7 @@ const Context = createContext<WidgetContextType | undefined>(undefined);
 export function WidgetProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(widgetReducer, initialState);
 
+  const { is_public } = useApp();
   const {
     state: { posts },
     listWhatsNew,
@@ -71,8 +73,6 @@ export function WidgetProvider({ children }: { children: ReactNode }) {
     state: { action, message, socket },
     setAction,
   } = useSocket();
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
     if (

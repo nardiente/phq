@@ -5,6 +5,7 @@ import { WidgetContent } from './WidgetContent';
 import { useWidget } from '../../contexts/WidgetContext/WidgetProvider';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useUser } from '../../contexts/UserContext';
+import { useApp } from '../../contexts/AppContext';
 
 // Type guard to ensure config is complete
 const validateConfig = (/*config: WidgetConfig*/): boolean => {
@@ -16,6 +17,7 @@ export const NewWidgetPreview = ({
 }: {
   className?: string;
 }) => {
+  const { is_public } = useApp();
   const {
     state: { config },
     getNotificationCount,
@@ -50,7 +52,6 @@ export const NewWidgetPreview = ({
       placement: config.appearance?.placement || 'Bottom right',
     },
   };
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   useEffect(() => {
     if (config.widgetType === 'Embed') {

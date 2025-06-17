@@ -9,6 +9,7 @@ import { deleteApi, postApi } from '../../utils/api/api';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
 import { SocketAction } from '../../types/socket';
+import { useApp } from '../../contexts/AppContext';
 
 const UpvoteBoxDiv = styled.button`
   align-items: center;
@@ -33,6 +34,7 @@ export const UpVoteCounter = ({
 }) => {
   const idea = data;
 
+  const { is_public } = useApp();
   const { user } = useUser();
   const { moderation, permissions } = user ?? {};
   const { setSelectedIdea, updateIdea } = useFeedback();
@@ -42,8 +44,6 @@ export const UpVoteCounter = ({
 
   const [active_uv_arrow, setActiveUVArrow] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const is_logged_in =
     getKaslKey() !== undefined ||

@@ -21,6 +21,7 @@ import { ArchiveFillIcon } from '../icons/archive-fill.icon';
 import { ArchiveOffIcon } from '../icons/archive-off.icon';
 import { toast } from 'react-toastify';
 import { SocketAction } from '../../types/socket';
+import { useApp } from '../../contexts/AppContext';
 
 const UpvoteLabelLink = styled.span`
   align-items: center;
@@ -35,6 +36,7 @@ const UpvoteLabelLink = styled.span`
 `;
 
 const UpvoteCard = ({ props }: { props: Feedback }) => {
+  const { is_public } = useApp();
   const { setSelectedIdea, updateIdea } = useFeedback();
   const { user: userContext } = useUser();
   const { permissions, project, rbac_permissions, user } = userContext ?? {};
@@ -43,7 +45,7 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
     state: { socket },
   } = useSocket();
 
-  const is_admin = import.meta.env.VITE_SYSTEM_TYPE === 'admin';
+  const is_admin = !is_public;
   const is_member = user?.role_id;
 
   const [loading, setLoading] = useState<boolean>(false);

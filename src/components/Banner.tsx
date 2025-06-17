@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { MenuItem } from './layout/SidebarMenu';
 import { Map, ThumbsUp, Zap } from 'lucide-react';
 import { PageType } from '../types/app';
+import { useApp } from '../contexts/AppContext';
 
 interface BannerProps {
   activeItem?: string;
@@ -16,8 +17,8 @@ function Banner({ activeItem, onNavigate }: BannerProps) {
   const navigate = useNavigate();
 
   const { isAuthenticated, user } = useUser();
+  const { is_public } = useApp();
 
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const company_info = is_public ? user?.admin_profile : user?.user;
 
   const publicViewMenuItems: MenuItem[] = [

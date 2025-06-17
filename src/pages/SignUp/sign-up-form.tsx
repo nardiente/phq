@@ -26,6 +26,7 @@ import {
 import { Badge } from '../../components/badge/Badge';
 import { FC, useEffect, useState } from 'react';
 import { clearQueryString } from '../../utils/uri';
+import { useApp } from '../../contexts/AppContext';
 
 const Form = styled.div`
   display: flex;
@@ -64,6 +65,7 @@ export const SignUpForm: FC<SignUpFormProps> = ({ is_mobile, type }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { is_public } = useApp();
   const {
     email: loginEmail,
     first_name: loginFirstName,
@@ -92,8 +94,6 @@ export const SignUpForm: FC<SignUpFormProps> = ({ is_mobile, type }) => {
   const [verifying, setVerifying] = useState<boolean>(false);
   const [plan_id, setPlanId] = useState<string>('');
   const [plan_description, setPlanDescription] = useState<string>('');
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const clearFields = () => {
     setConfirmPassword('');

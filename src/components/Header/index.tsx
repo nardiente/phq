@@ -37,12 +37,14 @@ import { Notifications } from '../Notifications';
 import { UserMenu } from '../UserMenu';
 import { PageType } from '../../types/app';
 import { clearQueryString } from '../../utils/uri';
+import { useApp } from '../../contexts/AppContext';
 
 export const Header: FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const params = useParams<{ post_id?: string }>();
 
+  const { is_public } = useApp();
   const { user, isAuthenticated } = useUser();
   const { moderation } = user ?? {};
   const {
@@ -51,7 +53,6 @@ export const Header: FC = () => {
   } = usePanel();
   const { setDefaultFilter } = useFeedback();
 
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const header_exceptions = [
     '/sign-in',
     '/sign-in/google',

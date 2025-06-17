@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import { useReducer } from 'react';
 import { ChangeType, Image, WhatsNew } from '../types/whats-new';
 import { getApi } from '../utils/api/api';
+import { useApp } from './AppContext';
 
 interface State {
   change_types: ChangeType[];
@@ -145,7 +146,7 @@ const Context = createContext<ContextType | undefined>(undefined);
 export function WhatsNewProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+  const { is_public } = useApp();
 
   useEffect(() => {
     listChangeType();

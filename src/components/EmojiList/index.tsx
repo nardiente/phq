@@ -7,6 +7,7 @@ import { useFeedback } from '../../contexts/FeedbackContext';
 import { useEffect, useState } from 'react';
 import { EmojiTypes, Permissions } from '../../types/common';
 import { Feedback } from '../../types/feedback';
+import { useApp } from '../../contexts/AppContext';
 
 interface EmojiListProps {
   comment: FeedbackComment | WhatsNew;
@@ -16,6 +17,7 @@ interface EmojiListProps {
 const EmojiList: React.FC<EmojiListProps> = ({ comment, addEmoji }) => {
   const { deleted, emoji_list, my_emoji } = comment as FeedbackComment;
 
+  const { is_public } = useApp();
   const { user } = useUser();
   const {
     state: { ideas, selectedIdea },
@@ -23,7 +25,6 @@ const EmojiList: React.FC<EmojiListProps> = ({ comment, addEmoji }) => {
 
   const [idea, setIdea] = useState<Feedback>();
 
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const is_logged_in =
     getKaslKey() !== undefined ||
     (getSessionToken() !== undefined &&

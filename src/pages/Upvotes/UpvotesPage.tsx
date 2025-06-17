@@ -21,12 +21,14 @@ import { SocketAction } from '../../types/socket';
 import { useWidget } from '../../contexts/WidgetContext/WidgetProvider';
 import { NewWidgetPreview } from '../../components/WidgetPreview/NewWidgetPreview';
 import { clearQueryString } from '../../utils/uri';
+import { useApp } from '../../contexts/AppContext';
 
 export default function UpvotesPage() {
   const location = useLocation();
 
+  const { is_public } = useApp();
   const { user: userDetails, setShowBanner } = useUser();
-  const { admin_profile, permissions, project, user } = userDetails ?? {};
+  const { permissions, project } = userDetails ?? {};
   const {
     state: {
       filteredIdeas,
@@ -51,9 +53,6 @@ export default function UpvotesPage() {
     state: { widget },
     loadPublishedWidget,
   } = useWidget();
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-  const userInfo = is_public ? admin_profile : user;
 
   useEffect(() => {
     setActiveTab('/upvotes');
@@ -101,30 +100,26 @@ export default function UpvotesPage() {
       return;
     }
 
-    if (userInfo?.id) {
+    if (project?.id) {
       handleListFeedback();
       if (is_public) {
         loadPublishedWidget();
       }
     }
-  }, [userInfo]);
+  }, [project]);
 
   useEffect(() => {
-    if (userInfo?.id) {
+    if (project?.id) {
       handleListFeedback();
     }
-  }, [sort, status, tags.length, title, userInfo]);
+  }, [sort, status, tags.length, title, project]);
 
   useEffect(() => {
-    if (
-      action === SocketAction.UPDATE_TAG &&
-      userInfo?.id &&
-      selectedIdea?.id
-    ) {
+    if (action === SocketAction.UPDATE_TAG && project?.id && selectedIdea?.id) {
       getFeedback(selectedIdea.id);
     }
     setAction();
-  }, [action, userInfo]);
+  }, [action, project]);
 
   const getFeedback = (id: number) => {
     getApi<Feedback>({ url: `feedback/${id}` }).then((res) => {
@@ -136,7 +131,7 @@ export default function UpvotesPage() {
         setIsOpen(true);
         socket?.emit('message', {
           action: SocketAction.UPDATE_IDEA,
-          data: { idea: data, user_id: user?.id, projectId: project?.id },
+          data: { idea: data, projectId: project?.id },
         });
       }
     });

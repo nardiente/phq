@@ -22,6 +22,7 @@ import { getKaslKey } from '../../utils/localStorage';
 import { BellIcon } from '../icons/bell.icon';
 import { Loader } from 'lucide-react';
 import { ChatRightQuoteIcon } from '../icons/chat-right-quote.icon';
+import { useApp } from '../../contexts/AppContext';
 
 export const DropDownNotification = (props: {
   container_class?: string;
@@ -34,6 +35,7 @@ export const DropDownNotification = (props: {
 }) => {
   const ref = useRef<HTMLElement>();
 
+  const { is_public } = useApp();
   const { user } = useUser();
   const { moderation } = user ?? {};
   const {
@@ -47,8 +49,6 @@ export const DropDownNotification = (props: {
   const [redirecting, setRedirecting] = useState<boolean>(false);
   const [is_expanded, setExpanded] = useState(false);
   const [seeMore, setSeeMore] = useState<boolean>(false);
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const convertDate = (date: string) => {
     const currentDate = moment(date);

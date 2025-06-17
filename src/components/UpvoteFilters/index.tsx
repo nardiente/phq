@@ -4,15 +4,15 @@ import { useFeedback } from '../../contexts/FeedbackContext';
 import { Dropdown } from '../DropDown';
 import { ChevronDownIcon } from '../icons/chevron-down.icon';
 import { Fragment } from 'react';
+import { useApp } from '../../contexts/AppContext';
 
 export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
+  const { is_public } = useApp();
   const {
     state: { filter, tags: feedbackTags },
     setFilter,
   } = useFeedback();
   const { sort, status, tags, title } = filter;
-
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
   const handleUpvoteSearch = () => {
     setFilter({

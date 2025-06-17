@@ -19,14 +19,15 @@ import {
   FAVICON_EMPTY_PLACEHOLDER,
   FAVICON_PLACEHOLDER,
 } from './constants/placeholders';
+import { useApp } from './contexts/AppContext';
 
 const App: FC = () => {
+  const { is_public } = useApp();
   const { user, showBanner, setFetching, setShowBanner, setUser } = useUser();
   const { admin_profile, moderation, project, user: user_profile } = user ?? {};
   const { is_index_search_engine } = project ?? {};
   const { setPanelLoading } = usePanel();
 
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   const userProfile = user_profile ?? admin_profile;
   const { email, favicon } = userProfile ?? {};
 

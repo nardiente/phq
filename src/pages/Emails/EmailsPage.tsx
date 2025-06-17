@@ -5,8 +5,10 @@ import { CustomerEmails } from './components/CustomerEmails';
 import { Emails } from '../../types/email';
 import { getApi, putApi } from '../../utils/api/api';
 import { useUser } from '../../contexts/UserContext';
+import { useApp } from '../../contexts/AppContext';
 
 export default function EmailsPage() {
+  const { is_public } = useApp();
   const { setUser } = useUser();
 
   const [activeTab, setActiveTab] = useState<
@@ -66,7 +68,9 @@ export default function EmailsPage() {
   };
 
   return (
-    <div className="flex-1 px-8 py-6 flex justify-center bg-[#fafafa]">
+    <div
+      className={`flex-1 px-8 py-6 flex justify-center ${is_public ? 'background-color' : 'bg-[#fafafa]'}`}
+    >
       <div className="max-w-[800px]">
         <h1 className="text-[28px] font-semibold text-gray-900 mb-6">Emails</h1>
         <TabNavigation
