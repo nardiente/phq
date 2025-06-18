@@ -104,6 +104,7 @@ export function WidgetProvider({ children }: { children: ReactNode }) {
           payload: widget,
         });
         if (is_public) {
+          setWidgetConfig(widget.config);
           dispatch({ type: WidgetActionTypes.SET_WIDGET, payload: widget });
         }
         break;
