@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import '../UpvoteFilters/styles.css';
 import '../RoadmapFilter/styles.css';
+import { useApp } from '../../contexts/AppContext';
 
 export const Dropdown: React.FC<{
   container_class?: string;
@@ -12,6 +13,8 @@ export const Dropdown: React.FC<{
   tab_index?: number;
   isDisabled?: boolean;
 }> = (props) => {
+  const { is_public } = useApp();
+
   const ref = useRef<HTMLElement>();
   const [is_expanded, setExpanded] = useState(false);
 
@@ -45,7 +48,7 @@ export const Dropdown: React.FC<{
           <button
             aria-controls="dropdown-menu"
             aria-haspopup="true"
-            className={`button${
+            className={`button ${is_public ? 'background-color' : 'bg-white'}${
               props.label_class ? ` ${props.label_class}` : ''
             }`}
             onClick={toggle}

@@ -129,7 +129,7 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
                   {currentUser?.full_name?.substring(0, 20).trim()}
                   {(currentUser?.full_name?.length ?? 0) > 20 ? '...' : ''}
                 </span>
-                {currentUser?.type === UserTypes.CUSTOMER && (
+                {!is_public && currentUser?.type === UserTypes.CUSTOMER && (
                   <span className="px-2 py-0.5 text-[12px] font-medium bg-blue-50 text-blue-600 rounded w-fit">
                     Admin
                   </span>
@@ -139,7 +139,7 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
           </div>
 
           <div className="flex flex-col gap-1">
-            {currentUser?.type === UserTypes.CUSTOMER && (
+            {!is_public && currentUser?.type === UserTypes.CUSTOMER && (
               <>
                 {user?.rbac_permissions?.includes(
                   RbacPermissions.MANAGE_ACCOUNT_DETAILS_PAGE

@@ -18,7 +18,7 @@ export const WhatsNewHeader = () => {
 
   return (
     <div
-      className="flex justify-between items-center mb-4"
+      className="flex justify-between items-center mb-4 w-full"
       ref={ref as React.LegacyRef<HTMLDivElement>}
     >
       <div className="relative text-gray-900">

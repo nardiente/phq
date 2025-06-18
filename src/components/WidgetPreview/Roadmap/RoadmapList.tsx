@@ -275,7 +275,7 @@ export const RoadmapList = () => {
                 >
                   {(provided) => (
                     <div
-                      className={`${is_public ? 'background-color' : 'bg-[#fafafa]'} rounded`}
+                      className="bg-[#fafafa] rounded"
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                     >

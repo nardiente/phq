@@ -201,7 +201,6 @@
 }
 
 .right-drop-down-button {
-  background-color: var(--public-view-background-color) !important;
   border: none;
   border-radius: 6px;
   display: flex;
@@ -256,7 +255,6 @@
 }
 
 .whats-new-filter-button {
-  background: var(--public-view-background-color);
   border: none;
   border-radius: 6px !important;
   color: #110733 !important;
@@ -272,6 +270,7 @@
   text-align: center !important;
   width: 110px !important;
   align-items: center;
+  box-shadow: 0px 0.0625em 0.125em hsla(0, 0%, 20%, 0.05), 0px 0.125em 0.25em hsla(0, 0%, 20%, 0.05);
 }
 
 .whats-new-filter-button:focus {

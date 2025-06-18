@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useApp } from '../../contexts/AppContext';
 
 export const DropdownRoadmap: React.FC<{
   container_class?: string;
@@ -9,6 +10,8 @@ export const DropdownRoadmap: React.FC<{
   label_class?: string;
   tab_index?: number;
 }> = (props) => {
+  const { is_public } = useApp();
+
   const ref = React.useRef<HTMLElement>();
   const [is_expanded, setExpanded] = React.useState(false);
 
@@ -38,7 +41,7 @@ export const DropdownRoadmap: React.FC<{
           <button
             aria-controls="dropdown-menu"
             aria-haspopup="true"
-            className={`button${
+            className={`button ${is_public ? 'background-color' : 'bg-white'}${
               props.label_class ? ` ${props.label_class}` : ''
             }`}
             onClick={toggle}

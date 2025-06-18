@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ReactNode } from 'react';
 import { FC } from 'react';
 import '../WhatsNewFilter/styles.css';
+import { useApp } from '../../contexts/AppContext';
 
 export const DropdownWhatsNew: FC<{
   container_class?: string;
@@ -15,6 +16,8 @@ export const DropdownWhatsNew: FC<{
   label_class?: string;
   tab_index?: number;
 }> = (props) => {
+  const { is_public } = useApp();
+
   const ref = useRef<HTMLElement>();
   const [is_expanded, setExpanded] = useState(false);
 
@@ -44,7 +47,7 @@ export const DropdownWhatsNew: FC<{
           <button
             aria-controls="dropdown-menu"
             aria-haspopup="true"
-            className={`${props.label_class ? ` ${props.label_class}` : ''}`}
+            className={`${is_public ? 'background-color' : 'bg-white'} ${props.label_class ? ` ${props.label_class}` : ''}`}
             onClick={toggle}
             tabIndex={props.tab_index}
           >

@@ -224,7 +224,6 @@
 }
 
 .right-drop-down-button {
-  background: var(--public-view-background-color);
   border: none;
   border-radius: 6px !important;
   display: flex !important;

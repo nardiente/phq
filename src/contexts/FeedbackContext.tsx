@@ -587,7 +587,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     setListing(true);
     getApi<Roadmap[]>({
       url: 'roadmaps',
-      params: { domain: window.location.host },
+      params: is_public ? { domain: window.location.host } : undefined,
     })
       .then((res) => {
         if (res.results.data) {
