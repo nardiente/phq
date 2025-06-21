@@ -344,11 +344,10 @@ export default function WidgetsPage() {
                           aria-labelledby="menu-button"
                           tabIndex={-1}
                         >
-                          <div className="py-1" role="none">
+                          <div>
                             <button
-                              className="text-gray-700 px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900"
+                              className="text-gray-700 px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900 w-full text-left"
                               role="menuitem"
-                              style={{ display: 'block' }}
                               onClick={(e) => {
                                 e.preventDefault();
                                 setShowWidgetForm(true);
@@ -357,9 +356,8 @@ export default function WidgetsPage() {
                               Edit
                             </button>
                             <button
-                              className="text-gray-700 px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900"
+                              className="text-gray-700 px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900 w-full text-left"
                               role="menuitem"
-                              style={{ display: 'block' }}
                               onClick={(e) => {
                                 e.preventDefault();
                                 handleDeleteClick(widget.id ?? 0, e);
@@ -368,9 +366,8 @@ export default function WidgetsPage() {
                               Delete
                             </button>
                             <button
-                              className="text-gray-700 px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900"
+                              className="text-gray-700 px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900 w-full text-left"
                               role="menuitem"
-                              style={{ display: 'block' }}
                               onClick={() =>
                                 handlePublish(
                                   widget.id ?? 0,
