@@ -25,6 +25,7 @@ const AppRoute = () => {
     handleGetUser,
     isAuthenticated,
     setUser,
+    initialUser,
   } = useUser();
   const { project } = userDetails ?? {};
   const {
@@ -58,7 +59,11 @@ const AppRoute = () => {
     }
 
     if (action === SocketAction.UPDATE_APPEARANCE) {
-      setUser((prev) => ({ ...prev, appearance: message.data.appearance }));
+      setUser((prev) =>
+        prev
+          ? { ...prev, appearance: message.data.appearance }
+          : { ...initialUser, appearance: message.data.appearance }
+      );
     }
     setAction();
   }, [action]);

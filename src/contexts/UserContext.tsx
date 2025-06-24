@@ -56,7 +56,7 @@ interface UserContextType {
   fetching: boolean;
   user?: UserContextConfig;
   setFetching: Dispatch<SetStateAction<boolean>>;
-  setUser: Dispatch<React.SetStateAction<UserContextConfig>>;
+  setUser: Dispatch<React.SetStateAction<UserContextConfig | undefined>>;
   handleGetAppearance: () => Promise<void>;
   handleGetUser: () => Promise<void>;
   first_name: string;
@@ -77,6 +77,7 @@ interface UserContextType {
   users: User[];
   listUsers: () => Promise<void>;
   removeUser: () => Promise<void>;
+  initialUser: UserContextConfig;
 }
 
 const initialUser: UserContextConfig = {
@@ -114,6 +115,7 @@ const UserContext = createContext<UserContextType>({
   users: [],
   listUsers: async () => Promise.resolve(),
   removeUser: async () => Promise.resolve(),
+  initialUser,
 });
 
 interface UserProviderProps {
@@ -131,7 +133,7 @@ export function UserProvider({ children }: UserProviderProps) {
   const [loaded, setLoaded] = useState<boolean>(false);
   const [loading_social, setLoadingSocial] = useState<boolean>(false);
   const [showBanner, setShowBanner] = useState<boolean>(false);
-  const [user, setUser] = useState<UserContextConfig>(initialUser);
+  const [user, setUser] = useState<UserContextConfig | undefined>(initialUser);
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
@@ -139,21 +141,25 @@ export function UserProvider({ children }: UserProviderProps) {
   }, []);
 
   useEffect(() => {
-    setAppearanceColors(user.appearance);
-  }, [user.appearance]);
+    setAppearanceColors(user?.appearance);
+  }, [user?.appearance]);
 
   useEffect(() => {
-    if (user.admin_profile?.kasl_key) {
+    if (user?.admin_profile?.kasl_key) {
       setCustomerKaslKey(user.admin_profile.kasl_key);
     }
-  }, [user.admin_profile]);
+  }, [user?.admin_profile]);
 
   const handleGetAppearance = async () => {
     getApi<ProjectAppearance>({
       url: 'projects/appearance',
     }).then((appearance) => {
       const data = appearance.results.data;
-      setUser((prev) => ({ ...prev, appearance: data }));
+      setUser((prev) =>
+        prev
+          ? { ...prev, appearance: data }
+          : { ...initialUser, appearance: data }
+      );
     });
   };
 
@@ -191,8 +197,7 @@ export function UserProvider({ children }: UserProviderProps) {
       .finally(() => setFetching(false));
   };
 
-  const removeUser = async () =>
-    setUser((prev) => ({ ...prev, user: undefined }));
+  const removeUser = async () => setUser(undefined);
 
   const setAppearanceColors = (appearance?: ProjectAppearance) => {
     document.documentElement.style.setProperty(
@@ -310,6 +315,7 @@ export function UserProvider({ children }: UserProviderProps) {
         users,
         listUsers,
         removeUser,
+        initialUser,
       }}
     >
       {children}

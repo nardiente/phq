@@ -51,8 +51,8 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
 
   const handleLogout = () => {
     eraseKaslKey();
+    removeUser();
     if (is_public) {
-      removeUser();
       if (!moderation?.allow_anonymous_access) {
         eraseSessionToken();
       }
