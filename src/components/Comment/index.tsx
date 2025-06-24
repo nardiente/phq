@@ -26,6 +26,7 @@ import { FiPaperclip } from 'react-icons/fi';
 import { fileToBase64 } from '../../utils/file';
 import { toast } from 'react-toastify';
 import { SocketAction } from '../../types/socket';
+import { isTeamMember } from '../../utils/user';
 
 const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
@@ -401,9 +402,7 @@ export const Comment = memo(function Comment({
   };
 
   useEffect(() => {
-    if (user?.type === UserTypes.CUSTOMER && user.role_id) {
-      setIsMember(true);
-    }
+    setIsMember(isTeamMember(user));
 
     if (!is_public) {
       setIsAdmin(true);

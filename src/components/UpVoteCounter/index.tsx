@@ -10,6 +10,7 @@ import { useFeedback } from '../../contexts/FeedbackContext';
 import { useSocket } from '../../contexts/SocketContext';
 import { SocketAction } from '../../types/socket';
 import { useApp } from '../../contexts/AppContext';
+import { isTeamMember } from '../../utils/user';
 
 const UpvoteBoxDiv = styled.button`
   align-items: center;
@@ -51,7 +52,7 @@ export const UpVoteCounter = ({
       moderation?.allow_anonymous_access === true &&
       getSessionToken() !== undefined &&
       user?.user?.id);
-  const is_member = !!user?.user?.role_id;
+  const is_member = isTeamMember(user?.user);
 
   const can_upvote =
     is_logged_in &&
@@ -59,7 +60,7 @@ export const UpVoteCounter = ({
     permissions?.includes(Permissions.EDIT_IDEA) &&
     !idea.not_administer &&
     ((is_member &&
-      user.rbac_permissions.includes(
+      user?.rbac_permissions.includes(
         RbacPermissions.VOTE_ON_YOUR_OWN_BEHALF
       )) ||
       !is_member);

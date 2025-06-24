@@ -9,6 +9,7 @@ import { WhatsNewFilter } from '../WhatsNewFilter';
 import { RbacPermissions } from '../../types/common';
 import { PlusIcon } from '../icons/plus.icon';
 import { useApp } from '../../contexts/AppContext';
+import { isTeamMember } from '../../utils/user';
 
 export const PageHeader: React.FC<PageHeaderProps> = (props) => {
   const { is_public } = useApp();
@@ -24,7 +25,7 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
 
   const has_new_idea_button =
     active_tab === '/upvotes' || active_tab === '/roadmap';
-  const is_member = user?.user?.role_id;
+  const is_member = isTeamMember(user?.user);
 
   const [title, setTitle] = React.useState<string>('');
 
@@ -123,7 +124,7 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
             {props.buttonLabel &&
               ((has_new_idea_button &&
                 is_member &&
-                user.rbac_permissions.includes(
+                user?.rbac_permissions.includes(
                   RbacPermissions.CREATE_EDIT_IDEAS
                 )) ||
                 !is_member ||

@@ -22,6 +22,7 @@ import { ArchiveOffIcon } from '../icons/archive-off.icon';
 import { toast } from 'react-toastify';
 import { SocketAction } from '../../types/socket';
 import { useApp } from '../../contexts/AppContext';
+import { isTeamMember } from '../../utils/user';
 
 const UpvoteLabelLink = styled.span`
   align-items: center;
@@ -46,7 +47,7 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
   } = useSocket();
 
   const is_admin = !is_public;
-  const is_member = user?.role_id;
+  const is_member = isTeamMember(user);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [showUpload, setShowUpload] = useState<boolean>(false);

@@ -51,4 +51,5 @@ export const pathExceptions = [
   '/sign-in',
   '/sign-in/google',
   '/sign-up',
+  '/test',
 ];

@@ -17,6 +17,7 @@ import ColorPicker from '../../components/ColorPicker';
 import { SocketAction } from '../../types/socket';
 import { useSocket } from '../../contexts/SocketContext';
 import { useApp } from '../../contexts/AppContext';
+import { isTeamMember } from '../../utils/user';
 
 export default function AppearancePage() {
   const navigate = useNavigate();
@@ -654,9 +655,7 @@ export default function AppearancePage() {
 
   useEffect(() => {
     if (user?.user) {
-      if (user.user.role_id) {
-        setIsMember(true);
-      }
+      setIsMember(isTeamMember(user.user));
       setLoadingUser(false);
       handleGetAppearance();
     }

@@ -216,7 +216,7 @@ const AttributeSidebar: React.FC<AttributeSidebarProps> = ({
   };
 
   return (
-    <div className="w-72 flex flex-col">
+    <div className="w-full flex flex-col">
       <div className="p-4 border-r border-gray-200 overflow-y-auto flex-grow">
         <h2 className="text-lg font-semibold mb-4">Customer Attributes</h2>
 

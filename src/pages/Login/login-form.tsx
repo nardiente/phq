@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { validateEmail, validatePassword } from '../../utils/custom-validation';
 import { clearQueryString } from '../../utils/uri';
 import { useApp } from '../../contexts/AppContext';
+import { isSuperDuperAdmin } from '../../utils/user';
 
 const Form = styled.form`
   display: flex;
@@ -357,17 +358,20 @@ export const LoginForm = (props: LoginFormProps) => {
       payload: login_params,
     }).then(async (res) => {
       setLoading(false);
-      if (res.results.errors) {
-        setApiFieldErrors(res.results.errors);
+      const {
+        results: { data, error, errors, message },
+      } = res;
+      if (errors) {
+        setApiFieldErrors(errors);
         return;
       }
-      if (res.results.error) {
-        switch (res.results.error) {
+      if (error) {
+        switch (error) {
           case 'error.invalid_credentials':
             setApiFieldErrors([
               {
                 field: 'password',
-                message: res.results.error,
+                message: error,
               },
             ]);
             break;
@@ -387,7 +391,7 @@ export const LoginForm = (props: LoginFormProps) => {
             });
             break;
           case 'error.invalid_user_type':
-            toast(t(res.results.error), {
+            toast(t(error), {
               position: 'bottom-center',
               autoClose: 3000,
               hideProgressBar: true,
@@ -402,8 +406,8 @@ export const LoginForm = (props: LoginFormProps) => {
             });
             break;
           case 'error.invalid_sign_in_page':
-            const error = t(res.results.error);
-            const errorSplit = error.split('THIS');
+            const errorMsg = t(error);
+            const errorSplit = errorMsg.split('THIS');
             setApiFieldErrors([
               {
                 field: 'password',
@@ -419,7 +423,7 @@ export const LoginForm = (props: LoginFormProps) => {
             ]);
             break;
           default:
-            toast(t(res.results.error), {
+            toast(t(error), {
               autoClose: 3000,
               hideProgressBar: true,
               closeOnClick: true,
@@ -433,14 +437,14 @@ export const LoginForm = (props: LoginFormProps) => {
             break;
         }
       }
-      if (res.headers['kasl-key'] && !res.results.error && res.results.data) {
+      if (res.headers['kasl-key'] && !error && data) {
         clearMsgs();
         localStorage.removeItem('onboarding_page');
         eraseOnboardingToken();
         const result: User & {
           project?: Project;
           subscription: Subscription & { trial_end: number | string | null };
-        } = res.results.data;
+        } = data;
         if (result.token) {
           setSessionToken(result.token);
         }
@@ -460,6 +464,10 @@ export const LoginForm = (props: LoginFormProps) => {
             navigate('/billing');
             return;
           }
+          if (isSuperDuperAdmin(data)) {
+            navigate('/super-duper-admin');
+            return;
+          }
           navigate('/dashboard');
           return;
         }
@@ -472,7 +480,7 @@ export const LoginForm = (props: LoginFormProps) => {
         );
         return;
       }
-      if (res.results.message == 'success.login_email_confirmation') {
+      if (message == 'success.login_email_confirmation') {
         toast(t('success.email_verification'), {
           position: 'bottom-center',
           autoClose: 3000,

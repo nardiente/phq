@@ -2,27 +2,10 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from '../pages/Login';
 import SignUpPage from '../pages/SignUp';
 import AppRoute from './AppRoute';
-import DashboardPage from '../pages/DashboardPage';
-import { AccountSettings } from '../pages/Settings/AccountSettings';
-import ProjectDetailsPage from '../pages/Settings/ProjectDetailsPage';
-import AppearancePage from '../pages/Settings/AppearancePage';
-import ModerationPage from '../pages/Settings/ModerationPage';
-import EmailsPage from '../pages/Emails/EmailsPage';
-import TagsPage from '../pages/Settings/TagsPage';
-import TeamMembersPage from '../pages/Settings/TeamMembersPage';
-import BillingPage from '../pages/Settings/BillingPage';
-import ImportIdeasPage from '../pages/ImportIdeasPage';
-import TestimonialsPage from '../pages/TestimonialsPage';
-import WidgetsPage from '../pages/WidgetsPage';
 import { SSOVerifyingPage } from '../components/SSOVerifying';
 import ForgotPasswordPage from '../pages/ForgotPassword';
-import UpvotesPage from '../pages/Upvotes/UpvotesPage';
-import { RoadmapPage } from '../pages/Roadmap/RoadmapPage';
-import { WhatsNewPage } from '../pages/WhatsNew';
 import { Suspense } from 'react';
 import Fallback from './Fallback';
-import UserProfilesPage from '../pages/UserProfilesPage';
-import PrioritizationPage from '../pages/PrioritizationPage';
 import PricingPage from '../pages/Pricing';
 import SuccessPage from '../pages/success/success';
 import OnboardingPage from '../pages/onboarding/onboarding';
@@ -30,16 +13,36 @@ import ResetPasswordPage from '../pages/ResetPassword';
 import FreeTrialPage from '../pages/FreeTrialPage';
 import { LtdPage } from '../pages/LtdPage';
 import NotFoundPage from '../pages/NotFoundPage';
-import { pathExceptions } from '../types/app';
 import TestFetch from '../pages/TestFetch';
-import DesignSystem from '../pages/DesignSystem';
-import SegmentsPage from '../pages/SegmentsPage.tsx';
-import WhatsNewPost from '../pages/WhatsNewPost/index.tsx';
-
-// Add /test to exceptions at the top of the file
-pathExceptions.push('/test');
+import { MenuItem } from '../components/layout/SidebarMenu.tsx';
+import { useApp } from '../contexts/AppContext.tsx';
+import {
+  bottomMenuItems,
+  designSystemItem,
+  mainMenuItems,
+  publicViewMenuItems,
+  settingsMenuItems,
+  superDuperAdminItems,
+} from '../constants/menuItems.ts';
+import { isSuperDuperAdmin } from '../utils/user.ts';
+import { useUser } from '../contexts/UserContext.tsx';
 
 const AppRoutes = () => {
+  const { is_public } = useApp();
+  const { user: userContext } = useUser();
+  const { admin_profile, user } = userContext ?? {};
+
+  const menuItems: MenuItem[] = is_public
+    ? publicViewMenuItems
+    : isSuperDuperAdmin(user)
+      ? superDuperAdminItems
+      : [
+          ...mainMenuItems,
+          ...settingsMenuItems,
+          ...bottomMenuItems,
+          designSystemItem,
+        ];
+
   return (
     <BrowserRouter>
       <Suspense fallback={<Fallback />}>
@@ -66,35 +69,22 @@ const AppRoutes = () => {
             <Route path="/success" element={<SuccessPage />} />
 
             {/* Protected Route */}
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/upvotes" element={<UpvotesPage />} />
-            <Route path="/roadmap" element={<RoadmapPage />} />
-            <Route path="/whatsnew" element={<WhatsNewPage />} />
-            <Route path="/whatsnew/:post_id" element={<WhatsNewPost />} />
-            <Route path="/widgets" element={<WidgetsPage />} />
-            <Route path="/profiles" element={<UserProfilesPage />} />
-            <Route path="/prioritization" element={<PrioritizationPage />} />
-            <Route path="/segments" element={<SegmentsPage />} />
-
-            {/* Settings */}
-            <Route path="/account" element={<AccountSettings />} />
-            <Route path="/project" element={<ProjectDetailsPage />} />
-            <Route path="/appearance" element={<AppearancePage />} />
-            <Route path="/moderation" element={<ModerationPage />} />
-            <Route path="/team" element={<TeamMembersPage />} />
-            <Route path="/billing" element={<BillingPage />} />
-            <Route path="/tags" element={<TagsPage />} />
-            <Route path="/emails" element={<EmailsPage />} />
-            <Route path="/import" element={<ImportIdeasPage />} />
-
-            <Route path="/testimonials" element={<TestimonialsPage />} />
-
-            {/* New route */}
-            <Route path="/design" element={<DesignSystem />} />
+            {menuItems.map((menuItem) => (
+              <Route Component={menuItem.component} path={`/${menuItem.id}`} />
+            ))}
           </Route>
 
           {/* Redirect unknown routes */}
-          <Route path="*" element={<NotFoundPage />} />
+          <Route
+            path="*"
+            element={
+              (is_public && admin_profile) || (!is_public && user) ? (
+                <NotFoundPage />
+              ) : (
+                <Fallback />
+              )
+            }
+          />
         </Routes>
       </Suspense>
     </BrowserRouter>

@@ -85,7 +85,7 @@ export const SettingsTable: React.FC = () => {
                   <tr key={index}>
                     <td className="permissions-col">{item.name}</td>
 
-                    {roles.map((role) => {
+                    {roles.map((role, idx) => {
                       const hasPermission =
                         rolesPermission.find(
                           (rolePermission) =>
@@ -94,7 +94,7 @@ export const SettingsTable: React.FC = () => {
                         )?.has_permission ?? false;
 
                       return (
-                        <td className="status">
+                        <td key={idx} className="status">
                           {hasPermission ? (
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -145,7 +145,7 @@ export const SettingsTable: React.FC = () => {
                 <tr key={index}>
                   <td className="permissions-col">{item.name}</td>
 
-                  {roles.map((role) => {
+                  {roles.map((role, idx) => {
                     const hasPermission =
                       rolesPermission.find(
                         (rolePermission) =>
@@ -154,7 +154,7 @@ export const SettingsTable: React.FC = () => {
                       )?.has_permission ?? false;
 
                     return (
-                      <td className="status">
+                      <td key={idx} className="status">
                         {hasPermission ? (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -204,7 +204,7 @@ export const SettingsTable: React.FC = () => {
                 <tr key={index}>
                   <td className="permissions-col">{item.name}</td>
 
-                  {roles.map((role) => {
+                  {roles.map((role, idx) => {
                     const hasPermission =
                       rolesPermission.find(
                         (rolePermission) =>
@@ -213,7 +213,7 @@ export const SettingsTable: React.FC = () => {
                       )?.has_permission ?? false;
 
                     return (
-                      <td className="status">
+                      <td key={idx} className="status">
                         {hasPermission ? (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -263,7 +263,7 @@ export const SettingsTable: React.FC = () => {
                 <tr key={index}>
                   <td className="permissions-col">{item.name}</td>
 
-                  {roles.map((role) => {
+                  {roles.map((role, idx) => {
                     const hasPermission =
                       rolesPermission.find(
                         (rolePermission) =>
@@ -272,7 +272,7 @@ export const SettingsTable: React.FC = () => {
                       )?.has_permission ?? false;
 
                     return (
-                      <td className="status">
+                      <td key={idx} className="status">
                         {hasPermission ? (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -322,7 +322,7 @@ export const SettingsTable: React.FC = () => {
                 <tr key={index}>
                   <td className="permissions-col">{item.name}</td>
 
-                  {roles.map((role) => {
+                  {roles.map((role, idx) => {
                     const hasPermission =
                       rolesPermission.find(
                         (rolePermission) =>
@@ -331,7 +331,7 @@ export const SettingsTable: React.FC = () => {
                       )?.has_permission ?? false;
 
                     return (
-                      <td className="status">
+                      <td key={idx} className="status">
                         {hasPermission ? (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"

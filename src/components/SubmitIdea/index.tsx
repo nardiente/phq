@@ -25,6 +25,7 @@ import { PrivacyPolicyField } from '../PrivacyPolicyField';
 import { useSocket } from '../../contexts/SocketContext';
 import { SocketAction } from '../../types/socket';
 import { useApp } from '../../contexts/AppContext';
+import { isTeamMember } from '../../utils/user';
 
 export const SubmitIdea = () => {
   const { is_public } = useApp();
@@ -332,9 +333,7 @@ export const SubmitIdea = () => {
 
   useEffect(() => {
     if (user) {
-      if (user.role_id) {
-        setIsMember(true);
-      }
+      setIsMember(isTeamMember(user));
     }
   }, [user]);
 

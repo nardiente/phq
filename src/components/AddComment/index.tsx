@@ -33,6 +33,7 @@ import { FiPaperclip } from 'react-icons/fi';
 import { fileToBase64 } from '../../utils/file';
 import { toast } from 'react-toastify';
 import { SocketAction } from '../../types/socket';
+import { isTeamMember } from '../../utils/user';
 
 const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
@@ -346,9 +347,7 @@ const AddComment = () => {
   useEffect(() => {
     setMentionedUser([]);
     handleGetComments();
-    if (user?.role_id) {
-      setIsMember(true);
-    }
+    setIsMember(isTeamMember(user));
   }, []);
 
   useEffect(() => {

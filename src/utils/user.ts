@@ -68,3 +68,14 @@ export const generateUserNameFormats = (user: User): DisplayUserName[] => {
 
   return userNames;
 };
+
+export const isSuperDuperAdmin = (user?: User) => {
+  return user?.role_id === 4;
+};
+
+export const isTeamMember = (user?: User) => {
+  if (!user || !user.role_id) {
+    return false;
+  }
+  return user.role_id > 0 && !isSuperDuperAdmin(user);
+};

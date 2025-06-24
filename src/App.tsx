@@ -20,6 +20,7 @@ import {
   FAVICON_PLACEHOLDER,
 } from './constants/placeholders';
 import { useApp } from './contexts/AppContext';
+import { isSuperDuperAdmin } from './utils/user';
 
 const App: FC = () => {
   const { is_public } = useApp();
@@ -123,6 +124,7 @@ const App: FC = () => {
     if (!is_public) {
       if (
         user?.user &&
+        !isSuperDuperAdmin(user.user) &&
         (!user.subscription ||
           user.subscription.status === 'Inactive' ||
           !user.permissions.includes(Permissions.ADD_IDEA))

@@ -1,35 +1,22 @@
 import { ReactNode, useEffect, useState, useRef } from 'react';
 import {
-  LayoutDashboard,
-  MessageSquare,
-  Map,
-  Upload,
-  Settings,
   ArrowLeft,
-  User,
-  Settings2,
-  Tag,
-  Users2,
-  CreditCard,
-  Mail,
-  Zap,
-  ThumbsUp,
   ChevronLeft,
   ChevronRight,
-  Paintbrush,
-  LayoutTemplate,
-  PieChart,
-  Users,
   LucideIcon,
-  FileText,
-  ListOrdered,
-  Heart,
   Palette,
 } from 'lucide-react';
 import { PageType } from '../../types/app';
 import { useUser } from '../../contexts/UserContext';
-import { RbacPermissions } from '../../types/common';
 import { useApp } from '../../contexts/AppContext';
+import { isSuperDuperAdmin } from '../../utils/user';
+import {
+  designSystemItem,
+  mainMenuItems,
+  settingsMenuItems,
+  superDuperAdminItems,
+} from '../../constants/menuItems';
+import { getBottomMenuItems } from '../../utils/menuItems';
 
 interface SidebarMenuProps {
   activeItem: string;
@@ -49,6 +36,7 @@ export interface MenuItem {
   href?: string;
   position?: string;
   divider?: boolean;
+  component?: () => JSX.Element;
 }
 
 export function SidebarMenu({
@@ -61,79 +49,10 @@ export function SidebarMenu({
 
   const [isExpanded, setIsExpanded] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
+
   const menuRef = useRef<HTMLDivElement>(null);
 
   const company_info = is_public ? user?.admin_profile : user?.user;
-
-  const mainMenuItems: MenuItem[] = [
-    { icon: LayoutDashboard, label: 'Dashboard', id: 'dashboard' },
-    { icon: ThumbsUp, label: 'Upvotes', id: 'upvotes' },
-    { icon: Map, label: 'Roadmap', id: 'roadmap' },
-    { icon: Zap, label: "What's New", id: 'whatsnew' },
-    {
-      icon: LayoutTemplate,
-      label: 'Widgets',
-      id: 'widgets',
-    },
-    { icon: ListOrdered, label: 'Prioritization', id: 'prioritization' },
-    { icon: PieChart, label: 'Segments', id: 'segments', hidden: false },
-    { icon: Users, label: 'Customer Profiles', id: 'profiles', hidden: true },
-  ];
-
-  const settingsMenuItems: MenuItem[] = [
-    { icon: User, label: 'Account Details', id: 'account' },
-    { icon: Settings2, label: 'Project Details', id: 'project' },
-    { icon: Paintbrush, label: 'Appearance', id: 'appearance' },
-    { icon: MessageSquare, label: 'Moderation', id: 'moderation' },
-    { icon: Users2, label: 'Team Members', id: 'team' },
-    { icon: CreditCard, label: 'Billing and Invoicing', id: 'billing' },
-    { icon: Tag, label: 'Tags', id: 'tags' },
-    { icon: Mail, label: 'Emails', id: 'emails' },
-    { icon: Upload, label: 'Import Ideas', id: 'import' },
-  ];
-
-  const bottomMenuItems: MenuItem[] = [
-    {
-      id: 'settings',
-      label: 'Settings',
-      icon: Settings,
-      hidden: !user?.user?.rbac_permissions?.includes(
-        RbacPermissions.MANAGE_ACCOUNT_DETAILS_PAGE
-      ),
-    },
-    {
-      id: 'documentation',
-      label: 'Documentation',
-      icon: FileText,
-      link: 'https://support.producthq.io/',
-    },
-    {
-      id: 'testimonials',
-      label: 'Share your feedback',
-      icon: Heart,
-    },
-    {
-      icon: ThumbsUp,
-      label: 'Submit Feature Request',
-      id: 'submit-feature',
-      link: 'https://feedback.producthq.io/upvotes',
-    },
-    {
-      icon: Map,
-      label: 'Our Roadmap',
-      id: 'our-roadmap',
-      link: 'https://feedback.producthq.io/roadmap',
-    },
-  ];
-
-  const designSystemItem: MenuItem = {
-    id: 'design',
-    label: 'Design System',
-    icon: Palette,
-    href: '/design',
-    position: 'bottom',
-    divider: true,
-  };
 
   useEffect(() => {
     setShowSettings(
@@ -178,58 +97,65 @@ export function SidebarMenu({
       <div className="sticky top-0 flex flex-col h-screen">
         <div className="flex items-center justify-between h-[60px] px-4 border-b border-gray-200 min-h-[60px]">
           <div className="flex items-center">
-            {company_info?.company_name && (
-              <>
-                <div className="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center">
-                  <>
-                    {company_info?.company_logo &&
-                    company_info?.company_logo.length > 0 ? (
-                      <figure
-                        className={`is-clickable ${
-                          company_info?.company_logo?.length &&
-                          company_info?.company_logo?.length > 0
-                            ? ' '
-                            : ' '
-                        }`}
-                        onClick={() => {
-                          if (is_public) {
-                            if (
-                              !company_info.website_url ||
-                              company_info.website_url.length === 0
-                            ) {
-                              return;
-                            }
-                            window.location.href =
-                              company_info.website_url.startsWith('http')
-                                ? company_info.website_url
-                                : 'http://' + company_info.website_url;
+            <>
+              <div className="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center">
+                <>
+                  {company_info?.company_logo &&
+                  company_info?.company_logo.length > 0 ? (
+                    <figure
+                      className={`is-clickable ${
+                        company_info?.company_logo?.length &&
+                        company_info?.company_logo?.length > 0
+                          ? ' '
+                          : ' '
+                      }`}
+                      onClick={() => {
+                        if (is_public) {
+                          if (
+                            !company_info.website_url ||
+                            company_info.website_url.length === 0
+                          ) {
                             return;
                           }
-                          onNavigate('dashboard');
-                        }}
-                      >
-                        <img
-                          className="w-9 h-9 rounded-full"
-                          src={company_info?.company_logo}
-                        />
-                      </figure>
-                    ) : (
-                      <span className="text-purple-600 font-medium text-lg">
-                        {company_info?.company_name?.toUpperCase().charAt(0)}
-                      </span>
-                    )}
-                  </>
-                </div>
-                {isExpanded && (
-                  <span className="ml-3 font-medium text-gray-900">
-                    {company_info?.company_name?.substring(0, 30)}
-                    {company_info?.company_name &&
-                      company_info?.company_name?.length > 30 &&
-                      '...'}
-                  </span>
-                )}
-              </>
-            )}
+                          window.location.href =
+                            company_info.website_url.startsWith('http')
+                              ? company_info.website_url
+                              : 'http://' + company_info.website_url;
+                          return;
+                        }
+                        onNavigate('dashboard');
+                      }}
+                    >
+                      <img
+                        className="w-9 h-9 rounded-full"
+                        src={company_info?.company_logo}
+                      />
+                    </figure>
+                  ) : (
+                    <span className="text-purple-600 font-medium text-lg">
+                      {(company_info?.company_name &&
+                      company_info.company_name.length > 0
+                        ? company_info.company_name
+                        : 'ProductHQ'
+                      )
+                        .toUpperCase()
+                        .charAt(0)}
+                    </span>
+                  )}
+                </>
+              </div>
+              {isExpanded && (
+                <span className="ml-3 font-medium text-gray-900">
+                  {(company_info?.company_name ?? 'ProductHQ')?.substring(
+                    0,
+                    30
+                  )}
+                  {company_info?.company_name &&
+                    company_info?.company_name?.length > 30 &&
+                    '...'}
+                </span>
+              )}
+            </>
           </div>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
@@ -244,7 +170,7 @@ export function SidebarMenu({
         </div>
 
         <div className="flex-1 px-3 py-4 overflow-auto">
-          {showSettings && (
+          {showSettings && !isSuperDuperAdmin(company_info) && (
             <button
               onClick={toggleSettings}
               className="w-full flex items-center gap-3 px-3 py-2 mb-3 rounded-lg text-sm text-[#4b5563] hover:bg-gray-50"
@@ -256,7 +182,12 @@ export function SidebarMenu({
             </button>
           )}
           <div className="space-y-1">
-            {(showSettings ? settingsMenuItems : mainMenuItems)
+            {(!isSuperDuperAdmin(company_info)
+              ? showSettings
+                ? settingsMenuItems
+                : mainMenuItems
+              : superDuperAdminItems
+            )
               .filter((m) => !m.hidden)
               .map((item) => (
                 <button
@@ -284,7 +215,7 @@ export function SidebarMenu({
               ))}
           </div>
 
-          {isExpanded && (
+          {isExpanded && !isSuperDuperAdmin(company_info) && (
             <a
               href={`${window.location.origin}/pricing`}
               target="_blank"
@@ -296,52 +227,56 @@ export function SidebarMenu({
           )}
         </div>
 
-        <div className="px-3 py-4 border-t border-gray-100 overflow-auto">
-          <div className="space-y-1">
-            {!showSettings && (
-              <>
-                {bottomMenuItems
-                  .filter((m) => !m.hidden)
-                  .map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() =>
-                        item.id === 'settings'
-                          ? toggleSettings()
-                          : handleNavigation(item)
-                      }
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
-                        activeItem === item.id
-                          ? 'bg-purple-50 text-purple-700'
-                          : 'text-[#4b5563] hover:bg-gray-50'
-                      }`}
-                    >
-                      <item.icon size={18} />
-                      {isExpanded && (
-                        <span className="flex-1 text-left">{item.label}</span>
-                      )}
-                    </button>
-                  ))}
-                <button
-                  key={designSystemItem.id}
-                  onClick={() => handleNavigation(designSystemItem)}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
-                    activeItem === designSystemItem.id
-                      ? 'bg-purple-50 text-purple-700'
-                      : 'text-[#4b5563] hover:bg-gray-50'
-                  }`}
-                >
-                  <Palette className="w-5 h-5" />
-                  {isExpanded && (
-                    <span className="flex-1 text-left">
-                      {designSystemItem.label}
-                    </span>
-                  )}
-                </button>
-              </>
-            )}
+        {!isSuperDuperAdmin(company_info) && (
+          <div
+            className={`px-3 py-4 ${!showSettings ? 'border-t border-gray-100' : ''} overflow-auto`}
+          >
+            <div className="space-y-1">
+              {!showSettings && (
+                <>
+                  {getBottomMenuItems(user?.user)
+                    .filter((m) => !m.hidden)
+                    .map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() =>
+                          item.id === 'settings'
+                            ? toggleSettings()
+                            : handleNavigation(item)
+                        }
+                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
+                          activeItem === item.id
+                            ? 'bg-purple-50 text-purple-700'
+                            : 'text-[#4b5563] hover:bg-gray-50'
+                        }`}
+                      >
+                        <item.icon size={18} />
+                        {isExpanded && (
+                          <span className="flex-1 text-left">{item.label}</span>
+                        )}
+                      </button>
+                    ))}
+                  <button
+                    key={designSystemItem.id}
+                    onClick={() => handleNavigation(designSystemItem)}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
+                      activeItem === designSystemItem.id
+                        ? 'bg-purple-50 text-purple-700'
+                        : 'text-[#4b5563] hover:bg-gray-50'
+                    }`}
+                  >
+                    <Palette className="w-5 h-5" />
+                    {isExpanded && (
+                      <span className="flex-1 text-left">
+                        {designSystemItem.label}
+                      </span>
+                    )}
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
