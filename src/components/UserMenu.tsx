@@ -15,7 +15,7 @@ interface UserMenuProps {
 export function UserMenu({ onNavigate }: UserMenuProps) {
   const navigate = useNavigate();
 
-  const { is_public } = useApp();
+  const { is_public, setMenuItems } = useApp();
   const { user: userDetails, removeUser } = useUser();
   const { moderation, user } = userDetails ?? {};
 
@@ -57,6 +57,7 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
         eraseSessionToken();
       }
     } else {
+      setMenuItems([]);
       navigate('/sign-in');
     }
   };

@@ -9,8 +9,10 @@ import DeleteConfirmation from '../DeleteConfirmation';
 import './styles.css';
 import { useEffect } from 'react';
 import ArchivedBadge from '../../pages/Upvotes/components/ArchivedBadge';
+import { useApp } from '../../contexts/AppContext';
 
 export const SidePanel = () => {
+  const { is_public } = useApp();
   const {
     state: { isOpen, activePage },
     setActivePage,
@@ -44,7 +46,7 @@ export const SidePanel = () => {
         setActivePage('add_idea');
         setSelectedIdea(null);
       }}
-      panelClassName="panel-container p-0 overflow-auto"
+      panelClassName={`panel-container p-0 overflow-auto ${is_public ? 'background-color' : 'bg-white'}`}
       panelContainerClassName="rounded-none overflow-visible"
       backdropClicked={() => activePage == 'success' && setIsOpen(false)}
     >

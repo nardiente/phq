@@ -19,7 +19,6 @@ import { ChevronRightIcon } from '../../components/icons/chevron-right.icon';
 import { User, UserTypes } from '../../types/user';
 import { Subscription } from '../../types/billing';
 import { OnboardingPages, OnboardingUrls } from '../../types/onboarding';
-import { Project } from '../../types/project';
 import { useUser } from '../../contexts/UserContext';
 import queryString from 'query-string';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +26,14 @@ import { validateEmail, validatePassword } from '../../utils/custom-validation';
 import { clearQueryString } from '../../utils/uri';
 import { useApp } from '../../contexts/AppContext';
 import { isSuperDuperAdmin } from '../../utils/user';
+import {
+  designSystemItem,
+  bottomMenuItems,
+  mainMenuItems,
+  superDuperAdminItems,
+  publicViewMenuItems,
+  settingsMenuItems,
+} from '../../constants/menuItems';
 
 const Form = styled.form`
   display: flex;
@@ -62,7 +69,7 @@ export const LoginForm = (props: LoginFormProps) => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  const { is_public } = useApp();
+  const { is_public, setMenuItems } = useApp();
   const {
     setFirstName,
     setGithubCode,
@@ -73,6 +80,8 @@ export const LoginForm = (props: LoginFormProps) => {
     showBanner,
     setShowBanner,
     handleGetUser,
+    setUser,
+    initialUser,
   } = useUser();
 
   const [bannerText, setBannerText] = React.useState<string>(
@@ -232,19 +241,17 @@ export const LoginForm = (props: LoginFormProps) => {
       payload = { ...payload, token: getSessionToken() };
     }
 
-    postApi<
-      User & {
-        project?: Project;
-        subscription: Subscription & { trial_end: number | string | null };
-      }
-    >({ url: 'auth/login-social', payload })
+    postApi<{
+      user: User;
+      subscription: Subscription & { trial_end: number | string | null };
+    }>({ url: 'auth/login-social', payload })
       .then(async (res) => {
         const {
           headers,
           results: { data, error },
         } = res;
-        const { onboarding_done, onboarding_page, subscription, token } =
-          data ?? {};
+        const { subscription, user } = data ?? {};
+        const { onboarding_done, onboarding_page, token } = user ?? {};
         if (error) {
           const message = error;
           if (message === 'error.invalid_credentials') {
@@ -283,14 +290,29 @@ export const LoginForm = (props: LoginFormProps) => {
           });
         }
         if (data && headers['kasl-key'] && !error) {
+          setMenuItems(
+            is_public
+              ? publicViewMenuItems
+              : isSuperDuperAdmin(user)
+                ? superDuperAdminItems
+                : [
+                    ...mainMenuItems,
+                    ...settingsMenuItems,
+                    ...bottomMenuItems,
+                    designSystemItem,
+                  ]
+          );
           if (token) {
             setSessionToken(token);
           }
+          setUser((prev) =>
+            prev ? { ...prev, ...data } : { ...initialUser, ...data }
+          );
           clearMsgs();
           if (is_public) {
             setKaslKey(headers['kasl-key'].toString());
             await handleGetUser();
-            navigate('/dashboard');
+            navigate('/upvotes');
           } else {
             localStorage.removeItem('onboarding_page');
             eraseOnboardingToken();
@@ -348,12 +370,10 @@ export const LoginForm = (props: LoginFormProps) => {
         token: getSessionToken(),
       });
     }
-    postApi<
-      User & {
-        project?: Project;
-        subscription: Subscription & { trial_end: number | string | null };
-      }
-    >({
+    postApi<{
+      user: User;
+      subscription: Subscription & { trial_end: number | string | null };
+    }>({
       url: 'auth/login',
       payload: login_params,
     }).then(async (res) => {
@@ -361,6 +381,7 @@ export const LoginForm = (props: LoginFormProps) => {
       const {
         results: { data, error, errors, message },
       } = res;
+      const { user, subscription } = data ?? {};
       if (errors) {
         setApiFieldErrors(errors);
         return;
@@ -441,21 +462,31 @@ export const LoginForm = (props: LoginFormProps) => {
         clearMsgs();
         localStorage.removeItem('onboarding_page');
         eraseOnboardingToken();
-        const result: User & {
-          project?: Project;
-          subscription: Subscription & { trial_end: number | string | null };
-        } = data;
-        if (result.token) {
-          setSessionToken(result.token);
+        setMenuItems(
+          is_public
+            ? publicViewMenuItems
+            : isSuperDuperAdmin(user)
+              ? superDuperAdminItems
+              : [
+                  ...mainMenuItems,
+                  ...settingsMenuItems,
+                  ...bottomMenuItems,
+                  designSystemItem,
+                ]
+        );
+        if (user?.token) {
+          setSessionToken(user.token);
         }
-        if (result.onboarding_done === undefined || result.onboarding_done) {
+        setUser((prev) =>
+          prev ? { ...prev, ...data } : { ...initialUser, ...data }
+        );
+        if (user?.onboarding_done === undefined || user.onboarding_done) {
           setKaslKey(res.headers['kasl-key'].toString());
           await handleGetUser();
           if (props.type === UserTypes.USER) {
             navigate('/upvotes');
             return;
           }
-          const subscription = result.subscription;
           if (
             subscription &&
             subscription.status === 'canceled' &&
@@ -464,14 +495,14 @@ export const LoginForm = (props: LoginFormProps) => {
             navigate('/billing');
             return;
           }
-          if (isSuperDuperAdmin(data)) {
+          if (isSuperDuperAdmin(user)) {
             navigate('/super-duper-admin');
             return;
           }
           navigate('/dashboard');
           return;
         }
-        localStorage.setItem('onboarding_page', result.onboarding_page ?? '');
+        localStorage.setItem('onboarding_page', user.onboarding_page ?? '');
         setOnboardingToken(res.headers['kasl-key'].toString());
         navigate(
           OnboardingUrls[

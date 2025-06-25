@@ -169,113 +169,119 @@ export function SidebarMenu({
           </button>
         </div>
 
-        <div className="flex-1 px-3 py-4 overflow-auto">
-          {showSettings && !isSuperDuperAdmin(company_info) && (
-            <button
-              onClick={toggleSettings}
-              className="w-full flex items-center gap-3 px-3 py-2 mb-3 rounded-lg text-sm text-[#4b5563] hover:bg-gray-50"
-            >
-              <ArrowLeft size={18} />
-              {isExpanded && (
-                <span className="flex-1 text-left">Back to main menu</span>
-              )}
-            </button>
-          )}
-          <div className="space-y-1">
-            {(!isSuperDuperAdmin(company_info)
-              ? showSettings
-                ? settingsMenuItems
-                : mainMenuItems
-              : superDuperAdminItems
-            )
-              .filter((m) => !m.hidden)
-              .map((item) => (
+        {company_info && (
+          <>
+            <div className="flex-1 px-3 py-4 overflow-auto">
+              {showSettings && !isSuperDuperAdmin(company_info) && (
                 <button
-                  key={item.id}
-                  onClick={() => handleNavigation(item)}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
-                    activeItem === item.id
-                      ? 'bg-purple-50 text-purple-700'
-                      : 'text-[#4b5563] hover:bg-gray-50'
-                  }`}
-                  disabled={item.disabled && item.id !== 'widgets'}
+                  onClick={toggleSettings}
+                  className="w-full flex items-center gap-3 px-3 py-2 mb-3 rounded-lg text-sm text-[#4b5563] hover:bg-gray-50"
                 >
-                  <item.icon size={18} />
+                  <ArrowLeft size={18} />
                   {isExpanded && (
-                    <>
-                      <span className="flex-1 text-left">{item.label}</span>
-                      {item.badge && (
-                        <span className="text-xs font-medium text-[#5A00CD] bg-purple-50/50 px-2 py-0.5 rounded whitespace-pre-line leading-tight">
-                          {item.badge}
-                        </span>
-                      )}
-                    </>
+                    <span className="flex-1 text-left">Back to main menu</span>
                   )}
                 </button>
-              ))}
-          </div>
+              )}
+              <div className="space-y-1">
+                {(!isSuperDuperAdmin(company_info)
+                  ? showSettings
+                    ? settingsMenuItems
+                    : mainMenuItems
+                  : superDuperAdminItems
+                )
+                  .filter((m) => !m.hidden)
+                  .map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => handleNavigation(item)}
+                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
+                        activeItem === item.id
+                          ? 'bg-purple-50 text-purple-700'
+                          : 'text-[#4b5563] hover:bg-gray-50'
+                      }`}
+                      disabled={item.disabled && item.id !== 'widgets'}
+                    >
+                      <item.icon size={18} />
+                      {isExpanded && (
+                        <>
+                          <span className="flex-1 text-left">{item.label}</span>
+                          {item.badge && (
+                            <span className="text-xs font-medium text-[#5A00CD] bg-purple-50/50 px-2 py-0.5 rounded whitespace-pre-line leading-tight">
+                              {item.badge}
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </button>
+                  ))}
+              </div>
 
-          {isExpanded && !isSuperDuperAdmin(company_info) && (
-            <a
-              href={`${window.location.origin}/pricing`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`block w-full mt-4 px-4 py-2 text-sm font-medium ${activeItem === 'pricing' ? 'bg-purple-50 text-purple-700' : 'text-[#22C55E] border-[#22C55E]'} border rounded-lg hover:bg-green-50 text-center`}
-            >
-              CHOOSE PLAN
-            </a>
-          )}
-        </div>
+              {isExpanded && !isSuperDuperAdmin(company_info) && (
+                <a
+                  href={`${window.location.origin}/pricing`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`block w-full mt-4 px-4 py-2 text-sm font-medium ${activeItem === 'pricing' ? 'bg-purple-50 text-purple-700' : 'text-[#22C55E] border-[#22C55E]'} border rounded-lg hover:bg-green-50 text-center`}
+                >
+                  CHOOSE PLAN
+                </a>
+              )}
+            </div>
 
-        {!isSuperDuperAdmin(company_info) && (
-          <div
-            className={`px-3 py-4 ${!showSettings ? 'border-t border-gray-100' : ''} overflow-auto`}
-          >
-            <div className="space-y-1">
-              {!showSettings && (
-                <>
-                  {getBottomMenuItems(user?.user)
-                    .filter((m) => !m.hidden)
-                    .map((item) => (
+            {!isSuperDuperAdmin(company_info) && (
+              <div
+                className={`px-3 py-4 ${!showSettings ? 'border-t border-gray-100' : ''} overflow-auto`}
+              >
+                <div className="space-y-1">
+                  {!showSettings && (
+                    <>
+                      {getBottomMenuItems(user?.user)
+                        .filter((m) => !m.hidden)
+                        .map((item) => (
+                          <button
+                            key={item.id}
+                            onClick={() =>
+                              item.id === 'settings'
+                                ? toggleSettings()
+                                : handleNavigation(item)
+                            }
+                            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
+                              activeItem === item.id
+                                ? 'bg-purple-50 text-purple-700'
+                                : 'text-[#4b5563] hover:bg-gray-50'
+                            }`}
+                          >
+                            <item.icon size={18} />
+                            {isExpanded && (
+                              <span className="flex-1 text-left">
+                                {item.label}
+                              </span>
+                            )}
+                          </button>
+                        ))}
                       <button
-                        key={item.id}
-                        onClick={() =>
-                          item.id === 'settings'
-                            ? toggleSettings()
-                            : handleNavigation(item)
-                        }
+                        key={designSystemItem.id}
+                        onClick={() => handleNavigation(designSystemItem)}
                         className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
-                          activeItem === item.id
+                          activeItem === designSystemItem.id
                             ? 'bg-purple-50 text-purple-700'
                             : 'text-[#4b5563] hover:bg-gray-50'
                         }`}
                       >
-                        <item.icon size={18} />
+                        <Palette className="w-5 h-5" />
                         {isExpanded && (
-                          <span className="flex-1 text-left">{item.label}</span>
+                          <span className="flex-1 text-left">
+                            {designSystemItem.label}
+                          </span>
                         )}
                       </button>
-                    ))}
-                  <button
-                    key={designSystemItem.id}
-                    onClick={() => handleNavigation(designSystemItem)}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${
-                      activeItem === designSystemItem.id
-                        ? 'bg-purple-50 text-purple-700'
-                        : 'text-[#4b5563] hover:bg-gray-50'
-                    }`}
-                  >
-                    <Palette className="w-5 h-5" />
-                    {isExpanded && (
-                      <span className="flex-1 text-left">
-                        {designSystemItem.label}
-                      </span>
-                    )}
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

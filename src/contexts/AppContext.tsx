@@ -10,6 +10,8 @@ import {
 import { ApiFieldError } from '../utils/api/types';
 import { RoadmapColor } from '../types/roadmap';
 import { getApi } from '../utils/api/api';
+import { MenuItem } from '../components/layout/SidebarMenu';
+import { publicViewMenuItems } from '../constants/menuItems';
 
 interface ContextType {
   api_error: string;
@@ -19,6 +21,8 @@ interface ContextType {
   roadmap_colors: RoadmapColor[];
   setRoadmapColors: Dispatch<SetStateAction<RoadmapColor[]>>;
   is_public: boolean;
+  menuItems: MenuItem[];
+  setMenuItems: Dispatch<SetStateAction<MenuItem[]>>;
 }
 
 const AppContext = createContext<ContextType>({
@@ -29,11 +33,14 @@ const AppContext = createContext<ContextType>({
   roadmap_colors: [],
   setRoadmapColors: () => {},
   is_public: import.meta.env.VITE_SYSTEM_TYPE === 'public',
+  menuItems: [],
+  setMenuItems: () => {},
 });
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [api_error, setApiError] = useState<string>('');
   const [api_field_errors, setApiFieldErrors] = useState<ApiFieldError[]>([]);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [roadmap_colors, setRoadmapColors] = useState<RoadmapColor[]>([]);
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
@@ -41,6 +48,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     handleGetRoadmapColors();
   }, []);
+
+  useEffect(() => {
+    if (is_public) {
+      setMenuItems(publicViewMenuItems);
+    }
+  }, [is_public]);
 
   const handleGetRoadmapColors = () => {
     getApi<RoadmapColor[]>({ url: 'roadmaps/colors' }).then((res) => {
@@ -60,6 +73,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         roadmap_colors,
         setRoadmapColors,
         is_public,
+        menuItems,
+        setMenuItems,
       }}
     >
       {children}

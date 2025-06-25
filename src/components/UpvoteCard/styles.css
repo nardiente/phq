@@ -6,7 +6,6 @@
 
 #UpVoteEachList {
   align-items: flex-start;
-  background: var(--public-view-background-color);
   padding-top: 8px;
   display: flex;
   flex-direction: row;

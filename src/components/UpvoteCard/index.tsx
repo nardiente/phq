@@ -123,7 +123,10 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
   };
 
   return (
-    <div id="UpVoteEachList">
+    <div
+      id="UpVoteEachList"
+      className={is_public ? 'background-color' : 'bg-white'}
+    >
       <div className="upvote-counter-container">
         <UpVoteCounter data={props} />
         {is_admin && (

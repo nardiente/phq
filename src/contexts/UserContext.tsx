@@ -39,6 +39,15 @@ import {
 } from '../types/appearance-colours';
 import { Emails } from '../types/email';
 import { useApp } from './AppContext';
+import {
+  designSystemItem,
+  bottomMenuItems,
+  mainMenuItems,
+  superDuperAdminItems,
+  publicViewMenuItems,
+  settingsMenuItems,
+} from '../constants/menuItems';
+import { isSuperDuperAdmin } from '../utils/user';
 
 export interface UserContextConfig {
   admin_profile?: User;
@@ -123,7 +132,7 @@ interface UserProviderProps {
 }
 
 export function UserProvider({ children }: UserProviderProps) {
-  const { is_public } = useApp();
+  const { is_public, setMenuItems } = useApp();
 
   const [email, setEmail] = useState<string>('');
   const [fetching, setFetching] = useState<boolean>(false);
@@ -172,6 +181,18 @@ export function UserProvider({ children }: UserProviderProps) {
         if (res.results.data) {
           const result = res.results.data;
           setUser(result);
+          setMenuItems(
+            is_public
+              ? publicViewMenuItems
+              : isSuperDuperAdmin(result.user)
+                ? superDuperAdminItems
+                : [
+                    ...mainMenuItems,
+                    ...settingsMenuItems,
+                    ...bottomMenuItems,
+                    designSystemItem,
+                  ]
+          );
         }
       })
       .finally(() => {
@@ -197,7 +218,12 @@ export function UserProvider({ children }: UserProviderProps) {
       .finally(() => setFetching(false));
   };
 
-  const removeUser = async () => setUser(undefined);
+  const removeUser = async () =>
+    setUser((prev) =>
+      prev
+        ? { ...prev, user: undefined, permissions: [], rbac_permissions: [] }
+        : { ...initialUser, user: undefined }
+    );
 
   const setAppearanceColors = (appearance?: ProjectAppearance) => {
     document.documentElement.style.setProperty(

@@ -24,7 +24,8 @@ import { isSuperDuperAdmin } from './utils/user';
 
 const App: FC = () => {
   const { is_public } = useApp();
-  const { user, showBanner, setFetching, setShowBanner, setUser } = useUser();
+  const { initialUser, user, showBanner, setFetching, setShowBanner, setUser } =
+    useUser();
   const { admin_profile, moderation, project, user: user_profile } = user ?? {};
   const { is_index_search_engine } = project ?? {};
   const { setPanelLoading } = usePanel();
@@ -114,7 +115,9 @@ const App: FC = () => {
           if (kasl_key) {
             setKaslKey(kasl_key);
           }
-          setUser((prev) => ({ ...prev, user: data }));
+          setUser((prev) =>
+            prev ? { ...prev, user: data } : { ...initialUser, user: data }
+          );
         }
       })
       .finally(() => setFetching(false));

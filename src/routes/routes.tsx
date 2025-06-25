@@ -14,34 +14,13 @@ import FreeTrialPage from '../pages/FreeTrialPage';
 import { LtdPage } from '../pages/LtdPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import TestFetch from '../pages/TestFetch';
-import { MenuItem } from '../components/layout/SidebarMenu.tsx';
 import { useApp } from '../contexts/AppContext.tsx';
-import {
-  bottomMenuItems,
-  designSystemItem,
-  mainMenuItems,
-  publicViewMenuItems,
-  settingsMenuItems,
-  superDuperAdminItems,
-} from '../constants/menuItems.ts';
-import { isSuperDuperAdmin } from '../utils/user.ts';
 import { useUser } from '../contexts/UserContext.tsx';
 
 const AppRoutes = () => {
-  const { is_public } = useApp();
+  const { is_public, menuItems } = useApp();
   const { user: userContext } = useUser();
   const { admin_profile, user } = userContext ?? {};
-
-  const menuItems: MenuItem[] = is_public
-    ? publicViewMenuItems
-    : isSuperDuperAdmin(user)
-      ? superDuperAdminItems
-      : [
-          ...mainMenuItems,
-          ...settingsMenuItems,
-          ...bottomMenuItems,
-          designSystemItem,
-        ];
 
   return (
     <BrowserRouter>
