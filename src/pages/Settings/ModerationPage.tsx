@@ -21,7 +21,7 @@ export default function ModerationPage() {
   const {
     state: { socket },
   } = useSocket();
-  const { user, setUser } = useUser();
+  const { initialUser, user, setUser } = useUser();
   const { project } = user ?? {};
   const { moderation } = user ?? {
     id: 0,
@@ -45,7 +45,11 @@ export default function ModerationPage() {
     getApi<{ message: string; data: Moderation }>({ url: 'users/moderation' })
       .then((res) => {
         if (res.results.data) {
-          setUser((prev) => ({ ...prev, moderation: res.results.data?.data }));
+          setUser((prev) =>
+            prev
+              ? { ...prev, moderation: res.results.data?.data }
+              : { ...initialUser, moderation: res.results.data?.data }
+          );
         }
       })
       .finally(() => setFetching(false));
@@ -114,6 +118,7 @@ export default function ModerationPage() {
             enabled={moderation?.allow_anonymous_access ?? false}
             onChange={(enabled) =>
               setUser((prev) => {
+                prev = prev ?? initialUser;
                 if (prev.moderation) {
                   return {
                     ...prev,
@@ -132,6 +137,7 @@ export default function ModerationPage() {
             settings={moderation?.moderate_settings}
             onChange={(key, value) =>
               setUser((prev) => {
+                prev = prev ?? initialUser;
                 if (prev.moderation) {
                   prev = {
                     ...prev,

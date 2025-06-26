@@ -9,7 +9,7 @@ import { useApp } from '../../contexts/AppContext';
 
 export default function EmailsPage() {
   const { is_public } = useApp();
-  const { setUser } = useUser();
+  const { initialUser, setUser } = useUser();
 
   const [activeTab, setActiveTab] = useState<
     'Admin Emails' | 'Customer Emails'
@@ -39,7 +39,9 @@ export default function EmailsPage() {
       } = res;
       if (data) {
         setEmails(data);
-        setUser((prev) => ({ ...prev, emails: data }));
+        setUser((prev) =>
+          prev ? { ...prev, emails: data } : { ...initialUser, emails: data }
+        );
       }
     });
   }, []);

@@ -24,7 +24,7 @@ export function AccountSettings() {
   const navigate = useNavigate();
 
   const { api_error, setApiError } = useApp();
-  const { user, setUser } = useUser();
+  const { initialUser, user, setUser } = useUser();
   const { user: userDetails } = user ?? {};
   const { setHasUnsavedChanges } = useUnsavedChanges();
 
@@ -52,15 +52,27 @@ export function AccountSettings() {
   }, [api_error]);
 
   const setCompanyLogo = (company_logo: string) => {
-    setUser((prev) => ({ ...prev, user: { ...prev.user, company_logo } }));
+    setUser((prev) =>
+      prev
+        ? { ...prev, user: { ...prev.user, company_logo } }
+        : { ...initialUser, user: { ...initialUser.user, company_logo } }
+    );
   };
 
   const setFavicon = (favicon: string) => {
-    setUser((prev) => ({ ...prev, user: { ...prev.user, favicon } }));
+    setUser((prev) =>
+      prev
+        ? { ...prev, user: { ...prev.user, favicon } }
+        : { ...initialUser, user: { ...initialUser.user, favicon } }
+    );
   };
 
   const setProfilePhoto = (profile_photo: string) => {
-    setUser((prev) => ({ ...prev, user: { ...prev.user, profile_photo } }));
+    setUser((prev) =>
+      prev
+        ? { ...prev, user: { ...prev.user, profile_photo } }
+        : { ...initialUser, user: { ...initialUser.user, profile_photo } }
+    );
   };
 
   const deletePortal = () => {
@@ -141,7 +153,11 @@ export function AccountSettings() {
             setApiError(res.results.error);
           }
           if (res.results.data) {
-            setUser((prev) => ({ ...prev, user: res.results.data }));
+            setUser((prev) =>
+              prev
+                ? { ...prev, user: res.results.data }
+                : { ...initialUser, user: res.results.data }
+            );
 
             if (res.headers['kasl-key']) {
               setKaslKey(res.headers['kasl-key'].toString());
@@ -223,10 +239,20 @@ export function AccountSettings() {
             <InputField
               label="First Name"
               onChange={(e) =>
-                setUser((prev) => ({
-                  ...prev,
-                  user: { ...prev.user, first_name: e.target.value },
-                }))
+                setUser((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        user: { ...prev.user, first_name: e.target.value },
+                      }
+                    : {
+                        ...initialUser,
+                        user: {
+                          ...initialUser.user,
+                          first_name: e.target.value,
+                        },
+                      }
+                )
               }
               value={userDetails?.first_name}
               placeholder="first name"
@@ -236,10 +262,20 @@ export function AccountSettings() {
             <InputField
               label="Last Name"
               onChange={(e) =>
-                setUser((prev) => ({
-                  ...prev,
-                  user: { ...prev.user, last_name: e.target.value },
-                }))
+                setUser((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        user: { ...prev.user, last_name: e.target.value },
+                      }
+                    : {
+                        ...initialUser,
+                        user: {
+                          ...initialUser.user,
+                          last_name: e.target.value,
+                        },
+                      }
+                )
               }
               placeholder="last name"
               type="text"
@@ -253,10 +289,17 @@ export function AccountSettings() {
             <InputField
               label="Email Address"
               onChange={(e) =>
-                setUser((prev) => ({
-                  ...prev,
-                  user: { ...prev.user, email: e.target.value },
-                }))
+                setUser((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        user: { ...prev.user, email: e.target.value },
+                      }
+                    : {
+                        ...initialUser,
+                        user: { ...initialUser.user, email: e.target.value },
+                      }
+                )
               }
               placeholder="email address"
               type="email"
@@ -266,10 +309,20 @@ export function AccountSettings() {
             <InputField
               label="Job Title"
               onChange={(e) =>
-                setUser((prev) => ({
-                  ...prev,
-                  user: { ...prev.user, job_title: e.target.value },
-                }))
+                setUser((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        user: { ...prev.user, job_title: e.target.value },
+                      }
+                    : {
+                        ...initialUser,
+                        user: {
+                          ...initialUser.user,
+                          job_title: e.target.value,
+                        },
+                      }
+                )
               }
               placeholder="job title"
               type="text"
@@ -347,6 +400,7 @@ export function AccountSettings() {
                 </Button>
               </div>
             </div>
+
             {/* favicon */}
             <div className="flex flex-col gap-1.5">
               <label className="block text-[13px] font-medium m-0">
@@ -378,10 +432,20 @@ export function AccountSettings() {
             <InputField
               label="Company Name"
               onChange={(e) =>
-                setUser((prev) => ({
-                  ...prev,
-                  user: { ...prev.user, company_name: e.target.value },
-                }))
+                setUser((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        user: { ...prev.user, company_name: e.target.value },
+                      }
+                    : {
+                        ...initialUser,
+                        user: {
+                          ...initialUser.user,
+                          company_name: e.target.value,
+                        },
+                      }
+                )
               }
               placeholder="company name"
               type="text"
@@ -391,10 +455,20 @@ export function AccountSettings() {
             <InputField
               label="Website URL"
               onChange={(e) =>
-                setUser((prev) => ({
-                  ...prev,
-                  user: { ...prev.user, website_url: e.target.value },
-                }))
+                setUser((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        user: { ...prev.user, website_url: e.target.value },
+                      }
+                    : {
+                        ...initialUser,
+                        user: {
+                          ...initialUser.user,
+                          website_url: e.target.value,
+                        },
+                      }
+                )
               }
               placeholder="website url"
               type="url"
@@ -408,10 +482,20 @@ export function AccountSettings() {
             <InputField
               label="Country Code"
               onChange={(e) => {
-                setUser((prev) => ({
-                  ...prev,
-                  user: { ...prev.user, country_code: e.target.value },
-                }));
+                setUser((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        user: { ...prev.user, country_code: e.target.value },
+                      }
+                    : {
+                        ...initialUser,
+                        user: {
+                          ...initialUser.user,
+                          country_code: e.target.value,
+                        },
+                      }
+                );
               }}
               placeholder="country code"
               type="text"
@@ -421,10 +505,17 @@ export function AccountSettings() {
             <InputField
               label="Phone Number"
               onChange={(e) => {
-                setUser((prev) => ({
-                  ...prev,
-                  user: { ...prev.user, phone: e.target.value },
-                }));
+                setUser((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        user: { ...prev.user, phone: e.target.value },
+                      }
+                    : {
+                        ...initialUser,
+                        user: { ...initialUser.user, phone: e.target.value },
+                      }
+                );
               }}
               placeholder="phone number"
               type="tel"
@@ -437,16 +528,25 @@ export function AccountSettings() {
         {/* Invoice Information */}
         <div className="flex flex-col gap-6">
           <SectionHeader title="Invoice Information" />
-
           {/* Address Lines */}
           <div className="flex flex-col gap-4">
             <InputField
               label="Address Line 1"
               onChange={(e) => {
-                setUser((prev) => ({
-                  ...prev,
-                  user: { ...prev.user, address_line1: e.target.value },
-                }));
+                setUser((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        user: { ...prev.user, address_line1: e.target.value },
+                      }
+                    : {
+                        ...initialUser,
+                        user: {
+                          ...initialUser.user,
+                          address_line1: e.target.value,
+                        },
+                      }
+                );
               }}
               placeholder="address line 1"
               value={userDetails?.address_line1}
@@ -454,10 +554,20 @@ export function AccountSettings() {
             <InputField
               label="Address Line 2"
               onChange={(e) => {
-                setUser((prev) => ({
-                  ...prev,
-                  user: { ...prev.user, address_line2: e.target.value },
-                }));
+                setUser((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        user: { ...prev.user, address_line2: e.target.value },
+                      }
+                    : {
+                        ...initialUser,
+                        user: {
+                          ...initialUser.user,
+                          address_line2: e.target.value,
+                        },
+                      }
+                );
               }}
               placeholder="address line 2"
               value={userDetails?.address_line2}
@@ -469,10 +579,17 @@ export function AccountSettings() {
             <InputField
               label="City"
               onChange={(e) => {
-                setUser((prev) => ({
-                  ...prev,
-                  user: { ...prev.user, city: e.target.value },
-                }));
+                setUser((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        user: { ...prev.user, city: e.target.value },
+                      }
+                    : {
+                        ...initialUser,
+                        user: { ...initialUser.user, city: e.target.value },
+                      }
+                );
               }}
               placeholder="city"
               value={userDetails?.city}
@@ -480,10 +597,17 @@ export function AccountSettings() {
             <InputField
               label="State"
               onChange={(e) => {
-                setUser((prev) => ({
-                  ...prev,
-                  user: { ...prev.user, state: e.target.value },
-                }));
+                setUser((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        user: { ...prev.user, state: e.target.value },
+                      }
+                    : {
+                        ...initialUser,
+                        user: { ...initialUser.user, state: e.target.value },
+                      }
+                );
               }}
               placeholder="state"
               value={userDetails?.state}
@@ -497,10 +621,17 @@ export function AccountSettings() {
               placeholder="zip code"
               value={userDetails?.zip_code}
               onChange={(e) => {
-                setUser((prev) => ({
-                  ...prev,
-                  user: { ...prev.user, zip_code: e.target.value },
-                }));
+                setUser((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        user: { ...prev.user, zip_code: e.target.value },
+                      }
+                    : {
+                        ...initialUser,
+                        user: { ...initialUser.user, zip_code: e.target.value },
+                      }
+                );
               }}
             />
             <InputField
@@ -509,10 +640,17 @@ export function AccountSettings() {
               placeholder="country"
               value={userDetails?.country}
               onChange={(e) => {
-                setUser((prev) => ({
-                  ...prev,
-                  user: { ...prev.user, country: e.target.value },
-                }));
+                setUser((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        user: { ...prev.user, country: e.target.value },
+                      }
+                    : {
+                        ...initialUser,
+                        user: { ...initialUser.user, country: e.target.value },
+                      }
+                );
               }}
               variant="default" // You can change this to any variant you want
             />

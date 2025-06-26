@@ -95,11 +95,11 @@ export function SidebarMenu({
       ref={menuRef}
     >
       <div className="sticky top-0 flex flex-col h-screen">
-        <div className="flex items-center justify-between h-[60px] px-4 border-b border-gray-200 min-h-[60px]">
-          <div className="flex items-center">
-            <>
-              <div className="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center">
-                <>
+        {company_info && (
+          <>
+            <div className="flex items-center justify-between h-[60px] px-4 border-b border-gray-200 min-h-[60px]">
+              <div className="flex items-center">
+                <div className="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center">
                   {company_info?.company_logo &&
                   company_info?.company_logo.length > 0 ? (
                     <figure
@@ -142,35 +142,31 @@ export function SidebarMenu({
                         .charAt(0)}
                     </span>
                   )}
-                </>
+                </div>
+                {isExpanded && (
+                  <span className="ml-3 font-medium text-gray-900">
+                    {(company_info?.company_name ?? 'ProductHQ')?.substring(
+                      0,
+                      30
+                    )}
+                    {company_info?.company_name &&
+                      company_info?.company_name?.length > 30 &&
+                      '...'}
+                  </span>
+                )}
               </div>
-              {isExpanded && (
-                <span className="ml-3 font-medium text-gray-900">
-                  {(company_info?.company_name ?? 'ProductHQ')?.substring(
-                    0,
-                    30
-                  )}
-                  {company_info?.company_name &&
-                    company_info?.company_name?.length > 30 &&
-                    '...'}
-                </span>
-              )}
-            </>
-          </div>
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="p-1 hover:bg-gray-50 rounded-lg"
-          >
-            {isExpanded ? (
-              <ChevronLeft size={20} className="text-gray-400" />
-            ) : (
-              <ChevronRight size={20} className="text-gray-400" />
-            )}
-          </button>
-        </div>
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="p-1 hover:bg-gray-50 rounded-lg"
+              >
+                {isExpanded ? (
+                  <ChevronLeft size={20} className="text-gray-400" />
+                ) : (
+                  <ChevronRight size={20} className="text-gray-400" />
+                )}
+              </button>
+            </div>
 
-        {company_info && (
-          <>
             <div className="flex-1 px-3 py-4 overflow-auto">
               {showSettings && !isSuperDuperAdmin(company_info) && (
                 <button

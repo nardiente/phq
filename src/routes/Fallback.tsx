@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { onbordingPaths } from '../types/app';
 import { pathExceptions } from '../types/app';
 import { useApp } from '../contexts/AppContext';
+import { isSuperDuperAdmin } from '../utils/user';
 
 const Fallback = () => {
   const navigate = useNavigate();
@@ -30,16 +31,18 @@ const Fallback = () => {
       (![...pathExceptions, ...onbordingPaths].includes(pathname) ||
         (pathExceptions.includes(pathname) && search.length === 0))
     ) {
-      if (isAuthenticated() && (pathname === '/sign-in' || pathname === '/')) {
-        navigate('/dashboard');
+      if (
+        isAuthenticated() &&
+        (pathname === '/sign-in' || pathname === '/') &&
+        user
+      ) {
+        navigate(isSuperDuperAdmin(user) ? '/super-duper-user' : '/dashboard');
         return;
       }
       if (!isAuthenticated() && !unprotectedPages.includes(pathname)) {
         navigate('/sign-in');
         return;
       }
-    } else if (pathname.slice(1).length === 0 && project) {
-      navigate('/upvotes');
     }
     if (is_public && pathname.slice(1).length === 0) {
       navigate('/upvotes');

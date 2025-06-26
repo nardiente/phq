@@ -15,10 +15,11 @@ interface BannerProps {
 function Banner({ activeItem, onNavigate }: BannerProps) {
   const navigate = useNavigate();
 
-  const { isAuthenticated, user } = useUser();
+  const { isAuthenticated, user: userContext } = useUser();
+  const { admin_profile, user } = userContext ?? {};
   const { is_public } = useApp();
 
-  const company_info = is_public ? user?.admin_profile : user?.user;
+  const company_info = is_public ? admin_profile : user;
 
   return (
     <div
@@ -98,11 +99,16 @@ function Banner({ activeItem, onNavigate }: BannerProps) {
           </div>
         </>
       )}
+
       <div className="flex items-center gap-3">
-        {isAuthenticated() || (is_public && user?.user?.id) ? (
+        {isAuthenticated() ? (
           <>
-            <Notifications />
-            <UserMenu user={user?.user} onNavigate={onNavigate} />
+            {user && (
+              <>
+                <Notifications />
+                <UserMenu user={user} onNavigate={onNavigate} />
+              </>
+            )}
           </>
         ) : (
           <>
@@ -123,7 +129,7 @@ function Banner({ activeItem, onNavigate }: BannerProps) {
             </Button>
           </>
         )}
-        {!is_public && (
+        {!is_public && user && (
           <div className="px-2 py-1 bg-[#EEF2FF] text-[#6366F1] text-[12px] font-medium rounded">
             Admin
           </div>

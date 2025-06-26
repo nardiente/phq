@@ -11,8 +11,15 @@ import {
   mobile_image_height,
   mobile_image_width,
 } from '../../utils/constants';
+import { useApp } from '../../contexts/AppContext';
+import { useUser } from '../../contexts/UserContext';
+import { isSuperDuperAdmin } from '../../utils/user';
 
 export const ResetPasswordPage: FC = () => {
+  const { is_public } = useApp();
+  const { user: userContext } = useUser();
+  const { user } = userContext ?? {};
+
   const [image_height, setImageHeight] = useState<number>(0);
   const [is_mobile, setIsMobile] = useState<boolean>(false);
   const [left_image, setLeftImage] = useState<string>(login_image_web);
@@ -30,10 +37,13 @@ export const ResetPasswordPage: FC = () => {
   };
 
   useEffect(() => {
-    if (getKaslKey()) {
+    if (getKaslKey() && user) {
       // has logged in user
-      window.location.href =
-        import.meta.env.SYSTEM_TYPE !== 'public' ? '/dashboard' : '/';
+      window.location.href = !is_public
+        ? isSuperDuperAdmin(user)
+          ? '/super-duper-admin'
+          : '/dashboard'
+        : '/';
     } else {
       // no logged in user
       const containers = document.getElementsByClassName(
@@ -68,7 +78,7 @@ export const ResetPasswordPage: FC = () => {
     return () => {
       window.removeEventListener('resize', onResize);
     };
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (is_mobile) {

@@ -10,6 +10,7 @@ import { useFeedback } from '../contexts/FeedbackContext';
 import { useSocket } from '../contexts/SocketContext';
 import { SocketAction } from '../types/socket';
 import { useApp } from '../contexts/AppContext';
+import { isSuperDuperAdmin } from '../utils/user';
 
 const AppRoute = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const AppRoute = () => {
     setUser,
     initialUser,
   } = useUser();
-  const { project } = userDetails ?? {};
+  const { project, user } = userDetails ?? {};
   const {
     state: { action, message },
     setAction,
@@ -70,13 +71,15 @@ const AppRoute = () => {
 
   useEffect(() => {
     setCurrentPage(pathname.slice(1).split('/')[0] as PageType);
-    if (!is_public) {
+    if (!is_public && user) {
       if (
         ![...pathExceptions, ...onbordingPaths].includes(pathname) ||
         (pathExceptions.includes(pathname) && search.length === 0)
       ) {
         if (pathname.slice(1).length === 0) {
-          handleNavigation('dashboard');
+          handleNavigation(
+            isSuperDuperAdmin(user) ? 'super-duper-admin' : 'dashboard'
+          );
         }
         if (showBanner) {
           handleNavigation('billing');
@@ -87,7 +90,7 @@ const AppRoute = () => {
         handleNavigation('upvotes');
       }
     }
-  }, [pathname]);
+  }, [pathname, user]);
 
   useEffect(() => {
     if (is_public && loaded && !project) {

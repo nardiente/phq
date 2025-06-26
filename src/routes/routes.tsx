@@ -57,7 +57,8 @@ const AppRoutes = () => {
           <Route
             path="*"
             element={
-              (is_public && admin_profile) || (!is_public && user) ? (
+              menuItems.length > 0 &&
+              ((is_public && admin_profile) || (!is_public && user)) ? (
                 <NotFoundPage />
               ) : (
                 <Fallback />

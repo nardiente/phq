@@ -26,7 +26,7 @@ export default function ProjectDetailsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { user, setUser } = useUser();
+  const { initialUser, user, setUser } = useUser();
   const { permissions, project } = user ?? {};
   const { setHasUnsavedChanges } = useUnsavedChanges();
 
@@ -140,10 +140,14 @@ export default function ProjectDetailsPage() {
         setFetching(false);
         if (res.results.data) {
           const data = res.results.data;
-          setUser((prev) => ({
-            ...prev,
-            project: data,
-          }));
+          setUser((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  project: data,
+                }
+              : { ...initialUser, project: data }
+          );
           setCustomDomain(data.custom_domain || '');
           setDescription(data.description || '');
           setHideDatetime(data.hide_datetime || false);
@@ -441,13 +445,23 @@ export default function ProjectDetailsPage() {
       }
       if (res.results.data) {
         const data = res.results.data as Project;
-        setUser((prev) => ({
-          ...prev,
-          project: {
-            ...data,
-            custom_domain: custom_domain.trim().toLowerCase(),
-          },
-        }));
+        setUser((prev) =>
+          prev
+            ? {
+                ...prev,
+                project: {
+                  ...data,
+                  custom_domain: custom_domain.trim().toLowerCase(),
+                },
+              }
+            : {
+                ...initialUser,
+                project: {
+                  ...data,
+                  custom_domain: custom_domain.trim().toLowerCase(),
+                },
+              }
+        );
         setId(data?.id || 0);
 
         toast('Updated', {

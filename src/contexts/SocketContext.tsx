@@ -60,7 +60,7 @@ const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export function SocketProvider({ children }: { children: ReactNode }) {
   const { is_public } = useApp();
-  const { user, setUser } = useUser();
+  const { initialUser, user, setUser } = useUser();
   const { admin_profile, project, user: user_profile } = user ?? {};
 
   const [state, dispatch] = useReducer(socketReducer, initialState);
@@ -77,7 +77,11 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     switch (action) {
       case SocketAction.UPDATE_MODERATION:
-        setUser((prev) => ({ ...prev, moderation: message.data.moderation }));
+        setUser((prev) =>
+          prev
+            ? { ...prev, moderation: message.data.moderation }
+            : { ...initialUser, moderation: message.data.moderation }
+        );
         break;
       default:
         break;

@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const AddYourBoardModal = ({ open }: Props) => {
-  const { user, setUser } = useUser();
+  const { initialUser, user, setUser } = useUser();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [showAddBoard, setShowAddBoard] = useState<boolean>(open);
@@ -30,7 +30,11 @@ export const AddYourBoardModal = ({ open }: Props) => {
     setLoading(true);
     putApi('users/me', { stop_remind_add_board, remind_3_days }).then((res) => {
       if (res.results.data) {
-        setUser((user) => ({ ...user, user: res.results.data }));
+        setUser((user) =>
+          user
+            ? { ...user, user: res.results.data }
+            : { ...initialUser, user: res.results.data }
+        );
         setShowAddBoard(false);
       }
       setLoading(false);

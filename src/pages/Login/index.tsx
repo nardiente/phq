@@ -11,9 +11,13 @@ import {
 import './styles.css';
 import { UserTypes } from '../../types/user';
 import { useApp } from '../../contexts/AppContext';
+import { isSuperDuperAdmin } from '../../utils/user';
+import { useUser } from '../../contexts/UserContext';
 
 export const LoginPage = () => {
   const { is_public: isPublicSite } = useApp();
+  const { user: userContext } = useUser();
+  const { user } = userContext ?? {};
 
   const [image_height, setImageHeight] = React.useState<number>(0);
   const [is_mobile, setIsMobile] = React.useState<boolean>(false);
@@ -28,9 +32,13 @@ export const LoginPage = () => {
     const isLoggedIn = getKaslKey() !== undefined;
     setIsLoggedIn(isLoggedIn);
 
-    if (isLoggedIn) {
+    if (isLoggedIn && user) {
       // has logged in user
-      window.location.href = isPublicSite ? '/' : '/dashboard';
+      window.location.href = isPublicSite
+        ? '/'
+        : isSuperDuperAdmin(user)
+          ? '/super-duper-admin'
+          : '/dashboard';
     } else {
       // no logged in user
       const containers = document.getElementsByClassName(
@@ -65,7 +73,7 @@ export const LoginPage = () => {
     return () => {
       window.removeEventListener('resize', onResize);
     };
-  }, []);
+  }, [user]);
 
   React.useEffect(() => {
     if (is_mobile) {

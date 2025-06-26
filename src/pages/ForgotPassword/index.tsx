@@ -11,9 +11,13 @@ import {
 } from '../../utils/constants';
 import { UserTypes } from '../../types/user';
 import { useApp } from '../../contexts/AppContext';
+import { useUser } from '../../contexts/UserContext';
+import { isSuperDuperAdmin } from '../../utils/user';
 
 export const ForgotPasswordPage: React.FC = () => {
   const { is_public } = useApp();
+  const { user: userContext } = useUser();
+  const { user } = userContext ?? {};
 
   const [image_height, setImageHeight] = React.useState<number>(0);
   const [is_mobile, setIsMobile] = React.useState<boolean>(false);
@@ -35,9 +39,13 @@ export const ForgotPasswordPage: React.FC = () => {
   React.useEffect(() => {
     setType(is_public ? UserTypes.USER : UserTypes.CUSTOMER);
 
-    if (getKaslKey() !== undefined) {
+    if (getKaslKey() !== undefined && user) {
       // has logged in user
-      window.location.href = !is_public ? '/dashboard' : '/';
+      window.location.href = !is_public
+        ? isSuperDuperAdmin(user)
+          ? '/super-duper-admin'
+          : '/dashboard'
+        : '/';
     } else {
       // no logged in user
       const containers = document.getElementsByClassName(
@@ -72,7 +80,7 @@ export const ForgotPasswordPage: React.FC = () => {
     return () => {
       window.removeEventListener('resize', onResize);
     };
-  }, []);
+  }, [user]);
 
   React.useEffect(() => {
     if (is_mobile) {

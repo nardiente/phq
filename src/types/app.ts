@@ -29,7 +29,8 @@ export type PageType =
   | 'profiles'
   | 'prioritization'
   | 'free-trial-plans'
-  | 'lifetime-deal';
+  | 'lifetime-deal'
+  | 'super-duper-admin';
 
 export const onbordingPaths = [
   '/free-trial-plans',

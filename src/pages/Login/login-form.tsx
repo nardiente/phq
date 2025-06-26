@@ -149,7 +149,7 @@ export const LoginForm = (props: LoginFormProps) => {
             } else {
               setKaslKey(res.headers['kasl-key'].toString());
               await handleGetUser();
-              navigate('/dashboard');
+              navigate('/upvotes');
             }
             return;
           }
@@ -327,7 +327,9 @@ export const LoginForm = (props: LoginFormProps) => {
                 navigate('/billing');
                 return;
               }
-              navigate('/dashboard');
+              navigate(
+                isSuperDuperAdmin(user) ? '/super-duper-admin' : '/dashboard'
+              );
               return;
             }
             localStorage.setItem('onboarding_page', onboarding_page ?? '');
@@ -495,11 +497,9 @@ export const LoginForm = (props: LoginFormProps) => {
             navigate('/billing');
             return;
           }
-          if (isSuperDuperAdmin(user)) {
-            navigate('/super-duper-admin');
-            return;
-          }
-          navigate('/dashboard');
+          navigate(
+            isSuperDuperAdmin(user) ? '/super-duper-admin' : '/dashboard'
+          );
           return;
         }
         localStorage.setItem('onboarding_page', user.onboarding_page ?? '');

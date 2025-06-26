@@ -24,7 +24,7 @@ export default function AppearancePage() {
 
   const { is_public } = useApp();
   const { setHasUnsavedChanges } = useUnsavedChanges();
-  const { user, handleGetAppearance, setUser } = useUser();
+  const { initialUser, user, handleGetAppearance, setUser } = useUser();
   const { appearance, project } = user ?? {};
   const {
     state: { socket },
@@ -620,7 +620,11 @@ export default function AppearancePage() {
         results: { data },
       } = res;
 
-      setUser((prev) => ({ ...prev, appearance: data }));
+      setUser((prev) =>
+        prev
+          ? { ...prev, appearance: data }
+          : { ...initialUser, appearance: data }
+      );
       setAppearanceId(data?.id || appearance_id);
 
       if (data) {
