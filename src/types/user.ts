@@ -71,7 +71,7 @@ export interface User {
   remind_3_days_timestamp?: string;
   reset_key?: string;
   reset_requested_at?: string;
-  role?: RolePermission;
+  role?: Role;
   role_id?: number;
   role_name?: string;
   state?: string;
@@ -86,14 +86,9 @@ export interface User {
   updated_at?: string;
 }
 
-interface RoleBody {
+export interface Role {
   name: string;
   tag: string;
-}
-
-interface RolePermission {
-  id: number;
-  body: RoleBody;
 }
 
 export enum UserTypes {
