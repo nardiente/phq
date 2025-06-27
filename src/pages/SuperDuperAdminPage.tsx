@@ -1,7 +1,33 @@
 import { Trash2, Edit } from 'lucide-react';
 import { AccessHistory } from '../types/super-duper-admin';
+import { UserContextConfig, useUser } from '../contexts/UserContext';
+import { useState } from 'react';
+import { postApi } from '../utils/api/api';
+import { setImpersonator, setKaslKey } from '../utils/localStorage';
+import { useApp } from '../contexts/AppContext';
+import {
+  bottomMenuItems,
+  designSystemItem,
+  mainMenuItems,
+  publicViewMenuItems,
+  settingsMenuItems,
+  superDuperAdminItems,
+} from '../constants/menuItems';
+import { isSuperDuperAdmin } from '../utils/user';
+import { useNavigate } from 'react-router-dom';
 
 const SuperDuperAdminPage = () => {
+  const navigate = useNavigate();
+
+  const { is_public, setMenuItems } = useApp();
+  const { roles, user: userContext, setUser } = useUser();
+  const { user } = userContext ?? {};
+
+  const [id_email, setIdEmail] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [role_id, setRoleId] = useState<number>(0);
+  const [error, setError] = useState<string>('');
+
   const teamMembers: AccessHistory[] = [
     {
       accessed_by_id: 0,
@@ -29,6 +55,60 @@ const SuperDuperAdminPage = () => {
     },
   ];
 
+  const onAccess = () => {
+    let inputError = 'Please';
+    if (id_email.length === 0) {
+      inputError += ' enter a customer ID/email';
+    }
+    if (role_id === 0) {
+      inputError += `${id_email.length === 0 ? ' and' : ''} select a role`;
+    }
+    if (id_email.length === 0 || role_id === 0) {
+      inputError += '.';
+      setError(inputError);
+      return;
+    }
+    setError('');
+    // Proceed with access logic
+    setLoading(true);
+    postApi<UserContextConfig>({
+      url: 'users/impersonate',
+      payload: { id_email, role_id },
+    }).then((res) => {
+      setLoading(false);
+      const {
+        results: { error, data },
+      } = res;
+      if (error) {
+        setError(error);
+      }
+      if (data?.user?.kasl_key) {
+        setMenuItems(
+          is_public
+            ? publicViewMenuItems
+            : isSuperDuperAdmin(data.user)
+              ? superDuperAdminItems
+              : [
+                  ...mainMenuItems,
+                  ...settingsMenuItems,
+                  ...bottomMenuItems,
+                  designSystemItem,
+                ]
+        );
+        setImpersonator(user);
+        setKaslKey(data.user?.kasl_key);
+        setUser(data);
+        navigate(
+          isSuperDuperAdmin(data.user)
+            ? '/super-duper-admin'
+            : is_public
+              ? '/upvotes'
+              : '/dashboard'
+        );
+      }
+    });
+  };
+
   return (
     <div className="flex">
       {/* Main Content */}
@@ -49,20 +129,36 @@ const SuperDuperAdminPage = () => {
               <h3 className="text-lg font-semibold mb-2">
                 Access Customer Instance
               </h3>
+              {error && (
+                <div className="mb-2 text-red-500 text-sm">{error}</div>
+              )}
               <div className="flex space-x-4">
                 <input
                   type="text"
-                  placeholder="Customer ID or Name"
+                  placeholder="Customer ID or email"
                   className="flex-1 border rounded-md px-3 py-2 focus:outline-none focus:border-primary"
+                  onChange={(e) => setIdEmail(e.target.value)}
+                  value={id_email}
                 />
-                <select className="border rounded-md px-3 py-2 focus:outline-none focus:border-primary">
-                  <option>Role</option>
-                  <option>Admin</option>
-                  <option>Manager</option>
-                  <option>Contributor</option>
+                <select
+                  className="border rounded-md px-3 py-2 focus:outline-none focus:border-primary"
+                  onChange={(e) => setRoleId(Number(e.target.value))}
+                  value={role_id ?? ''}
+                >
+                  <option value="">Role</option>
+                  {roles.map((role, idx) => (
+                    <option key={idx} value={role.id}>
+                      {role.name}
+                    </option>
+                  ))}
                 </select>
-                <button className="bg-purple-600 text-white px-4 py-2 rounded-md focus:outline-none focus:border-primary">
-                  Access
+                <button
+                  className="bg-purple-600 text-white px-4 py-2 rounded-md focus:outline-none focus:border-primary"
+                  disabled={loading}
+                  onClick={onAccess}
+                  type="button"
+                >
+                  {`Access${loading ? 'ing...' : ''}`}
                 </button>
               </div>
             </div>

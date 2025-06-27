@@ -13,8 +13,11 @@ import { UserTypes } from '../../types/user';
 import { useApp } from '../../contexts/AppContext';
 import { isSuperDuperAdmin } from '../../utils/user';
 import { useUser } from '../../contexts/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 export const LoginPage = () => {
+  const navigate = useNavigate();
+
   const { is_public: isPublicSite } = useApp();
   const { user: userContext } = useUser();
   const { user } = userContext ?? {};
@@ -34,11 +37,13 @@ export const LoginPage = () => {
 
     if (isLoggedIn && user) {
       // has logged in user
-      window.location.href = isPublicSite
-        ? '/'
-        : isSuperDuperAdmin(user)
-          ? '/super-duper-admin'
-          : '/dashboard';
+      navigate(
+        isPublicSite
+          ? '/'
+          : isSuperDuperAdmin(user)
+            ? '/super-duper-admin'
+            : '/dashboard'
+      );
     } else {
       // no logged in user
       const containers = document.getElementsByClassName(

@@ -1,11 +1,26 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { eraseKaslKey, eraseSessionToken } from '../utils/localStorage';
+import {
+  eraseImpersonator,
+  eraseKaslKey,
+  eraseSessionToken,
+  getImpersonator,
+  setKaslKey,
+} from '../utils/localStorage';
 import { User, UserTypes } from '../types/user';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import { RbacPermissions } from '../types/common';
 import { useApp } from '../contexts/AppContext';
+import {
+  bottomMenuItems,
+  designSystemItem,
+  mainMenuItems,
+  publicViewMenuItems,
+  settingsMenuItems,
+  superDuperAdminItems,
+} from '../constants/menuItems';
+import { isSuperDuperAdmin } from '../utils/user';
 
 interface UserMenuProps {
   user: User | undefined;
@@ -57,6 +72,26 @@ export function UserMenu({ onNavigate }: UserMenuProps) {
         eraseSessionToken();
       }
     } else {
+      const impersonator = getImpersonator();
+      if (impersonator) {
+        setKaslKey(impersonator.kasl_key ?? '');
+        setMenuItems(
+          is_public
+            ? publicViewMenuItems
+            : isSuperDuperAdmin(impersonator)
+              ? superDuperAdminItems
+              : [
+                  ...mainMenuItems,
+                  ...settingsMenuItems,
+                  ...bottomMenuItems,
+                  designSystemItem,
+                ]
+        );
+        eraseImpersonator();
+        navigate('/super-duper-admin');
+        window.location.reload();
+        return;
+      }
       setMenuItems([]);
       navigate('/sign-in');
     }

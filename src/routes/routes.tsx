@@ -48,8 +48,12 @@ const AppRoutes = () => {
             <Route path="/success" element={<SuccessPage />} />
 
             {/* Protected Route */}
-            {menuItems.map((menuItem) => (
-              <Route Component={menuItem.component} path={`/${menuItem.id}`} />
+            {menuItems.map((menuItem, idx) => (
+              <Route
+                key={idx}
+                Component={menuItem.component}
+                path={`/${menuItem.id}`}
+              />
             ))}
           </Route>
 

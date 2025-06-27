@@ -9,6 +9,7 @@ import {
   setCustomerKaslKey,
   setKaslKey,
   setSessionToken,
+  getImpersonator,
 } from './utils/localStorage';
 import { postApi } from './utils/api/api';
 import { generateToken } from './utils/token';
@@ -32,6 +33,8 @@ const App: FC = () => {
 
   const userProfile = user_profile ?? admin_profile;
   const { email, favicon } = userProfile ?? {};
+
+  const impersonator = getImpersonator();
 
   useEffect(() => {
     if (is_public && admin_profile?.kasl_key) {
@@ -153,6 +156,17 @@ const App: FC = () => {
 
   return (
     <>
+      {impersonator && impersonator.id && (
+        <div className="w-full bg-purple-700 text-white font-semibold py-[8px] text-center fixed top-[0] left-[0] z-[2000]">
+          {`Super Duper admin "${
+            impersonator.full_name ||
+            impersonator.email ||
+            `User #${impersonator.id}`
+          }" is active`}
+        </div>
+      )}
+      {/* Spacer for fixed impersonator bar */}
+      {impersonator && impersonator.id && <div className="h-[40px]" />}
       {showBanner === true && (
         <div className="restrict-banner">
           <div className="content">

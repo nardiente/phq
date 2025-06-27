@@ -1,6 +1,7 @@
 import { getApi, postApi } from '../../utils/api/api';
 import { ApiFieldError } from '../../utils/api/types';
 import {
+  eraseImpersonator,
   eraseOnboardingToken,
   getSessionToken,
   setKaslKey,
@@ -290,6 +291,7 @@ export const LoginForm = (props: LoginFormProps) => {
           });
         }
         if (data && headers['kasl-key'] && !error) {
+          eraseImpersonator();
           setMenuItems(
             is_public
               ? publicViewMenuItems
@@ -483,6 +485,7 @@ export const LoginForm = (props: LoginFormProps) => {
           prev ? { ...prev, ...data } : { ...initialUser, ...data }
         );
         if (user?.onboarding_done === undefined || user.onboarding_done) {
+          eraseImpersonator();
           setKaslKey(res.headers['kasl-key'].toString());
           await handleGetUser();
           if (props.type === UserTypes.USER) {

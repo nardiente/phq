@@ -6,6 +6,6 @@ export interface AccessHistory {
   accessed_by?: User;
   customer_id: number;
   customer?: User;
-  role: Role;
+  role: Partial<Role>;
   timestamp: string;
 }

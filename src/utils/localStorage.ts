@@ -1,3 +1,5 @@
+import { User } from '../types/user';
+
 export const getKaslKey = (): string | undefined =>
   localStorage.getItem(
     import.meta.env.VITE_SYSTEM_TYPE === 'public'
@@ -52,3 +54,17 @@ export const getOnboardingToken = (): string | undefined =>
 
 export const eraseOnboardingToken = (): void =>
   localStorage.removeItem('onboarding_token');
+
+export const setImpersonator = (user?: User): void => {
+  if (!user) return;
+  localStorage.setItem('impersonator', JSON.stringify(user, null, 2));
+};
+
+export const getImpersonator = (): User | undefined => {
+  const impersonator = localStorage.getItem('impersonator');
+  if (!impersonator) return;
+  return JSON.parse(impersonator);
+};
+
+export const eraseImpersonator = (): void =>
+  localStorage.removeItem('impersonator');

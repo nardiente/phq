@@ -7,7 +7,7 @@ import {
   SetStateAction,
   useEffect,
 } from 'react';
-import { User } from '../types/user';
+import { Role, User } from '../types/user';
 import { getApi } from '../utils/api/api';
 import { Moderation } from '../types/moderation';
 import { Subscription } from '../types/billing';
@@ -87,6 +87,8 @@ interface UserContextType {
   listUsers: () => Promise<void>;
   removeUser: () => Promise<void>;
   initialUser: UserContextConfig;
+  roles: Role[];
+  getRoles: () => Promise<void>;
 }
 
 const initialUser: UserContextConfig = {
@@ -125,6 +127,8 @@ const UserContext = createContext<UserContextType>({
   listUsers: async () => Promise.resolve(),
   removeUser: async () => Promise.resolve(),
   initialUser,
+  roles: [],
+  getRoles: async () => Promise.resolve(),
 });
 
 interface UserProviderProps {
@@ -141,11 +145,13 @@ export function UserProvider({ children }: UserProviderProps) {
   const [last_name, setLastName] = useState<string>('');
   const [loaded, setLoaded] = useState<boolean>(false);
   const [loading_social, setLoadingSocial] = useState<boolean>(false);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [showBanner, setShowBanner] = useState<boolean>(false);
   const [user, setUser] = useState<UserContextConfig | undefined>(initialUser);
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
+    getRoles();
     handleGetUser();
   }, []);
 
@@ -158,6 +164,17 @@ export function UserProvider({ children }: UserProviderProps) {
       setCustomerKaslKey(user.admin_profile.kasl_key);
     }
   }, [user?.admin_profile]);
+
+  const getRoles = async () => {
+    getApi<Role[]>({ url: 'users/roles' }).then((res) => {
+      const {
+        results: { data },
+      } = res;
+      if (data) {
+        setRoles(data);
+      }
+    });
+  };
 
   const handleGetAppearance = async () => {
     getApi<ProjectAppearance>({
@@ -342,6 +359,8 @@ export function UserProvider({ children }: UserProviderProps) {
         listUsers,
         removeUser,
         initialUser,
+        roles,
+        getRoles,
       }}
     >
       {children}
