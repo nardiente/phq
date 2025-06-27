@@ -43,6 +43,7 @@ import EmailsPage from '../pages/Emails/EmailsPage';
 import ImportIdeasPage from '../pages/ImportIdeasPage';
 import DesignSystem from '../pages/DesignSystem';
 import SuperDuperAdminPage from '../pages/SuperDuperAdminPage';
+import { RolePermissionsPage } from '../pages/RolePermissionsPage';
 
 export const mainMenuItems: MenuItem[] = [
   {
@@ -188,6 +189,7 @@ export const superDuperAdminItems: MenuItem[] = [
     icon: Lock,
     label: 'Role Permissions',
     id: 'role-permissions',
+    component: RolePermissionsPage,
   },
 ];
 

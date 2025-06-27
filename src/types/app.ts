@@ -30,7 +30,8 @@ export type PageType =
   | 'prioritization'
   | 'free-trial-plans'
   | 'lifetime-deal'
-  | 'super-duper-admin';
+  | 'super-duper-admin'
+  | 'role-permissions';
 
 export const onbordingPaths = [
   '/free-trial-plans',

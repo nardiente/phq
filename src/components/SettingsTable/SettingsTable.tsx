@@ -1,63 +1,11 @@
-import * as React from 'react';
 import './styles.css';
-import { getApi } from '../../utils/api/api';
 import SettingsContainer from '../SettingsContainer';
 import SectionHeader from '../SectionHeader';
 import { Loader } from 'lucide-react';
-
-interface RbacPermission {
-  id: number;
-  is_hidden?: boolean;
-  name: string;
-  rbac_group_id: number;
-  tag: string;
-}
-
-interface RolesPermission {
-  id: number;
-  has_permission: boolean;
-  rbac_permission_id: number;
-  role_id: number;
-}
-
-interface Role {
-  id: number;
-  name: string;
-  tag: string;
-}
+import { useUser } from '../../contexts/UserContext';
 
 export const SettingsTable: React.FC = () => {
-  const [fetching, setFetching] = React.useState<boolean>(false);
-  const [permissions, setPermissions] = React.useState<RbacPermission[]>([]);
-  const [rolesPermission, setRolesPermission] = React.useState<
-    RolesPermission[]
-  >([]);
-  const [roles, setRoles] = React.useState<Role[]>([]);
-
-  React.useEffect(() => {
-    setFetching(true);
-
-    const rbcaPermissionsPromise = getApi<RbacPermission[]>({
-      url: 'users/rbac-permissions',
-    });
-
-    const rolesPermissionPromise = getApi<RolesPermission[]>({
-      url: 'users/roles-permission',
-    });
-
-    const rolesPromise = getApi<Role[]>({ url: 'users/roles' });
-
-    Promise.all([
-      rbcaPermissionsPromise,
-      rolesPermissionPromise,
-      rolesPromise,
-    ]).then(([rbcaPermissionsRes, rolesPermissionRes, rolesRes]) => {
-      setFetching(false);
-      setPermissions(rbcaPermissionsRes.results.data || []);
-      setRolesPermission(rolesPermissionRes.results.data || []);
-      setRoles(rolesRes.results.data ?? []);
-    });
-  }, []);
+  const { fetching, permissions, roles, rolesPermission } = useUser();
 
   return fetching ? (
     <div className="flex items-center justify-center mt-5">

@@ -7,7 +7,7 @@ import {
   SetStateAction,
   useEffect,
 } from 'react';
-import { Role, User } from '../types/user';
+import { RbacPermission, Role, RolesPermission, User } from '../types/user';
 import { getApi } from '../utils/api/api';
 import { Moderation } from '../types/moderation';
 import { Subscription } from '../types/billing';
@@ -87,8 +87,9 @@ interface UserContextType {
   listUsers: () => Promise<void>;
   removeUser: () => Promise<void>;
   initialUser: UserContextConfig;
+  permissions: RbacPermission[];
   roles: Role[];
-  getRoles: () => Promise<void>;
+  rolesPermission: RolesPermission[];
 }
 
 const initialUser: UserContextConfig = {
@@ -127,8 +128,9 @@ const UserContext = createContext<UserContextType>({
   listUsers: async () => Promise.resolve(),
   removeUser: async () => Promise.resolve(),
   initialUser,
+  permissions: [],
   roles: [],
-  getRoles: async () => Promise.resolve(),
+  rolesPermission: [],
 });
 
 interface UserProviderProps {
@@ -145,13 +147,35 @@ export function UserProvider({ children }: UserProviderProps) {
   const [last_name, setLastName] = useState<string>('');
   const [loaded, setLoaded] = useState<boolean>(false);
   const [loading_social, setLoadingSocial] = useState<boolean>(false);
+  const [permissions, setPermissions] = useState<RbacPermission[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
+  const [rolesPermission, setRolesPermission] = useState<RolesPermission[]>([]);
   const [showBanner, setShowBanner] = useState<boolean>(false);
   const [user, setUser] = useState<UserContextConfig | undefined>(initialUser);
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    getRoles();
+    const rbcaPermissionsPromise = getApi<RbacPermission[]>({
+      url: 'users/rbac-permissions',
+    });
+
+    const rolesPermissionPromise = getApi<RolesPermission[]>({
+      url: 'users/roles-permission',
+    });
+
+    const rolesPromise = getApi<Role[]>({ url: 'users/roles' });
+
+    Promise.all([
+      rbcaPermissionsPromise,
+      rolesPermissionPromise,
+      rolesPromise,
+    ]).then(([rbcaPermissionsRes, rolesPermissionRes, rolesRes]) => {
+      setFetching(false);
+      setPermissions(rbcaPermissionsRes.results.data || []);
+      setRolesPermission(rolesPermissionRes.results.data || []);
+      setRoles(rolesRes.results.data ?? []);
+    });
+
     handleGetUser();
   }, []);
 
@@ -164,17 +188,6 @@ export function UserProvider({ children }: UserProviderProps) {
       setCustomerKaslKey(user.admin_profile.kasl_key);
     }
   }, [user?.admin_profile]);
-
-  const getRoles = async () => {
-    getApi<Role[]>({ url: 'users/roles' }).then((res) => {
-      const {
-        results: { data },
-      } = res;
-      if (data) {
-        setRoles(data);
-      }
-    });
-  };
 
   const handleGetAppearance = async () => {
     getApi<ProjectAppearance>({
@@ -359,8 +372,9 @@ export function UserProvider({ children }: UserProviderProps) {
         listUsers,
         removeUser,
         initialUser,
+        permissions,
         roles,
-        getRoles,
+        rolesPermission,
       }}
     >
       {children}

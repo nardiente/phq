@@ -24,6 +24,28 @@ export enum LoginType {
   PUBLIC = 'PUBLIC',
 }
 
+export interface RbacPermission {
+  id: number;
+  is_hidden?: boolean;
+  name: string;
+  rbac_group_id: number;
+  tag: string;
+}
+
+export interface RolesPermission {
+  id: number;
+  has_permission: boolean;
+  rbac_permission_id: number;
+  role_id: number;
+}
+
+export interface Role {
+  id: number;
+  name: string;
+  sort: number;
+  tag: string;
+}
+
 export interface User {
   id?: number;
   customer_id?: number;
@@ -84,13 +106,6 @@ export interface User {
   zip_code?: string;
   created_at?: string;
   updated_at?: string;
-}
-
-export interface Role {
-  id: number;
-  name: string;
-  sort: number;
-  tag: string;
 }
 
 export enum UserTypes {
