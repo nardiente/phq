@@ -8,11 +8,11 @@ import { Feedback } from '../types/feedback';
 import { Notification } from '../types/notification';
 import { useFeedback } from '../contexts/FeedbackContext';
 import { usePanel } from '../contexts/PanelContext';
-import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { getSessionToken } from '../utils/localStorage';
 import { useUser } from '../contexts/UserContext';
 import { useApp } from '../contexts/AppContext';
+import { convertDate } from '../utils/date';
 
 export const Notifications = () => {
   const { is_public } = useApp();
@@ -52,23 +52,6 @@ export const Notifications = () => {
       getNotifications(seeMore);
     }
   }, [is_expanded]);
-
-  const convertDate = (date: string) => {
-    const currentDate = moment(date);
-    const diffInMinutes = moment().diff(currentDate, 'minutes');
-    if (diffInMinutes < 60) {
-      return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
-    }
-    const diffInHours = moment().diff(currentDate, 'hours');
-    if (diffInHours < 24) {
-      return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
-    }
-    const diffInDays = moment().diff(currentDate, 'days');
-    if (diffInDays < 3) {
-      return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
-    }
-    return currentDate.format('MMM D, YYYY');
-  };
 
   const toggle = () => setExpanded((prev) => !prev);
 

@@ -48,6 +48,7 @@ import {
   settingsMenuItems,
 } from '../constants/menuItems';
 import { isSuperDuperAdmin } from '../utils/user';
+import { AccessHistory } from '../types/super-duper-admin';
 
 export interface UserContextConfig {
   admin_profile?: User;
@@ -90,6 +91,8 @@ interface UserContextType {
   permissions: RbacPermission[];
   roles: Role[];
   rolesPermission: RolesPermission[];
+  access_history: AccessHistory[];
+  listAccessHistory: () => Promise<void>;
 }
 
 const initialUser: UserContextConfig = {
@@ -131,6 +134,8 @@ const UserContext = createContext<UserContextType>({
   permissions: [],
   roles: [],
   rolesPermission: [],
+  access_history: [],
+  listAccessHistory: async () => Promise.resolve(),
 });
 
 interface UserProviderProps {
@@ -140,6 +145,7 @@ interface UserProviderProps {
 export function UserProvider({ children }: UserProviderProps) {
   const { is_public, setMenuItems } = useApp();
 
+  const [access_history, setAccessHistory] = useState<AccessHistory[]>([]);
   const [email, setEmail] = useState<string>('');
   const [fetching, setFetching] = useState<boolean>(false);
   const [first_name, setFirstName] = useState<string>('');
@@ -189,6 +195,12 @@ export function UserProvider({ children }: UserProviderProps) {
     }
   }, [user?.admin_profile]);
 
+  useEffect(() => {
+    if (isSuperDuperAdmin(user?.user)) {
+      listAccessHistory();
+    }
+  }, [user?.user]);
+
   const handleGetAppearance = async () => {
     getApi<ProjectAppearance>({
       url: 'projects/appearance',
@@ -233,6 +245,19 @@ export function UserProvider({ children }: UserProviderProps) {
 
   const isAuthenticated = (): boolean => {
     return getKaslKey() !== undefined;
+  };
+
+  const listAccessHistory = async () => {
+    setFetching(true);
+    getApi<AccessHistory[]>({ url: 'users/access-history' }).then((res) => {
+      setFetching(false);
+      const {
+        results: { data },
+      } = res;
+      if (data) {
+        setAccessHistory(data);
+      }
+    });
   };
 
   const listUsers = async () => {
@@ -375,6 +400,8 @@ export function UserProvider({ children }: UserProviderProps) {
         permissions,
         roles,
         rolesPermission,
+        access_history,
+        listAccessHistory,
       }}
     >
       {children}

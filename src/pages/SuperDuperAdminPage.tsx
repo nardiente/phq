@@ -1,5 +1,4 @@
 import { Trash2, Edit } from 'lucide-react';
-import { AccessHistory } from '../types/super-duper-admin';
 import { UserContextConfig, useUser } from '../contexts/UserContext';
 import { useState } from 'react';
 import { postApi } from '../utils/api/api';
@@ -15,45 +14,24 @@ import {
 } from '../constants/menuItems';
 import { isSuperDuperAdmin } from '../utils/user';
 import { useNavigate } from 'react-router-dom';
+import { convertDate } from '../utils/date';
 
 const SuperDuperAdminPage = () => {
   const navigate = useNavigate();
 
   const { is_public, setMenuItems } = useApp();
-  const { roles, user: userContext, setUser } = useUser();
+  const {
+    access_history: teamMembers,
+    roles,
+    user: userContext,
+    setUser,
+  } = useUser();
   const { user } = userContext ?? {};
 
   const [id_email, setIdEmail] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [role_id, setRoleId] = useState<number>(0);
   const [error, setError] = useState<string>('');
-
-  const teamMembers: AccessHistory[] = [
-    {
-      accessed_by_id: 0,
-      customer_id: 0,
-      customer: {
-        full_name: 'Margie Sutton',
-        email: 'margiesutton@gmail.com',
-      },
-      role: { name: 'Admin', tag: 'admin' },
-      timestamp: new Date().toISOString(),
-    },
-    {
-      accessed_by_id: 0,
-      customer_id: 0,
-      customer: { full_name: 'Della Lewis', email: 'dellalewis@gmail.com' },
-      role: { name: 'Super Admin', tag: 'superadmin' },
-      timestamp: new Date().toISOString(),
-    },
-    {
-      accessed_by_id: 0,
-      customer_id: 0,
-      customer: { full_name: 'Earl Owen', email: 'owen@gmail.com' },
-      role: { name: 'Manager', tag: 'manager' },
-      timestamp: new Date().toISOString(),
-    },
-  ];
 
   const onAccess = () => {
     let inputError = 'Please';
@@ -181,7 +159,18 @@ const SuperDuperAdminPage = () => {
                   {teamMembers.map((member, index) => (
                     <tr key={index} className="border-b last:border-b-0">
                       <td className="py-3 flex items-center">
-                        <div className="w-8 h-8 bg-gray-200 rounded-full mr-3"></div>
+                        <div className="w-8 h-8 bg-gray-200 rounded-full mr-3">
+                          {member.customer?.profile_photo &&
+                          member.customer?.profile_photo !==
+                            'https://s3.amazonaws.com/uat-app.productfeedback.co/assets/profile-placeholder.svg' ? (
+                            <img
+                              className="is-rounded responsiveImage rounded-full"
+                              src={member.customer?.profile_photo}
+                            />
+                          ) : (
+                            member.customer?.first_name?.charAt(0)
+                          )}
+                        </div>
                         <div>
                           <div>{member.customer?.full_name}</div>
                           <div className="text-sm text-gray-500">
@@ -190,7 +179,7 @@ const SuperDuperAdminPage = () => {
                         </div>
                       </td>
                       <td className="py-3">{member.role.name}</td>
-                      <td className="py-3">2 hours ago</td>
+                      <td className="py-3">{convertDate(member.created_at)}</td>
                       <td className="py-3">
                         <button className="text-purple-600 mr-2">
                           <Edit size={16} />

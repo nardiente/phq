@@ -1,6 +1,23 @@
 import moment, { Moment } from 'moment';
 import { dateOptions } from './constants';
 
+export const convertDate = (date: string) => {
+  const currentDate = moment(date);
+  const diffInMinutes = moment().diff(currentDate, 'minutes');
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
+  }
+  const diffInHours = moment().diff(currentDate, 'hours');
+  if (diffInHours < 24) {
+    return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+  }
+  const diffInDays = moment().diff(currentDate, 'days');
+  if (diffInDays < 3) {
+    return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+  }
+  return currentDate.format('MMM D, YYYY');
+};
+
 export const formatDate = (date: Date) =>
   date.toLocaleDateString('en-US', dateOptions);
 
