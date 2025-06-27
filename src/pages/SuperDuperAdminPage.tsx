@@ -15,6 +15,7 @@ import {
 import { isSuperDuperAdmin } from '../utils/user';
 import { useNavigate } from 'react-router-dom';
 import { convertDate } from '../utils/date';
+import moment from 'moment';
 
 const SuperDuperAdminPage = () => {
   const navigate = useNavigate();
@@ -158,7 +159,7 @@ const SuperDuperAdminPage = () => {
                 <tbody>
                   {teamMembers.map((member, index) => (
                     <tr key={index} className="border-b last:border-b-0">
-                      <td className="py-3 flex items-center">
+                      <td className="py-3 flex items-center align-middle">
                         <div className="w-8 h-8 bg-gray-200 rounded-full mr-3">
                           {member.customer?.profile_photo &&
                           member.customer?.profile_photo !==
@@ -168,7 +169,9 @@ const SuperDuperAdminPage = () => {
                               src={member.customer?.profile_photo}
                             />
                           ) : (
-                            member.customer?.first_name?.charAt(0)
+                            <span className="h-8 flex items-center justify-center bg-purple-100 text-purple-600 text-lg rounded-full">
+                              {member.customer?.first_name?.charAt(0)}
+                            </span>
                           )}
                         </div>
                         <div>
@@ -178,9 +181,13 @@ const SuperDuperAdminPage = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="py-3">{member.role.name}</td>
-                      <td className="py-3">{convertDate(member.created_at)}</td>
-                      <td className="py-3">
+                      <td className="py-3 align-middle">{member.role.name}</td>
+                      <td className="py-3 align-middle">
+                        {convertDate(
+                          member.created_at ?? moment().toISOString()
+                        )}
+                      </td>
+                      <td className="py-3 align-middle">
                         <button className="text-purple-600 mr-2">
                           <Edit size={16} />
                         </button>
