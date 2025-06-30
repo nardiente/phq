@@ -9,6 +9,11 @@ export interface Email {
     feedback: boolean;
     comments: boolean;
   };
+  custom_domain?: {
+    enabled: boolean;
+    email?: string;
+    from_name?: string;
+  };
 }
 
 export interface Emails {

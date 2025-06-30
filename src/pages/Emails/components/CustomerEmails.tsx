@@ -4,6 +4,7 @@ import { useFeedback } from '../../../contexts/FeedbackContext';
 import { RadioButtonOptions } from '../../../components/RadioButtonOptions';
 import { removeHtmlTags } from '../../../utils/string';
 import { Email, frequencies } from '../../../types/email';
+import { CustomEmailDomain } from '../../../components/CustomEmailDomain';
 
 export const CustomerEmails = ({
   emailContext,
@@ -16,13 +17,8 @@ export const CustomerEmails = ({
     state: { comments, filteredIdeas, upvotes },
   } = useFeedback();
 
-  const [email, setEmail] = useState<string>(emailContext.email);
   const [start, setStart] = useState<Moment>(moment().startOf('day'));
   const end = moment().endOf('day');
-
-  useEffect(() => {
-    setEmail(emailContext.email);
-  }, [emailContext.email]);
 
   useEffect(() => {
     switch (emailContext.frequency.value) {
@@ -67,7 +63,7 @@ export const CustomerEmails = ({
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex justify-between items-center w-full gap-10">
+      {/* <div className="flex justify-between items-center w-full gap-10">
         <div className="flex flex-col gap-2">
           <label
             className="text-[14px] font-medium text-gray-700"
@@ -88,7 +84,17 @@ export const CustomerEmails = ({
           onChange={(e) => setEmail(e.target.value)}
           value={email}
         />
-      </div>
+      </div> */}
+
+      <CustomEmailDomain
+        emailContext={emailContext}
+        onChange={(custom_domain) =>
+          setEmails({
+            ...emailContext,
+            custom_domain,
+          })
+        }
+      />
 
       <div className="flex justify-between items-center w-full gap-10">
         <div className="flex flex-col gap-2">
@@ -198,7 +204,9 @@ export const CustomerEmails = ({
       <div className="border rounded-lg p-3 w-full">
         <div className="border rounded-lg w-full h-full bg-white p-4">
           <div className="flex flex-col text-[14px] text-gray-400 pb-2.5 border-b">
-            <span>{'From: ProductHQ Updates <noreply@producthq.io>'}</span>
+            <span>
+              {`From: ${emailContext.custom_domain?.from_name && emailContext.custom_domain.from_name.length > 0 ? emailContext.custom_domain.from_name : 'ProductHQ Updates'} <${emailContext.custom_domain?.email && emailContext.custom_domain.email.length > 0 ? emailContext.custom_domain.email : 'noreply@producthq.io'}>`}
+            </span>
             <span>{`To: ${emailContext.email.length > 0 ? emailContext.email : 'customer@company.com'}`}</span>
             <span>{`Subject: Your ${emailContext.frequency.label} Update from ProductHQ`}</span>
           </div>
