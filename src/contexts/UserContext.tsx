@@ -7,10 +7,10 @@ import {
   SetStateAction,
   useEffect,
 } from 'react';
-import { RbacPermission, Role, RolesPermission, User } from '../types/user';
+import { User } from '../types/user';
 import { getApi } from '../utils/api/api';
 import { Moderation } from '../types/moderation';
-import { Subscription } from '../types/billing';
+import { Card, InvoiceHistory, Subscription } from '../types/billing';
 import { Project } from '../types/project';
 import { ProjectAppearance } from '../types/appearance';
 import { getKaslKey, setCustomerKaslKey } from '../utils/localStorage';
@@ -88,11 +88,14 @@ interface UserContextType {
   listUsers: () => Promise<void>;
   removeUser: () => Promise<void>;
   initialUser: UserContextConfig;
-  permissions: RbacPermission[];
-  roles: Role[];
-  rolesPermission: RolesPermission[];
   access_history: AccessHistory[];
   listAccessHistory: () => Promise<void>;
+  cards: Card[];
+  handleGetCard: () => Promise<void>;
+  subscriptions: Subscription[];
+  getSubscriptions: () => Promise<void>;
+  invoices: InvoiceHistory[];
+  handleInvoiceHistory: () => Promise<void>;
 }
 
 const initialUser: UserContextConfig = {
@@ -131,11 +134,14 @@ const UserContext = createContext<UserContextType>({
   listUsers: async () => Promise.resolve(),
   removeUser: async () => Promise.resolve(),
   initialUser,
-  permissions: [],
-  roles: [],
-  rolesPermission: [],
   access_history: [],
   listAccessHistory: async () => Promise.resolve(),
+  cards: [],
+  handleGetCard: async () => Promise.resolve(),
+  subscriptions: [],
+  getSubscriptions: async () => Promise.resolve(),
+  invoices: [],
+  handleInvoiceHistory: async () => Promise.resolve(),
 });
 
 interface UserProviderProps {
@@ -146,42 +152,23 @@ export function UserProvider({ children }: UserProviderProps) {
   const { is_public, setMenuItems } = useApp();
 
   const [access_history, setAccessHistory] = useState<AccessHistory[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
   const [email, setEmail] = useState<string>('');
   const [fetching, setFetching] = useState<boolean>(false);
   const [first_name, setFirstName] = useState<string>('');
   const [githubCode, setGithubCode] = useState<string>('');
+  const [invoices, setInvoices] = useState<InvoiceHistory[]>([]);
   const [last_name, setLastName] = useState<string>('');
   const [loaded, setLoaded] = useState<boolean>(false);
   const [loading_social, setLoadingSocial] = useState<boolean>(false);
-  const [permissions, setPermissions] = useState<RbacPermission[]>([]);
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [rolesPermission, setRolesPermission] = useState<RolesPermission[]>([]);
   const [showBanner, setShowBanner] = useState<boolean>(false);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [user, setUser] = useState<UserContextConfig | undefined>(initialUser);
   const [users, setUsers] = useState<User[]>([]);
 
+  const userProfile = is_public ? user?.admin_profile : user?.user;
+
   useEffect(() => {
-    const rbcaPermissionsPromise = getApi<RbacPermission[]>({
-      url: 'users/rbac-permissions',
-    });
-
-    const rolesPermissionPromise = getApi<RolesPermission[]>({
-      url: 'users/roles-permission',
-    });
-
-    const rolesPromise = getApi<Role[]>({ url: 'users/roles' });
-
-    Promise.all([
-      rbcaPermissionsPromise,
-      rolesPermissionPromise,
-      rolesPromise,
-    ]).then(([rbcaPermissionsRes, rolesPermissionRes, rolesRes]) => {
-      setFetching(false);
-      setPermissions(rbcaPermissionsRes.results.data || []);
-      setRolesPermission(rolesPermissionRes.results.data || []);
-      setRoles(rolesRes.results.data ?? []);
-    });
-
     handleGetUser();
   }, []);
 
@@ -201,6 +188,35 @@ export function UserProvider({ children }: UserProviderProps) {
     }
   }, [user?.user]);
 
+  useEffect(() => {
+    if (userProfile?.id) {
+      Promise.all([
+        getSubscriptions(),
+        handleGetCard(),
+        handleInvoiceHistory(),
+      ]);
+    }
+  }, [userProfile?.id]);
+
+  const getSubscriptions = async () => {
+    setFetching(true);
+    getApi<Subscription[]>({
+      url: 'billing',
+      params: is_public
+        ? {
+            domain: window.location.host,
+          }
+        : undefined,
+    }).then((res) => {
+      setFetching(false);
+      const { results } = res ?? {};
+      const { data: subscriptions } = results ?? {};
+      if (subscriptions) {
+        setSubscriptions(subscriptions);
+      }
+    });
+  };
+
   const handleGetAppearance = async () => {
     getApi<ProjectAppearance>({
       url: 'projects/appearance',
@@ -214,6 +230,18 @@ export function UserProvider({ children }: UserProviderProps) {
     });
   };
 
+  const handleGetCard = async () => {
+    setFetching(true);
+    getApi<Card[]>({
+      url: 'billing/card',
+    }).then((res) => {
+      setFetching(false);
+      if (res.results.data) {
+        setCards(res.results.data);
+      }
+    });
+  };
+
   const handleGetUser = async () => {
     setFetching(true);
     getApi<UserContextConfig>({
@@ -222,7 +250,9 @@ export function UserProvider({ children }: UserProviderProps) {
       .then((res) => {
         if (res.results.data) {
           const result = res.results.data;
-          setUser(result);
+          setUser((prev) =>
+            prev ? { ...prev, ...result } : { ...initialUser, ...result }
+          );
           setMenuItems(
             is_public
               ? publicViewMenuItems
@@ -241,6 +271,18 @@ export function UserProvider({ children }: UserProviderProps) {
         setFetching(false);
         setLoaded(true);
       });
+  };
+
+  const handleInvoiceHistory = async () => {
+    setFetching(true);
+    getApi<InvoiceHistory[]>({
+      url: 'billing/invoice-history',
+    }).then((res) => {
+      setFetching(false);
+      if (res.results.data) {
+        setInvoices(res.results.data);
+      }
+    });
   };
 
   const isAuthenticated = (): boolean => {
@@ -397,11 +439,14 @@ export function UserProvider({ children }: UserProviderProps) {
         listUsers,
         removeUser,
         initialUser,
-        permissions,
-        roles,
-        rolesPermission,
         access_history,
         listAccessHistory,
+        cards,
+        handleGetCard,
+        subscriptions,
+        getSubscriptions,
+        invoices,
+        handleInvoiceHistory,
       }}
     >
       {children}

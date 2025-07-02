@@ -12,6 +12,7 @@ import { RoadmapColor } from '../types/roadmap';
 import { getApi } from '../utils/api/api';
 import { MenuItem } from '../components/layout/SidebarMenu';
 import { publicViewMenuItems } from '../constants/menuItems';
+import { RbacPermission, Role, RolesPermission } from '../types/user';
 
 interface ContextType {
   api_error: string;
@@ -23,6 +24,10 @@ interface ContextType {
   is_public: boolean;
   menuItems: MenuItem[];
   setMenuItems: Dispatch<SetStateAction<MenuItem[]>>;
+  fetching: boolean;
+  permissions: RbacPermission[];
+  rolesPermission: RolesPermission[];
+  roles: Role[];
 }
 
 const AppContext = createContext<ContextType>({
@@ -35,33 +40,61 @@ const AppContext = createContext<ContextType>({
   is_public: import.meta.env.VITE_SYSTEM_TYPE === 'public',
   menuItems: [],
   setMenuItems: () => {},
+  fetching: false,
+  permissions: [],
+  rolesPermission: [],
+  roles: [],
 });
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [api_error, setApiError] = useState<string>('');
   const [api_field_errors, setApiFieldErrors] = useState<ApiFieldError[]>([]);
+  const [fetching, setFetching] = useState<boolean>(false);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [roadmap_colors, setRoadmapColors] = useState<RoadmapColor[]>([]);
+  const [permissions, setPermissions] = useState<RbacPermission[]>([]);
+  const [rolesPermission, setRolesPermission] = useState<RolesPermission[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
 
   const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
-
-  useEffect(() => {
-    handleGetRoadmapColors();
-  }, []);
 
   useEffect(() => {
     if (is_public) {
       setMenuItems(publicViewMenuItems);
     }
-  }, [is_public]);
 
-  const handleGetRoadmapColors = () => {
-    getApi<RoadmapColor[]>({ url: 'roadmaps/colors' }).then((res) => {
-      if (res.results.data) {
-        setRoadmapColors(res.results.data);
-      }
+    const rbcaPermissionsPromise = getApi<RbacPermission[]>({
+      url: 'users/rbac-permissions',
     });
-  };
+
+    const rolesPermissionPromise = getApi<RolesPermission[]>({
+      url: 'users/roles-permission',
+    });
+
+    const rolesPromise = getApi<Role[]>({ url: 'users/roles' });
+
+    const getRoadmapColors = getApi<RoadmapColor[]>({ url: 'roadmaps/colors' });
+
+    Promise.all([
+      rbcaPermissionsPromise,
+      rolesPermissionPromise,
+      rolesPromise,
+      getRoadmapColors,
+    ]).then(
+      ([
+        rbcaPermissionsRes,
+        rolesPermissionRes,
+        rolesRes,
+        roadmapColorsRes,
+      ]) => {
+        setFetching(false);
+        setPermissions(rbcaPermissionsRes.results.data || []);
+        setRolesPermission(rolesPermissionRes.results.data || []);
+        setRoles(rolesRes.results.data ?? []);
+        setRoadmapColors(roadmapColorsRes.results.data ?? []);
+      }
+    );
+  }, []);
 
   return (
     <AppContext.Provider
@@ -75,6 +108,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         is_public,
         menuItems,
         setMenuItems,
+        fetching,
+        permissions,
+        roles,
+        rolesPermission,
       }}
     >
       {children}

@@ -20,13 +20,8 @@ import moment from 'moment';
 const SuperDuperAdminPage = () => {
   const navigate = useNavigate();
 
-  const { is_public, setMenuItems } = useApp();
-  const {
-    access_history: teamMembers,
-    roles,
-    user: userContext,
-    setUser,
-  } = useUser();
+  const { is_public, roles, setMenuItems } = useApp();
+  const { access_history: teamMembers, user: userContext, setUser } = useUser();
   const { user } = userContext ?? {};
 
   const [id_email, setIdEmail] = useState<string>('');

@@ -25,8 +25,15 @@ import { isSuperDuperAdmin } from './utils/user';
 
 const App: FC = () => {
   const { is_public } = useApp();
-  const { initialUser, user, showBanner, setFetching, setShowBanner, setUser } =
-    useUser();
+  const {
+    initialUser,
+    user,
+    showBanner,
+    isAuthenticated,
+    setFetching,
+    setShowBanner,
+    setUser,
+  } = useUser();
   const { admin_profile, moderation, project, user: user_profile } = user ?? {};
   const { is_index_search_engine } = project ?? {};
   const { setPanelLoading } = usePanel();
@@ -156,7 +163,7 @@ const App: FC = () => {
 
   return (
     <>
-      {impersonator && impersonator.id && (
+      {!is_public && isAuthenticated() && impersonator && impersonator.id && (
         <div className="w-full bg-purple-700 text-white font-semibold py-[8px] text-center fixed top-[0] left-[0] z-[2000]">
           {`Super Duper admin "${
             impersonator.full_name ||

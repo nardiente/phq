@@ -4,9 +4,26 @@ import { IdeasSection } from '../components/dashboard/IdeasSection';
 import { WhatsNewSection } from '../components/dashboard/WhatsNewSection';
 import { UsersSection } from '../components/dashboard/UsersSection';
 import { useApp } from '../contexts/AppContext';
+import { useEffect } from 'react';
+import { useUser } from '../contexts/UserContext';
+import { useFeedback } from '../contexts/FeedbackContext';
+import { useWhatsNew } from '../contexts/WhatsNewContext';
 
 export default function DashboardPage() {
   const { is_public } = useApp();
+  const { listUsers } = useUser();
+  const { handleListFeedback, listComments, listUpvotes } = useFeedback();
+  const { listWhatsNew } = useWhatsNew();
+
+  useEffect(() => {
+    Promise.all([
+      listUsers(),
+      handleListFeedback(),
+      listWhatsNew(),
+      listComments(),
+      listUpvotes(),
+    ]);
+  }, []);
 
   // const filterUsersBySegment = (segment: Segment) => {
   //   return users.filter((user) => {

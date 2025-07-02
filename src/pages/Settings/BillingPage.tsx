@@ -1,13 +1,7 @@
 import { Fragment } from 'react/jsx-runtime';
 import { useEffect, useState } from 'react';
 import { useUser } from '../../contexts/UserContext';
-import {
-  Card,
-  CheckoutMode,
-  Country,
-  InvoiceHistory,
-  Subscription,
-} from '../../types/billing';
+import { Card, CheckoutMode, Country, Subscription } from '../../types/billing';
 import { ApiFieldError } from '../../utils/api/types';
 import { deleteApi, getApi, postApi, putApi } from '../../utils/api/api';
 import { toast } from 'react-toastify';
@@ -32,15 +26,17 @@ export default function BillingPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { user } = useUser();
+  const {
+    cards,
+    invoices,
+    subscriptions,
+    user,
+    getSubscriptions,
+    handleGetCard,
+    handleInvoiceHistory,
+  } = useUser();
   const { setHasUnsavedChanges } = useUnsavedChanges();
 
-  const [cards, setCards] = useState<Card[]>([]);
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-  const [fetching_card, setFetchingCard] = useState<boolean>(true);
-  const [fetching_invoices, setFetchingInvoices] = useState<boolean>(true);
-  const [fetching_subscription, setFetchingSubscription] =
-    useState<boolean>(true);
   const [add_card, setAddCard] = useState<boolean>(false);
   const [deleting_card, setDeletingCard] = useState<boolean>(false);
   const [cancelling_subscription, setCancellingSubscription] =
@@ -49,7 +45,6 @@ export default function BillingPage() {
   const [delete_card_id, setDeleteCardId] = useState<number>(0);
   const [api_field_errors, setApiFieldErrors] = useState<ApiFieldError[]>([]);
   const [cancel_subs_id, setCancelSubsId] = useState<number>(0);
-  const [invoices, setInvoices] = useState<InvoiceHistory[]>([]);
   const [disabled_button, setDisabledButton] = useState<boolean>(false);
 
   // Add card
@@ -63,89 +58,6 @@ export default function BillingPage() {
   const [expiration, setExpiration] = useState('');
   const [validation_error, setValidationError] = useState('');
 
-  const checkDisabledButton = () => {
-    setDisabledButton(
-      loading ||
-        card_no.length === 0 ||
-        !expiration ||
-        expiration?.length === 0 ||
-        !cvv_cvc ||
-        cvv_cvc.length === 0 ||
-        cardholder.length === 0 ||
-        api_field_errors.length > 0 ||
-        validation_error.length > 0 ||
-        !country_selected
-    );
-  };
-
-  const handleGetCard = () => {
-    setFetchingCard(true);
-    setCards([]);
-    getApi<Card[]>({
-      url: 'billing/card',
-    }).then((res) => {
-      setFetchingCard(false);
-      if (res.results.data) {
-        setCards(res.results.data);
-      }
-    });
-  };
-
-  const handleGetSubscription = () => {
-    setFetchingSubscription(true);
-    setSubscriptions([]);
-    getApi<Subscription[]>({
-      url: 'billing',
-    }).then((res) => {
-      setFetchingSubscription(false);
-      if (res.results.data) {
-        const data = res.results.data;
-        setSubscriptions(data);
-        if (data.some((datum) => datum.cancel_at_period_end)) {
-          toast(
-            'Your plan will be cancelled at the end of the current billing cycle.',
-            {
-              position: 'bottom-center',
-              autoClose: 3000,
-              hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: 'dark',
-              className: 'custom-theme',
-              bodyClassName: 'p-2',
-              pauseOnFocusLoss: false,
-            }
-          );
-        }
-      }
-    });
-  };
-
-  const handleInvoiceHistory = () => {
-    setFetchingInvoices(true);
-    setInvoices([]);
-    getApi<InvoiceHistory[]>({
-      url: 'billing/invoice-history',
-    }).then((res) => {
-      setFetchingInvoices(false);
-      if (res.results.data) {
-        setInvoices(res.results.data);
-      }
-    });
-  };
-
-  const listCountries = () => {
-    getApi<Country[]>({
-      url: 'billing/countries',
-    }).then((res) => {
-      if (res.results.data) {
-        setCountries(res.results.data);
-      }
-    });
-  };
-
   useEffect(() => {
     if (location.search) {
       const params = queryString.parse(location.search);
@@ -157,14 +69,14 @@ export default function BillingPage() {
           },
         }).then((res) => {
           if (res.results.data) {
-            handleGetSubscription();
+            getSubscriptions();
           }
         });
       }
 
       clearQueryString();
     } else {
-      handleGetSubscription();
+      getSubscriptions();
     }
     handleGetCard();
     handleInvoiceHistory();
@@ -191,6 +103,54 @@ export default function BillingPage() {
     validation_error,
     country_selected,
   ]);
+
+  useEffect(() => {
+    if (
+      subscriptions.some((subscription) => subscription.cancel_at_period_end)
+    ) {
+      toast(
+        'Your plan will be cancelled at the end of the current billing cycle.',
+        {
+          position: 'bottom-center',
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+          className: 'custom-theme',
+          bodyClassName: 'p-2',
+          pauseOnFocusLoss: false,
+        }
+      );
+    }
+  }, [subscriptions]);
+
+  const checkDisabledButton = () => {
+    setDisabledButton(
+      loading ||
+        card_no.length === 0 ||
+        !expiration ||
+        expiration?.length === 0 ||
+        !cvv_cvc ||
+        cvv_cvc.length === 0 ||
+        cardholder.length === 0 ||
+        api_field_errors.length > 0 ||
+        validation_error.length > 0 ||
+        !country_selected
+    );
+  };
+
+  const listCountries = () => {
+    getApi<Country[]>({
+      url: 'billing/countries',
+    }).then((res) => {
+      if (res.results.data) {
+        setCountries(res.results.data);
+      }
+    });
+  };
 
   const billingCycleStyle = (subscription: Subscription) => {
     let className = '';
@@ -267,7 +227,7 @@ export default function BillingPage() {
         if (res.results.data) {
           setCancelSubsId(0);
           setCancellingSubscription(false);
-          handleGetSubscription();
+          getSubscriptions();
         }
       })
       .catch(() => setLoading(false));
@@ -469,20 +429,37 @@ export default function BillingPage() {
                   <h2 className="text-[16px] font-semibold text-gray-900">
                     Credit cards
                   </h2>
-                  {fetching_card && (
-                    <div className="center-loader">
-                      <Loader />
-                    </div>
-                  )}
-                  {!fetching_card && (
-                    <table>
-                      <thead>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Card details</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cards.length === 0 && (
                         <tr>
-                          <th>Card details</th>
+                          <td>
+                            <div className="card-detail">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                fill="currentColor"
+                                className="bi bi-credit-card-2-back"
+                                viewBox="0 0 16 16"
+                              >
+                                <path d="M11 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1z" />
+                                <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2zm13 2v5H1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm-1 9H2a1 1 0 0 1-1-1v-1h14v1a1 1 0 0 1-1 1z" />
+                              </svg>
+                              <label className="no-card">
+                                No credit card added
+                              </label>
+                            </div>
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {cards.length === 0 && (
+                      )}
+                      {cards.map((card, idx) => (
+                        <Fragment key={idx}>
                           <tr>
                             <td>
                               <div className="card-detail">
@@ -497,69 +474,45 @@ export default function BillingPage() {
                                   <path d="M11 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1z" />
                                   <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2zm13 2v5H1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm-1 9H2a1 1 0 0 1-1-1v-1h14v1a1 1 0 0 1-1 1z" />
                                 </svg>
-                                <label className="no-card">
-                                  No credit card added
-                                </label>
+                                <label>{cc_format(card.number, 'x')}</label>
+                                {card.primary && <div>Primary</div>}
                               </div>
-                            </td>
-                          </tr>
-                        )}
-                        {cards.map((card, idx) => (
-                          <Fragment key={idx}>
-                            <tr>
-                              <td>
-                                <div className="card-detail">
+                              <div className="button-group">
+                                <button
+                                  className="is-clickable delete-card-button"
+                                  onClick={() => {
+                                    setAddCard(false);
+                                    clearCardFields();
+                                    setDeleteCardId(card.id);
+                                    setDeletingCard(true);
+                                  }}
+                                  type="button"
+                                  disabled={
+                                    !user.permissions.includes(
+                                      Permissions.DELETE_CARD
+                                    )
+                                  }
+                                >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="16"
                                     height="16"
                                     fill="currentColor"
-                                    className="bi bi-credit-card-2-back"
+                                    className="bi bi-trash"
                                     viewBox="0 0 16 16"
                                   >
-                                    <path d="M11 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1z" />
-                                    <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2zm13 2v5H1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm-1 9H2a1 1 0 0 1-1-1v-1h14v1a1 1 0 0 1-1 1z" />
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
                                   </svg>
-                                  <label>{cc_format(card.number, 'x')}</label>
-                                  {card.primary && <div>Primary</div>}
-                                </div>
-                                <div className="button-group">
-                                  <button
-                                    className="is-clickable delete-card-button"
-                                    onClick={() => {
-                                      setAddCard(false);
-                                      clearCardFields();
-                                      setDeleteCardId(card.id);
-                                      setDeletingCard(true);
-                                    }}
-                                    type="button"
-                                    disabled={
-                                      !user.permissions.includes(
-                                        Permissions.DELETE_CARD
-                                      )
-                                    }
-                                  >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="16"
-                                      height="16"
-                                      fill="currentColor"
-                                      className="bi bi-trash"
-                                      viewBox="0 0 16 16"
-                                    >
-                                      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
-                                      <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
-                                    </svg>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          </Fragment>
-                        ))}
-                      </tbody>
-                    </table>
-                  )}
-                  {!add_card && cards.length === 0 && !fetching_card && (
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        </Fragment>
+                      ))}
+                    </tbody>
+                  </table>
+                  {!add_card && cards.length === 0 && (
                     <button
                       className="is-clickable add-card-button"
                       onClick={() => setAddCard(true)}
@@ -839,12 +792,7 @@ export default function BillingPage() {
                 </div>
                 <div className="subscriptions">
                   <h3>Subscriptions</h3>
-                  {fetching_subscription && (
-                    <div className="center-loader">
-                      <Loader />
-                    </div>
-                  )}
-                  {!fetching_subscription && subscriptions.length === 0 && (
+                  {subscriptions.length === 0 && (
                     <div className="no-subscription">
                       <label className="trial-ended">
                         {user.subscription?.is_trial
@@ -864,7 +812,7 @@ export default function BillingPage() {
                       </label>
                     </div>
                   )}
-                  {!fetching_subscription && subscriptions.length > 0 && (
+                  {subscriptions.length > 0 && (
                     <table>
                       <thead>
                         <tr>
@@ -984,12 +932,7 @@ export default function BillingPage() {
                 </div>
                 <div className="invoice-history">
                   <h3>Invoice History</h3>
-                  {fetching_invoices && (
-                    <div className="center-loader">
-                      <Loader />
-                    </div>
-                  )}
-                  {!fetching_invoices && invoices && (
+                  {invoices && (
                     <table>
                       <thead>
                         <tr>
@@ -1084,7 +1027,7 @@ export default function BillingPage() {
       )}
       <Modal
         centered={true}
-        className="modal-container"
+        className="modal-container flex items-center justify-center h-screen w-full"
         contentClassName="content-container"
         isOpen={deleting_card || cancelling_subscription}
       >

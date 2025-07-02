@@ -12,18 +12,11 @@ import { removeHtmlTags } from '../../utils/string';
 export function UsersSection() {
   const {
     state: { comments, ideas, upvotes },
-    listComments,
-    listUpvotes,
   } = useFeedback();
   const { users } = useUser();
   const [teamActivitiesList, setTeamActivitiesList] = useState<
     JSX.Element[] | null
   >(null);
-
-  useEffect(() => {
-    listComments();
-    listUpvotes();
-  }, []);
 
   useEffect(() => {
     const fetchTeamActivities = async () => {

@@ -39,6 +39,7 @@ interface FeedbackState {
   listing: boolean;
   loading: boolean;
   roadmaps: Roadmap[];
+  roadmapsWithUpvotes: Roadmap[];
   selectedIdea: Feedback | null;
   tags: Tag[];
   upvotes: UpvoteLog[];
@@ -75,6 +76,7 @@ type FeedbackAction =
     }
   | { type: 'SET_LISTING'; payload: boolean }
   | { type: 'SET_ROADMAPS'; payload: Roadmap[] }
+  | { type: 'SET_ROADMAPS_WITH_UPVOTES'; payload: Roadmap[] }
   | { type: 'SET_SELECTED_IDEA'; payload: Feedback | null }
   | { type: 'SET_TAB'; payload: 'ideas' | 'comments' }
   | { type: 'SET_TAGS'; payload: Tag[] }
@@ -152,6 +154,7 @@ const initialState: FeedbackState = {
   listing: false,
   loading: true,
   roadmaps: [],
+  roadmapsWithUpvotes: [],
   selectedIdea: null,
   tags: [],
   upvotes: [],
@@ -243,6 +246,8 @@ function feedbackReducer(
       return { ...state, listing: action.payload };
     case 'SET_ROADMAPS':
       return { ...state, roadmaps: action.payload || [] };
+    case 'SET_ROADMAPS_WITH_UPVOTES':
+      return { ...state, roadmapsWithUpvotes: action.payload || [] };
     case 'SET_TAB':
       return { ...state, activeTab: action.payload };
     case 'SET_TAGS':
@@ -302,11 +307,13 @@ function feedbackReducer(
 export function FeedbackProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(feedbackReducer, initialState);
 
-  const { activeTab, comments, filter, ideas, roadmaps } = state;
+  const { activeTab, comments, filter, filteredIdeas, ideas, roadmaps } = state;
+  const { sort, status, tags, title } = filter;
 
   const { is_public } = useApp();
   const { user: userContext } = useUser();
   const { moderation, project } = userContext ?? {};
+  const { id: projectId } = project ?? {};
   const {
     state: { action, message, socket },
     setAction,
@@ -322,9 +329,9 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (
-      !project?.id ||
+      !projectId ||
       !message?.data.projectId ||
-      message.data.projectId !== project.id
+      message.data.projectId !== projectId
     ) {
       return;
     }
@@ -447,6 +454,18 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     );
   }, [ideas]);
 
+  useEffect(() => {
+    if (projectId) {
+      handleListFeedback();
+    }
+  }, [sort, status, tags.length, title, projectId]);
+
+  useEffect(() => {
+    if (filteredIdeas.length > 0 && roadmaps.length > 0) {
+      setBoardItems(filteredIdeas, roadmaps);
+    }
+  }, [filteredIdeas, roadmaps]);
+
   const fetchItems = async (tab: 'ideas' | 'comments') => {
     dispatch({ type: 'SET_ERROR', payload: null });
 
@@ -469,12 +488,12 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   };
 
   const handleFilterData = (data: Roadmap) => {
-    if (!filter.title && !filter.tags.length) {
+    if (!title && !tags.length) {
       return data;
     }
 
-    const filterTitleLower = filter.title.toLowerCase();
-    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
+    const filterTitleLower = title.toLowerCase();
+    const filterTagLower = tags.map((tag) => tag.toLowerCase());
 
     const filteredUpvotes =
       data.upvotes?.filter((upvote) => {
@@ -498,12 +517,12 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   };
 
   const handleFilterRoadmaps = (data: Roadmap[]) => {
-    if (!filter.title && !filter.tags.length) {
+    if (!title && !tags.length) {
       return data;
     }
 
-    const filterTitleLower = filter.title.toLowerCase();
-    const filterTagLower = filter.tags.map((tag) => tag.toLowerCase());
+    const filterTitleLower = title.toLowerCase();
+    const filterTagLower = tags.map((tag) => tag.toLowerCase());
 
     const filteredRoadmaps = data.map((roadmap) => {
       const filteredUpvotes =
@@ -557,9 +576,6 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
         const { data } = results ?? {};
         if (data) {
           setIdeas(data);
-          if (roadmaps.length > 0) {
-            setBoardItems(data, roadmaps);
-          }
         }
       })
       .catch((err) => {
@@ -592,11 +608,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       .then((res) => {
         if (res.results.data) {
           const data = res.results.data;
-          if (ideas.length > 0) {
-            setBoardItems(ideas, data);
-          } else {
-            setRoadmaps(data);
-          }
+          setRoadmaps(data);
         }
       })
       .finally(() => setListing(false));
@@ -610,7 +622,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
         .sort((a, b) => a.index - b.index),
     }));
 
-    setRoadmaps(roadmapUpvotes);
+    dispatch({ type: 'SET_ROADMAPS_WITH_UPVOTES', payload: roadmapUpvotes });
   };
 
   const addIdea = async (idea: Feedback) => {
@@ -733,7 +745,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
               data: {
                 admin_approval_status,
                 comment: data,
-                projectId: project?.id,
+                projectId,
               },
             });
           }
@@ -769,7 +781,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
             updateIdea(updatedIdea);
             socket?.emit('message', {
               action: SocketAction.UPDATE_IDEA,
-              data: { idea: updatedIdea, projectId: project?.id },
+              data: { idea: updatedIdea, projectId },
             });
           }
         })

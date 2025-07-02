@@ -1,15 +1,9 @@
-import { useEffect } from 'react';
 import { useWhatsNew } from '../../contexts/WhatsNewContext';
 
 export function WhatsNewSection() {
   const {
     state: { posts },
-    listWhatsNew,
   } = useWhatsNew();
-
-  useEffect(() => {
-    listWhatsNew();
-  }, []);
 
   const mostViewed = () => {
     return posts

@@ -2,10 +2,10 @@ import './styles.css';
 import SettingsContainer from '../SettingsContainer';
 import SectionHeader from '../SectionHeader';
 import { Loader } from 'lucide-react';
-import { useUser } from '../../contexts/UserContext';
+import { useApp } from '../../contexts/AppContext';
 
 export const SettingsTable: React.FC = () => {
-  const { fetching, permissions, roles, rolesPermission } = useUser();
+  const { fetching, permissions, roles, rolesPermission } = useApp();
 
   return fetching ? (
     <div className="flex items-center justify-center mt-5">

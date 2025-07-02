@@ -28,14 +28,15 @@ import { useApp } from '../../contexts/AppContext';
 import { SocketAction } from '../../types/socket';
 import { useWidget } from '../../contexts/WidgetContext/WidgetProvider';
 import { NewWidgetPreview } from '../../components/WidgetPreview/NewWidgetPreview';
+import { useWhatsNew } from '../../contexts/WhatsNewContext';
 
 export function RoadmapPage() {
-  const { user: userContext } = useUser();
-  const { permissions, project, rbac_permissions, user } = userContext ?? {};
+  const { fetching, user: userContext } = useUser();
+  const { admin_profile, permissions, project, rbac_permissions, user } =
+    userContext ?? {};
   const {
-    state: { filter, listing, roadmaps: roadmapsContext, selectedIdea },
+    state: { filter, listing, roadmapsWithUpvotes: roadmaps, selectedIdea },
     addRoadmap,
-    handleListFeedback,
     setFilter,
     setRoadmaps,
     setSelectedIdea,
@@ -52,19 +53,17 @@ export function RoadmapPage() {
   const {
     state: { widget },
   } = useWidget();
+  const {
+    state: { fetching: fetchingWhatsNew },
+  } = useWhatsNew();
 
   const [columnName, setColumnName] = useState<string>('');
   const [dragging, setDragging] = useState<boolean>(false);
   const [editColumnNameId, setEditColumnNameId] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-  const [roadmaps, setCurrRoadmaps] = useState<Roadmap[]>(roadmapsContext);
 
   const isRestricted =
-    !listing && is_public && permissions && permissions.length === 0;
-
-  useEffect(() => {
-    setCurrRoadmaps(roadmapsContext);
-  }, [roadmapsContext]);
+    is_public && admin_profile && permissions && permissions.length === 0;
 
   const getFeedback = (id: number) => {
     getApi<Feedback>({ url: `feedback/${id}` }).then((res) => {
@@ -346,10 +345,6 @@ export function RoadmapPage() {
   useEffect(() => {
     setActiveTab('/roadmap');
   }, []);
-
-  useEffect(() => {
-    handleListFeedback();
-  }, [filter]);
 
   useEffect(() => {
     if (action === SocketAction.UPDATE_TAG && selectedIdea?.id) {
@@ -664,7 +659,7 @@ export function RoadmapPage() {
               </>
             )}
           </div>
-          {listing &&
+          {(fetching || fetchingWhatsNew || listing) &&
             (!roadmaps ||
               roadmaps?.every((r) => !r.upvotes || r.upvotes.length === 0)) && (
               <div className="flex justify-center items-center w-full mt-5">
@@ -672,6 +667,8 @@ export function RoadmapPage() {
               </div>
             )}
           {!isRestricted &&
+            !fetching &&
+            !fetchingWhatsNew &&
             !listing &&
             (!roadmaps || roadmaps.length === 0) && (
               <>

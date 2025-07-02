@@ -384,7 +384,13 @@ export function AccountSettings() {
                     />
                   ) : (
                     <span className="text-purple-600 text-2xl">
-                      {userDetails?.company_name?.charAt(0).toUpperCase()}
+                      {(userDetails?.company_name &&
+                      userDetails.company_name.length > 0
+                        ? userDetails.company_name
+                        : 'ProductHQ'
+                      )
+                        ?.charAt(0)
+                        .toUpperCase()}
                     </span>
                   )}
                 </div>

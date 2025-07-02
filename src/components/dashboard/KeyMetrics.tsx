@@ -20,7 +20,7 @@ interface TimeRange {
 }
 
 export function KeyMetrics() {
-  const { users, listUsers } = useUser();
+  const { users } = useUser();
 
   const [stats, setStats] = useState<Stat[]>([]);
   const [timeRange, setTimeRange] = useState<TimeRange>();
@@ -31,10 +31,6 @@ export function KeyMetrics() {
     { label: 'QTD', value: 'QTD' },
     { label: 'YTD', value: 'YTD' },
   ]);
-
-  useEffect(() => {
-    listUsers();
-  }, []);
 
   useEffect(() => {
     setStats([

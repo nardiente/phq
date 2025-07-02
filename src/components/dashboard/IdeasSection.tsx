@@ -1,26 +1,10 @@
 import moment from 'moment';
 import { useFeedback } from '../../contexts/FeedbackContext';
-import { useEffect } from 'react';
 
 export function IdeasSection() {
   const {
     state: { ideas, roadmaps },
-    handleListFeedback,
   } = useFeedback();
-
-  useEffect(() => {
-    // Fetch data from the server
-    const fetchData = async () => {
-      try {
-        // Fetch ideas from the same endpoint as UpvotesPage
-        await handleListFeedback();
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const mostCommentedIdeas = () => {
     return ideas

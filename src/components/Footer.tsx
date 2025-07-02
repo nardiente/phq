@@ -1,13 +1,9 @@
-import { useEffect, useState } from 'react';
-import { Subscription } from '../types/billing';
-import { getApi } from '../utils/api/api';
 import { useApp } from '../contexts/AppContext';
+import { useUser } from '../contexts/UserContext';
 
 const Footer = () => {
   const { is_public } = useApp();
-
-  const [fetching, setFetching] = useState<boolean>(true);
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const { fetching, subscriptions } = useUser();
 
   const footer_exceptions = [
     '/sign-in',
@@ -21,26 +17,6 @@ const Footer = () => {
     '/ob-success',
     '/free-trial-plans',
   ];
-
-  const getSubscription = () => {
-    setFetching(true);
-    setSubscriptions([]);
-    getApi<Subscription[]>({
-      url: 'billing',
-      params: {
-        domain: window.location.host,
-      },
-    }).then((res) => {
-      setFetching(false);
-      if (res.results.data) {
-        setSubscriptions(res.results.data);
-      }
-    });
-  };
-
-  useEffect(() => {
-    getSubscription();
-  }, []);
 
   return !fetching &&
     !subscriptions.some((subscription) =>

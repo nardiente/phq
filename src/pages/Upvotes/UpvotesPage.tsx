@@ -32,7 +32,7 @@ export default function UpvotesPage() {
   const {
     state: {
       filteredIdeas,
-      filter: { filtering, sort, status, tags, title },
+      filter: { filtering },
       loading,
       roadmaps,
       selectedIdea,
@@ -100,19 +100,10 @@ export default function UpvotesPage() {
       return;
     }
 
-    if (project?.id) {
-      handleListFeedback();
-      if (is_public) {
-        loadPublishedWidget();
-      }
+    if (project?.id && is_public) {
+      loadPublishedWidget();
     }
   }, [project]);
-
-  useEffect(() => {
-    if (project?.id) {
-      handleListFeedback();
-    }
-  }, [sort, status, tags.length, title, project]);
 
   useEffect(() => {
     if (action === SocketAction.UPDATE_TAG && project?.id && selectedIdea?.id) {
