@@ -44,6 +44,7 @@ export interface Subscription {
   mode?: CheckoutMode;
   is_trial?: boolean;
   remaining_days?: number;
+  trial_end?: number | string | null;
 }
 
 export interface UserSubscription {

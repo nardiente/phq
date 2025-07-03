@@ -65,7 +65,6 @@ export const processErrors = (api_error: any) => {
   };
 
   const is_admin = import.meta.env.VITE_SYSTEM_TYPE === 'admin';
-  const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
   if (
     status === StatusCodes.E_FORBIDDEN ||
     status === StatusCodes.E_UNAUTHORIZED
@@ -77,9 +76,6 @@ export const processErrors = (api_error: any) => {
     ) {
       if (is_admin) {
         location.href = '/sign-in';
-      }
-      if (is_public) {
-        // location.href = '/'
       }
     }
   }

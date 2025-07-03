@@ -63,38 +63,39 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setMenuItems(publicViewMenuItems);
     }
 
-    const rbcaPermissionsPromise = getApi<RbacPermission[]>({
-      url: 'users/rbac-permissions',
-    });
+    if (!is_public) {
+      const rbcaPermissionsPromise = getApi<RbacPermission[]>({
+        url: 'users/rbac-permissions',
+      });
 
-    const rolesPermissionPromise = getApi<RolesPermission[]>({
-      url: 'users/roles-permission',
-    });
+      const rolesPermissionPromise = getApi<RolesPermission[]>({
+        url: 'users/roles-permission',
+      });
 
-    const rolesPromise = getApi<Role[]>({ url: 'users/roles' });
+      const rolesPromise = getApi<Role[]>({ url: 'users/roles' });
 
-    const getRoadmapColors = getApi<RoadmapColor[]>({ url: 'roadmaps/colors' });
-
-    Promise.all([
-      rbcaPermissionsPromise,
-      rolesPermissionPromise,
-      rolesPromise,
-      getRoadmapColors,
-    ]).then(
-      ([
-        rbcaPermissionsRes,
-        rolesPermissionRes,
-        rolesRes,
-        roadmapColorsRes,
-      ]) => {
+      Promise.all([
+        rbcaPermissionsPromise,
+        rolesPermissionPromise,
+        rolesPromise,
+      ]).then(([rbcaPermissionsRes, rolesPermissionRes, rolesRes]) => {
         setFetching(false);
         setPermissions(rbcaPermissionsRes.results.data || []);
         setRolesPermission(rolesPermissionRes.results.data || []);
         setRoles(rolesRes.results.data ?? []);
-        setRoadmapColors(roadmapColorsRes.results.data ?? []);
-      }
-    );
+      });
+    }
+
+    handleGetRoadmapColors();
   }, []);
+
+  const handleGetRoadmapColors = () => {
+    getApi<RoadmapColor[]>({ url: 'roadmaps/colors' }).then((res) => {
+      if (res.results.data) {
+        setRoadmapColors(res.results.data);
+      }
+    });
+  };
 
   return (
     <AppContext.Provider

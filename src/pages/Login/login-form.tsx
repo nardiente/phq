@@ -17,10 +17,9 @@ import { toast } from 'react-toastify';
 // import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import GitHubLogin from '../../components/Login/GithubLogin';
 import { ChevronRightIcon } from '../../components/icons/chevron-right.icon';
-import { User, UserTypes } from '../../types/user';
-import { Subscription } from '../../types/billing';
+import { UserTypes } from '../../types/user';
 import { OnboardingPages, OnboardingUrls } from '../../types/onboarding';
-import { useUser } from '../../contexts/UserContext';
+import { UserContextConfig, useUser } from '../../contexts/UserContext';
 import queryString from 'query-string';
 import { useTranslation } from 'react-i18next';
 import { validateEmail, validatePassword } from '../../utils/custom-validation';
@@ -94,6 +93,7 @@ export const LoginForm = (props: LoginFormProps) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [loading_social, setLoadingSocial] = React.useState<boolean>(false);
   const [verifying, setVerifying] = React.useState<boolean>(false);
+  const [hasCalledSocialLogin, setHasCalledSocialLogin] = React.useState(false);
 
   React.useEffect(() => {
     if (location.search.length > 0) {
@@ -182,10 +182,13 @@ export const LoginForm = (props: LoginFormProps) => {
         setLoginEmail(params['e'].toString());
         setFirstName(params['f'].toString());
         setLastName(params['l'].toString());
-        handleSocialLogin(
-          params['e'].toString(),
-          is_public ? window.location.host : undefined
-        );
+        if (!hasCalledSocialLogin) {
+          setHasCalledSocialLogin(true);
+          handleSocialLogin(
+            params['e'].toString(),
+            is_public ? window.location.host : undefined
+          );
+        }
       }
       clearQueryString();
     }
@@ -242,10 +245,7 @@ export const LoginForm = (props: LoginFormProps) => {
       payload = { ...payload, token: getSessionToken() };
     }
 
-    postApi<{
-      user: User;
-      subscription: Subscription & { trial_end: number | string | null };
-    }>({ url: 'auth/login-social', payload })
+    postApi<UserContextConfig>({ url: 'auth/login-social', payload })
       .then(async (res) => {
         const {
           headers,
@@ -292,6 +292,10 @@ export const LoginForm = (props: LoginFormProps) => {
         }
         if (data && headers['kasl-key'] && !error) {
           eraseImpersonator();
+          setKaslKey(headers['kasl-key'].toString());
+          clearMsgs();
+          localStorage.removeItem('onboarding_page');
+          eraseOnboardingToken();
           setMenuItems(
             is_public
               ? publicViewMenuItems
@@ -310,38 +314,32 @@ export const LoginForm = (props: LoginFormProps) => {
           setUser((prev) =>
             prev ? { ...prev, ...data } : { ...initialUser, ...data }
           );
-          clearMsgs();
-          if (is_public) {
-            setKaslKey(headers['kasl-key'].toString());
+          if (onboarding_done === undefined || onboarding_done) {
             await handleGetUser();
-            navigate('/upvotes');
-          } else {
-            localStorage.removeItem('onboarding_page');
-            eraseOnboardingToken();
-            if (onboarding_done === undefined || onboarding_done) {
-              setKaslKey(headers['kasl-key'].toString());
-              await handleGetUser();
-              if (
-                subscription &&
-                subscription.status === 'canceled' &&
-                subscription.trial_end
-              ) {
-                navigate('/billing');
-                return;
-              }
-              navigate(
-                isSuperDuperAdmin(user) ? '/super-duper-admin' : '/dashboard'
-              );
+            if (is_public) {
+              navigate('/upvotes');
               return;
             }
-            localStorage.setItem('onboarding_page', onboarding_page ?? '');
-            setOnboardingToken(headers['kasl-key'].toString());
+            if (
+              subscription &&
+              subscription.status === 'canceled' &&
+              subscription.trial_end
+            ) {
+              navigate('/billing');
+              return;
+            }
             navigate(
-              OnboardingUrls[
-                localStorage.getItem('onboarding_page') as OnboardingPages
-              ]
+              isSuperDuperAdmin(user) ? '/super-duper-admin' : '/dashboard'
             );
+            return;
           }
+          localStorage.setItem('onboarding_page', onboarding_page ?? '');
+          setOnboardingToken(headers['kasl-key'].toString());
+          navigate(
+            OnboardingUrls[
+              localStorage.getItem('onboarding_page') as OnboardingPages
+            ]
+          );
         }
       })
       .finally(() => setLoginLoadingSocial(false));
@@ -374,10 +372,7 @@ export const LoginForm = (props: LoginFormProps) => {
         token: getSessionToken(),
       });
     }
-    postApi<{
-      user: User;
-      subscription: Subscription & { trial_end: number | string | null };
-    }>({
+    postApi<UserContextConfig>({
       url: 'auth/login',
       payload: login_params,
     }).then(async (res) => {
@@ -463,6 +458,8 @@ export const LoginForm = (props: LoginFormProps) => {
         }
       }
       if (res.headers['kasl-key'] && !error && data) {
+        eraseImpersonator();
+        setKaslKey(res.headers['kasl-key'].toString());
         clearMsgs();
         localStorage.removeItem('onboarding_page');
         eraseOnboardingToken();
@@ -485,10 +482,8 @@ export const LoginForm = (props: LoginFormProps) => {
           prev ? { ...prev, ...data } : { ...initialUser, ...data }
         );
         if (user?.onboarding_done === undefined || user.onboarding_done) {
-          eraseImpersonator();
-          setKaslKey(res.headers['kasl-key'].toString());
           await handleGetUser();
-          if (props.type === UserTypes.USER) {
+          if (is_public) {
             navigate('/upvotes');
             return;
           }

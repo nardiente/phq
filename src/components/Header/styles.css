@@ -3,7 +3,6 @@
 #main-nav {
   align-items: center;
   align-self: stretch;
-  background: var(--public-view-background-color);
   border-bottom: 0.5px solid #ebdff9;
   display: flex;
   flex: none;

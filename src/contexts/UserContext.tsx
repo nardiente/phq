@@ -317,9 +317,7 @@ export function UserProvider({ children }: UserProviderProps) {
 
   const removeUser = async () =>
     setUser((prev) =>
-      prev
-        ? { ...prev, user: undefined, permissions: [], rbac_permissions: [] }
-        : { ...initialUser, user: undefined }
+      prev ? { ...prev, user: undefined } : { ...initialUser, user: undefined }
     );
 
   const setAppearanceColors = (appearance?: ProjectAppearance) => {

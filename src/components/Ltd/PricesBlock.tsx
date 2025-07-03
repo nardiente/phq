@@ -1,6 +1,5 @@
-import React from 'react';
+import { LifetimeDeal } from '../../types/billing';
 import PriceBlock from './PriceBlock';
-import { LifetimeDeal } from './types';
 
 interface Props {
   id: string;

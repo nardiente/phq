@@ -58,6 +58,8 @@ export default function BillingPage() {
   const [expiration, setExpiration] = useState('');
   const [validation_error, setValidationError] = useState('');
 
+  const [hasShownCancelToast, setHasShownCancelToast] = useState(false);
+
   useEffect(() => {
     if (location.search) {
       const params = queryString.parse(location.search);
@@ -106,6 +108,7 @@ export default function BillingPage() {
 
   useEffect(() => {
     if (
+      !hasShownCancelToast &&
       subscriptions.some((subscription) => subscription.cancel_at_period_end)
     ) {
       toast(
@@ -124,8 +127,9 @@ export default function BillingPage() {
           pauseOnFocusLoss: false,
         }
       );
+      setHasShownCancelToast(true);
     }
-  }, [subscriptions]);
+  }, [subscriptions, hasShownCancelToast]);
 
   const checkDisabledButton = () => {
     setDisabledButton(
