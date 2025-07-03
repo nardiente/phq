@@ -189,9 +189,9 @@ export function AccountSettings() {
         title="Account Settings"
         primaryButton={
           <Button disabled={isLoading} loading={isLoading} onClick={onSubmit}>
-            <div className="text-white">
+            <label className="text-white">
               {`Updat${isLoading ? 'ing...' : 'e'}`}
-            </div>
+            </label>
           </Button>
         }
         secondaryButton={

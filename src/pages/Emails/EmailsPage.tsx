@@ -5,10 +5,16 @@ import { CustomerEmails } from './components/CustomerEmails';
 import { Emails } from '../../types/email';
 import { getApi, putApi } from '../../utils/api/api';
 import { useUser } from '../../contexts/UserContext';
-import { useApp } from '../../contexts/AppContext';
+import { Settings } from '../../components/Settings';
+import SettingsHeader from '../../components/SettingsHeader';
+import SettingsContainer from '../../components/SettingsContainer';
+import SectionHeader from '../../components/SectionHeader';
+import Button from '../../components/Button';
+import { useNavigate } from 'react-router-dom';
 
 export default function EmailsPage() {
-  const { is_public } = useApp();
+  const navigate = useNavigate();
+
   const { initialUser, setUser } = useUser();
 
   const [activeTab, setActiveTab] = useState<
@@ -16,11 +22,6 @@ export default function EmailsPage() {
   >('Admin Emails');
   const [emails, setEmails] = useState<Emails>({
     admin: {
-      email: '',
-      frequency: { label: 'Weekly', value: 'weekly' },
-      notificationSettings: { comments: true, feedback: true, ideas: true },
-    },
-    customer: {
       email: '',
       frequency: { label: 'Weekly', value: 'weekly' },
       notificationSettings: { comments: true, feedback: true, ideas: true },
@@ -70,20 +71,25 @@ export default function EmailsPage() {
   };
 
   return (
-    <div
-      className={`flex-1 px-8 py-6 flex justify-center ${is_public ? 'background-color' : 'bg-zinc-50'}`}
-    >
-      <div className="max-w-[800px]">
-        <h1 className="text-h1 font-semibold text-gray-900 mb-6">Emails</h1>
+    <Settings>
+      <SettingsHeader
+        title="Account Settings"
+        secondaryButton={
+          <Button onClick={() => navigate('/dashboard')} variant="outline">
+            Cancel
+          </Button>
+        }
+      />
+      <SettingsContainer>
+        <SectionHeader
+          title="Emails"
+          description="Manage your email preferences for this project"
+        />
         <TabNavigation
           activeTab={activeTab}
           onTabChange={(tab) => setActiveTab(tab)}
           tabs={['Admin Emails', 'Customer Emails']}
         />
-        <p className="text-[14px] text-gray-600 mb-8 mt-4">
-          Manage your email preferences for this project
-        </p>
-
         {activeTab === 'Admin Emails' && (
           <AdminEmails
             emailContext={emails.admin}
@@ -96,7 +102,7 @@ export default function EmailsPage() {
             setEmails={(updated) => handleUpdateEmails('customer', updated)}
           />
         )}
-      </div>
-    </div>
+      </SettingsContainer>
+    </Settings>
   );
 }

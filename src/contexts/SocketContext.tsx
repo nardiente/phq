@@ -83,6 +83,13 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             : { ...initialUser, moderation: message.data.moderation }
         );
         break;
+      case SocketAction.UPDATE_APPEARANCE:
+        setUser((prev) =>
+          prev
+            ? { ...prev, appearance: message.data.appearance }
+            : { ...initialUser, appearance: message.data.appearance }
+        );
+        break;
       default:
         break;
     }

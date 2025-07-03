@@ -14,7 +14,7 @@ export const RadioButtonOptions = ({
 }: {
   direction?: 'column' | 'row';
   options: Option[];
-  selected: Option;
+  selected?: Option;
   select: (selected: Option) => void;
 }) => {
   return (
@@ -25,7 +25,7 @@ export const RadioButtonOptions = ({
           className="flex items-center gap-[16px] text-cetacean-blue-400 text-button-sm"
         >
           <a className="flex" onClick={() => select(option)}>
-            {selected.value === option.value ? (
+            {selected?.value === option.value ? (
               <RadioFillIcon />
             ) : (
               <RadioIcon />

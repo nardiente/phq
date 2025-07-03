@@ -94,7 +94,7 @@ export const AdminEmails = ({
           name="email"
           type="email"
           placeholder="admin@company.com"
-          className="w-[40%] px-4 py-2 border border-gray-200 rounded-lg text-gray-700 text-[14px] focus:outline-none focus:border-primary"
+          className="w-[25%] px-4 py-2 border border-gray-200 rounded-lg text-gray-700 text-[14px] focus:outline-none focus:border-primary"
           onBlur={() => setEmails({ ...emailContext, email })}
           onChange={(e) => setEmail(e.target.value)}
           value={email}
@@ -206,7 +206,7 @@ export const AdminEmails = ({
         </div>
       </div>
 
-      <div className="border rounded-lg p-3 w-full">
+      <div className="border rounded-lg p-3 w-full bg-zinc-50">
         <div className="border rounded-lg w-full h-full bg-white p-4">
           <div className="flex flex-col text-[14px] text-gray-400 pb-2.5 border-b">
             <span>{'From: ProductHQ Updates <noreply@producthq.io>'}</span>

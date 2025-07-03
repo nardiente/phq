@@ -3,13 +3,9 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import Banner from '../components/Banner';
 import { SidebarMenu } from '../components/layout/SidebarMenu';
-import { SidePanel } from '../components/SidePanel';
 import Footer from '../components/Footer';
 import { onbordingPaths, PageType, pathExceptions } from '../types/app';
 import { Permissions } from '../types/common';
-import { useFeedback } from '../contexts/FeedbackContext';
-import { useSocket } from '../contexts/SocketContext';
-import { SocketAction } from '../types/socket';
 import { useApp } from '../contexts/AppContext';
 import { isSuperDuperAdmin } from '../utils/user';
 import { getImpersonator } from '../utils/localStorage';
@@ -22,7 +18,6 @@ const AppRoute = () => {
   const { pathname, search } = location;
 
   const { is_public } = useApp();
-  const { handleGetStatus, handleListTag } = useFeedback();
   const {
     loaded,
     user: userDetails,
@@ -30,8 +25,6 @@ const AppRoute = () => {
     handleGetUser,
     isAuthenticated,
     setShowBanner,
-    setUser,
-    initialUser,
   } = useUser();
   const {
     admin_profile,
@@ -41,10 +34,6 @@ const AppRoute = () => {
     user,
   } = userDetails ?? {};
   const { id: projectId } = project ?? {};
-  const {
-    state: { action, message },
-    setAction,
-  } = useSocket();
   const { setPanelLoading } = usePanel();
 
   const [currentPage, setCurrentPage] = useState<PageType>(
@@ -67,29 +56,8 @@ const AppRoute = () => {
   }, []);
 
   useEffect(() => {
-    if (
-      !projectId ||
-      !message?.data.projectId ||
-      projectId !== message.data.projectId
-    ) {
-      return;
-    }
-
-    if (action === SocketAction.UPDATE_APPEARANCE) {
-      setUser((prev) =>
-        prev
-          ? { ...prev, appearance: message.data.appearance }
-          : { ...initialUser, appearance: message.data.appearance }
-      );
-    }
-    setAction();
-  }, [action]);
-
-  useEffect(() => {
     setCurrentPage(pathname.slice(1).split('/')[0] as PageType);
     if (projectId) {
-      handleGetStatus();
-      handleListTag();
       if (!is_public) {
         if (
           ![...pathExceptions, ...onbordingPaths].includes(pathname) ||
@@ -219,7 +187,6 @@ const AppRoute = () => {
           <Outlet />
         )}
         <ToastContainer />
-        <SidePanel />
         <Footer />
       </div>
     </>

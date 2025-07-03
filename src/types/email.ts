@@ -1,3 +1,15 @@
+export type CustomerEmail = {
+  sender_settings?: string;
+  weekly_update?: boolean;
+  new_vote_on_idea?: boolean;
+  admin_edited_idea?: boolean;
+  idea_was_approved?: boolean;
+  idea_was_rejected?: boolean;
+  idea_status_change?: boolean;
+  idea_created_on_behalf?: boolean;
+  comment_on_idea?: boolean;
+};
+
 export interface Email {
   email: string;
   frequency: {
@@ -19,7 +31,7 @@ export interface Email {
 export interface Emails {
   id?: number;
   admin: Email;
-  customer: Email;
+  customer?: CustomerEmail;
   created_at?: string;
   created_by?: number;
   project_id?: number;

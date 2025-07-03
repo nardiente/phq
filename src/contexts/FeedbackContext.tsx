@@ -19,6 +19,7 @@ import { useUser } from './UserContext';
 import { useSocket } from './SocketContext';
 import { SocketAction } from '../types/socket';
 import { useApp } from './AppContext';
+import { SidePanel } from '../components/SidePanel';
 
 interface FeedbackState {
   activeTab: 'ideas' | 'comments';
@@ -457,6 +458,8 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (projectId) {
       handleListFeedback();
+      handleGetStatus();
+      handleListTag();
     }
   }, [sort, status, tags.length, title, projectId]);
 
@@ -835,6 +838,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   return (
     <FeedbackContext.Provider value={value}>
       {children}
+      <SidePanel />
     </FeedbackContext.Provider>
   );
 }
