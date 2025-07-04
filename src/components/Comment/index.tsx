@@ -27,6 +27,7 @@ import { fileToBase64 } from '../../utils/file';
 import { toast } from 'react-toastify';
 import { SocketAction } from '../../types/socket';
 import { isTeamMember } from '../../utils/user';
+import { Checkbox } from '../Checkbox';
 
 const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
@@ -851,23 +852,15 @@ export const Comment = memo(function Comment({
           <div className="reply-form-bottom">
             <div className="internal-switch flex items-center gap-4">
               {!is_public && !comment.internal && (
-                <>
-                  <input
-                    id="internalReply"
-                    type="checkbox"
-                    name="internalReply"
-                    className="switch is-rounded is-small"
-                    checked={internal}
-                    onChange={() => setInternal((prev) => !prev)}
-                    disabled={
-                      !permissions?.includes(Permissions.ADD_REPLY) ||
-                      idea?.not_administer
-                    }
-                  />
-                  <label className="switch-label" htmlFor="internalReply">
-                    Post reply internally
-                  </label>
-                </>
+                <Checkbox
+                  checked={internal}
+                  onChange={() => setInternal((prev) => !prev)}
+                  disabled={
+                    !permissions?.includes(Permissions.ADD_REPLY) ||
+                    idea?.not_administer
+                  }
+                  label="Post reply internally"
+                />
               )}
             </div>
             <div className="flex gap-3">

@@ -1,9 +1,11 @@
 export const Checkbox = ({
   checked,
+  disabled = false,
   onChange,
   label,
 }: {
   checked: boolean;
+  disabled?: boolean;
   onChange: (checked: boolean) => void;
   label: string;
 }) => (
@@ -13,6 +15,7 @@ export const Checkbox = ({
       checked={checked}
       onChange={(e) => onChange(e.target.checked)}
       className="accent-[#5a00cd]"
+      disabled={disabled}
     />
     {label}
   </label>

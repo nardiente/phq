@@ -10,7 +10,7 @@ import { useApp } from '../contexts/AppContext';
 import { isSuperDuperAdmin } from '../utils/user';
 import { getImpersonator } from '../utils/localStorage';
 import { usePanel } from '../contexts/PanelContext';
-import { ToastContainer } from 'react-toastify';
+import { SidePanel } from '../components/SidePanel';
 
 const AppRoute = () => {
   const navigate = useNavigate();
@@ -186,7 +186,7 @@ const AppRoute = () => {
         ) : (
           <Outlet />
         )}
-        <ToastContainer />
+        <SidePanel />
         <Footer />
       </div>
     </>

@@ -34,6 +34,7 @@ import { fileToBase64 } from '../../utils/file';
 import { toast } from 'react-toastify';
 import { SocketAction } from '../../types/socket';
 import { isTeamMember } from '../../utils/user';
+import { Checkbox } from '../Checkbox';
 
 const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
@@ -523,23 +524,15 @@ const AddComment = () => {
           <div className="comment-form-bottom">
             <div className="internal-switch flex items-center gap-4">
               {!is_public && (
-                <>
-                  <input
-                    id="internalComment"
-                    type="checkbox"
-                    name="internalComment"
-                    className="switch is-rounded is-small"
-                    checked={internal}
-                    onChange={() => setInternal((prev) => !prev)}
-                    disabled={
-                      !permissions?.includes(Permissions.ADD_COMMENT) ||
-                      idea?.not_administer
-                    }
-                  />
-                  <label className="switch-label" htmlFor="internalComment">
-                    Post comment internally
-                  </label>
-                </>
+                <Checkbox
+                  checked={internal}
+                  onChange={() => setInternal((prev) => !prev)}
+                  disabled={
+                    !permissions?.includes(Permissions.ADD_COMMENT) ||
+                    idea?.not_administer
+                  }
+                  label="Post comment internally"
+                />
               )}
             </div>
             <div className="flex gap-3">
@@ -568,6 +561,11 @@ const AddComment = () => {
               </div>
               <button
                 id="AddCommentButton"
+                className={
+                  is_public
+                    ? 'primary-button-color'
+                    : 'bg-button-orange border-gray-200 text-white'
+                }
                 onClick={() =>
                   attachments.length > 0
                     ? handleCommentWithAttachments()

@@ -888,7 +888,7 @@ export const SubmitIdea = () => {
                 Cancel
               </button>
               <button
-                className={`${!disabled_button ? 'is-clickable' : ''}`}
+                className={`${!disabled_button ? 'is-clickable' : ''} bg-button-orange border-gray-200 text-white`}
                 disabled={disabled_button}
                 onClick={handleOnUpdateIdea}
                 type="button"
@@ -898,7 +898,7 @@ export const SubmitIdea = () => {
             </>
           ) : (
             <button
-              className={`${!disabled_button ? 'is-clickable' : ''} ${is_public ? 'primary-button-color' : 'text-white'}`}
+              className={`${!disabled_button ? 'is-clickable' : ''} ${is_public ? 'primary-button-color' : 'bg-button-orange border-gray-200 text-white'}`}
               disabled={disabled_button}
               onClick={handleOnSubmitIdea}
               type="button"

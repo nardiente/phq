@@ -60,7 +60,6 @@
     line-height: 16px;
 
     a {
-      color: var(--public-view-active-link-color) !important;
       text-decoration: underline;
     }
   }

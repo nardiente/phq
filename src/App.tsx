@@ -1,6 +1,7 @@
 import { useUser } from './contexts/UserContext';
 import { FC, useEffect } from 'react';
 import AppRoutes from './routes/routes';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
   getCustomerKaslKey,
@@ -8,10 +9,12 @@ import {
   setCustomerKaslKey,
   setKaslKey,
   setSessionToken,
+  getImpersonator,
 } from './utils/localStorage';
 import { postApi } from './utils/api/api';
 import { generateToken } from './utils/token';
 import { User } from './types/user';
+import { Permissions } from './types/common';
 import {
   FAVICON_EMPTY_PLACEHOLDER,
   FAVICON_PLACEHOLDER,
@@ -20,12 +23,22 @@ import { useApp } from './contexts/AppContext';
 
 const App: FC = () => {
   const { is_public } = useApp();
-  const { initialUser, user: userContext, setFetching, setUser } = useUser();
-  const { admin_profile, moderation, project, user } = userContext ?? {};
+  const {
+    initialUser,
+    user,
+    showBanner,
+    isAuthenticated,
+    setFetching,
+    setShowBanner,
+    setUser,
+  } = useUser();
+  const { admin_profile, moderation, project, user: user_profile } = user ?? {};
   const { is_index_search_engine } = project ?? {};
 
-  const userProfile = is_public ? admin_profile : user;
+  const userProfile = user_profile ?? admin_profile;
   const { email, favicon } = userProfile ?? {};
+
+  const impersonator = getImpersonator();
 
   useEffect(() => {
     if (is_public && admin_profile?.kasl_key) {
@@ -115,7 +128,54 @@ const App: FC = () => {
       .finally(() => setFetching(false));
   };
 
-  return <AppRoutes />;
+  return (
+    <>
+      {!is_public && isAuthenticated() && impersonator && impersonator.id && (
+        <div className="w-full bg-purple-700 text-white font-semibold py-[8px] text-center fixed top-[0] left-[0] z-[2000]">
+          {`Super Duper admin "${
+            impersonator.full_name ||
+            impersonator.email ||
+            `User #${impersonator.id}`
+          }" is active`}
+        </div>
+      )}
+      {/* Spacer for fixed impersonator bar */}
+      {impersonator && impersonator.id && <div className="h-[40px]" />}
+      {showBanner === true && (
+        <div className="restrict-banner">
+          <div className="content">
+            {!user?.permissions.includes(Permissions.ADD_IDEA) &&
+            (user?.permissions.length ?? 0) > 0 ? (
+              <>
+                You&apos;ve reached your plan limit, you may top up{' '}
+                <a href="/pricing">here</a>.
+              </>
+            ) : (
+              <>
+                {user?.subscription?.is_trial ? 'Your trial has ended. ' : ''}
+                You have limited access to your account.
+              </>
+            )}
+
+            <button onClick={() => setShowBanner(false)}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="bi bi-x-lg"
+                viewBox="0 0 16 16"
+              >
+                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+      <AppRoutes />
+      <ToastContainer />
+    </>
+  );
 };
 
 export default App;

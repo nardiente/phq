@@ -6,6 +6,7 @@ const config: Config = {
     extend: {
       // COLOR PALETTE
       colors: {
+        'active-link': '#913187',
         primary: '#5a00cd',
         secondary: '#ebdff9',
         hover: '#44009a',
