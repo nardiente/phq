@@ -28,7 +28,7 @@ export const AdminEmails = ({
   }, [emailContext.email]);
 
   useEffect(() => {
-    switch (emailContext.frequency.value) {
+    switch (emailContext.frequency.id) {
       case 'weekly':
         setStart(moment().subtract(7, 'days').startOf('day'));
         break;
@@ -39,7 +39,7 @@ export const AdminEmails = ({
         setStart(moment().startOf('day'));
         break;
     }
-  }, [emailContext.frequency.value]);
+  }, [emailContext.frequency.id]);
 
   const commentsByFrequency = () => {
     return comments
@@ -126,11 +126,14 @@ export const AdminEmails = ({
                   <input
                     type="radio"
                     className="sr-only peer"
-                    checked={emailContext.frequency.value === frequency.value}
+                    checked={emailContext.frequency.id === frequency.id}
                     onChange={() =>
                       setEmails({
                         ...emailContext,
-                        frequency: { label: 'Daily', value: frequency.value },
+                        frequency: {
+                          id: frequency.id,
+                          text: frequency.text,
+                        },
                       })
                     }
                   />
@@ -146,7 +149,7 @@ export const AdminEmails = ({
                     </svg>
                   </div>
                   <span className="ml-2 text-base leading-6 tracking-[0.005em] text-[#110733] font-medium">
-                    {frequency.label}
+                    {frequency.text}
                   </span>
                 </label>
               ))}
@@ -250,7 +253,7 @@ export const AdminEmails = ({
               </div>
               <div className="text-sm text-gray-500">{`To: ${emailContext.email.length > 0 ? emailContext.email : 'admin@company.com'}`}</div>
               <div className="text-sm text-gray-500">
-                Subject: Your {emailContext.frequency.label} Update from
+                Subject: Your {emailContext.frequency.text} Update from
                 ProductHQ
               </div>
             </div>
@@ -260,7 +263,7 @@ export const AdminEmails = ({
                 Hi Admin! 👋
               </div>
               <p className="text-[14px] text-gray-700 mb-3">
-                Here's your {emailContext.frequency.value} activity update from
+                Here's your {emailContext.frequency.id} activity update from
                 ProductHQ:
               </p>
 
@@ -314,10 +317,12 @@ export const AdminEmails = ({
                 onClick={() => {
                   const portal =
                     'http://' +
-                    (project?.custom_domain ??
-                      (project?.portal_subdomain
-                        ? project?.portal_subdomain + '.producthq.io'
-                        : ''));
+                    (project?.custom_domain && project.custom_domain.length > 0
+                      ? project.custom_domain
+                      : project?.portal_subdomain &&
+                          project.portal_subdomain.length
+                        ? project.portal_subdomain + '.producthq.io'
+                        : '');
                   window.open(portal, '_blanck', 'noopener noreferrer');
                 }}
               >

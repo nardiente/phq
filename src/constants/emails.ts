@@ -3,7 +3,7 @@ import { Emails, Frequency } from '../types/email';
 export const defaultEmails: Emails = {
   admin: {
     email: '',
-    frequency: { label: 'Weekly', value: 'weekly' },
+    frequency: { id: 'weekly', text: 'Weekly' },
     notificationSettings: { comments: true, feedback: true, ideas: true },
   },
 };
@@ -61,7 +61,7 @@ export const emailCategories = [
 ];
 
 export const frequencies: Frequency[] = [
-  { label: 'Daily', value: 'daily' },
-  { label: 'Weekly', value: 'weekly' },
-  { label: 'Monthly', value: 'monthly' },
+  { id: 'daily', text: 'Daily' },
+  { id: 'weekly', text: 'Weekly' },
+  { id: 'monthly', text: 'Monthly' },
 ];

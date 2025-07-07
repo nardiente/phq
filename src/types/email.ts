@@ -39,8 +39,8 @@ export interface Emails {
 }
 
 export type Frequency = {
-  label: 'Daily' | 'Weekly' | 'Monthly';
-  value: 'daily' | 'weekly' | 'monthly' | string;
+  text: 'Daily' | 'Weekly' | 'Monthly';
+  id: 'daily' | 'weekly' | 'monthly' | string;
 };
 
 export type NotificationSettings = {
