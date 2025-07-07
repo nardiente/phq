@@ -1,9 +1,9 @@
 import React from 'react';
 
 interface TabNavigationProps {
-  activeTab: string;
-  onTabChange: (tab: 'Admin Emails' | 'Customer Emails') => void;
-  tabs: string[];
+  activeTab: { id: string; text: string };
+  onTabChange: (tab: { id: string; text: string }) => void;
+  tabs: { id: string; text: string }[];
 }
 
 const TabNavigation: React.FC<TabNavigationProps> = ({
@@ -15,15 +15,15 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
     <div className="flex gap-8 border-b border-gray-200">
       {tabs.map((tab) => (
         <button
-          key={tab}
+          key={tab.id}
           className={`pb-4 text-base font-medium ${
-            activeTab === tab
+            activeTab.id === tab.id
               ? 'border-b-2 border-[#5a00cd] text-[#5a00cd]'
               : 'text-[#4d4566]'
           } focus:outline-none`}
-          onClick={() => onTabChange(tab as 'Admin Emails' | 'Customer Emails')}
+          onClick={() => onTabChange(tab)}
         >
-          {tab.charAt(0).toUpperCase() + tab.slice(1)}
+          {tab.text}
         </button>
       ))}
     </div>

@@ -47,6 +47,7 @@ import {
   publicViewMenuItems,
   settingsMenuItems,
 } from '../constants/menuItems';
+import { defaultEmails } from '../constants/emails';
 import { isSuperDuperAdmin } from '../utils/user';
 import { AccessHistory } from '../types/super-duper-admin';
 
@@ -96,6 +97,7 @@ interface UserContextType {
   getSubscriptions: () => Promise<void>;
   invoices: InvoiceHistory[];
   handleInvoiceHistory: () => Promise<void>;
+  setEmails: Dispatch<SetStateAction<Emails>>;
 }
 
 const initialUser: UserContextConfig = {
@@ -142,6 +144,7 @@ const UserContext = createContext<UserContextType>({
   getSubscriptions: async () => Promise.resolve(),
   invoices: [],
   handleInvoiceHistory: async () => Promise.resolve(),
+  setEmails: () => {},
 });
 
 interface UserProviderProps {
@@ -154,6 +157,7 @@ export function UserProvider({ children }: UserProviderProps) {
   const [access_history, setAccessHistory] = useState<AccessHistory[]>([]);
   const [cards, setCards] = useState<Card[]>([]);
   const [email, setEmail] = useState<string>('');
+  const [emails, setEmails] = useState<Emails>(defaultEmails);
   const [fetching, setFetching] = useState<boolean>(false);
   const [first_name, setFirstName] = useState<string>('');
   const [githubCode, setGithubCode] = useState<string>('');
@@ -171,6 +175,12 @@ export function UserProvider({ children }: UserProviderProps) {
   useEffect(() => {
     handleGetUser();
   }, []);
+
+  useEffect(() => {
+    setUser((prev) =>
+      prev ? { ...prev, emails } : { ...initialUser, emails }
+    );
+  }, [emails]);
 
   useEffect(() => {
     setAppearanceColors(user?.appearance);
@@ -445,6 +455,7 @@ export function UserProvider({ children }: UserProviderProps) {
         getSubscriptions,
         invoices,
         handleInvoiceHistory,
+        setEmails,
       }}
     >
       {children}

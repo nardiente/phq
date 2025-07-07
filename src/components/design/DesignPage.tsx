@@ -134,9 +134,12 @@ import ButtonDisplay from '../ui/ButtonDisplay';
 // const fontWeights = ['normal', 'medium', 'bold'];
 
 const DesignPage = () => {
-  const [activeTab, setActiveTab] = useState('accordion');
+  const [activeTab, setActiveTab] = useState<{ id: string; text: string }>({
+    id: 'accordion',
+    text: 'Accordion',
+  });
 
-  const handleTabChange = (tab: string) => {
+  const handleTabChange = (tab: { id: string; text: string }) => {
     setActiveTab(tab);
   };
 
@@ -314,13 +317,13 @@ const DesignPage = () => {
   ];
 
   const tabs = [
-    'accordion',
-    'alerts',
-    'avatar',
-    'badges',
-    'colors',
-    'buttons',
-    'fonts',
+    { id: 'accordion', text: 'Accordion' },
+    { id: 'alerts', text: 'Alerts' },
+    { id: 'avatar', text: 'Avatar' },
+    { id: 'badges', text: 'Badges' },
+    { id: 'colors', text: 'Colors' },
+    { id: 'buttons', text: 'Buttons' },
+    { id: 'fonts', text: 'Fonts' },
   ];
 
   return (
@@ -332,7 +335,7 @@ const DesignPage = () => {
         tabs={tabs}
       />
       <div className="mt-6">
-        {activeTab === 'accordion' && (
+        {activeTab.id === 'accordion' && (
           <section className="mb-12">
             <h2 className="text-lg font-semibold mb-6">Accordion</h2>
             <div className="flex flex-col gap-9 items-start relative">
@@ -344,7 +347,7 @@ const DesignPage = () => {
             </div>
           </section>
         )}
-        {activeTab === 'alerts' && (
+        {activeTab.id === 'alerts' && (
           <section className="mb-12">
             <h2 className="text-lg font-semibold mb-6">Alerts</h2>
             <AlertTypes />
@@ -355,7 +358,7 @@ const DesignPage = () => {
             <AlertExamples />
           </section>
         )}
-        {activeTab === 'avatar' && (
+        {activeTab.id === 'avatar' && (
           <section className="mb-12">
             <h2 className="text-lg font-semibold mb-6">Avatar</h2>
             <div className="flex flex-wrap gap-[30px] items-start relative max-w-[1280px] mx-auto">
@@ -411,7 +414,7 @@ const DesignPage = () => {
             </div>
           </section>
         )}
-        {activeTab === 'badges' && (
+        {activeTab.id === 'badges' && (
           <section className="mb-12">
             <h2 className="text-lg font-semibold mb-6">Badges</h2>
             <div className="flex flex-col gap-[30px] items-start self-stretch relative w-full">
@@ -512,7 +515,7 @@ const DesignPage = () => {
             </div>
           </section>
         )}
-        {activeTab === 'colors' && (
+        {activeTab.id === 'colors' && (
           <section className="mb-12">
             <h2 className="text-lg font-semibold mb-6">Colors</h2>
             {colorGroups.map((group) => (
@@ -535,7 +538,7 @@ const DesignPage = () => {
             ))}
           </section>
         )}
-        {activeTab === 'buttons' && (
+        {activeTab.id === 'buttons' && (
           <section className="mb-12">
             <h2 className="text-lg font-semibold mb-6">Buttons</h2>
             <div className="flex flex-col gap-10">
