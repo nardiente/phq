@@ -13,23 +13,23 @@ export const emailCategories = [
     id: 'ideas',
     title: 'Ideas',
     items: [
-      { id: 'new_vote_on_idea', label: 'New vote on my Idea' },
-      { id: 'admin_edited_idea', label: 'Admin edited my Idea' },
-      { id: 'idea_was_approved', label: 'My Idea was approved' },
-      { id: 'idea_was_rejected', label: 'My Idea was rejected' },
-      { id: 'idea_status_change', label: 'Idea status change' },
-      { id: 'idea_created_on_behalf', label: 'Idea created on my behalf' },
+      { id: 'new_vote_on_idea', text: 'New vote on my Idea' },
+      { id: 'admin_edited_idea', text: 'Admin edited my Idea' },
+      { id: 'idea_was_approved', text: 'My Idea was approved' },
+      { id: 'idea_was_rejected', text: 'My Idea was rejected' },
+      { id: 'idea_status_change', text: 'Idea status change' },
+      { id: 'idea_created_on_behalf', text: 'Idea created on my behalf' },
     ],
   },
   {
     id: 'comments',
     title: 'Comments',
     items: [
-      { id: 'comment_on_idea', label: 'New comment on my Idea' },
-      { id: 'comment_was_approved', label: 'My comment was approved' },
-      { id: 'comment_was_rejected', label: 'My comment was rejected' },
-      { id: 'new_comment_reply', label: 'New comment reply' },
-      { id: 'mentioned_in_comment', label: 'Mentioned in comment' },
+      { id: 'comment_on_idea', text: 'New comment on my Idea' },
+      { id: 'comment_was_approved', text: 'My comment was approved' },
+      { id: 'comment_was_rejected', text: 'My comment was rejected' },
+      { id: 'new_comment_reply', text: 'New comment reply' },
+      { id: 'mentioned_in_comment', text: 'Mentioned in comment' },
     ],
   },
   {
@@ -38,15 +38,15 @@ export const emailCategories = [
     items: [
       {
         id: 'comment_on_followed_idea',
-        label: "New comment on Idea I'm following",
+        text: "New comment on Idea I'm following",
       },
       {
         id: 'status_changed_on_followed_idea',
-        label: "Status changed on Idea I'm following",
+        text: "Status changed on Idea I'm following",
       },
       {
         id: 'new_vote_on_followed_idea',
-        label: "New vote on Idea I'm following",
+        text: "New vote on Idea I'm following",
       },
     ],
   },
@@ -54,8 +54,8 @@ export const emailCategories = [
     id: 'users',
     title: 'Users',
     items: [
-      { id: 'new_user_signup_approved', label: 'New user signup approved' },
-      { id: 'welcome_new_user', label: 'Welcome new user' },
+      { id: 'new_user_signup_approved', text: 'New user signup approved' },
+      { id: 'welcome_new_user', text: 'Welcome new user' },
     ],
   },
 ];

@@ -5,6 +5,7 @@ import { removeHtmlTags } from '../../../utils/string';
 import { Email } from '../../../types/email';
 import { frequencies } from '../../../constants/emails';
 import { useUser } from '../../../contexts/UserContext';
+import { listComments, listIdeas, listUpvotes } from '../../../utils/emails';
 
 export const AdminEmails = ({
   emailContext,
@@ -21,7 +22,6 @@ export const AdminEmails = ({
 
   const [email, setEmail] = useState<string>(emailContext.email);
   const [start, setStart] = useState<Moment>(moment().startOf('day'));
-  const end = moment().endOf('day');
 
   useEffect(() => {
     setEmail(emailContext.email);
@@ -40,44 +40,6 @@ export const AdminEmails = ({
         break;
     }
   }, [emailContext.frequency.id]);
-
-  const commentsByFrequency = () => {
-    return comments
-      .filter((comment) => {
-        const created_at = moment(comment.created_at);
-        return (
-          created_at.isBetween(start, end, undefined, '[]') &&
-          !comment.deleted &&
-          (!comment.admin_approval_status ||
-            comment.admin_approval_status === 'approved')
-        );
-      })
-      .sort((a, b) => (a.id && b.id ? a.id - b.id : 0));
-  };
-
-  const ideasByFrequency = () => {
-    return filteredIdeas
-      .filter((idea) => {
-        const created_at = moment(idea.created_at);
-        return created_at.isBetween(start, end, undefined, '[]');
-      })
-      .sort((a, b) => (a.id && b.id ? a.id - b.id : 0));
-  };
-
-  const upvotesByFrequency = () => {
-    const feedbacks = upvotes.filter((upvote) => {
-      const created_at = moment(upvote.created_at);
-      return created_at.isBetween(start, end, undefined, '[]');
-    });
-
-    return filteredIdeas
-      .filter(
-        (idea) =>
-          idea.id &&
-          feedbacks.map((feedback) => feedback.feedback_id).includes(idea.id)
-      )
-      .sort((a, b) => (a.id && b.id ? a.id - b.id : 0));
-  };
 
   return (
     <>
@@ -273,7 +235,7 @@ export const AdminEmails = ({
                     New Ideas
                   </h4>
                   <div className="text-[14px] text-gray-700 pl-2 flex flex-col gap-1">
-                    {ideasByFrequency().map((idea, idx) => (
+                    {listIdeas({ filteredIdeas, start }).map((idea, idx) => (
                       <p key={idx} className="text-[13px]">
                         {idea.title}
                       </p>
@@ -288,7 +250,11 @@ export const AdminEmails = ({
                     New Comments
                   </h4>
                   <div className="text-[14px] text-gray-700 pl-2 flex flex-col gap-1">
-                    {upvotesByFrequency().map((upvote, idx) => (
+                    {listUpvotes({
+                      upvoteLogs: upvotes,
+                      filteredIdeas,
+                      start,
+                    }).map((upvote, idx) => (
                       <p key={idx} className="text-[13px]">
                         {upvote.title}
                       </p>
@@ -303,11 +269,13 @@ export const AdminEmails = ({
                     New Feedback
                   </h4>
                   <div className="text-[14px] text-gray-700 pl-2">
-                    {commentsByFrequency().map((comment, idx) => (
-                      <p key={idx} className="text-[13px]">
-                        {removeHtmlTags(comment.comment)}
-                      </p>
-                    ))}
+                    {listComments({ feedbackComments: comments, start }).map(
+                      (comment, idx) => (
+                        <p key={idx} className="text-[13px]">
+                          {removeHtmlTags(comment.comment)}
+                        </p>
+                      )
+                    )}
                   </div>
                 </div>
               )}
