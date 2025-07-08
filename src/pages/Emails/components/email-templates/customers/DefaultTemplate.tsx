@@ -13,7 +13,8 @@ export const DefaultTemplate = () => {
     state: { comments, filteredIdeas, upvotes },
   } = useFeedback();
   const { user: userContext } = useUser();
-  const { project } = userContext ?? {};
+  const { emails, project } = userContext ?? {};
+  const { customer } = emails ?? {};
 
   const start = moment().subtract(7, 'days').startOf('day');
 
@@ -21,7 +22,7 @@ export const DefaultTemplate = () => {
     <div>
       <div className="mb-3">
         <div className="text-sm text-gray-500">
-          From: ProductHQ Updates noreply@producthq.io
+          {`From: ProductHQ Updates ${customer?.sender_settings ?? 'noreply@producthq.io'}`}
         </div>
         <div className="text-sm text-gray-500">To: customer@company.com</div>
         <div className="text-sm text-gray-500">

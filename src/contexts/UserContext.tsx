@@ -64,40 +64,40 @@ export interface UserContextConfig {
 }
 
 interface UserContextType {
-  fetching: boolean;
-  user?: UserContextConfig;
-  setFetching: Dispatch<SetStateAction<boolean>>;
-  setUser: Dispatch<React.SetStateAction<UserContextConfig | undefined>>;
-  handleGetAppearance: () => Promise<void>;
-  handleGetUser: () => Promise<void>;
-  first_name: string;
-  setFirstName: Dispatch<React.SetStateAction<string>>;
-  githubCode: string;
-  setGithubCode: Dispatch<React.SetStateAction<string>>;
-  last_name: string;
-  setLastName: Dispatch<React.SetStateAction<string>>;
-  email: string;
-  setEmail: Dispatch<React.SetStateAction<string>>;
-  loading_social: boolean;
-  setLoadingSocial: Dispatch<React.SetStateAction<boolean>>;
-  showBanner: boolean;
-  setShowBanner: Dispatch<React.SetStateAction<boolean>>;
-  isAuthenticated: () => boolean;
-  loaded: boolean;
-  setLoaded: Dispatch<SetStateAction<boolean>>;
-  users: User[];
-  listUsers: () => Promise<void>;
-  removeUser: () => Promise<void>;
-  initialUser: UserContextConfig;
   access_history: AccessHistory[];
-  listAccessHistory: () => Promise<void>;
   cards: Card[];
-  handleGetCard: () => Promise<void>;
-  subscriptions: Subscription[];
+  email: string;
+  fetching: boolean;
+  first_name: string;
   getSubscriptions: () => Promise<void>;
-  invoices: InvoiceHistory[];
+  githubCode: string;
+  handleGetAppearance: () => Promise<void>;
+  handleGetCard: () => Promise<void>;
+  handleGetUser: () => Promise<void>;
   handleInvoiceHistory: () => Promise<void>;
+  initialUser: UserContextConfig;
+  invoices: InvoiceHistory[];
+  isAuthenticated: () => boolean;
+  last_name: string;
+  listAccessHistory: () => Promise<void>;
+  listUsers: () => Promise<void>;
+  loaded: boolean;
+  loading_social: boolean;
+  removeUser: () => Promise<void>;
+  setEmail: Dispatch<React.SetStateAction<string>>;
   setEmails: Dispatch<SetStateAction<Emails>>;
+  setFetching: Dispatch<SetStateAction<boolean>>;
+  setFirstName: Dispatch<React.SetStateAction<string>>;
+  setGithubCode: Dispatch<React.SetStateAction<string>>;
+  setLastName: Dispatch<React.SetStateAction<string>>;
+  setLoaded: Dispatch<SetStateAction<boolean>>;
+  setLoadingSocial: Dispatch<React.SetStateAction<boolean>>;
+  setShowBanner: Dispatch<React.SetStateAction<boolean>>;
+  setUser: Dispatch<React.SetStateAction<UserContextConfig | undefined>>;
+  showBanner: boolean;
+  subscriptions: Subscription[];
+  user?: UserContextConfig;
+  users: User[];
 }
 
 const initialUser: UserContextConfig = {
@@ -422,40 +422,40 @@ export function UserProvider({ children }: UserProviderProps) {
   return (
     <UserContext.Provider
       value={{
-        fetching,
-        setFetching,
-        user,
-        setUser,
-        handleGetAppearance,
-        handleGetUser,
-        first_name,
-        setFirstName,
-        githubCode,
-        setGithubCode,
-        last_name,
-        setLastName,
-        email,
-        setEmail,
-        loading_social,
-        setLoadingSocial,
-        showBanner,
-        setShowBanner,
-        isAuthenticated,
-        loaded,
-        setLoaded,
-        users,
-        listUsers,
-        removeUser,
-        initialUser,
         access_history,
-        listAccessHistory,
         cards,
-        handleGetCard,
-        subscriptions,
+        email,
+        fetching,
+        first_name,
         getSubscriptions,
-        invoices,
+        githubCode,
+        handleGetAppearance,
+        handleGetCard,
+        handleGetUser,
         handleInvoiceHistory,
+        initialUser,
+        invoices,
+        isAuthenticated,
+        last_name,
+        listAccessHistory,
+        listUsers,
+        loaded,
+        loading_social,
+        removeUser,
+        setEmail,
         setEmails,
+        setFetching,
+        setFirstName,
+        setGithubCode,
+        setLastName,
+        setLoaded,
+        setLoadingSocial,
+        setShowBanner,
+        setUser,
+        showBanner,
+        subscriptions,
+        user,
+        users,
       }}
     >
       {children}

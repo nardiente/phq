@@ -7,6 +7,7 @@ import { DefaultTemplate } from './email-templates/customers/DefaultTemplate';
 import { NewVoteOnIdea } from './email-templates/customers/NewVoteOnIdea';
 import { AdminEditedIdea } from './email-templates/customers/AdminEditedIdea';
 import { IdeaWasApproved } from './email-templates/customers/IdeaWasApproved';
+import { IdeaWasRejected } from './email-templates/customers/IdeaWasRejected';
 
 export const CustomerEmails = ({
   customerEmail,
@@ -234,7 +235,7 @@ export const CustomerEmails = ({
             <div className="p-4">
               <div className="bg-white rounded-lg border p-4 min-h-[600px]">
                 {selectedTemplate === 'Admin edited my Idea' ? (
-                  <AdminEditedIdea email={customerEmail} />
+                  <AdminEditedIdea />
                 ) : selectedTemplate === 'New comment on my Idea' ? (
                   <div>
                     <div className="mb-3">
@@ -602,74 +603,11 @@ export const CustomerEmails = ({
                     </div>
                   </div>
                 ) : selectedTemplate === 'New vote on my Idea' ? (
-                  <NewVoteOnIdea email={customerEmail} />
+                  <NewVoteOnIdea />
                 ) : selectedTemplate === 'My Idea was approved' ? (
-                  <IdeaWasApproved email={customerEmail} />
+                  <IdeaWasApproved />
                 ) : selectedTemplate === 'My Idea was rejected' ? (
-                  <div>
-                    <div className="mb-3">
-                      <div className="text-sm text-gray-500">
-                        From: ProductHQ Updates &lt;noreply@producthq.io&gt;
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        To: customer@company.com
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        Subject: Your idea was not approved
-                      </div>
-                    </div>
-
-                    <div className="border-t pt-3">
-                      <div className="text-[18px] font-medium text-gray-900 mb-2">
-                        Uh oh! 😕
-                      </div>
-
-                      <p className="text-[14px] text-gray-700 mb-3">
-                        Your idea has been rejected.
-                      </p>
-
-                      <div className="mb-4">
-                        <h4 className="text-[15px] font-medium text-gray-900 mb-2">
-                          Reason
-                        </h4>
-                        <div className="p-3 bg-gray-50 rounded-lg">
-                          <p className="text-[14px] text-gray-700">
-                            <span className="text-gray-500">
-                              [Rejection reason will appear here]
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                        <p className="text-[14px] text-gray-700">
-                          <span className="text-gray-500">[Idea Name]</span>
-                        </p>
-                      </div>
-
-                      <p className="text-[14px] text-gray-700 mb-4">
-                        Please contact the board administrator if you would like
-                        to appeal this decision.
-                      </p>
-
-                      <button className="px-5 py-2 bg-[#5a00cd] text-white rounded-lg text-[14px] font-medium mb-4">
-                        Contact Admin
-                      </button>
-
-                      <p className="text-[14px] text-gray-700 mb-2">
-                        The{' '}
-                        <span className="text-gray-500">[Company Name]</span>{' '}
-                        Team
-                      </p>
-
-                      <p className="text-[13px] text-gray-500">
-                        Help us improve -{' '}
-                        <a href="#" className="text-[#5a00cd]">
-                          share your thoughts
-                        </a>
-                      </p>
-                    </div>
-                  </div>
+                  <IdeaWasRejected />
                 ) : selectedTemplate === 'Mentioned in comment' ? (
                   <div>
                     <div className="mb-3">
@@ -822,7 +760,7 @@ export const CustomerEmails = ({
                     </div>
                   </div>
                 ) : selectedTemplate === 'Customer Weekly Update' ? (
-                  <CustomerWeeklyUpdate email={customerEmail} />
+                  <CustomerWeeklyUpdate />
                 ) : selectedTemplate ===
                   "Status changed on Idea I'm following" ? (
                   <div>
@@ -909,7 +847,7 @@ export const CustomerEmails = ({
             <div className="mt-2">
               <input
                 type="text"
-                value="Unfollow this idea"
+                defaultValue="Unfollow this idea"
                 className="w-[calc(100%-100px)] px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#5a00cd] focus:ring-1 focus:ring-[#5a00cd]"
               />
             </div>
@@ -922,7 +860,7 @@ export const CustomerEmails = ({
             <div className="mt-2">
               <input
                 type="text"
-                value="Unsubscribe from all emails"
+                defaultValue="Unsubscribe from all emails"
                 className="w-[calc(100%-100px)] px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#5a00cd] focus:ring-1 focus:ring-[#5a00cd]"
               />
             </div>
@@ -936,7 +874,7 @@ export const CustomerEmails = ({
             <div className="mt-2">
               <input
                 type="text"
-                value="Change email preferences"
+                defaultValue="Change email preferences"
                 className="w-[calc(100%-100px)] px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#5a00cd] focus:ring-1 focus:ring-[#5a00cd]"
               />
             </div>
@@ -947,7 +885,7 @@ export const CustomerEmails = ({
             <div className="mt-2">
               <input
                 type="text"
-                value="#### ProductHQ Group Pty Ltd, 69 Ruthven St, Bondi Junction, NSW, 2022, Australia"
+                defaultValue="#### ProductHQ Group Pty Ltd, 69 Ruthven St, Bondi Junction, NSW, 2022, Australia"
                 className="w-[calc(100%-100px)] px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#5a00cd] focus:ring-1 focus:ring-[#5a00cd]"
               />
             </div>

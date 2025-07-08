@@ -2,11 +2,11 @@ import { useFeedback } from '../../../../../contexts/FeedbackContext';
 import { useUser } from '../../../../../contexts/UserContext';
 import moment from 'moment';
 import { listIdeas, listUpvotes } from '../../../../../utils/emails';
-import { CustomerEmail } from '../../../../../types/email';
 
-export const CustomerWeeklyUpdate = ({ email }: { email?: CustomerEmail }) => {
+export const CustomerWeeklyUpdate = () => {
   const { user: userContext } = useUser();
-  const { project, user } = userContext ?? {};
+  const { emails, project, user } = userContext ?? {};
+  const { customer } = emails ?? {};
   const {
     state: { filteredIdeas, upvotes },
   } = useFeedback();
@@ -17,7 +17,7 @@ export const CustomerWeeklyUpdate = ({ email }: { email?: CustomerEmail }) => {
     <div>
       <div className="mb-3">
         <div className="text-sm text-gray-500">
-          {`From: ProductHQ Updates ${email?.sender_settings ?? 'noreply@producthq.io'}`}
+          {`From: ProductHQ Updates ${customer?.sender_settings ?? 'noreply@producthq.io'}`}
         </div>
         <div className="text-sm text-gray-500">To: customer@company.com</div>
         <div className="text-sm text-gray-500">

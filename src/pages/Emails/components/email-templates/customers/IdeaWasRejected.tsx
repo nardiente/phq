@@ -1,6 +1,6 @@
 import { useUser } from '../../../../../contexts/UserContext';
 
-export const AdminEditedIdea = () => {
+export const IdeaWasRejected = () => {
   const { user: userContext } = useUser();
   const { emails, user } = userContext ?? {};
   const { customer } = emails ?? {};
@@ -13,44 +13,46 @@ export const AdminEditedIdea = () => {
         </div>
         <div className="text-sm text-gray-500">To: customer@company.com</div>
         <div className="text-sm text-gray-500">
-          Subject: Your idea has been updated
+          Subject: Your idea was not approved
         </div>
       </div>
 
       <div className="border-t pt-3">
         <div className="text-[18px] font-medium text-gray-900 mb-2">
-          Hey <span className="text-gray-500">[First Name]</span>! 👋
+          Uh oh! 😕
         </div>
 
         <p className="text-[14px] text-gray-700 mb-3">
-          An admin at{' '}
-          <span className="text-gray-500">{user?.company_name}</span> has
-          amended your idea.
+          Your idea has been rejected.
         </p>
 
         <div className="mb-4">
-          <h4 className="text-[15px] font-medium text-gray-900 mb-2">
-            Here are some reasons an idea might be updated:
-          </h4>
-          <div className="text-[14px] text-gray-700 pl-2">
-            <p className="text-[13px] mb-1">1. To amend a typo (most common)</p>
-            <p className="text-[13px] mb-1">
-              2. More context has been added to better describe the idea
+          <h4 className="text-[15px] font-medium text-gray-900 mb-2">Reason</h4>
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <p className="text-[14px] text-gray-700">
+              <span className="text-gray-500">
+                [Rejection reason will appear here]
+              </span>
             </p>
-            <p className="text-[13px] mb-1">
-              3. The title was updated to better describe the idea
-            </p>
-            <p className="text-[13px]">4. Multiple ideas in one entry</p>
           </div>
         </div>
 
+        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+          <p className="text-[14px] text-gray-700">
+            <span className="text-gray-500">[Idea Name]</span>
+          </p>
+        </div>
+
+        <p className="text-[14px] text-gray-700 mb-4">
+          Please contact the board administrator if you would like to appeal
+          this decision.
+        </p>
+
         <button className="px-5 py-2 bg-[#5a00cd] text-white rounded-lg text-[14px] font-medium mb-4">
-          View Updated Idea
+          Contact Admin
         </button>
 
         <p className="text-[14px] text-gray-700 mb-2">
-          Thanks!
-          <br />
           The <span className="text-gray-500">{user?.company_name}</span> Team
         </p>
 

@@ -1,15 +1,15 @@
 import { useUser } from '../../../../../contexts/UserContext';
-import { CustomerEmail } from '../../../../../types/email';
 
-export const IdeaWasApproved = ({ email }: { email?: CustomerEmail }) => {
+export const IdeaWasApproved = () => {
   const { user: userContext } = useUser();
-  const { user } = userContext ?? {};
+  const { emails, user } = userContext ?? {};
+  const { customer } = emails ?? {};
 
   return (
     <div>
       <div className="mb-3">
         <div className="text-sm text-gray-500">
-          {`From: ProductHQ Updates ${email?.sender_settings ?? 'noreply@producthq.io'}`}
+          {`From: ProductHQ Updates ${customer?.sender_settings ?? 'noreply@producthq.io'}`}
         </div>
         <div className="text-sm text-gray-500">To: customer@company.com</div>
         <div className="text-sm text-gray-500">
