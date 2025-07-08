@@ -5,6 +5,8 @@ import { emailCategories } from '../../../constants/emails';
 import { CustomerWeeklyUpdate } from './email-templates/customers/CustomerWeeklyUpdate';
 import { DefaultTemplate } from './email-templates/customers/DefaultTemplate';
 import { NewVoteOnIdea } from './email-templates/customers/NewVoteOnIdea';
+import { AdminEditedIdea } from './email-templates/customers/AdminEditedIdea';
+import { IdeaWasApproved } from './email-templates/customers/IdeaWasApproved';
 
 export const CustomerEmails = ({
   customerEmail,
@@ -149,7 +151,7 @@ export const CustomerEmails = ({
                       <div
                         key={index}
                         className={`flex items-center justify-between p-2.5 hover:bg-[#F9F5FF] transition-colors border-b border-gray-100 last:border-b-0 cursor-pointer ${
-                          selectedTemplate === item.id ? 'bg-[#F9F5FF]' : ''
+                          selectedTemplate === item.text ? 'bg-[#F9F5FF]' : ''
                         }`}
                         onClick={() => handleTemplateSelect(item.text)}
                       >
@@ -174,7 +176,49 @@ export const CustomerEmails = ({
                                   : false
                             }
                             className="sr-only peer"
-                            defaultChecked={false}
+                            onChange={() =>
+                              setEmail((prev) => {
+                                if (prev) {
+                                  const categoryItem = {
+                                    [item.id]: prev?.[
+                                      category.id as keyof typeof prev
+                                    ]?.[item.id as keyof typeof prev.ideas]
+                                      ? !prev?.[
+                                          category.id as keyof typeof prev
+                                        ]?.[item.id as keyof typeof prev.ideas]
+                                      : true,
+                                  };
+                                  switch (category.id) {
+                                    case 'ideas':
+                                      prev = {
+                                        ...prev,
+                                        [category.id as keyof typeof prev]:
+                                          prev.ideas
+                                            ? {
+                                                ...prev.ideas,
+                                                ...categoryItem,
+                                              }
+                                            : categoryItem,
+                                      };
+                                      break;
+                                    case 'comments':
+                                      prev = {
+                                        ...prev,
+                                        comments: prev.comments
+                                          ? {
+                                              ...prev.comments,
+                                              ...categoryItem,
+                                            }
+                                          : categoryItem,
+                                      };
+                                      break;
+                                    default:
+                                      break;
+                                  }
+                                }
+                                return prev;
+                              })
+                            }
                           />
                           <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#5a00cd]"></div>
                         </label>
@@ -190,74 +234,7 @@ export const CustomerEmails = ({
             <div className="p-4">
               <div className="bg-white rounded-lg border p-4 min-h-[600px]">
                 {selectedTemplate === 'Admin edited my Idea' ? (
-                  <div>
-                    <div className="mb-3">
-                      <div className="text-sm text-gray-500">
-                        From: ProductHQ Updates &lt;noreply@producthq.io&gt;
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        To: customer@company.com
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        Subject: Your idea has been updated
-                      </div>
-                    </div>
-
-                    <div className="border-t pt-3">
-                      <div className="text-[18px] font-medium text-gray-900 mb-2">
-                        Hey <span className="text-gray-500">[First Name]</span>!
-                        👋
-                      </div>
-
-                      <p className="text-[14px] text-gray-700 mb-3">
-                        An admin at{' '}
-                        <span className="text-gray-500">[Company Name]</span>{' '}
-                        has amended your idea.
-                      </p>
-
-                      <div className="mb-4">
-                        <h4 className="text-[15px] font-medium text-gray-900 mb-2">
-                          Here are some reasons an idea might be updated:
-                        </h4>
-                        <div className="text-[14px] text-gray-700 pl-2">
-                          <p className="text-[13px] mb-1">
-                            1. To amend a typo (most common)
-                          </p>
-                          <p className="text-[13px] mb-1">
-                            2. More context has been added to better describe
-                            the idea
-                          </p>
-                          <p className="text-[13px] mb-1">
-                            3. The title was updated to better describe the idea
-                          </p>
-                          <p className="text-[13px]">
-                            4. Multiple ideas in one entry
-                          </p>
-                        </div>
-                      </div>
-
-                      <button className="px-5 py-2 bg-[#5a00cd] text-white rounded-lg text-[14px] font-medium mb-4">
-                        View Updated Idea
-                      </button>
-
-                      <p className="text-[14px] text-gray-700 mb-2">
-                        Thanks!
-                        <br />
-                        The{' '}
-                        <span className="text-gray-500">
-                          [Company Name]
-                        </span>{' '}
-                        Team
-                      </p>
-
-                      <p className="text-[13px] text-gray-500">
-                        Help us improve -{' '}
-                        <a href="#" className="text-[#5a00cd]">
-                          share your thoughts
-                        </a>
-                      </p>
-                    </div>
-                  </div>
+                  <AdminEditedIdea email={customerEmail} />
                 ) : selectedTemplate === 'New comment on my Idea' ? (
                   <div>
                     <div className="mb-3">
@@ -627,53 +604,7 @@ export const CustomerEmails = ({
                 ) : selectedTemplate === 'New vote on my Idea' ? (
                   <NewVoteOnIdea email={customerEmail} />
                 ) : selectedTemplate === 'My Idea was approved' ? (
-                  <div>
-                    <div className="mb-3">
-                      <div className="text-sm text-gray-500">
-                        From: ProductHQ Updates &lt;noreply@producthq.io&gt;
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        To: customer@company.com
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        Subject: Your idea has been approved
-                      </div>
-                    </div>
-
-                    <div className="border-t pt-3">
-                      <div className="text-[18px] font-medium text-gray-900 mb-2">
-                        Great work! 🎉
-                      </div>
-
-                      <p className="text-[14px] text-gray-700 mb-3">
-                        Your idea has been approved and is now live on our board
-                        here:
-                      </p>
-
-                      <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                        <p className="text-[14px] text-gray-700">
-                          <span className="text-gray-500">[Idea Name]</span>
-                        </p>
-                      </div>
-
-                      <button className="px-5 py-2 bg-[#5a00cd] text-white rounded-lg text-[14px] font-medium mb-4">
-                        View Idea
-                      </button>
-
-                      <p className="text-[14px] text-gray-700 mb-2">
-                        The{' '}
-                        <span className="text-gray-500">[Company Name]</span>{' '}
-                        Team
-                      </p>
-
-                      <p className="text-[13px] text-gray-500">
-                        Help us improve -{' '}
-                        <a href="#" className="text-[#5a00cd]">
-                          share your thoughts
-                        </a>
-                      </p>
-                    </div>
-                  </div>
+                  <IdeaWasApproved email={customerEmail} />
                 ) : selectedTemplate === 'My Idea was rejected' ? (
                   <div>
                     <div className="mb-3">
@@ -891,7 +822,7 @@ export const CustomerEmails = ({
                     </div>
                   </div>
                 ) : selectedTemplate === 'Customer Weekly Update' ? (
-                  <CustomerWeeklyUpdate />
+                  <CustomerWeeklyUpdate email={customerEmail} />
                 ) : selectedTemplate ===
                   "Status changed on Idea I'm following" ? (
                   <div>

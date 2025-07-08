@@ -2,10 +2,11 @@ import { useFeedback } from '../../../../../contexts/FeedbackContext';
 import { useUser } from '../../../../../contexts/UserContext';
 import moment from 'moment';
 import { listIdeas, listUpvotes } from '../../../../../utils/emails';
+import { CustomerEmail } from '../../../../../types/email';
 
-export const CustomerWeeklyUpdate = () => {
+export const CustomerWeeklyUpdate = ({ email }: { email?: CustomerEmail }) => {
   const { user: userContext } = useUser();
-  const { project } = userContext ?? {};
+  const { project, user } = userContext ?? {};
   const {
     state: { filteredIdeas, upvotes },
   } = useFeedback();
@@ -16,7 +17,7 @@ export const CustomerWeeklyUpdate = () => {
     <div>
       <div className="mb-3">
         <div className="text-sm text-gray-500">
-          From: ProductHQ Updates noreply@producthq.io
+          {`From: ProductHQ Updates ${email?.sender_settings ?? 'noreply@producthq.io'}`}
         </div>
         <div className="text-sm text-gray-500">To: customer@company.com</div>
         <div className="text-sm text-gray-500">
@@ -31,7 +32,7 @@ export const CustomerWeeklyUpdate = () => {
 
         <p className="text-[14px] text-gray-700 mb-3">
           Here's what has happened this week on{' '}
-          <span className="text-gray-500">[Company Name]</span>
+          <span className="text-gray-500">{user?.company_name}</span>
           's feedback board:
         </p>
 
@@ -112,12 +113,12 @@ export const CustomerWeeklyUpdate = () => {
         </button>
 
         <p className="text-[14px] text-gray-700 mb-2">
-          The <span className="text-gray-500">[Company Name]</span> Team
+          The <span className="text-gray-500">{user?.company_name}</span> Team
         </p>
 
         <p className="text-[13px] text-gray-500">
           Can we make this email better?{' '}
-          <a href="https://feedback.frill.co" className="text-[#5a00cd]">
+          <a href="https://feedback.producthq.io" className="text-[#5a00cd]">
             Let us know here
           </a>
         </p>

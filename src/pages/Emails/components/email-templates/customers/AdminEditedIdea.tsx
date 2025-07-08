@@ -1,7 +1,7 @@
 import { useUser } from '../../../../../contexts/UserContext';
 import { CustomerEmail } from '../../../../../types/email';
 
-export const NewVoteOnIdea = ({ email }: { email?: CustomerEmail }) => {
+export const AdminEditedIdea = ({ email }: { email?: CustomerEmail }) => {
   const { user: userContext } = useUser();
   const { user } = userContext ?? {};
 
@@ -13,7 +13,7 @@ export const NewVoteOnIdea = ({ email }: { email?: CustomerEmail }) => {
         </div>
         <div className="text-sm text-gray-500">To: customer@company.com</div>
         <div className="text-sm text-gray-500">
-          Subject: Someone voted on your idea
+          Subject: Your idea has been updated
         </div>
       </div>
 
@@ -23,21 +23,33 @@ export const NewVoteOnIdea = ({ email }: { email?: CustomerEmail }) => {
         </div>
 
         <p className="text-[14px] text-gray-700 mb-3">
-          Nice work. It looks like someone loves your idea.
+          An admin at{' '}
+          <span className="text-gray-500">{user?.company_name}</span> has
+          amended your idea.
         </p>
 
-        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-          <p className="text-[14px] text-gray-700">
-            <span className="text-gray-500">[Idea Name]</span>
-          </p>
+        <div className="mb-4">
+          <h4 className="text-[15px] font-medium text-gray-900 mb-2">
+            Here are some reasons an idea might be updated:
+          </h4>
+          <div className="text-[14px] text-gray-700 pl-2">
+            <p className="text-[13px] mb-1">1. To amend a typo (most common)</p>
+            <p className="text-[13px] mb-1">
+              2. More context has been added to better describe the idea
+            </p>
+            <p className="text-[13px] mb-1">
+              3. The title was updated to better describe the idea
+            </p>
+            <p className="text-[13px]">4. Multiple ideas in one entry</p>
+          </div>
         </div>
 
         <button className="px-5 py-2 bg-[#5a00cd] text-white rounded-lg text-[14px] font-medium mb-4">
-          See your idea
+          View Updated Idea
         </button>
 
         <p className="text-[14px] text-gray-700 mb-2">
-          Thanks for your input.
+          Thanks!
           <br />
           The <span className="text-gray-500">{user?.company_name}</span> Team
         </p>

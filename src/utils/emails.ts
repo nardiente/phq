@@ -14,7 +14,8 @@ export const listComments = ({
     .filter((comment) => {
       const created_at = moment(comment.created_at);
       return (
-        created_at.isBetween(start, end, undefined, '[]') &&
+        ((start && created_at.isBetween(start, end, undefined, '[]')) ||
+          (!start && created_at.isSameOrBefore(end))) &&
         !comment.deleted &&
         (!comment.admin_approval_status ||
           comment.admin_approval_status === 'approved')
@@ -34,7 +35,9 @@ export const listIdeas = ({
 }) => {
   const ideas = filteredIdeas.filter((idea) => {
     const created_at = moment(idea.created_at);
-    return created_at.isBetween(start, end, undefined, '[]');
+    return start
+      ? created_at.isBetween(start, end, undefined, '[]')
+      : created_at.isSameOrBefore(end);
   });
   if (sort === 'Trending') {
     return ideas.sort((a, b) => b.vote - a.vote);
@@ -53,7 +56,9 @@ export const listUpvotes = ({
 }) => {
   const feedbacks = upvoteLogs.filter((upvote) => {
     const created_at = moment(upvote.created_at);
-    return created_at.isBetween(start, end, undefined, '[]');
+    return start
+      ? created_at.isBetween(start, end, undefined, '[]')
+      : created_at.isSameOrBefore(end);
   });
 
   return filteredIdeas

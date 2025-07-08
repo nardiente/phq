@@ -17,6 +17,19 @@ export type CustomerEmail = {
   };
   comments?: {
     comment_on_idea?: boolean;
+    comment_was_approved?: boolean;
+    comment_was_rejected?: boolean;
+    new_comment_reply?: boolean;
+    mentioned_in_comment?: boolean;
+  };
+  following?: {
+    comment_on_followed_idea?: boolean;
+    status_changed_on_followed_idea?: boolean;
+    new_vote_on_followed_idea?: boolean;
+  };
+  users?: {
+    new_user_signup_approved?: boolean;
+    welcome_new_user?: boolean;
   };
 };
 
