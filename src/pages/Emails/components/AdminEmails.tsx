@@ -234,10 +234,10 @@ export const AdminEmails = ({
                   <h4 className="text-[15px] font-medium text-gray-900 mb-2">
                     New Ideas
                   </h4>
-                  <div className="text-[14px] text-gray-700 pl-2 flex flex-col gap-1">
+                  <div className="text-[14px] text-gray-700 pl-2 flex flex-col">
                     {listIdeas({ filteredIdeas, start }).map((idea, idx) => (
-                      <p key={idx} className="text-[13px]">
-                        {idea.title}
+                      <p key={idx} className="text-[13px] leading-none">
+                        • {idea.title}
                       </p>
                     ))}
                   </div>
@@ -249,16 +249,14 @@ export const AdminEmails = ({
                   <h4 className="text-[15px] font-medium text-gray-900 mb-2">
                     New Comments
                   </h4>
-                  <div className="text-[14px] text-gray-700 pl-2 flex flex-col gap-1">
-                    {listUpvotes({
-                      upvoteLogs: upvotes,
-                      filteredIdeas,
-                      start,
-                    }).map((upvote, idx) => (
-                      <p key={idx} className="text-[13px]">
-                        {upvote.title}
-                      </p>
-                    ))}
+                  <div className="text-[14px] text-gray-700 pl-2 flex flex-col">
+                    {listComments({ feedbackComments: comments, start }).map(
+                      (comment, idx) => (
+                        <p key={idx} className="text-[13px] leading-none">
+                          • {removeHtmlTags(comment.comment)}
+                        </p>
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -268,14 +266,16 @@ export const AdminEmails = ({
                   <h4 className="text-[15px] font-medium text-gray-900 mb-2">
                     New Feedback
                   </h4>
-                  <div className="text-[14px] text-gray-700 pl-2">
-                    {listComments({ feedbackComments: comments, start }).map(
-                      (comment, idx) => (
-                        <p key={idx} className="text-[13px]">
-                          {removeHtmlTags(comment.comment)}
-                        </p>
-                      )
-                    )}
+                  <div className="text-[14px] text-gray-700 pl-2 flex flex-col">
+                    {listUpvotes({
+                      upvoteLogs: upvotes,
+                      filteredIdeas,
+                      start,
+                    }).map((upvote, idx) => (
+                      <p key={idx} className="text-[13px] leading-none">
+                        • {upvote.title}
+                      </p>
+                    ))}
                   </div>
                 </div>
               )}

@@ -130,7 +130,7 @@ export const listUpvotes = ({
   start?: Moment;
   filters?: Partial<Record<keyof Feedback, any>>;
 }) => {
-  const feedbacks = upvoteLogs.filter((upvote) => {
+  const upvotes = upvoteLogs.filter((upvote) => {
     const created_at = moment(upvote.created_at);
     return start
       ? created_at.isBetween(start, end, undefined, '[]')
@@ -139,8 +139,7 @@ export const listUpvotes = ({
 
   let ideas = filteredIdeas.filter(
     (idea) =>
-      idea.id &&
-      feedbacks.map((feedback) => feedback.feedback_id).includes(idea.id)
+      idea.id && upvotes.map((upvote) => upvote.feedback_id).includes(idea.id)
   );
 
   if (filters) {

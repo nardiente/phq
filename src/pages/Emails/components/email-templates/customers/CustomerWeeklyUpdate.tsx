@@ -95,7 +95,7 @@ export const CustomerWeeklyUpdate = memo(function CustomerWeeklyUpdate() {
                 : project?.portal_subdomain && project.portal_subdomain.length
                   ? project.portal_subdomain + '.producthq.io'
                   : '');
-            window.open(portal, '_blanck', 'noopener noreferrer');
+            window.open(portal, '_blank', 'noopener, noreferrer');
           }}
         >
           View latest
