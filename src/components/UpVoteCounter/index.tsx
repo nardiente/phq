@@ -126,6 +126,10 @@ export const UpVoteCounter = ({
         projectId: user?.project?.id,
       },
     });
+    socket?.emit('message', {
+      action: SocketAction.UPDATE_UPVOTE,
+      data: { projectId: user?.project?.id },
+    });
 
     setLoading(false);
   };

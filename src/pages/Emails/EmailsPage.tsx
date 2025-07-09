@@ -3,12 +3,18 @@ import TabNavigation from '../../components/TabNavigation';
 import { AdminEmails } from './components/AdminEmails';
 import { CustomerEmail, Email, Emails } from '../../types/email';
 import { defaultEmails } from '../../constants/emails';
-import { getApi, putApi } from '../../utils/api/api';
+import { putApi } from '../../utils/api/api';
 import { useUser } from '../../contexts/UserContext';
 import { CustomerEmails } from './components/CustomerEmails';
 
 export default function EmailsPage() {
-  const { initialUser, user: userContext, setEmails, setUser } = useUser();
+  const {
+    team,
+    user: userContext,
+    getPublicUsers,
+    getUserEmail,
+    setEmails,
+  } = useUser();
   const { emails = defaultEmails } = userContext ?? {};
 
   const [activeTab, setActiveTab] = useState<{ id: string; text: string }>({
@@ -23,17 +29,10 @@ export default function EmailsPage() {
     if (hasFetched.current) return;
     hasFetched.current = true;
 
-    getApi<Emails>({ url: 'emails' }).then((res) => {
-      const {
-        results: { data },
-      } = res;
-      if (data) {
-        setEmails(data);
-        setUser((prev) =>
-          prev ? { ...prev, emails: data } : { ...initialUser, emails: data }
-        );
-      }
-    });
+    getUserEmail();
+    if (!team.owner) {
+      getPublicUsers();
+    }
   }, []);
 
   useEffect(() => {
@@ -73,21 +72,6 @@ export default function EmailsPage() {
       });
     }
   };
-
-  // const handleToggleChange = (setting: keyof typeof emailSettings) => {
-  //   setEmailSettings((prev) => ({
-  //     ...prev,
-  //     [setting]: !prev[setting],
-  //   }));
-  // };
-
-  // const handleFrequencyChange = (value: string) => {
-  //   setFrequency(value);
-  // };
-
-  // const handleTemplateSelect = (template: string) => {
-  //   setSelectedTemplate(template);
-  // };
 
   return (
     <div className="flex-1 px-8 py-6 flex justify-center">

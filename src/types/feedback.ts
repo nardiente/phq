@@ -3,6 +3,7 @@ import { User } from './user';
 
 export interface Feedback {
   id?: number;
+  anonymous_id?: number;
   author?: {
     full_name: string;
     profile_photo?: string;
@@ -84,6 +85,7 @@ export const Impact = {
 };
 
 export interface FeedbackComment {
+  anonymous_id?: number;
   author: {
     id: number;
     full_name: string;

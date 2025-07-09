@@ -7,7 +7,7 @@ import {
   SetStateAction,
   useEffect,
 } from 'react';
-import { User } from '../types/user';
+import { Team, TeamMember, User } from '../types/user';
 import { getApi } from '../utils/api/api';
 import { Moderation } from '../types/moderation';
 import { Card, InvoiceHistory, Subscription } from '../types/billing';
@@ -69,7 +69,9 @@ interface UserContextType {
   email: string;
   fetching: boolean;
   first_name: string;
+  getPublicUsers: () => Promise<void>;
   getSubscriptions: () => Promise<void>;
+  getUserEmail: () => Promise<void>;
   githubCode: string;
   handleGetAppearance: () => Promise<void>;
   handleGetCard: () => Promise<void>;
@@ -93,9 +95,11 @@ interface UserContextType {
   setLoaded: Dispatch<SetStateAction<boolean>>;
   setLoadingSocial: Dispatch<React.SetStateAction<boolean>>;
   setShowBanner: Dispatch<React.SetStateAction<boolean>>;
+  setTeam: Dispatch<SetStateAction<Team>>;
   setUser: Dispatch<React.SetStateAction<UserContextConfig | undefined>>;
   showBanner: boolean;
   subscriptions: Subscription[];
+  team: Team;
   user?: UserContextConfig;
   users: User[];
 }
@@ -112,39 +116,44 @@ const initialUser: UserContextConfig = {
 };
 
 const UserContext = createContext<UserContextType>({
+  access_history: [],
+  cards: [],
   email: '',
   fetching: false,
   first_name: '',
+  getPublicUsers: async () => Promise.resolve(),
+  getSubscriptions: async () => Promise.resolve(),
+  getUserEmail: async () => Promise.resolve(),
   githubCode: '',
   handleGetAppearance: async () => Promise.resolve(),
+  handleGetCard: async () => Promise.resolve(),
   handleGetUser: async () => Promise.resolve(),
+  handleInvoiceHistory: async () => Promise.resolve(),
+  initialUser,
+  invoices: [],
+  isAuthenticated: () => false,
   last_name: '',
+  listAccessHistory: async () => Promise.resolve(),
+  listUsers: async () => Promise.resolve(),
+  loaded: false,
   loading_social: false,
+  removeUser: async () => Promise.resolve(),
   setEmail: () => {},
+  setEmails: () => {},
   setFetching: () => {},
   setFirstName: () => {},
   setGithubCode: () => {},
   setLastName: () => {},
+  setLoaded: () => {},
   setLoadingSocial: () => {},
   setShowBanner: () => {},
+  setTeam: () => {},
   setUser: () => {},
   showBanner: false,
-  isAuthenticated: () => false,
-  loaded: false,
-  setLoaded: () => {},
-  users: [],
-  listUsers: async () => Promise.resolve(),
-  removeUser: async () => Promise.resolve(),
-  initialUser,
-  access_history: [],
-  listAccessHistory: async () => Promise.resolve(),
-  cards: [],
-  handleGetCard: async () => Promise.resolve(),
   subscriptions: [],
-  getSubscriptions: async () => Promise.resolve(),
-  invoices: [],
-  handleInvoiceHistory: async () => Promise.resolve(),
-  setEmails: () => {},
+  team: { anonymousSessions: [], members: [], publicUsers: [] },
+  user: undefined,
+  users: [],
 });
 
 interface UserProviderProps {
@@ -167,6 +176,11 @@ export function UserProvider({ children }: UserProviderProps) {
   const [loading_social, setLoadingSocial] = useState<boolean>(false);
   const [showBanner, setShowBanner] = useState<boolean>(false);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [team, setTeam] = useState<Team>({
+    anonymousSessions: [],
+    members: [],
+    publicUsers: [],
+  });
   const [user, setUser] = useState<UserContextConfig | undefined>(initialUser);
   const [users, setUsers] = useState<User[]>([]);
 
@@ -208,6 +222,16 @@ export function UserProvider({ children }: UserProviderProps) {
     }
   }, [userProfile?.id]);
 
+  const getPublicUsers = async () => {
+    setFetching(true);
+    getApi<TeamMember>({ url: 'users/me/team' }).then((res) => {
+      setFetching(false);
+      if (res.results.data) {
+        setTeam(res.results.data.team);
+      }
+    });
+  };
+
   const getSubscriptions = async () => {
     setFetching(true);
     getApi<Subscription[]>({
@@ -223,6 +247,22 @@ export function UserProvider({ children }: UserProviderProps) {
       const { data: subscriptions } = results ?? {};
       if (subscriptions) {
         setSubscriptions(subscriptions);
+      }
+    });
+  };
+
+  const getUserEmail = async () => {
+    setFetching(true);
+    getApi<Emails>({ url: 'emails' }).then((res) => {
+      setFetching(false);
+      const {
+        results: { data },
+      } = res;
+      if (data) {
+        setEmails(data);
+        setUser((prev) =>
+          prev ? { ...prev, emails: data } : { ...initialUser, emails: data }
+        );
       }
     });
   };
@@ -427,7 +467,9 @@ export function UserProvider({ children }: UserProviderProps) {
         email,
         fetching,
         first_name,
+        getPublicUsers,
         getSubscriptions,
+        getUserEmail,
         githubCode,
         handleGetAppearance,
         handleGetCard,
@@ -451,9 +493,11 @@ export function UserProvider({ children }: UserProviderProps) {
         setLoaded,
         setLoadingSocial,
         setShowBanner,
+        setTeam,
         setUser,
         showBanner,
         subscriptions,
+        team,
         user,
         users,
       }}

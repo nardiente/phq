@@ -46,6 +46,31 @@ export interface Role {
   tag: string;
 }
 
+export interface Session {
+  id?: number;
+  user_id?: number;
+  anonymous_id?: number;
+  token?: string;
+  user_agent: string;
+  ip_address: string;
+  timestamp: string;
+  login_type?: LoginType;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Team {
+  anonymousSessions: Session[];
+  members: User[];
+  owner?: User;
+  publicUsers: User[];
+}
+
+export interface TeamMember {
+  updatedTeamMembers: User[];
+  team: Team;
+}
+
 export interface User {
   id?: number;
   customer_id?: number;

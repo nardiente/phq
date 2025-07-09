@@ -1,9 +1,10 @@
 import { useFeedback } from '../../../../../contexts/FeedbackContext';
 import { useUser } from '../../../../../contexts/UserContext';
 import moment from 'moment';
-import { listIdeas, listUpvotes } from '../../../../../utils/emails';
+import { listIdeas, listUpvoteLogs } from '../../../../../utils/emails';
+import { memo } from 'react';
 
-export const CustomerWeeklyUpdate = () => {
+export const CustomerWeeklyUpdate = memo(function CustomerWeeklyUpdate() {
   const { user: userContext } = useUser();
   const { emails, project, user } = userContext ?? {};
   const { customer } = emails ?? {};
@@ -44,25 +45,13 @@ export const CustomerWeeklyUpdate = () => {
             <p className="text-[13px] mb-1">
               • new votes this week:{' '}
               <span className="text-gray-500">
-                {listUpvotes({
-                  upvoteLogs: upvotes,
-                  filteredIdeas,
-                  start,
-                }).reduce(
-                  (accumulated, currentValue) =>
-                    accumulated + currentValue.vote,
-                  0
-                )}
+                {listUpvoteLogs({ upvotes, start }).length}
               </span>
             </p>
             <p className="text-[13px]">
               • total votes:{' '}
               <span className="text-gray-500">
-                {listUpvotes({ upvoteLogs: upvotes, filteredIdeas }).reduce(
-                  (accumulated, currentValue) =>
-                    accumulated + currentValue.vote,
-                  0
-                )}
+                {listUpvoteLogs({ upvotes }).length}
               </span>
             </p>
           </div>
@@ -125,4 +114,4 @@ export const CustomerWeeklyUpdate = () => {
       </div>
     </div>
   );
-};
+});

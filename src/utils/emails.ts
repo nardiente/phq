@@ -24,6 +24,15 @@ export const listComments = ({
   });
 
   if (filters) {
+    comments = comments.filter(
+      (comment) =>
+        filters.anonymous_id?.includes(comment.anonymous_id) ||
+        filters.created_by?.includes(comment.created_by)
+    );
+
+    delete filters.anonymous_id;
+    delete filters.created_by;
+
     comments = comments.filter((comment) =>
       Object.entries(filters).every(
         ([key, value]) => comment?.[key as keyof typeof comment] === value
@@ -53,6 +62,15 @@ export const listIdeas = ({
   });
 
   if (filters) {
+    ideas = ideas.filter(
+      (idea) =>
+        filters.anonymous_id?.includes(idea.anonymous_id) ||
+        filters.created_by?.includes(idea.created_by)
+    );
+
+    delete filters.anonymous_id;
+    delete filters.created_by;
+
     ideas = ideas.filter((idea) =>
       Object.entries(filters).every(
         ([key, value]) => idea?.[key as keyof typeof idea] === value
@@ -66,6 +84,39 @@ export const listIdeas = ({
   }
 
   return ideas;
+};
+
+export const listUpvoteLogs = ({
+  upvotes,
+  start,
+  filters,
+}: {
+  upvotes: UpvoteLog[];
+  start?: Moment;
+  filters?: Partial<Record<keyof UpvoteLog, any>>;
+}) => {
+  let upvoteLogs = upvotes.filter((upvote) => {
+    const created_at = moment(upvote.created_at);
+    return start
+      ? created_at.isBetween(start, end, undefined, '[]')
+      : created_at.isSameOrBefore(end);
+  });
+
+  if (filters) {
+    upvoteLogs = upvoteLogs.filter(
+      (upvote) =>
+        filters.anonymous_id?.includes(upvote.anonymous_id) ||
+        filters.user_id?.includes(upvote.user_id)
+    );
+
+    upvoteLogs = upvoteLogs.filter((upvoteLog) =>
+      Object.entries(filters).every(
+        ([key, value]) => upvoteLog?.[key as keyof typeof upvoteLog] === value
+      )
+    );
+  }
+
+  return upvoteLogs;
 };
 
 export const listUpvotes = ({
@@ -93,6 +144,15 @@ export const listUpvotes = ({
   );
 
   if (filters) {
+    ideas = ideas.filter(
+      (idea) =>
+        filters.anonymous_id?.includes(idea.anonymous_id) ||
+        filters.created_by?.includes(idea.created_by)
+    );
+
+    delete filters.anonymous_id;
+    delete filters.created_by;
+
     ideas = ideas.filter((idea) =>
       Object.entries(filters).every(
         ([key, value]) => idea?.[key as keyof typeof idea] === value

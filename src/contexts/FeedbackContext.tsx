@@ -48,6 +48,7 @@ interface FeedbackState {
 type FeedbackAction =
   | { type: 'ADD_IDEA'; payload: Feedback }
   | { type: 'ADD_ROADMAP'; payload: Roadmap }
+  | { type: 'UPDATE_UPVOTE'; payload: UpvoteLog }
   | { type: 'DELETE_ROADMAP'; payload: Roadmap }
   | { type: 'DELETE_BY_ID'; payload: number }
   | {
@@ -188,6 +189,8 @@ function feedbackReducer(
         ...state,
         roadmaps: [...(state.roadmaps || []), action.payload],
       };
+    case 'UPDATE_UPVOTE':
+      return { ...state, upvotes: [...(state.upvotes ?? []), action.payload] };
     case 'DELETE_ROADMAP':
       return {
         ...state,
@@ -417,6 +420,11 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       case SocketAction.SET_TAGS:
         setTags(tags);
         break;
+
+      case SocketAction.UPDATE_UPVOTE:
+        listUpvotes();
+        break;
+
       default:
         break;
     }

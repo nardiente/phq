@@ -1,7 +1,7 @@
 import { Fragment, LegacyRef, ReactNode, useEffect, useState } from 'react';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { User } from '../../types/user';
+import { TeamMember, User } from '../../types/user';
 import { ApiFieldError } from '../../utils/api/types';
 import { useUser } from '../../contexts/UserContext';
 import { useUnsavedChanges } from '../../contexts/UnsavedChangesContext';
@@ -54,7 +54,6 @@ export default function TeamMembersPage() {
   const [api_field_error, setApiFieldError] = useState<string>('');
   const [field_errors, setFieldErrors] = useState<ApiFieldError[]>([]);
   const [button_name, setButtonName] = useState<string>('Invite');
-  const [no_members, setNoMembers] = useState<boolean>(false);
   const [toast_message, setToastMessage] = useState<ReactNode>(<>Saved!</>);
   const [selected_member_name, setSelectedMemberName] = useState<string>('');
   const [is_member, setIsMember] = useState<boolean>(false);
@@ -84,10 +83,6 @@ export default function TeamMembersPage() {
         (role_old.length === 0 && role.length > 0)
     );
   }, [first_name, last_name, email_address, role]);
-
-  useEffect(() => {
-    setNoMembers(team_members.length === 0);
-  }, [team_members]);
 
   const clearFields = () => {
     setFirstName('');
@@ -174,16 +169,14 @@ export default function TeamMembersPage() {
 
   const handleGetProfiles = () => {
     setFetchingTeam(true);
-    getApi<User[]>({ url: 'users/me/team' }).then((res) => {
-      if (res.results.data) {
-        const data = res.results.data;
-        if (data.length === 0) {
-          setNoMembers(true);
+    getApi<TeamMember>({ url: 'users/me/team' })
+      .then((res) => {
+        if (res.results.data) {
+          const data = res.results.data.updatedTeamMembers;
+          setTeamMembers(data);
         }
-        setTeamMembers(data);
-      }
-      setFetchingTeam(false);
-    });
+      })
+      .finally(() => setFetchingTeam(false));
   };
 
   const onSubmitDelete = (idx: number) => {
@@ -597,14 +590,23 @@ export default function TeamMembersPage() {
                 }}
               >
                 <span className="header-label">Team</span>
-                {!no_members ? (
+                {fetching_team ? (
+                  <div className="flex items-center justify-center">
+                    <Loader />
+                  </div>
+                ) : (
                   <>
-                    {fetching_team && (
-                      <div className="flex items-center justify-center">
-                        <Loader />
-                      </div>
-                    )}
-                    {!fetching_team && team_members && (
+                    {team_members.length === 0 ? (
+                      <span
+                        className="no-members"
+                        style={{
+                          marginBottom: '0px',
+                          marginTop: '0px',
+                        }}
+                      >
+                        {t('no-team-members-label')}
+                      </span>
+                    ) : (
                       <table>
                         <thead>
                           <tr>
@@ -761,16 +763,6 @@ export default function TeamMembersPage() {
                       </table>
                     )}
                   </>
-                ) : (
-                  <span
-                    className="no-members"
-                    style={{
-                      marginBottom: '0px',
-                      marginTop: '0px',
-                    }}
-                  >
-                    {t('no-team-members-label')}
-                  </span>
                 )}
               </div>
             </div>
