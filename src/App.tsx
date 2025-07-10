@@ -41,11 +41,15 @@ const App: FC = () => {
   const impersonator = getImpersonator();
 
   useEffect(() => {
-    if (is_public && admin_profile?.kasl_key) {
+    if (
+      is_public &&
+      admin_profile?.kasl_key &&
+      moderation?.allow_anonymous_access
+    ) {
       setCustomerKaslKey(admin_profile.kasl_key);
       authenticate();
     }
-  }, [admin_profile]);
+  }, [admin_profile, moderation?.allow_anonymous_access]);
 
   useEffect(() => {
     if (!is_public || (is_public && userProfile?.id)) {

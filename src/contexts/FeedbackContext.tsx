@@ -130,6 +130,7 @@ interface FeedbackContextType {
   setRoadmaps: (roadmaps: Roadmap[]) => Promise<void>;
   setSelectedIdea: (idea: Feedback | null) => Promise<void>;
   setTags: (tags: Tag[]) => Promise<void>;
+  setUpvotes: (upvotes: UpvoteLog[]) => Promise<void>;
   updateIdea: (idea: Feedback) => Promise<void>;
   updateCommentStatus: (item: Partial<FeedbackComment>) => Promise<void>;
   updateItemStatus: (item: Partial<Feedback>) => Promise<void>;
@@ -311,7 +312,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(feedbackReducer, initialState);
 
   const { activeTab, comments, filter, filteredIdeas, ideas, roadmaps } = state;
-  const { sort, status, tags, title } = filter;
+  const { filtering, sort, status, tags, title } = filter;
 
   const { is_public } = useApp();
   const { user: userContext } = useUser();
@@ -468,7 +469,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       handleGetStatus();
       handleListTag();
     }
-  }, [sort, status, tags.length, title, projectId]);
+  }, [filtering, sort, status, tags.length, title, projectId]);
 
   useEffect(() => {
     if (filteredIdeas.length > 0 && roadmaps.length > 0) {
@@ -732,6 +733,10 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_TAGS', payload: tags });
   };
 
+  const setUpvotes = async (upvotes: UpvoteLog[]) => {
+    dispatch({ type: 'SET_UPVOTES', payload: upvotes });
+  };
+
   const updateIdea = async (idea: Feedback) => {
     dispatch({ type: 'UPDATE_IDEA', payload: idea });
   };
@@ -834,6 +839,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
       setRoadmaps,
       setSelectedIdea,
       setTags,
+      setUpvotes,
       updateCommentStatus,
       updateIdea,
       updateItemStatus,

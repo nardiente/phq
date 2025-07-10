@@ -13,6 +13,7 @@ import { Notification, NotificationRequest } from '../../types/notification';
 
 export const api_url = import.meta.env.VITE_API_HOST;
 export const api_public_url = import.meta.env.VITE_API_HOST_PUBLIC;
+const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
 
 export const getApi = async <Data = any>({
   url,
@@ -25,6 +26,19 @@ export const getApi = async <Data = any>({
   useSessionToken?: boolean;
   useCustomerKey?: boolean;
 }) => {
+  if (is_public) {
+    if (
+      typeof params === 'undefined' ||
+      (params &&
+        typeof params === 'object' &&
+        !Array.isArray(params) &&
+        !(params instanceof URLSearchParams))
+    ) {
+      params = { ...(params || {}), domain: window.location.host };
+    } else {
+      params = { domain: window.location.host };
+    }
+  }
   const qs_filters = new URLSearchParams(params);
   const query_string = qs_filters ? `?${qs_filters.toString()}` : '';
   let results: ApiResponseBody<Data> = {};

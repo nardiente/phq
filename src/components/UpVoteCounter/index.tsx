@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useUser } from '../../contexts/UserContext';
-import { Feedback } from '../../types/feedback';
+import { Feedback, UpvoteLog } from '../../types/feedback';
 import './styles.css';
 import styled from 'styled-components';
 import { getKaslKey, getSessionToken } from '../../utils/localStorage';
@@ -38,7 +38,12 @@ export const UpVoteCounter = ({
   const { is_public } = useApp();
   const { user } = useUser();
   const { moderation, permissions } = user ?? {};
-  const { setSelectedIdea, updateIdea } = useFeedback();
+  const {
+    state: { upvotes },
+    setSelectedIdea,
+    setUpvotes,
+    updateIdea,
+  } = useFeedback();
   const {
     state: { socket },
   } = useSocket();
@@ -69,50 +74,67 @@ export const UpVoteCounter = ({
     setLoading(true);
 
     let updated_idea = idea;
+    const vote = upvotes.find(
+      (upvote) =>
+        upvote.user_id === user?.user?.id &&
+        upvote.feedback_id === updated_idea.id &&
+        !upvote.deleted &&
+        (!upvote.admin_approval_status ||
+          upvote.admin_approval_status === 'approved')
+    );
 
-    if (idea.did_vote) {
+    if (vote) {
       // downvote
-      updated_idea = { ...idea, vote: idea.vote - 1, did_vote: false };
+      updated_idea = { ...idea, vote: idea.vote - 1 };
       updateIdea(updated_idea);
       setSelectedIdea(updated_idea);
 
-      deleteApi<Feedback>({
+      deleteApi<UpvoteLog>({
         url: `feedback/${idea.id}/upvote`,
         useSessionToken:
           is_public && user?.moderation?.allow_anonymous_access === true,
       })
         .then((res) => {
-          if (res.results.error) {
-            updated_idea = { ...idea, vote: idea.vote + 1, did_vote: true };
-            updateIdea(updated_idea);
-            setSelectedIdea(updated_idea);
+          if (res.results.data) {
+            setUpvotes(
+              upvotes.filter((upvote) => upvote.id !== res.results.data?.id)
+            );
           }
+          if (res.results.error) {
+            updated_idea = { ...idea, vote: idea.vote + 1 };
+          }
+          updateIdea(updated_idea);
+          setSelectedIdea(updated_idea);
         })
         .catch(() => {
-          updated_idea = { ...idea, vote: idea.vote + 1, did_vote: true };
+          updated_idea = { ...idea, vote: idea.vote + 1 };
           updateIdea(updated_idea);
           setSelectedIdea(updated_idea);
         });
     } else {
       // upvote
-      let updated_idea = { ...idea, vote: idea.vote + 1, did_vote: true };
+      updated_idea = { ...idea, vote: idea.vote + 1 };
       updateIdea(updated_idea);
       setSelectedIdea(updated_idea);
 
-      await postApi({
+      await postApi<UpvoteLog>({
         url: `feedback/${idea.id}/upvote`,
+        payload: is_public ? { domain: window.location.host } : {},
         useSessionToken:
           is_public && user?.moderation?.allow_anonymous_access === true,
       })
         .then((res) => {
-          if (res.results.error) {
-            updated_idea = { ...idea, vote: idea.vote - 1, did_vote: false };
-            updateIdea(updated_idea);
-            setSelectedIdea(updated_idea);
+          if (res.results.data) {
+            setUpvotes([...upvotes, res.results.data]);
           }
+          if (res.results.error) {
+            updated_idea = { ...idea, vote: idea.vote - 1 };
+          }
+          updateIdea(updated_idea);
+          setSelectedIdea(updated_idea);
         })
         .catch(() => {
-          updated_idea = { ...idea, vote: idea.vote - 1, did_vote: false };
+          updated_idea = { ...idea, vote: idea.vote - 1 };
           updateIdea(updated_idea);
           setSelectedIdea(updated_idea);
         });

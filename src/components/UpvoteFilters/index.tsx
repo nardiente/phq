@@ -3,7 +3,7 @@ import { UpvoteFiltersProps } from './types';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { Dropdown } from '../DropDown';
 import { ChevronDownIcon } from '../icons/chevron-down.icon';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { useApp } from '../../contexts/AppContext';
 
 export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
@@ -14,27 +14,25 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
   } = useFeedback();
   const { sort, status, tags, title } = filter;
 
+  const [search, setSearch] = useState<string>(title);
+
   const handleUpvoteSearch = () => {
     setFilter({
       ...filter,
-      filtering:
-        sort !== 'Newest' ||
-        status.length > 0 ||
-        tags.length > 0 ||
-        title.length > 0,
-      title,
+      filtering: true,
+      title: search,
     });
   };
 
   const handleUpvoteSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    setSearch(value);
+    if (value.length > 0) {
+      return;
+    }
     setFilter({
       ...filter,
-      filtering:
-        sort !== 'Newest' ||
-        status.length > 0 ||
-        tags.length > 0 ||
-        value.length > 0,
+      filtering: true,
       title: value,
     });
   };
@@ -144,7 +142,7 @@ export const UpvoteFilters: React.FC<UpvoteFiltersProps> = (props) => {
               }}
               placeholder="Search ideas"
               type="text"
-              value={title}
+              value={search}
             />
             <span className="icon is-right">
               <figure className="image is-16x16">

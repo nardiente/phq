@@ -305,7 +305,12 @@ export const AdminEmails = ({
 
               <p className="text-[13px] text-gray-500">
                 Need help?{' '}
-                <a href="#" className="text-[#5a00cd]">
+                <a
+                  href="https://support.producthq.io"
+                  className="text-[#5a00cd]"
+                  rel="noopen, noreferrer"
+                  target="_blank"
+                >
                   Contact support
                 </a>
               </p>

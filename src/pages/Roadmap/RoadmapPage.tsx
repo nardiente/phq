@@ -61,6 +61,7 @@ export function RoadmapPage() {
   const [dragging, setDragging] = useState<boolean>(false);
   const [editColumnNameId, setEditColumnNameId] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>(title);
 
   const isRestricted =
     is_public && admin_profile && permissions && permissions.length === 0;
@@ -367,9 +368,13 @@ export function RoadmapPage() {
                     className="input border-t-0 border-r-0 border-l-0 rounded-none border-[#c5c5da] bg-transparent text-[#3d3d5e] p-2 shadow-none"
                     onChange={(e) => {
                       const titleFilter = e.target.value;
+                      setSearch(titleFilter);
+                      if (titleFilter.length > 0) {
+                        return;
+                      }
                       setFilter({
                         ...filter,
-                        filtering: titleFilter.length > 0,
+                        filtering: true,
                         title: titleFilter,
                       });
                     }}
@@ -377,14 +382,14 @@ export function RoadmapPage() {
                       if (e.keyCode === 13) {
                         setFilter({
                           ...filter,
-                          filtering: title.length > 0,
-                          title,
+                          filtering: true,
+                          title: search,
                         });
                       }
                     }}
                     placeholder="Search ideas"
                     type="text"
-                    value={title}
+                    value={search}
                   />
                   <span className="icon is-right">
                     <figure className="image is-16x16">

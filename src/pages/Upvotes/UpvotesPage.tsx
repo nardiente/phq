@@ -36,8 +36,10 @@ export default function UpvotesPage() {
       loading,
       roadmaps,
       selectedIdea,
+      upvotes,
     },
     handleListFeedback,
+    listUpvotes,
     setSelectedIdea,
     updateIdea,
   } = useFeedback();
@@ -53,6 +55,10 @@ export default function UpvotesPage() {
     state: { widget },
     loadPublishedWidget,
   } = useWidget();
+
+  if (upvotes.length === 0) {
+    listUpvotes();
+  }
 
   useEffect(() => {
     setActiveTab('/upvotes');

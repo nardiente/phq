@@ -107,7 +107,12 @@ export const CustomerWeeklyUpdate = memo(function CustomerWeeklyUpdate() {
 
         <p className="text-[13px] text-gray-500">
           Can we make this email better?{' '}
-          <a href="https://feedback.producthq.io" className="text-[#5a00cd]">
+          <a
+            href="https://feedback.producthq.io"
+            className="text-[#5a00cd]"
+            rel="noopener, noreferrer"
+            target="_blank"
+          >
             Let us know here
           </a>
         </p>

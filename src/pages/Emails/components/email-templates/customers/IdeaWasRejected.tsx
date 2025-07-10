@@ -58,7 +58,12 @@ export const IdeaWasRejected = () => {
 
         <p className="text-[13px] text-gray-500">
           Help us improve -{' '}
-          <a href="#" className="text-[#5a00cd]">
+          <a
+            href="https://feedback.producthq.io"
+            className="text-[#5a00cd]"
+            rel="noopener, noreferrer"
+            target="_blank"
+          >
             share your thoughts
           </a>
         </p>

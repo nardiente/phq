@@ -9,16 +9,21 @@ import {
 } from '../localStorage';
 import { ApiResponseBody, ApiResponseHeaders, StatusCodes } from './types';
 
+const is_public = import.meta.env.VITE_SYSTEM_TYPE === 'public';
+
 export const prepHeaders = (params?: {
   useCustomerKey?: boolean;
   useSessionToken?: boolean;
   useOnboardingToken?: boolean;
 }) => {
   const { useCustomerKey, useSessionToken, useOnboardingToken } = params ?? {};
-  const headers: { Authorization: string | void; 'kasl-key'?: string | void } =
-    {
-      Authorization: getKaslKey() ?? '',
-    };
+  const headers: {
+    Authorization: string | void;
+    'kasl-key'?: string | void;
+    domain?: string;
+  } = {
+    Authorization: getKaslKey() ?? '',
+  };
   if (getKaslKey() !== undefined) {
     headers['kasl-key'] = getKaslKey() ?? '';
   }
@@ -30,6 +35,9 @@ export const prepHeaders = (params?: {
   }
   if (useOnboardingToken && getOnboardingToken() !== undefined) {
     headers['kasl-key'] = getOnboardingToken() ?? '';
+  }
+  if (is_public) {
+    headers['domain'] = window.location.host;
   }
   return headers;
 };
