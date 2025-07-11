@@ -4,10 +4,7 @@ import { User } from './user';
 export interface Feedback {
   id?: number;
   anonymous_id?: number;
-  author?: {
-    full_name: string;
-    profile_photo?: string;
-  };
+  author?: User;
   comment_count?: number;
   confidence?: Confidences;
   cover_heic_blob_url?: string;

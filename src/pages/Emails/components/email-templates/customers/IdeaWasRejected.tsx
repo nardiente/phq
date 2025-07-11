@@ -1,6 +1,13 @@
 import { useUser } from '../../../../../contexts/UserContext';
+import { Feedback } from '../../../../../types/feedback';
 
-export const IdeaWasRejected = () => {
+export const IdeaWasRejected = ({
+  idea,
+  reason,
+}: {
+  idea?: Partial<Feedback>;
+  reason?: string;
+}) => {
   const { user: userContext } = useUser();
   const { emails, user } = userContext ?? {};
   const { customer } = emails ?? {};
@@ -11,7 +18,7 @@ export const IdeaWasRejected = () => {
         <div className="text-sm text-gray-500">
           {`From: ProductHQ Updates ${customer?.sender_settings ?? 'noreply@producthq.io'}`}
         </div>
-        <div className="text-sm text-gray-500">To: customer@company.com</div>
+        <div className="text-sm text-gray-500">{`To: ${idea?.author?.full_name ?? ''} ${idea?.author?.email ?? 'customer@company.com'}`}</div>
         <div className="text-sm text-gray-500">
           Subject: Your idea was not approved
         </div>
@@ -31,7 +38,9 @@ export const IdeaWasRejected = () => {
           <div className="p-3 bg-gray-50 rounded-lg">
             <p className="text-[14px] text-gray-700">
               <span className="text-gray-500">
-                [Rejection reason will appear here]
+                {reason && reason.length > 0
+                  ? reason
+                  : '[Rejection reason will appear here]'}
               </span>
             </p>
           </div>
@@ -39,7 +48,9 @@ export const IdeaWasRejected = () => {
 
         <div className="mb-4 p-3 bg-gray-50 rounded-lg">
           <p className="text-[14px] text-gray-700">
-            <span className="text-gray-500">[Idea Name]</span>
+            <span className="text-gray-500">
+              {idea?.title ?? '[Idea Name]'}
+            </span>
           </p>
         </div>
 
