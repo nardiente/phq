@@ -38,7 +38,7 @@ const AppContext = createContext<ContextType>({
   roadmap_colors: [],
   setRoadmapColors: () => {},
   is_public: import.meta.env.VITE_SYSTEM_TYPE === 'public',
-  menuItems: [],
+  menuItems: publicViewMenuItems,
   setMenuItems: () => {},
   fetching: false,
   permissions: [],

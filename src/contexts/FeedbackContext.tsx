@@ -601,7 +601,6 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   const handleListTag = () => {
     getApi<Tag[]>({
       url: 'tags',
-      params: is_public ? { domain: window.location.host } : undefined,
       useCustomerKey: is_public && moderation?.allow_anonymous_access === true,
     }).then((res) => {
       if (res.results.data) {
@@ -612,10 +611,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
 
   const handleGetStatus = async () => {
     setListing(true);
-    getApi<Roadmap[]>({
-      url: 'roadmaps',
-      params: is_public ? { domain: window.location.host } : undefined,
-    })
+    getApi<Roadmap[]>({ url: 'roadmaps' })
       .then((res) => {
         if (res.results.data) {
           const data = res.results.data;

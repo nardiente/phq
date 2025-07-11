@@ -213,7 +213,7 @@ export function UserProvider({ children }: UserProviderProps) {
   }, [user?.user]);
 
   useEffect(() => {
-    if (userProfile?.id) {
+    if (!is_public && userProfile?.id) {
       Promise.all([
         getSubscriptions(),
         handleGetCard(),
@@ -234,14 +234,7 @@ export function UserProvider({ children }: UserProviderProps) {
 
   const getSubscriptions = async () => {
     setFetching(true);
-    getApi<Subscription[]>({
-      url: 'billing',
-      params: is_public
-        ? {
-            domain: window.location.host,
-          }
-        : undefined,
-    }).then((res) => {
+    getApi<Subscription[]>({ url: 'billing' }).then((res) => {
       setFetching(false);
       const { results } = res ?? {};
       const { data: subscriptions } = results ?? {};
