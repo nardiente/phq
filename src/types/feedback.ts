@@ -32,6 +32,7 @@ export interface Feedback {
   score?: number;
   status?: Status;
   status_id?: number;
+  status_name?: string;
   tags?: string[];
   title?: string;
   updated_at?: Date;

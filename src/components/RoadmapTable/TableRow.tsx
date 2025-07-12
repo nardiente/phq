@@ -123,7 +123,7 @@ const TableRow: React.FC<TableRowProps> = ({ item, onItemChange }) => {
       title,
       description,
       estimated_release_date,
-      status: status?.name ?? 'Under Review',
+      status_name: status?.name ?? 'Under Review',
       tags,
       reach,
       impact,

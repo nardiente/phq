@@ -269,7 +269,10 @@ export function RoadmapPage() {
         .map((upvote) => upvote.id ?? 0);
       setDragging(true);
       putApi<Roadmap>('feedback/re-index', {
+        destination_roadmap_id: Number(finish),
+        dragged_idea_id: Number(draggableId),
         ids,
+        source_roadmap_id: Number(start),
         status_id: roadmap_destination.id,
       }).then((res) => {
         if (res.results.data) {

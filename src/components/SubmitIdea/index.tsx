@@ -41,7 +41,6 @@ export const SubmitIdea = () => {
   const {
     state: { ideas, selectedIdea, tags, filter },
     addIdea,
-    deleteIdeaInRoadmapById,
     updateIdea,
     setSelectedIdea,
   } = useFeedback();
@@ -176,7 +175,7 @@ export const SubmitIdea = () => {
       first_name,
       last_name,
       password,
-      status: is_admin ? active_status : '',
+      status_name: is_admin ? active_status : '',
       tags: selected_tags.map((selected_tag) => selected_tag?.tag).join(','),
       title,
       type: is_admin ? UserTypes.CUSTOMER : UserTypes.USER,
@@ -294,7 +293,7 @@ export const SubmitIdea = () => {
       title,
       description: description.replace(/<[^>]+>/g, '').trim(),
       estimated_release_date: estimated_release_date?.toString(),
-      status: active_status,
+      status_name: active_status,
       tags: selected_tags.map((selected_tag) => selected_tag?.tag).join(','),
     }).then(async (res) => {
       if (res.results.errors) {
@@ -303,13 +302,6 @@ export const SubmitIdea = () => {
       if (res.results.data) {
         const data = res.results.data;
         updateIdea(data);
-        if (idea?.status_id !== data.status_id) {
-          const filteredData = handleFilterData(data);
-          if (filteredData) {
-            deleteIdeaInRoadmapById(idea?.status_id ?? 0, data.id ?? 0);
-            addIdea(filteredData);
-          }
-        }
         setSelectedIdea(data);
         if (selectedOption && data.vote_on_behalf_id !== selectedOption.id) {
           await voteOnBehalf(selectedOption);

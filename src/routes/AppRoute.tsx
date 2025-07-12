@@ -9,7 +9,6 @@ import { Permissions } from '../types/common';
 import { useApp } from '../contexts/AppContext';
 import { isSuperDuperAdmin } from '../utils/user';
 import { getImpersonator } from '../utils/localStorage';
-import { usePanel } from '../contexts/PanelContext';
 import { SidePanel } from '../components/SidePanel';
 
 const AppRoute = () => {
@@ -34,7 +33,6 @@ const AppRoute = () => {
     user,
   } = userDetails ?? {};
   const { id: projectId } = project ?? {};
-  const { setPanelLoading } = usePanel();
 
   const [currentPage, setCurrentPage] = useState<PageType>(
     pathname.slice(1) as PageType
@@ -76,42 +74,11 @@ const AppRoute = () => {
       if (is_public && pathname.slice(1).length === 0) {
         handleNavigation('upvotes');
       }
-      checkSubscriptionBanner();
     }
     if (is_public && loaded && !projectId) {
       navigate('/404');
     }
   }, [loaded, pathname, projectId]);
-
-  const checkSubscriptionBanner = () => {
-    if (!is_public) {
-      if (
-        userProfile &&
-        !isSuperDuperAdmin(userProfile) &&
-        (!subscription ||
-          subscription.status === 'Inactive' ||
-          !permissions.includes(Permissions.ADD_IDEA))
-      ) {
-        if (
-          ![
-            '/pricing',
-            '/success',
-            '/ob-board',
-            '/ob-idea',
-            '/ob-tags',
-            '/ob-survey',
-            '/ob-success',
-          ].includes(pathname)
-        ) {
-          setShowBanner(true);
-        }
-      } else {
-        setShowBanner(false);
-      }
-    }
-
-    setPanelLoading(false);
-  };
 
   return (
     <>

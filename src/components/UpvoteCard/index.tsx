@@ -59,7 +59,7 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
     putApi<Feedback>(`feedback/${props.id}`, {
       description,
       is_archived: !props.is_archived,
-      status: status?.name,
+      status_name: status?.name,
       title,
     }).then((res) => {
       setLoading(false);
@@ -100,7 +100,7 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
     putApi<Feedback>(`feedback/${props.id}`, {
       description,
       hide_on_roadmap: !props.hide_on_roadmap,
-      status: props.status?.name,
+      status_name: props.status?.name,
       title,
     }).then((res) => {
       setLoading(false);
@@ -249,7 +249,7 @@ const UpvoteCard = ({ props }: { props: Feedback }) => {
               )}
             </div>
             <span>
-              {props.author?.full_name.substring(0, 20).trim()}
+              {props.author?.full_name?.substring(0, 20).trim()}
               {props.author?.full_name && props.author?.full_name.length > 20
                 ? '...'
                 : ''}

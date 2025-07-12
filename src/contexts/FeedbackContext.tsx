@@ -279,12 +279,21 @@ function feedbackReducer(
           if (roadmap.id === action.payload.status_id) {
             return {
               ...roadmap,
-              upvotes: roadmap.upvotes?.map((upvote) =>
-                upvote.id === action.payload.id ? action.payload : upvote
-              ),
+              upvotes: roadmap.upvotes?.find(
+                (upvote) => upvote.id === action.payload.id
+              )
+                ? roadmap.upvotes?.map((upvote) =>
+                    upvote.id === action.payload.id ? action.payload : upvote
+                  )
+                : [...(roadmap.upvotes ?? []), action.payload],
             };
           }
-          return roadmap;
+          return {
+            ...roadmap,
+            upvotes: roadmap.upvotes?.filter(
+              (upvote) => upvote.id !== action.payload.id
+            ),
+          };
         }),
       };
     case 'UPDATE_ITEM_STATUS':
@@ -784,7 +793,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
         admin_approval_status,
         rejected_reason,
         title: item.title,
-        status: item.status?.name,
+        status_name: item.status?.name,
       })
         .then((res) => {
           if (res.results.data) {

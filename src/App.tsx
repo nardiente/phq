@@ -20,6 +20,8 @@ import {
   FAVICON_PLACEHOLDER,
 } from './constants/placeholders';
 import { useApp } from './contexts/AppContext';
+import { isSuperDuperAdmin } from './utils/user';
+import { usePanel } from './contexts/PanelContext';
 
 const App: FC = () => {
   const { is_public } = useApp();
@@ -34,6 +36,7 @@ const App: FC = () => {
   } = useUser();
   const { admin_profile, moderation, project, user: user_profile } = user ?? {};
   const { is_index_search_engine } = project ?? {};
+  const { setPanelLoading } = usePanel();
 
   const userProfile = user_profile ?? admin_profile;
   const { email, favicon } = userProfile ?? {};
@@ -53,6 +56,8 @@ const App: FC = () => {
 
   useEffect(() => {
     if (!is_public || (is_public && userProfile?.id)) {
+      checkSubscriptionBanner();
+
       let gistScript: any, metaTag: any;
 
       const linkIconTag: HTMLLinkElement | null =
@@ -130,6 +135,34 @@ const App: FC = () => {
         }
       })
       .finally(() => setFetching(false));
+  };
+
+  const checkSubscriptionBanner = () => {
+    if (!is_public) {
+      if (
+        user?.user &&
+        !isSuperDuperAdmin(user.user) &&
+        (!user.subscription ||
+          user.subscription.status === 'Inactive' ||
+          !user.permissions.includes(Permissions.ADD_IDEA))
+      ) {
+        if (
+          window.location.pathname !== '/pricing' &&
+          window.location.pathname !== '/success' &&
+          window.location.pathname !== '/ob-board' &&
+          window.location.pathname !== '/ob-idea' &&
+          window.location.pathname !== '/ob-tags' &&
+          window.location.pathname !== '/ob-survey' &&
+          window.location.pathname !== '/ob-success'
+        ) {
+          setShowBanner(true);
+        }
+      } else {
+        setShowBanner(false);
+      }
+    }
+
+    setPanelLoading(false);
   };
 
   return (
