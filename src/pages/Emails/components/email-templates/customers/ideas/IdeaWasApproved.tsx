@@ -1,13 +1,6 @@
-import { useUser } from '../../../../../contexts/UserContext';
-import { Feedback } from '../../../../../types/feedback';
+import { useUser } from '../../../../../../contexts/UserContext';
 
-export const IdeaWasRejected = ({
-  idea,
-  reason,
-}: {
-  idea?: Partial<Feedback>;
-  reason?: string;
-}) => {
+export const IdeaWasApproved = () => {
   const { user: userContext } = useUser();
   const { emails, user } = userContext ?? {};
   const { customer } = emails ?? {};
@@ -18,49 +11,29 @@ export const IdeaWasRejected = ({
         <div className="text-sm text-gray-500">
           {`From: ProductHQ Updates ${customer?.sender_settings ?? 'noreply@producthq.io'}`}
         </div>
-        <div className="text-sm text-gray-500">{`To: ${idea?.author?.full_name ?? ''} ${idea?.author?.email ?? 'customer@company.com'}`}</div>
+        <div className="text-sm text-gray-500">To: customer@company.com</div>
         <div className="text-sm text-gray-500">
-          Subject: Your idea was not approved
+          Subject: Your idea has been approved
         </div>
       </div>
 
       <div className="border-t pt-3">
         <div className="text-[18px] font-medium text-gray-900 mb-2">
-          Uh oh! 😕
+          Great work! 🎉
         </div>
 
         <p className="text-[14px] text-gray-700 mb-3">
-          Your idea has been rejected.
+          Your idea has been approved and is now live on our board here:
         </p>
-
-        <div className="mb-4">
-          <h4 className="text-[15px] font-medium text-gray-900 mb-2">Reason</h4>
-          <div className="p-3 bg-gray-50 rounded-lg">
-            <p className="text-[14px] text-gray-700">
-              <span className="text-gray-500">
-                {reason && reason.length > 0
-                  ? reason
-                  : '[Rejection reason will appear here]'}
-              </span>
-            </p>
-          </div>
-        </div>
 
         <div className="mb-4 p-3 bg-gray-50 rounded-lg">
           <p className="text-[14px] text-gray-700">
-            <span className="text-gray-500">
-              {idea?.title ?? '[Idea Name]'}
-            </span>
+            <span className="text-gray-500">[Idea Name]</span>
           </p>
         </div>
 
-        <p className="text-[14px] text-gray-700 mb-4">
-          Please contact the board administrator if you would like to appeal
-          this decision.
-        </p>
-
         <button className="px-5 py-2 bg-[#5a00cd] text-white rounded-lg text-[14px] font-medium mb-4">
-          Contact Admin
+          View Idea
         </button>
 
         <p className="text-[14px] text-gray-700 mb-2">

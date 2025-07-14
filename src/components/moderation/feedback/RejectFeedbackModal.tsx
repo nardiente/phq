@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X, AlertTriangle, HelpCircle } from 'lucide-react';
 import { Toast } from '../../Toast';
 import { Feedback } from '../../../types/feedback';
-import { IdeaWasRejected } from '../../../pages/Emails/components/email-templates/customers/IdeaWasRejected';
+import { IdeaWasRejected } from '../../../pages/Emails/components/email-templates/customers/ideas/IdeaWasRejected';
 
 interface RejectFeedbackModalProps {
   type: 'idea' | 'comment';
