@@ -3,4 +3,6 @@ account_id = ""
 workers_dev = true
 route = ""
 
+pages_build_output_dir = "./dist"
+
 # Add your script entry point if needed, e.g. main = "src/index.js"
