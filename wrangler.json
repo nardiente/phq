@@ -1,6 +1,6 @@
 {
   "name": "phq",
-  "main": "./index.html",
+  "main": "./src/main.tsx",
   "account_id": "d5e2c5e4fd8054c71d8aebdfc401cfcf",
   "workers_dev": true,
   "compatibility_date": "2025-04-01",
